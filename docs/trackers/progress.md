@@ -9,7 +9,7 @@ Status key: ⬜ pending · 🟨 in progress · ✅ done · ❌ blocked
 | Day | Date (IST) | Focus | Gate | Status | Evidence |
 |---|---|---|---|---|---|
 | 0 | Oct 26–27 | Docs review, PRD v1.1, day plan, Obsidian vault | Plan agreed | ✅ | [[PRD_v1.1]], [[day_plan]] |
-| 1 | Tue Oct 27 | Muse smoke tests, repo, SQLite seed, mock adapter | Roman-Telugu tool call works; voice decision made | 🟨 text gate ✅, repo ✅, DB ✅, adapter ✅, voice ⏳ | [[smoke_tests]], repo: github.com/prashanth-ds-ml/telugu-order-agent |
+| 1 | Tue Oct 27 | Muse smoke tests, repo, SQLite seed, mock adapter | Roman-Telugu tool call works; voice decision made | 🟨 text gate ✅, repo ✅, DB ✅, adapter ✅, voice ⏳ | [[smoke_tests]], repo: github.com/prashanth-ds-ml/meta-hackathon-telugu-agent |
 | 2 | Wed Oct 28 | MCP server + 12 core tools + contract tests | Golden quote correct without the LLM | ⬜ | |
 | 3 | Thu Oct 29 | LangGraph agent, trace, verifier, safety guard | **HARD CHECKPOINT:** golden path runs live | ⬜ | |
 | 4 | Fri Oct 30 | 40 tools, BigTool, voice path, first X post | Arms A and B run on the same scenario | ⬜ | |

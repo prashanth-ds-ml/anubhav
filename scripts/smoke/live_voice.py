@@ -86,25 +86,51 @@ async def transcribe_live(seconds: float, wav_in: Path | None, device: int | Non
                     await ws.send(chunk)
                     await asyncio.sleep(0.08)  # pace at real time
         else:
+            import numpy as np
             import sounddevice as sd
 
+            info = sd.query_devices(device if device is not None else sd.default.device[0], "input")
+            native = int(info["default_samplerate"])
+            print(f"🎧 Mic: {info['name']} @ {native} Hz (resampled to {RATE} Hz)")
+
             def on_audio(indata, frames, time_info, status):
-                loop.call_soon_threadsafe(queue.put_nowait, bytes(indata))
+                mono = indata[:, 0].astype(np.float32)
+                if native != RATE:  # resample this chunk to 24 kHz
+                    n_out = int(round(len(mono) * RATE / native))
+                    mono = np.interp(np.linspace(0, len(mono) - 1, n_out), np.arange(len(mono)), mono)
+                loop.call_soon_threadsafe(queue.put_nowait, mono)
 
+            buf = np.zeros(0, dtype=np.float32)
+            padded_blocks, last_meter = 0, 0.0
             print(f"🎙️  Speak now ({seconds:.0f} s)… Telugu / Roman Telugu / English all fine.\n")
-            with sd.RawInputStream(samplerate=RATE, channels=1, dtype="int16", blocksize=BLOCK, callback=on_audio, device=device):
-                deadline = loop.time() + seconds
-                while loop.time() < deadline:
-                    chunk = await queue.get()
-                    recorded += chunk
-                    await ws.send(chunk)
-            while not queue.empty():
-                chunk = queue.get_nowait()
-                recorded += chunk
-                await ws.send(chunk)
+            with sd.InputStream(samplerate=native, channels=1, dtype="int16", callback=on_audio, device=device):
+                start = loop.time()
+                sent = 0
+                while sent * 0.08 < seconds and not reader.done():
+                    # pace: send block k at start + k*80 ms, so ingress is always real-time
+                    await asyncio.sleep(max(0.0, start + sent * 0.08 - loop.time()))
+                    while not queue.empty():
+                        buf = np.concatenate([buf, queue.get_nowait()])
+                    if len(buf) >= BLOCK:
+                        block, buf = buf[:BLOCK], buf[BLOCK:]
+                    else:  # mic stalled: pad with silence rather than starve the server
+                        block = np.concatenate([buf, np.zeros(BLOCK - len(buf), dtype=np.float32)])
+                        buf = np.zeros(0, dtype=np.float32)
+                        padded_blocks += 1
+                    pcm = np.clip(block, -32768, 32767).astype("<i2").tobytes()
+                    recorded += pcm
+                    await ws.send(pcm)
+                    sent += 1
+                    if not last_partial and loop.time() - last_meter > 0.3:
+                        level = min(20, int(np.sqrt(np.mean(block**2)) / 300))
+                        print(f"\r🎚️  mic level {'▮' * level}{'·' * (20 - level)}", end="", flush=True)
+                        last_meter = loop.time()
+            if padded_blocks > sent * 0.2:
+                print(f"\n⚠️  Mic delivered little audio ({padded_blocks}/{sent} blocks padded). Try --list-devices / --device N.")
 
-        await ws.send(json.dumps({"type": "endStream"}))
-        await reader
+        if not reader.done():
+            await ws.send(json.dumps({"type": "endStream"}))
+        await reader  # re-raises a server error, if any
 
     transcript = " ".join(final_text) or last_partial
     audio_s = len(recorded) / 2 / RATE
@@ -136,9 +162,23 @@ def main():
     ap.add_argument("--device", type=int)
     ap.add_argument("--agent", action="store_true", help="also send transcript to Muse Spark with tools")
     ap.add_argument("--label", default="live")
+    ap.add_argument("--list-devices", action="store_true", help="show microphones and exit")
     args = ap.parse_args()
 
-    res = asyncio.run(transcribe_live(args.seconds, args.file, args.device))
+    if args.list_devices:
+        import sounddevice as sd
+
+        for i, d in enumerate(sd.query_devices()):
+            if d["max_input_channels"] > 0:
+                default = " (default)" if i == sd.default.device[0] else ""
+                print(f"{i:3d}  {d['name']}  [{sd.query_hostapis(d['hostapi'])['name']}, {int(d['default_samplerate'])} Hz]{default}")
+        return
+
+    try:
+        res = asyncio.run(transcribe_live(args.seconds, args.file, args.device))
+    except RuntimeError as e:
+        print(f"\n❌ Transcription failed: {e}")
+        sys.exit(1)
     stamp = f"{datetime.now():%Y%m%d_%H%M%S}"
     if not args.file:
         out_wav = ROOT / "voice" / f"{args.label}_{stamp}.wav"
