@@ -7,7 +7,7 @@
 | Version | 1.1 (supersedes `Telugu_First_Self_Evolving_Agent_PRD_v1.docx`) |
 | Date | 27 Oct 2026 |
 | Owner | Solo indie developer |
-| Track / theme | Indie Developer track · **Build for Your World** |
+| Track / theme | Indie Developer track · **Push the Frontier** (changed in v1.1.1; see §0.1) |
 | Deadline | **Wed Nov 4, 9:00 PM ET = Thu Nov 5, 7:30 AM IST**. Internal target: submit Nov 4 IST |
 | Capacity | 8 build days × 8–10 hrs (~70 hrs, video included) + 1 buffer day |
 | Status | Build-ready |
@@ -18,7 +18,7 @@
 
 | # | Change | Reason |
 |---|---|---|
-| 1 | Theme is now **Build for Your World** only (v1.0 hedged across both themes) | The guide's wording, "a problem you know firsthand… make something possible that wasn't before", fits this project almost exactly. One clear story scores better on Impact. |
+| 1 | ~~Theme is now **Build for Your World** only~~ **Superseded by §0.1: Push the Frontier** | One theme, one story. |
 | 2 | Renamed from "Self-*Evolving*" to "Self-*Improving*" | A human approves every patch to metadata and guidance, so "self-evolving" overclaims and invites judge skepticism. |
 | 3 | **Voice-note input** moved from non-goal to P0, *gated on the day-1 Telugu transcription test* | Adds a second Meta model (Muse Voice Transcribe), matches how orders actually arrive, and gives the video its opening hook. |
 | 4 | **Muse is now the named failure diagnostician and patch proposer**, separate from its agent role | v1.0 left the proposer unspecified. A second Muse role directly targets the rubric's "Use of Meta AI Tooling" (25%). |
@@ -32,10 +32,40 @@
 | 12 | Impact rests on cited public statistics, a measured manual-vs-agent time comparison, safety counters, and the developer's own Telugu voice notes. **No real customer data and no invented testimonials.** | No wholesaler access, and pursuing consent is not worth the time. |
 | 13 | Added a credit budget, a bonus-prize plan, a submission compliance checklist and a revised video storyboard | Gaps in v1.0. |
 
+### 0.1 Changes in v1.1.1 (27 Oct 2026, after Day-1 smoke tests)
+
+| # | Change | Reason |
+|---|---|---|
+| 14 | **Headline set** (see §1). The product is the *capability*: an agent that gets measurably better at discovering and using tools through verified experience. | Owner decision. Puts the BigTool and Harness² ideas at the centre. |
+| 15 | Theme switched to **Push the Frontier** | "Give a machine a new capability… in software" matches a self-improving tool-using agent. The Telugu business is the real-world proof case. |
+| 16 | **Proof-case domain: FMCG/kirana wholesale distributor** (Andhra Pradesh, fictional data) | Clearest demo for a solo developer; already built; no perception risk. Other domains are named as future adoption targets (§1.1). |
+| 17 | **Retrieval recall@k becomes a headline metric**, alongside task success | "Finding" tools is in the headline, so the arm B → C recall uplift must be measured and shown. |
+| 18 | Model frozen to `muse-spark-1.3` (standard mode) | Day-1 smoke tests passed; the full benchmark costs < $10. |
+
 ---
 
 ## 1. Executive summary
 
+> **Headline:** A Meta Muse-powered, Telugu-first agent that gets measurably better at discovering and using business tools through verified experience, without retraining the model.
+>
+> **Subline:** Proven on the order desk of a Telugu-speaking wholesale distributor, where voice-note orders become verified draft quotes. Every self-correction is tested on unseen tasks and approved by a human.
+>
+> **Video tagline:** *"Same frozen model. Smarter harness."*
+
+**Theme: Push the Frontier.** The new machine capability is safe, verifiable self-improvement of tool discovery and tool use, in a low-resource language, with no weight updates. Inspirations: [langgraph-bigtool](https://github.com/langchain-ai/langgraph-bigtool) for scalable tool retrieval, and [Harness²](https://github.com/google-research/harness2) for improving the harness rather than the model (methodology only).
+
+### 1.1 Proof case and adoption path
+- **Proof case (built and demoed):** a wholesale FMCG/kirana distributor in Andhra Pradesh. Retailers' orders arrive as Telugu, Roman-Telugu or mixed voice notes and messages, and the agent turns them into verified draft quotes.
+- **Adoption targets (narrative only, not built):**
+  - pharma distribution to chemist shops (batch, expiry, licence checks)
+  - agri-input dealers
+  - dairy cooperatives (fat/SNF-based payouts)
+  - auto spare-parts counters (huge, confusable part catalogs)
+  - other Indian languages
+
+  In each case, only the tool registry and the language guidance change. The improvement loop is the same.
+
+### 1.2 Proof-case scenario
 A Telugu-speaking wholesale order-desk operator receives informal orders as voice notes and chat messages that mix Telugu script, Roman Telugu and English product terms. Today these are converted to quotes by hand, from memory and spreadsheets. English-only ERP software doesn't understand them.
 
 We build an agent that turns such a request into a **verified, editable draft quotation**:
@@ -62,7 +92,7 @@ When the agent fails, a separate **improvement loop** handles it:
 
 | Source | Requirement | How we meet it |
 |---|---|---|
-| Guide §1: Problem statements | Build toward one theme; must use Meta models | Build for Your World. Muse Spark (agent and diagnostician) + Muse Voice Transcribe; Muse Spark Open optional |
+| Guide §1: Problem statements | Build toward one theme; must use Meta models | Push the Frontier ("give a machine a new capability… in software"). Muse Spark (agent and diagnostician) + Muse Voice Transcribe; Muse Spark Open optional |
 | Guide §4: Rules | Public repo, max 4 per team (solo OK), new work only, original contributions clearly identified, no unlicensed code, data or assets | Repo starts Oct 27 with daily commits. README separates "built during hackathon" from "libraries used". All data fictional. |
 | Guide §4: Anti-projects | Avoid basic RAG, medical advice, education chatbots, etc. | Multi-step agentic business workflow with tool execution and verification; not RAG |
 | Guide §7: Submission | Due Nov 4 9 PM ET; public repo; accessible 3-min video; all contributors listed | Day-8 dry run in an incognito browser |
@@ -472,7 +502,8 @@ Any replayed segment is labeled as replay. At least one path in the video is liv
 - Open-weights arm.
 
 **Decision log (v1.1):**
-- Build for Your World only.
+- Push the Frontier; headline as in §1. (v1.1 said Build for Your World; superseded.)
+- Proof case: FMCG/kirana wholesale distributor; other domains are future adoption targets.
 - Single domain.
 - Draft-only transactions.
 - Muse handles three runtime roles: agent, transcriber, diagnostician.

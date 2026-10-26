@@ -13,7 +13,7 @@ tags: [tracker, submission]
 - [ ] Video shows only features built during the hackathon
 - [ ] Everyone who worked on it is listed (solo: just me)
 - [ ] Track: **Indie Developer**
-- [ ] Theme: **Build for Your World**
+- [ ] Theme: **Push the Frontier**
 - [ ] Meta model usage is obvious (Stage 1 pass)
 
 ## Originality and rules

@@ -3,7 +3,9 @@ tags: [home, index]
 ---
 # Telugu-First Self-Improving Agent: Home
 
-**Meta Global AI Developer Hackathon** · Indie track · Build for Your World
+**Meta Global AI Developer Hackathon** · Indie track · Push the Frontier
+
+> A Meta Muse-powered, Telugu-first agent that gets measurably better at discovering and using business tools through verified experience, without retraining the model.
 **Deadline:** Wed Nov 4, 9:00 PM ET = **Thu Nov 5, 7:30 AM IST** (target: submit Nov 4 IST)
 
 ## Plan

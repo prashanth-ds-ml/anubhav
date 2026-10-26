@@ -1,10 +1,21 @@
 # Telugu-First Self-Improving Order Agent
 
-> Built during the **Meta Global AI Developer Hackathon** (Oct 26 – Nov 4, 2026) · Indie track · *Build for Your World*
+> Built during the **Meta Global AI Developer Hackathon** (Oct 26 – Nov 4, 2026) · Indie track · *Push the Frontier*
 
-A Telugu-speaking wholesale order desk gets orders as voice notes and chat messages that mix Telugu script, Roman Telugu and English. This agent turns them into **verified, editable draft quotations** using Meta's Muse models. When it fails, Muse diagnoses the failure and proposes a bounded fix to its own operating harness, never its weights. The fix is tested on unseen tasks, and a human approves it before it goes live.
+**A Meta Muse-powered, Telugu-first agent that gets measurably better at discovering and using business tools through verified experience, without retraining the model.**
 
-*"The model never changed. The harness got smarter, and a human signed off on every change."*
+**Proof case:** the order desk of a Telugu-speaking wholesale distributor. Retailers' voice notes and messages mix Telugu script, Roman Telugu and English, and the agent turns them into **verified draft quotations**. When it fails, Muse diagnoses the failure and proposes a bounded fix to its own operating harness, never its weights. The fix is tested on unseen tasks, and a human approves it before it goes live.
+
+*"Same frozen model. Smarter harness."*
+
+**Where it can go next:**
+- pharma distribution
+- agri-input dealers
+- dairy cooperatives
+- spare-parts counters
+- other Indian languages
+
+Only the tool registry and the language guidance change. The improvement loop stays the same.
 
 **Status:** 🚧 work in progress (Day 1). See [`docs/PRD_v1.1.md`](docs/PRD_v1.1.md).
 
