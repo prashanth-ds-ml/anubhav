@@ -37,3 +37,6 @@ Thumbs.db
 
 # Self-recorded voice notes (personal audio)
 voice/
+
+# Generated business database
+data/
