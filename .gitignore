@@ -40,3 +40,6 @@ voice/
 
 # Generated business database
 data/
+
+# Personal voice transcripts log
+artifacts/smoke/voice_log.jsonl
