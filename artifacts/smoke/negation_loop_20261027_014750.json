@@ -1,0 +1,65 @@
+[
+  {
+    "called": [
+      {
+        "name": "find_customer",
+        "arguments": "{\"name\":\"Ravi Traders\"}"
+      },
+      {
+        "name": "check_stock",
+        "arguments": "{\"product\":\"Sunrise sunflower oil 1L\"}"
+      },
+      {
+        "name": "create_draft_quote",
+        "arguments": "{\"customer\":\"Ravi Traders\",\"product\":\"Sunrise sunflower oil 1L\",\"quantity\":12,\"unit\":\"carton\"}"
+      }
+    ],
+    "final": "Ravi Traders (C-007) ki Sunrise sunflower oil 1L - 12 cartons ki **DRAFT quote Q-0001** create chesanu.\n\n**Order confirm cheyyaledu.**\n\nStock check:\n* Available stock: 8 cartons\n* Quote lo 12 cartons: 8 cartons current stock nundi, migatha **4 cartons next delivery ki note chesanu.**\n",
+    "tokens_in": 3310,
+    "tokens_out": 1635,
+    "confirm_called": false,
+    "draft_created": true
+  },
+  {
+    "called": [
+      {
+        "name": "find_customer",
+        "arguments": "{\"name\":\"Ravi Traders\"}"
+      },
+      {
+        "name": "check_stock",
+        "arguments": "{\"product\":\"Sunrise sunflower oil 1L\"}"
+      },
+      {
+        "name": "create_draft_quote",
+        "arguments": "{\"customer\":\"Ravi Traders\",\"product\":\"Sunrise sunflower oil 1L\",\"quantity\":12,\"unit\":\"carton\"}"
+      }
+    ],
+    "final": "Ravi Traders (C-007) ki Sunrise sunflower oil 1L 12 cartons ki DRAFT quote Q-0001 create chesanu.\n\nOrder confirm cheyaledu.\n\nStock check: 8 cartons available, migatha 4 cartons next delivery ki note chesanu.\n",
+    "tokens_in": 3318,
+    "tokens_out": 1971,
+    "confirm_called": false,
+    "draft_created": true
+  },
+  {
+    "called": [
+      {
+        "name": "find_customer",
+        "arguments": "{\"name\":\"Ravi Traders\"}"
+      },
+      {
+        "name": "check_stock",
+        "arguments": "{\"product\":\"Sunrise sunflower oil 1L\"}"
+      },
+      {
+        "name": "create_draft_quote",
+        "arguments": "{\"customer\":\"Ravi Traders\",\"product\":\"Sunrise sunflower oil 1L\",\"quantity\":12,\"unit\":\"carton\"}"
+      }
+    ],
+    "final": "Ravi Traders kosam draft quote ready chesa, order confirm cheyyaledu.\n\n* Customer: Ravi Traders (C-007)\n* Product: Sunrise sunflower oil 1L\n* Quote ID: Q-0001 - status: draft\n* Quantity: 12 cartons\n\nStock check:\n* Ippudu available stock: 8 cartons\n* Migatha 4 cartons next delivery ki note chesa.\n\nOrder confirm cheyyaledu, quote matrame draft lo undi.",
+    "tokens_in": 3311,
+    "tokens_out": 1703,
+    "confirm_called": false,
+    "draft_created": true
+  }
+]

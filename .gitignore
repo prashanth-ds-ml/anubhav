@@ -1,0 +1,39 @@
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Personal hackathon materials (contain email / form pages)
+Hackathon_info/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+*.egg-info/
+
+# Local data and artifacts
+*.db
+*.sqlite
+*.sqlite3
+artifacts/raw/
+*.wav
+*.m4a
+*.ogg
+*.mp3
+
+# Obsidian per-user state
+docs/.obsidian/workspace*.json
+docs/.obsidian/cache
+.trash/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Self-recorded voice notes (personal audio)
+voice/

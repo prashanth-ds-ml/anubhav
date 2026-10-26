@@ -1,0 +1,8 @@
+{
+  "items": [
+    {"type": "file", "path": "Home.md", "title": "Home"},
+    {"type": "file", "path": "PRD_v1.1.md", "title": "PRD v1.1"},
+    {"type": "file", "path": "day_plan.md", "title": "Day plan"},
+    {"type": "file", "path": "trackers/progress.md", "title": "Progress"}
+  ]
+}
