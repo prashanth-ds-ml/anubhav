@@ -1,5 +1,5 @@
 [project]
-name = "telugu-order-agent"
+name = "meta-hackathon-telugu-agent"
 version = "0.1.0"
 description = "Telugu-first self-improving order agent on Meta Muse"
 requires-python = ">=3.12"
