@@ -6,6 +6,7 @@ tags: [home, index]
 **Meta Global AI Developer Hackathon** · Indie track · Push the Frontier
 
 > A Meta Muse-powered, Telugu-first agent that gets measurably better at discovering and using business tools through verified experience, without retraining the model.
+**Repo:** https://github.com/prashanth-ds-ml/meta-hackathon-telugu-agent · **Local:** `C:\Users\prash\projects\meta-hackathon-telugu-agent`
 **Deadline:** Wed Nov 4, 9:00 PM ET = **Thu Nov 5, 7:30 AM IST** (target: submit Nov 4 IST)
 
 ## Plan

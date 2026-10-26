@@ -8,7 +8,7 @@ tags: [tracker, submission]
 
 ## Required by the guide
 - [ ] Submitted via the Cerebral Valley platform ("Submit Project")
-- [ ] **Public** GitHub repo, accessible in incognito
+- [ ] **Public** GitHub repo, accessible in incognito: https://github.com/prashanth-ds-ml/meta-hackathon-telugu-agent
 - [ ] **3-minute demo video**, link accessible
 - [ ] Video shows only features built during the hackathon
 - [ ] Everyone who worked on it is listed (solo: just me)

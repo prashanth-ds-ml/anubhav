@@ -26,13 +26,28 @@ Only the tool registry and the language guidance change. The improvement loop st
 | Voice-note transcription (Telugu) | `muse-voice-transcribe-1.0` |
 | Failure diagnostician and patch proposer | `muse-spark-1.3` |
 
+**Repo:** https://github.com/prashanth-ds-ml/meta-hackathon-telugu-agent
+
 ## Quick start (so far)
 ```bash
+git clone https://github.com/prashanth-ds-ml/meta-hackathon-telugu-agent.git
+cd meta-hackathon-telugu-agent
 uv sync
 echo "meta_api=<your Meta Model API key>" > .env
 uv run python scripts/smoke/smoke_text.py           # T1–T5, T8 capability checks
 uv run python scripts/smoke/smoke_negation_loop.py  # "order confirm cheyyaku" safety loop
-uv run python scripts/smoke/smoke_voice.py voice/*  # Telugu voice-note transcription
+uv run python scripts/smoke/smoke_voice.py voice/*  # Telugu voice-note transcription (files)
+uv run python scripts/smoke/live_voice.py --seconds 20 --agent  # live mic → transcript → Muse tool calls
+uv run pytest -q                                    # unit tests (mock mode, no credits)
+```
+
+## Repository layout
+```
+src/order_agent/      # Python package: db/ (fictional SQLite simulator), llm.py (Muse + mock adapter)
+scripts/smoke/        # Day-1 capability tests against the Meta Model API
+tests/                # pytest (mock mode, no API credits)
+artifacts/smoke/      # raw smoke-test results (evidence)
+docs/                 # Obsidian vault: PRD, day plan, trackers, daily notes
 ```
 
 ## Built during the hackathon vs. third-party

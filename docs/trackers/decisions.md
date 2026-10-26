@@ -27,6 +27,7 @@ ADR-style: newest at the bottom. Never delete an entry; mark it superseded inste
 | D-018 | 2026-10-27 | Theme: **Push the Frontier** (supersedes D-001) | accepted |
 | D-019 | 2026-10-27 | Proof-case domain: **FMCG/kirana wholesale distributor** (AP, fictional data). Pharma, agri-input, dairy, spare parts and other languages are future adoption targets only | accepted |
 | D-020 | 2026-10-27 | Retrieval recall@k (B → C) is a headline metric alongside task success | accepted |
+| D-021 | 2026-10-27 | Repo and project name: **`meta-hackathon-telugu-agent`** (GitHub repo, Python project, local folder `C:\Users\prash\projects\meta-hackathon-telugu-agent`). Import package stays `order_agent` | accepted |
 
 ---
 

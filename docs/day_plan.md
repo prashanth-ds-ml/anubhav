@@ -41,7 +41,7 @@ Companion to `docs/PRD_v1.1.md`. Today is **Tue 27 Oct 2026 (Day 1)**.
 - [ ] dev.meta.ai: check that the $150 credit shows on the Billing page, and set a **spend-limit notification**.
 - [ ] Create an API key and put it in a local `.env` (gitignored).
 - [ ] Skim the Meta docs linked in the guide: Overview, Quickstart, **Model list**, API fundamentals, Muse code recipes. Note the exact model IDs for Muse Spark and Muse Voice Transcribe.
-- [ ] Create a **public** GitHub repo with these files in the first commit:
+- [x] Create a **public** GitHub repo: ✅ https://github.com/prashanth-ds-ml/meta-hackathon-telugu-agent (renamed from `telugu-order-agent`), with these files in the first commit:
   - [ ] `README.md` stub that says "Built during the Meta Global AI Developer Hackathon (Oct 26 – Nov 4, 2026)"
   - [ ] `.gitignore` that excludes `.env`, `Hackathon_info/`, `*.db` and venvs
   - [ ] `docs/PRD_v1.1.md` and `docs/day_plan.md`
