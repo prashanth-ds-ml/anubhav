@@ -1,0 +1,8 @@
+code,name
+case,case / carton
+piece,"piece (packet, bottle, pouch)"
+dozen,dozen pieces
+kg,kilogram
+litre,litre
+bag,bag (single sack SKU)
+tin,tin (single tin SKU)

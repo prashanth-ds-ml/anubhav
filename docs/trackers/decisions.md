@@ -28,6 +28,8 @@ ADR-style: newest at the bottom. Never delete an entry; mark it superseded inste
 | D-019 | 2026-10-27 | Proof-case domain: **FMCG/kirana wholesale distributor** (AP, fictional data). Pharma, agri-input, dairy, spare parts and other languages are future adoption targets only | accepted |
 | D-020 | 2026-10-27 | Retrieval recall@k (B → C) is a headline metric alongside task success | accepted |
 | D-021 | 2026-10-27 | Repo and project name: **`meta-hackathon-telugu-agent`** (GitHub repo and Python project). Local folder stays `C:\Users\prash\projects\meta_hackathon`; it does not affect the remote, package or submission. Import package stays `order_agent` | accepted |
+| D-022 | 2026-10-27 | Business data lives in CSVs (source of truth) loaded into SQLite; shop slang is kept in `datasets/business/hidden/`, never in the DB; 48-task benchmark v1 with expected answers computed by `pricing.py` | accepted |
+| D-023 | 2026-10-27 | Baseline first: run the baseline on Day 2–3, before building the improvement loop. Arms become A (all tools), B (Muse built-in `tool_search`), C (B + our approved harness patches) | accepted |
 
 ---
 
@@ -76,3 +78,20 @@ ADR-style: newest at the bottom. Never delete an entry; mark it superseded inste
 - **Alternatives:** Contributor mode (cheaper, but adds a data-use question and a lower rate limit); 1.2 (recommended for audio input, but we transcribe separately).
 - **Consequences:** One frozen model ID for the "same frozen model" claim (AT-09). Voice goes through Muse Voice Transcribe, not Spark audio input.
 - **Rubric impact:** Tech (clean experiment), Meta tooling (latest model).
+
+---
+
+### D-022: CSV source of truth, hidden shop knowledge, benchmark v1
+- **Context:** If Muse already handles Telugu and tool calling well, an easy benchmark shows no room to improve, and the headline claim collapses.
+- **Decision:** Expand the fictional business (84 SKUs with near-duplicates, 17 customers with look-alike names, units, schemes, credit limits, 98 historical orders) as CSVs loaded into SQLite. Keep shop slang ("GG oil", "pedda dabba", "Ravi anna") in `hidden/`, never in the DB. Write 48 tasks whose expected flags and totals come from the pricing engine.
+- **Alternatives:** Making tasks artificially hard (judges would notice); keeping the 40-SKU seed (too easy for retrieval).
+- **Consequences:** Headroom comes from realistic business knowledge a frozen model can't have, not from tricks. `tests/test_benchmark.py` keeps every task consistent with the data.
+- **Rubric impact:** Tech (verifiable benchmark), Impact (realistic shop conventions), Demo (a slang failure fixed on screen).
+
+### D-023: Baseline first; Muse tool search as arm B
+- **Context:** Muse may already be strong; Muse also has built-in `tool_search` / `defer_loading`.
+- **Decision:** Run an early baseline (Day 2–3) to measure the real failure rate before building the loop. Arm B uses Muse's own tool search; arm C adds our human-approved harness patches (Harness² method) on top.
+- **Alternatives:** Our own BigTool retrieval as arm B (more code, and weaker on Meta tooling if Muse's search is better).
+- **Consequences:** If the baseline is above ~90%, shift the claim to efficiency and reliability over repeats and add harder realistic tool sets. First check whether tool descriptions can be updated between requests so learned aliases reach the search.
+- **Rubric impact:** Meta tooling (built-in Muse features), Tech (honest baseline).
+

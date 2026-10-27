@@ -1,0 +1,5 @@
+id,sku,buy_cases,free_cases,valid_from,valid_to,tiers,description
+S-01,KF-NOOD-70,10,1,2026-10-15,2026-11-15,all,"Noodles: buy 10 cases, get 1 free"
+S-02,NN-DET-1K,5,1,2026-10-20,2026-11-10,gold,Detergent 1 kg: gold retailers buy 5 get 1
+S-03,GG-BISC-GLU,20,2,2026-10-01,2026-10-31,all,Glucose biscuits: buy 20 get 2
+S-04,KS-GHEE-1L,5,1,2026-09-01,2026-10-15,all,Ghee 1 L festival offer (expired)

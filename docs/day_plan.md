@@ -106,6 +106,11 @@ Put each test in `scripts/smoke/`. Record the results in `docs/day1_smoke_result
 - [ ] Edge tests: ambiguous SKU, ineligible discount, zero stock, invalid customer.
 - [ ] Run the MCP server and list its tools from a small client script.
 
+### C2. Early baseline prep (D-023, pulled forward from Day 5)
+- [x] Business data as CSVs + SQLite, hidden shop slang, 48-task benchmark v1, pricing engine (done Day 1, see [[decisions]] D-022)
+- [ ] Check whether Muse `tool_search` / `defer_loading` lets us update tool descriptions between requests
+- [ ] Small Muse `tool_search` accuracy test on ~10 Telugu / Roman-Telugu queries vs. all tools loaded
+
 ### D. Event
 - [ ] **7:30–8:30 PM IST**: #office-hours, if blocked.
 - [ ] **9:30–10:30 PM IST: Agents 102, Verifiable Agents.** Take notes. Afterwards, update the verifier design notes in the PRD (§9, §11) with anything we should adopt. Judges from Meta will recognize their own best practices.

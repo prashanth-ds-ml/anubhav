@@ -1,5 +1,3 @@
-import json
-
 import pytest
 
 from order_agent import db
@@ -16,16 +14,18 @@ def conn(tmp_path):
 
 def test_seed_counts(conn):
     count = lambda t: conn.execute(f"SELECT COUNT(*) FROM {t}").fetchone()[0]
-    assert count("products") == 40
-    assert count("customers") == 15
-    assert count("prices") == 40
-    assert count("inventory") == 80
+    assert count("products") == 84
+    assert count("customers") == 17
+    assert count("prices") == 84
+    assert count("inventory") == 84 * 2
+    assert count("orders") > 50
 
 
 def test_golden_path_fixture(conn):
     ravi = conn.execute("SELECT * FROM customers WHERE name = 'Ravi Traders'").fetchone()
     assert ravi["tier"] == "gold" and ravi["credit_status"] == "ok" and ravi["active"] == 1
-    assert "రవి ట్రేడర్స్" in json.loads(ravi["aliases"])
+    aliases = {r[0] for r in conn.execute("SELECT alias FROM customer_aliases WHERE customer_id = ?", (ravi["id"],))}
+    assert "రవి ట్రేడర్స్" in aliases
 
     available = conn.execute(
         "SELECT SUM(on_hand_cases - reserved_cases) FROM inventory WHERE sku = 'GG-SUN-1L'"
@@ -40,8 +40,8 @@ def test_golden_path_fixture(conn):
 
 def test_ambiguous_products_exist(conn):
     # "sunflower oil" alone must be ambiguous (brands and sizes) -> clarification scenarios
-    rows = conn.execute("SELECT sku FROM products WHERE name LIKE '%Sunflower Oil%'").fetchall()
-    assert len(rows) == 3
+    rows = conn.execute("SELECT sku FROM products WHERE type = 'sunflower oil'").fetchall()
+    assert len(rows) == 7
 
 
 def test_reset_is_deterministic(tmp_path):

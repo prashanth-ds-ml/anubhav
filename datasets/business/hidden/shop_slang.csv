@@ -1,0 +1,18 @@
+term,script,kind,maps_to,note
+GG oil,roman,sku,GG-SUN-1L,Shop shorthand: Godavari Gold sunflower 1 L
+జీజీ ఆయిల్,te,sku,GG-SUN-1L,"Same, in Telugu script"
+DP oil,roman,sku,DP-SUN-1L,Deccan Pure sunflower 1 L
+pedda dabba,roman,pack,15 L tin,'Big tin' of an oil = the 15 L tin SKU of that oil
+పెద్ద డబ్బా,te,pack,15 L tin,"Same, in Telugu script"
+chinna packet,roman,pack,smallest size,'Small packet' = the smallest pack of that product
+erra packet karam,roman,sku,KK-CHILLI-500,'Red packet' chilli = Kakatiya chilli 500 g (red pack)
+ఎర్ర ప్యాకెట్ కారం,te,sku,KK-CHILLI-500,"Same, in Telugu script"
+pacha sabbu,roman,sku,NN-SOAP-NEEM-100,'Green soap' = Nellore Naturals neem soap
+పచ్చ సబ్బు,te,sku,NN-SOAP-NEEM-100,"Same, in Telugu script"
+G biscuits,roman,sku,GG-BISC-GLU,Glucose biscuits 100 g
+chinna neyyi,roman,sku,KS-GHEE-500,'Small ghee' = Konaseema ghee 500 ml
+pedda neyyi,roman,sku,KS-GHEE-1L,'Big ghee' = Konaseema ghee 1 L
+Ravi anna,roman,customer,C-001,"The owner of Ravi Traders, not Ravi Kumar Provisions"
+రవి అన్న,te,customer,C-001,"Same, in Telugu script"
+Venkanna shop,roman,customer,C-003,Sri Venkateswara Stores
+Balaji vallu,roman,customer,C-008,'The Balaji people' = Balaji Wholesale

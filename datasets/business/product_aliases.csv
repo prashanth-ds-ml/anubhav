@@ -1,0 +1,524 @@
+sku,alias,script,kind
+GG-SUN-500,సన్‌ఫ్లవర్ నూనె,te,generic
+GG-SUN-500,sunflower nune,roman,generic
+GG-SUN-500,sunflower oil,en,generic
+GG-SUN-500,Godavari Gold sunflower oil,en,brand
+GG-SUN-500,గోదావరి గోల్డ్ సన్‌ఫ్లవర్ నూనె,te,brand
+GG-SUN-500,sunflower oil 500 ml,en,pack
+GG-SUN-1L,సన్‌ఫ్లవర్ నూనె,te,generic
+GG-SUN-1L,sunflower nune,roman,generic
+GG-SUN-1L,sunflower oil,en,generic
+GG-SUN-1L,Godavari Gold sunflower oil,en,brand
+GG-SUN-1L,గోదావరి గోల్డ్ సన్‌ఫ్లవర్ నూనె,te,brand
+GG-SUN-1L,sunflower oil 1 l,en,pack
+GG-SUN-5L,సన్‌ఫ్లవర్ నూనె,te,generic
+GG-SUN-5L,sunflower nune,roman,generic
+GG-SUN-5L,sunflower oil,en,generic
+GG-SUN-5L,Godavari Gold sunflower oil,en,brand
+GG-SUN-5L,గోదావరి గోల్డ్ సన్‌ఫ్లవర్ నూనె,te,brand
+GG-SUN-5L,sunflower oil 5 l,en,pack
+GG-SUN-15L,సన్‌ఫ్లవర్ నూనె,te,generic
+GG-SUN-15L,sunflower nune,roman,generic
+GG-SUN-15L,sunflower oil,en,generic
+GG-SUN-15L,Godavari Gold sunflower oil,en,brand
+GG-SUN-15L,గోదావరి గోల్డ్ సన్‌ఫ్లవర్ నూనె,te,brand
+GG-SUN-15L,sunflower oil 15 l tin,en,pack
+DP-SUN-1L,సన్‌ఫ్లవర్ నూనె,te,generic
+DP-SUN-1L,sunflower nune,roman,generic
+DP-SUN-1L,sunflower oil,en,generic
+DP-SUN-1L,Deccan Pure sunflower oil,en,brand
+DP-SUN-1L,డెక్కన్ ప్యూర్ సన్‌ఫ్లవర్ నూనె,te,brand
+DP-SUN-1L,sunflower oil 1 l,en,pack
+DP-SUN-5L,సన్‌ఫ్లవర్ నూనె,te,generic
+DP-SUN-5L,sunflower nune,roman,generic
+DP-SUN-5L,sunflower oil,en,generic
+DP-SUN-5L,Deccan Pure sunflower oil,en,brand
+DP-SUN-5L,డెక్కన్ ప్యూర్ సన్‌ఫ్లవర్ నూనె,te,brand
+DP-SUN-5L,sunflower oil 5 l,en,pack
+DP-SUN-15L,సన్‌ఫ్లవర్ నూనె,te,generic
+DP-SUN-15L,sunflower nune,roman,generic
+DP-SUN-15L,sunflower oil,en,generic
+DP-SUN-15L,Deccan Pure sunflower oil,en,brand
+DP-SUN-15L,డెక్కన్ ప్యూర్ సన్‌ఫ్లవర్ నూనె,te,brand
+DP-SUN-15L,sunflower oil 15 l tin,en,pack
+GG-GNUT-1L,వేరుశనగ నూనె,te,generic
+GG-GNUT-1L,verusenaga nune,roman,generic
+GG-GNUT-1L,palli nune,roman,generic
+GG-GNUT-1L,groundnut oil,en,generic
+GG-GNUT-1L,Godavari Gold groundnut oil,en,brand
+GG-GNUT-1L,గోదావరి గోల్డ్ వేరుశనగ నూనె,te,brand
+GG-GNUT-1L,groundnut oil 1 l,en,pack
+GG-GNUT-5L,వేరుశనగ నూనె,te,generic
+GG-GNUT-5L,verusenaga nune,roman,generic
+GG-GNUT-5L,palli nune,roman,generic
+GG-GNUT-5L,groundnut oil,en,generic
+GG-GNUT-5L,Godavari Gold groundnut oil,en,brand
+GG-GNUT-5L,గోదావరి గోల్డ్ వేరుశనగ నూనె,te,brand
+GG-GNUT-5L,groundnut oil 5 l,en,pack
+GG-GNUT-15L,వేరుశనగ నూనె,te,generic
+GG-GNUT-15L,verusenaga nune,roman,generic
+GG-GNUT-15L,palli nune,roman,generic
+GG-GNUT-15L,groundnut oil,en,generic
+GG-GNUT-15L,Godavari Gold groundnut oil,en,brand
+GG-GNUT-15L,గోదావరి గోల్డ్ వేరుశనగ నూనె,te,brand
+GG-GNUT-15L,groundnut oil 15 l tin,en,pack
+KF-PALM-1L,పామాయిల్,te,generic
+KF-PALM-1L,pamoil,roman,generic
+KF-PALM-1L,palm oil,en,generic
+KF-PALM-1L,Krishna Fresh palmolein oil,en,brand
+KF-PALM-1L,కృష్ణా ఫ్రెష్ పామాయిల్,te,brand
+KF-PALM-1L,palmolein oil 1 l,en,pack
+KF-PALM-15L,పామాయిల్,te,generic
+KF-PALM-15L,pamoil,roman,generic
+KF-PALM-15L,palm oil,en,generic
+KF-PALM-15L,Krishna Fresh palmolein oil,en,brand
+KF-PALM-15L,కృష్ణా ఫ్రెష్ పామాయిల్,te,brand
+KF-PALM-15L,palmolein oil 15 l tin,en,pack
+NN-RBO-1L,రైస్ బ్రాన్ నూనె,te,generic
+NN-RBO-1L,rice bran nune,roman,generic
+NN-RBO-1L,rice bran oil,en,generic
+NN-RBO-1L,Nellore Naturals rice bran oil,en,brand
+NN-RBO-1L,నెల్లూరు నేచురల్స్ రైస్ బ్రాన్ నూనె,te,brand
+NN-RBO-1L,rice bran oil 1 l,en,pack
+KS-SES-500,నువ్వుల నూనె,te,generic
+KS-SES-500,nuvvula nune,roman,generic
+KS-SES-500,gingelly oil,en,generic
+KS-SES-500,sesame oil,en,generic
+KS-SES-500,Konaseema sesame oil,en,brand
+KS-SES-500,కోనసీమ నువ్వుల నూనె,te,brand
+KS-SES-500,sesame oil 500 ml,en,pack
+KS-SES-1L,నువ్వుల నూనె,te,generic
+KS-SES-1L,nuvvula nune,roman,generic
+KS-SES-1L,gingelly oil,en,generic
+KS-SES-1L,sesame oil,en,generic
+KS-SES-1L,Konaseema sesame oil,en,brand
+KS-SES-1L,కోనసీమ నువ్వుల నూనె,te,brand
+KS-SES-1L,sesame oil 1 l,en,pack
+NN-COCO-200,కొబ్బరి నూనె,te,generic
+NN-COCO-200,kobbari nune,roman,generic
+NN-COCO-200,coconut oil,en,generic
+NN-COCO-200,Nellore Naturals coconut oil,en,brand
+NN-COCO-200,నెల్లూరు నేచురల్స్ కొబ్బరి నూనె,te,brand
+NN-COCO-200,coconut oil 200 ml,en,pack
+NN-COCO-500,కొబ్బరి నూనె,te,generic
+NN-COCO-500,kobbari nune,roman,generic
+NN-COCO-500,coconut oil,en,generic
+NN-COCO-500,Nellore Naturals coconut oil,en,brand
+NN-COCO-500,నెల్లూరు నేచురల్స్ కొబ్బరి నూనె,te,brand
+NN-COCO-500,coconut oil 500 ml,en,pack
+KS-SONA-25,సోనా మసూరి బియ్యం,te,generic
+KS-SONA-25,sona masoori biyyam,roman,generic
+KS-SONA-25,sona biyyam,roman,generic
+KS-SONA-25,Konaseema sona masoori rice,en,brand
+KS-SONA-25,కోనసీమ సోనా మసూరి బియ్యం,te,brand
+KS-SONA-25,sona masoori rice 25 kg,en,pack
+KS-SONA-10,సోనా మసూరి బియ్యం,te,generic
+KS-SONA-10,sona masoori biyyam,roman,generic
+KS-SONA-10,sona biyyam,roman,generic
+KS-SONA-10,Konaseema sona masoori rice,en,brand
+KS-SONA-10,కోనసీమ సోనా మసూరి బియ్యం,te,brand
+KS-SONA-10,sona masoori rice 10 kg,en,pack
+PF-BPT-25,బీపీటీ బియ్యం,te,generic
+PF-BPT-25,bpt biyyam,roman,generic
+PF-BPT-25,bpt rice,en,generic
+PF-BPT-25,Palnadu Farms bpt rice,en,brand
+PF-BPT-25,పల్నాడు ఫార్మ్స్ బీపీటీ బియ్యం,te,brand
+PF-BPT-25,bpt rice 25 kg,en,pack
+PF-BPT-10,బీపీటీ బియ్యం,te,generic
+PF-BPT-10,bpt biyyam,roman,generic
+PF-BPT-10,bpt rice,en,generic
+PF-BPT-10,Palnadu Farms bpt rice,en,brand
+PF-BPT-10,పల్నాడు ఫార్మ్స్ బీపీటీ బియ్యం,te,brand
+PF-BPT-10,bpt rice 10 kg,en,pack
+KF-IDLI-25,ఇడ్లీ బియ్యం,te,generic
+KF-IDLI-25,idli biyyam,roman,generic
+KF-IDLI-25,idli rice,en,generic
+KF-IDLI-25,Krishna Fresh idli rice,en,brand
+KF-IDLI-25,కృష్ణా ఫ్రెష్ ఇడ్లీ బియ్యం,te,brand
+KF-IDLI-25,idli rice 25 kg,en,pack
+DP-BASM-1,బాస్మతి బియ్యం,te,generic
+DP-BASM-1,basmati biyyam,roman,generic
+DP-BASM-1,basmati rice,en,generic
+DP-BASM-1,Deccan Pure basmati rice,en,brand
+DP-BASM-1,డెక్కన్ ప్యూర్ బాస్మతి బియ్యం,te,brand
+DP-BASM-1,basmati rice 1 kg,en,pack
+DP-BASM-5,బాస్మతి బియ్యం,te,generic
+DP-BASM-5,basmati biyyam,roman,generic
+DP-BASM-5,basmati rice,en,generic
+DP-BASM-5,Deccan Pure basmati rice,en,brand
+DP-BASM-5,డెక్కన్ ప్యూర్ బాస్మతి బియ్యం,te,brand
+DP-BASM-5,basmati rice 5 kg,en,pack
+PF-TOOR-1,కంది పప్పు,te,generic
+PF-TOOR-1,kandi pappu,roman,generic
+PF-TOOR-1,toor dal,en,generic
+PF-TOOR-1,Palnadu Farms toor dal,en,brand
+PF-TOOR-1,పల్నాడు ఫార్మ్స్ కంది పప్పు,te,brand
+PF-TOOR-1,toor dal 1 kg,en,pack
+PF-TOOR-500,కంది పప్పు,te,generic
+PF-TOOR-500,kandi pappu,roman,generic
+PF-TOOR-500,toor dal,en,generic
+PF-TOOR-500,Palnadu Farms toor dal,en,brand
+PF-TOOR-500,పల్నాడు ఫార్మ్స్ కంది పప్పు,te,brand
+PF-TOOR-500,toor dal 500 g,en,pack
+DP-TOOR-1,కంది పప్పు,te,generic
+DP-TOOR-1,kandi pappu,roman,generic
+DP-TOOR-1,toor dal,en,generic
+DP-TOOR-1,Deccan Pure toor dal,en,brand
+DP-TOOR-1,డెక్కన్ ప్యూర్ కంది పప్పు,te,brand
+DP-TOOR-1,toor dal 1 kg,en,pack
+PF-MOONG-1,పెసర పప్పు,te,generic
+PF-MOONG-1,pesara pappu,roman,generic
+PF-MOONG-1,moong dal,en,generic
+PF-MOONG-1,Palnadu Farms moong dal,en,brand
+PF-MOONG-1,పల్నాడు ఫార్మ్స్ పెసర పప్పు,te,brand
+PF-MOONG-1,moong dal 1 kg,en,pack
+PF-CHANA-1,శనగ పప్పు,te,generic
+PF-CHANA-1,senaga pappu,roman,generic
+PF-CHANA-1,chana dal,en,generic
+PF-CHANA-1,Palnadu Farms chana dal,en,brand
+PF-CHANA-1,పల్నాడు ఫార్మ్స్ శనగ పప్పు,te,brand
+PF-CHANA-1,chana dal 1 kg,en,pack
+PF-URAD-1,మినప పప్పు,te,generic
+PF-URAD-1,minapa pappu,roman,generic
+PF-URAD-1,urad dal,en,generic
+PF-URAD-1,Palnadu Farms urad dal,en,brand
+PF-URAD-1,పల్నాడు ఫార్మ్స్ మినప పప్పు,te,brand
+PF-URAD-1,urad dal 1 kg,en,pack
+PF-URAD-500,మినప పప్పు,te,generic
+PF-URAD-500,minapa pappu,roman,generic
+PF-URAD-500,urad dal,en,generic
+PF-URAD-500,Palnadu Farms urad dal,en,brand
+PF-URAD-500,పల్నాడు ఫార్మ్స్ మినప పప్పు,te,brand
+PF-URAD-500,urad dal 500 g,en,pack
+KF-SUGAR-1,చక్కెర,te,generic
+KF-SUGAR-1,పంచదార,te,generic
+KF-SUGAR-1,chakkera,roman,generic
+KF-SUGAR-1,panchadara,roman,generic
+KF-SUGAR-1,sugar,en,generic
+KF-SUGAR-1,Krishna Fresh sugar,en,brand
+KF-SUGAR-1,కృష్ణా ఫ్రెష్ చక్కెర,te,brand
+KF-SUGAR-1,sugar 1 kg,en,pack
+KF-SUGAR-5,చక్కెర,te,generic
+KF-SUGAR-5,పంచదార,te,generic
+KF-SUGAR-5,chakkera,roman,generic
+KF-SUGAR-5,panchadara,roman,generic
+KF-SUGAR-5,sugar,en,generic
+KF-SUGAR-5,Krishna Fresh sugar,en,brand
+KF-SUGAR-5,కృష్ణా ఫ్రెష్ చక్కెర,te,brand
+KF-SUGAR-5,sugar 5 kg,en,pack
+KF-SUGAR-50,చక్కెర,te,generic
+KF-SUGAR-50,పంచదార,te,generic
+KF-SUGAR-50,chakkera,roman,generic
+KF-SUGAR-50,panchadara,roman,generic
+KF-SUGAR-50,sugar,en,generic
+KF-SUGAR-50,Krishna Fresh sugar,en,brand
+KF-SUGAR-50,కృష్ణా ఫ్రెష్ చక్కెర,te,brand
+KF-SUGAR-50,sugar 50 kg bag,en,pack
+KF-ATTA-5,గోధుమ పిండి,te,generic
+KF-ATTA-5,godhuma pindi,roman,generic
+KF-ATTA-5,atta,en,generic
+KF-ATTA-5,Krishna Fresh wheat atta,en,brand
+KF-ATTA-5,కృష్ణా ఫ్రెష్ గోధుమ పిండి,te,brand
+KF-ATTA-5,wheat atta 5 kg,en,pack
+KF-ATTA-10,గోధుమ పిండి,te,generic
+KF-ATTA-10,godhuma pindi,roman,generic
+KF-ATTA-10,atta,en,generic
+KF-ATTA-10,Krishna Fresh wheat atta,en,brand
+KF-ATTA-10,కృష్ణా ఫ్రెష్ గోధుమ పిండి,te,brand
+KF-ATTA-10,wheat atta 10 kg,en,pack
+DP-ATTA-10,గోధుమ పిండి,te,generic
+DP-ATTA-10,godhuma pindi,roman,generic
+DP-ATTA-10,atta,en,generic
+DP-ATTA-10,Deccan Pure wheat atta,en,brand
+DP-ATTA-10,డెక్కన్ ప్యూర్ గోధుమ పిండి,te,brand
+DP-ATTA-10,wheat atta 10 kg,en,pack
+KF-RAVA-1,బొంబాయి రవ్వ,te,generic
+KF-RAVA-1,bombay ravva,roman,generic
+KF-RAVA-1,upma ravva,roman,generic
+KF-RAVA-1,sooji,en,generic
+KF-RAVA-1,Krishna Fresh bombay rava,en,brand
+KF-RAVA-1,కృష్ణా ఫ్రెష్ బొంబాయి రవ్వ,te,brand
+KF-RAVA-1,bombay rava 1 kg,en,pack
+KF-RAVA-500,బొంబాయి రవ్వ,te,generic
+KF-RAVA-500,bombay ravva,roman,generic
+KF-RAVA-500,upma ravva,roman,generic
+KF-RAVA-500,sooji,en,generic
+KF-RAVA-500,Krishna Fresh bombay rava,en,brand
+KF-RAVA-500,కృష్ణా ఫ్రెష్ బొంబాయి రవ్వ,te,brand
+KF-RAVA-500,bombay rava 500 g,en,pack
+KF-IRAVA-1,ఇడ్లీ రవ్వ,te,generic
+KF-IRAVA-1,idli ravva,roman,generic
+KF-IRAVA-1,idli rava,en,generic
+KF-IRAVA-1,Krishna Fresh idli rava,en,brand
+KF-IRAVA-1,కృష్ణా ఫ్రెష్ ఇడ్లీ రవ్వ,te,brand
+KF-IRAVA-1,idli rava 1 kg,en,pack
+KF-SALT-1,ఉప్పు,te,generic
+KF-SALT-1,uppu,roman,generic
+KF-SALT-1,salt,en,generic
+KF-SALT-1,Krishna Fresh salt,en,brand
+KF-SALT-1,కృష్ణా ఫ్రెష్ ఉప్పు,te,brand
+KF-SALT-1,salt 1 kg,en,pack
+DP-SALT-1,ఉప్పు,te,generic
+DP-SALT-1,uppu,roman,generic
+DP-SALT-1,salt,en,generic
+DP-SALT-1,Deccan Pure salt,en,brand
+DP-SALT-1,డెక్కన్ ప్యూర్ ఉప్పు,te,brand
+DP-SALT-1,salt 1 kg,en,pack
+PF-JAG-1,బెల్లం,te,generic
+PF-JAG-1,bellam,roman,generic
+PF-JAG-1,jaggery,en,generic
+PF-JAG-1,Palnadu Farms jaggery,en,brand
+PF-JAG-1,పల్నాడు ఫార్మ్స్ బెల్లం,te,brand
+PF-JAG-1,jaggery 1 kg,en,pack
+PF-TAM-1,చింతపండు,te,generic
+PF-TAM-1,chintapandu,roman,generic
+PF-TAM-1,tamarind,en,generic
+PF-TAM-1,Palnadu Farms tamarind,en,brand
+PF-TAM-1,పల్నాడు ఫార్మ్స్ చింతపండు,te,brand
+PF-TAM-1,tamarind 1 kg,en,pack
+PF-TAM-500,చింతపండు,te,generic
+PF-TAM-500,chintapandu,roman,generic
+PF-TAM-500,tamarind,en,generic
+PF-TAM-500,Palnadu Farms tamarind,en,brand
+PF-TAM-500,పల్నాడు ఫార్మ్స్ చింతపండు,te,brand
+PF-TAM-500,tamarind 500 g,en,pack
+KF-POHA-1,అటుకులు,te,generic
+KF-POHA-1,atukulu,roman,generic
+KF-POHA-1,poha,en,generic
+KF-POHA-1,Krishna Fresh poha,en,brand
+KF-POHA-1,కృష్ణా ఫ్రెష్ అటుకులు,te,brand
+KF-POHA-1,poha 1 kg,en,pack
+KF-POHA-500,అటుకులు,te,generic
+KF-POHA-500,atukulu,roman,generic
+KF-POHA-500,poha,en,generic
+KF-POHA-500,Krishna Fresh poha,en,brand
+KF-POHA-500,కృష్ణా ఫ్రెష్ అటుకులు,te,brand
+KF-POHA-500,poha 500 g,en,pack
+KK-TURM-100,పసుపు,te,generic
+KK-TURM-100,pasupu,roman,generic
+KK-TURM-100,turmeric,en,generic
+KK-TURM-100,Kakatiya turmeric powder,en,brand
+KK-TURM-100,కాకతీయ పసుపు,te,brand
+KK-TURM-100,turmeric powder 100 g,en,pack
+KK-TURM-200,పసుపు,te,generic
+KK-TURM-200,pasupu,roman,generic
+KK-TURM-200,turmeric,en,generic
+KK-TURM-200,Kakatiya turmeric powder,en,brand
+KK-TURM-200,కాకతీయ పసుపు,te,brand
+KK-TURM-200,turmeric powder 200 g,en,pack
+KK-CHILLI-100,కారం,te,generic
+KK-CHILLI-100,karam,roman,generic
+KK-CHILLI-100,kaaram podi,roman,generic
+KK-CHILLI-100,chilli powder,en,generic
+KK-CHILLI-100,Kakatiya chilli powder,en,brand
+KK-CHILLI-100,కాకతీయ కారం,te,brand
+KK-CHILLI-100,chilli powder 100 g,en,pack
+KK-CHILLI-500,కారం,te,generic
+KK-CHILLI-500,karam,roman,generic
+KK-CHILLI-500,kaaram podi,roman,generic
+KK-CHILLI-500,chilli powder,en,generic
+KK-CHILLI-500,Kakatiya chilli powder,en,brand
+KK-CHILLI-500,కాకతీయ కారం,te,brand
+KK-CHILLI-500,chilli powder 500 g,en,pack
+KK-CHILLI-1K,కారం,te,generic
+KK-CHILLI-1K,karam,roman,generic
+KK-CHILLI-1K,kaaram podi,roman,generic
+KK-CHILLI-1K,chilli powder,en,generic
+KK-CHILLI-1K,Kakatiya chilli powder,en,brand
+KK-CHILLI-1K,కాకతీయ కారం,te,brand
+KK-CHILLI-1K,chilli powder 1 kg,en,pack
+KK-CORI-200,ధనియాల పొడి,te,generic
+KK-CORI-200,dhaniyala podi,roman,generic
+KK-CORI-200,coriander powder,en,generic
+KK-CORI-200,Kakatiya coriander powder,en,brand
+KK-CORI-200,కాకతీయ ధనియాల పొడి,te,brand
+KK-CORI-200,coriander powder 200 g,en,pack
+KK-SAMBAR-100,సాంబార్ పొడి,te,generic
+KK-SAMBAR-100,sambar podi,roman,generic
+KK-SAMBAR-100,sambar powder,en,generic
+KK-SAMBAR-100,Kakatiya sambar powder,en,brand
+KK-SAMBAR-100,కాకతీయ సాంబార్ పొడి,te,brand
+KK-SAMBAR-100,sambar powder 100 g,en,pack
+KK-RASAM-100,రసం పొడి,te,generic
+KK-RASAM-100,rasam podi,roman,generic
+KK-RASAM-100,rasam powder,en,generic
+KK-RASAM-100,Kakatiya rasam powder,en,brand
+KK-RASAM-100,కాకతీయ రసం పొడి,te,brand
+KK-RASAM-100,rasam powder 100 g,en,pack
+DP-TEA-250,టీ పొడి,te,generic
+DP-TEA-250,tea podi,roman,generic
+DP-TEA-250,chai podi,roman,generic
+DP-TEA-250,tea powder,en,generic
+DP-TEA-250,Deccan Pure tea powder,en,brand
+DP-TEA-250,డెక్కన్ ప్యూర్ టీ పొడి,te,brand
+DP-TEA-250,tea powder 250 g,en,pack
+DP-TEA-500,టీ పొడి,te,generic
+DP-TEA-500,tea podi,roman,generic
+DP-TEA-500,chai podi,roman,generic
+DP-TEA-500,tea powder,en,generic
+DP-TEA-500,Deccan Pure tea powder,en,brand
+DP-TEA-500,డెక్కన్ ప్యూర్ టీ పొడి,te,brand
+DP-TEA-500,tea powder 500 g,en,pack
+DP-TEA-1K,టీ పొడి,te,generic
+DP-TEA-1K,tea podi,roman,generic
+DP-TEA-1K,chai podi,roman,generic
+DP-TEA-1K,tea powder,en,generic
+DP-TEA-1K,Deccan Pure tea powder,en,brand
+DP-TEA-1K,డెక్కన్ ప్యూర్ టీ పొడి,te,brand
+DP-TEA-1K,tea powder 1 kg,en,pack
+KF-TEA-250,టీ పొడి,te,generic
+KF-TEA-250,tea podi,roman,generic
+KF-TEA-250,chai podi,roman,generic
+KF-TEA-250,tea powder,en,generic
+KF-TEA-250,Krishna Fresh tea powder,en,brand
+KF-TEA-250,కృష్ణా ఫ్రెష్ టీ పొడి,te,brand
+KF-TEA-250,tea powder 250 g,en,pack
+DP-COFFEE-200,కాఫీ పొడి,te,generic
+DP-COFFEE-200,coffee podi,roman,generic
+DP-COFFEE-200,filter coffee,en,generic
+DP-COFFEE-200,Deccan Pure filter coffee,en,brand
+DP-COFFEE-200,డెక్కన్ ప్యూర్ కాఫీ పొడి,te,brand
+DP-COFFEE-200,filter coffee 200 g,en,pack
+DP-COFFEE-500,కాఫీ పొడి,te,generic
+DP-COFFEE-500,coffee podi,roman,generic
+DP-COFFEE-500,filter coffee,en,generic
+DP-COFFEE-500,Deccan Pure filter coffee,en,brand
+DP-COFFEE-500,డెక్కన్ ప్యూర్ కాఫీ పొడి,te,brand
+DP-COFFEE-500,filter coffee 500 g,en,pack
+GG-BISC-GLU,గ్లూకోజ్ బిస్కెట్లు,te,generic
+GG-BISC-GLU,glucose biscuits,en,generic
+GG-BISC-GLU,Godavari Gold glucose biscuits,en,brand
+GG-BISC-GLU,గోదావరి గోల్డ్ గ్లూకోజ్ బిస్కెట్లు,te,brand
+GG-BISC-GLU,glucose biscuits 100 g,en,pack
+GG-BISC-GLU-250,గ్లూకోజ్ బిస్కెట్లు,te,generic
+GG-BISC-GLU-250,glucose biscuits,en,generic
+GG-BISC-GLU-250,Godavari Gold glucose biscuits,en,brand
+GG-BISC-GLU-250,గోదావరి గోల్డ్ గ్లూకోజ్ బిస్కెట్లు,te,brand
+GG-BISC-GLU-250,glucose biscuits 250 g,en,pack
+GG-BISC-CRM,క్రీమ్ బిస్కెట్లు,te,generic
+GG-BISC-CRM,cream biscuits,en,generic
+GG-BISC-CRM,Godavari Gold cream biscuits,en,brand
+GG-BISC-CRM,గోదావరి గోల్డ్ క్రీమ్ బిస్కెట్లు,te,brand
+GG-BISC-CRM,cream biscuits 75 g,en,pack
+KF-BISC-MAR,మేరీ బిస్కెట్లు,te,generic
+KF-BISC-MAR,marie biscuits,en,generic
+KF-BISC-MAR,Krishna Fresh marie biscuits,en,brand
+KF-BISC-MAR,కృష్ణా ఫ్రెష్ మేరీ బిస్కెట్లు,te,brand
+KF-BISC-MAR,marie biscuits 100 g,en,pack
+KF-NOOD-70,నూడుల్స్,te,generic
+KF-NOOD-70,noodles,en,generic
+KF-NOOD-70,Krishna Fresh instant noodles,en,brand
+KF-NOOD-70,కృష్ణా ఫ్రెష్ నూడుల్స్,te,brand
+KF-NOOD-70,instant noodles 70 g,en,pack
+KF-NOOD-280,నూడుల్స్,te,generic
+KF-NOOD-280,noodles,en,generic
+KF-NOOD-280,Krishna Fresh instant noodles,en,brand
+KF-NOOD-280,కృష్ణా ఫ్రెష్ నూడుల్స్,te,brand
+KF-NOOD-280,instant noodles 280 g 4-pack,en,pack
+NN-SOAP-100,సబ్బు,te,generic
+NN-SOAP-100,sabbu,roman,generic
+NN-SOAP-100,snanam sabbu,roman,generic
+NN-SOAP-100,bath soap,en,generic
+NN-SOAP-100,Nellore Naturals bath soap,en,brand
+NN-SOAP-100,నెల్లూరు నేచురల్స్ సబ్బు,te,brand
+NN-SOAP-100,bath soap 100 g,en,pack
+NN-SOAP-NEEM-100,సబ్బు,te,generic
+NN-SOAP-NEEM-100,sabbu,roman,generic
+NN-SOAP-NEEM-100,snanam sabbu,roman,generic
+NN-SOAP-NEEM-100,bath soap,en,generic
+NN-SOAP-NEEM-100,Nellore Naturals bath soap,en,brand
+NN-SOAP-NEEM-100,నెల్లూరు నేచురల్స్ సబ్బు,te,brand
+NN-SOAP-NEEM-100,bath soap 100 g,en,pack
+NN-TOOTH-100,టూత్‌పేస్ట్,te,generic
+NN-TOOTH-100,toothpaste,en,generic
+NN-TOOTH-100,paste,roman,generic
+NN-TOOTH-100,Nellore Naturals toothpaste,en,brand
+NN-TOOTH-100,నెల్లూరు నేచురల్స్ టూత్‌పేస్ట్,te,brand
+NN-TOOTH-100,toothpaste 100 g,en,pack
+NN-TOOTH-200,టూత్‌పేస్ట్,te,generic
+NN-TOOTH-200,toothpaste,en,generic
+NN-TOOTH-200,paste,roman,generic
+NN-TOOTH-200,Nellore Naturals toothpaste,en,brand
+NN-TOOTH-200,నెల్లూరు నేచురల్స్ టూత్‌పేస్ట్,te,brand
+NN-TOOTH-200,toothpaste 200 g,en,pack
+NN-DET-500,బట్టల పొడి,te,generic
+NN-DET-500,battala podi,roman,generic
+NN-DET-500,washing powder,en,generic
+NN-DET-500,surf,roman,generic
+NN-DET-500,Nellore Naturals detergent powder,en,brand
+NN-DET-500,నెల్లూరు నేచురల్స్ బట్టల పొడి,te,brand
+NN-DET-500,detergent powder 500 g,en,pack
+NN-DET-1K,బట్టల పొడి,te,generic
+NN-DET-1K,battala podi,roman,generic
+NN-DET-1K,washing powder,en,generic
+NN-DET-1K,surf,roman,generic
+NN-DET-1K,Nellore Naturals detergent powder,en,brand
+NN-DET-1K,నెల్లూరు నేచురల్స్ బట్టల పొడి,te,brand
+NN-DET-1K,detergent powder 1 kg,en,pack
+NN-DET-4K,బట్టల పొడి,te,generic
+NN-DET-4K,battala podi,roman,generic
+NN-DET-4K,washing powder,en,generic
+NN-DET-4K,surf,roman,generic
+NN-DET-4K,Nellore Naturals detergent powder,en,brand
+NN-DET-4K,నెల్లూరు నేచురల్స్ బట్టల పొడి,te,brand
+NN-DET-4K,detergent powder 4 kg,en,pack
+NN-DBAR-250,బట్టల సబ్బు,te,generic
+NN-DBAR-250,battala sabbu,roman,generic
+NN-DBAR-250,washing bar,en,generic
+NN-DBAR-250,Nellore Naturals detergent bar,en,brand
+NN-DBAR-250,నెల్లూరు నేచురల్స్ బట్టల సబ్బు,te,brand
+NN-DBAR-250,detergent bar 250 g,en,pack
+NN-DISH-500,గిన్నెల లిక్విడ్,te,generic
+NN-DISH-500,ginnela liquid,roman,generic
+NN-DISH-500,dishwash liquid,en,generic
+NN-DISH-500,Nellore Naturals dishwash liquid,en,brand
+NN-DISH-500,నెల్లూరు నేచురల్స్ గిన్నెల లిక్విడ్,te,brand
+NN-DISH-500,dishwash liquid 500 ml,en,pack
+NN-DISHBAR-200,గిన్నెల సబ్బు,te,generic
+NN-DISHBAR-200,ginnela sabbu,roman,generic
+NN-DISHBAR-200,dishwash bar,en,generic
+NN-DISHBAR-200,Nellore Naturals dishwash bar,en,brand
+NN-DISHBAR-200,నెల్లూరు నేచురల్స్ గిన్నెల సబ్బు,te,brand
+NN-DISHBAR-200,dishwash bar 200 g,en,pack
+NN-FLOOR-500,ఫ్లోర్ క్లీనర్,te,generic
+NN-FLOOR-500,phenyl,roman,generic
+NN-FLOOR-500,floor cleaner,en,generic
+NN-FLOOR-500,Nellore Naturals floor cleaner,en,brand
+NN-FLOOR-500,నెల్లూరు నేచురల్స్ ఫ్లోర్ క్లీనర్,te,brand
+NN-FLOOR-500,floor cleaner 500 ml,en,pack
+NN-FLOOR-1L,ఫ్లోర్ క్లీనర్,te,generic
+NN-FLOOR-1L,phenyl,roman,generic
+NN-FLOOR-1L,floor cleaner,en,generic
+NN-FLOOR-1L,Nellore Naturals floor cleaner,en,brand
+NN-FLOOR-1L,నెల్లూరు నేచురల్స్ ఫ్లోర్ క్లీనర్,te,brand
+NN-FLOOR-1L,floor cleaner 1 l,en,pack
+KS-GHEE-200,నెయ్యి,te,generic
+KS-GHEE-200,neyyi,roman,generic
+KS-GHEE-200,ghee,en,generic
+KS-GHEE-200,Konaseema ghee,en,brand
+KS-GHEE-200,కోనసీమ నెయ్యి,te,brand
+KS-GHEE-200,ghee 200 ml,en,pack
+KS-GHEE-500,నెయ్యి,te,generic
+KS-GHEE-500,neyyi,roman,generic
+KS-GHEE-500,ghee,en,generic
+KS-GHEE-500,Konaseema ghee,en,brand
+KS-GHEE-500,కోనసీమ నెయ్యి,te,brand
+KS-GHEE-500,ghee 500 ml,en,pack
+KS-GHEE-1L,నెయ్యి,te,generic
+KS-GHEE-1L,neyyi,roman,generic
+KS-GHEE-1L,ghee,en,generic
+KS-GHEE-1L,Konaseema ghee,en,brand
+KS-GHEE-1L,కోనసీమ నెయ్యి,te,brand
+KS-GHEE-1L,ghee 1 l,en,pack
+DP-MILK-500,పాల పొడి,te,generic
+DP-MILK-500,paala podi,roman,generic
+DP-MILK-500,milk powder,en,generic
+DP-MILK-500,Deccan Pure milk powder,en,brand
+DP-MILK-500,డెక్కన్ ప్యూర్ పాల పొడి,te,brand
+DP-MILK-500,milk powder 500 g,en,pack
+DP-MILK-1K,పాల పొడి,te,generic
+DP-MILK-1K,paala podi,roman,generic
+DP-MILK-1K,milk powder,en,generic
+DP-MILK-1K,Deccan Pure milk powder,en,brand
+DP-MILK-1K,డెక్కన్ ప్యూర్ పాల పొడి,te,brand
+DP-MILK-1K,milk powder 1 kg,en,pack

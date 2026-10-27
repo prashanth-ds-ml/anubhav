@@ -43,7 +43,10 @@ uv run pytest -q                                    # unit tests (mock mode, no 
 
 ## Repository layout
 ```
-src/order_agent/      # Python package: db/ (fictional SQLite simulator), llm.py (Muse + mock adapter)
+src/order_agent/      # Python package: db/ (SQLite simulator), pricing.py (reference quote engine), llm.py (Muse + mock adapter)
+datasets/business/    # fictional distributor ERP as CSV (source of truth); hidden/ = shop slang the agent must learn
+datasets/tasks/       # 48-task benchmark (32 dev / 16 held-out)
+scripts/data/         # build_db.py: CSV -> data/business.db
 scripts/smoke/        # Day-1 capability tests against the Meta Model API
 tests/                # pytest (mock mode, no API credits)
 artifacts/smoke/      # raw smoke-test results (evidence)

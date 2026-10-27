@@ -1,0 +1,18 @@
+id,name,city,tier,active,credit_status,payment_terms,credit_limit_rs,outstanding_rs
+C-001,Ravi Traders,Vijayawada,gold,1,ok,net15,300000,42000
+C-002,Lakshmi Kirana,Guntur,silver,1,ok,net7,100000,18000
+C-003,Sri Venkateswara Stores,Vijayawada,gold,1,ok,net15,250000,0
+C-004,Ganesh General Stores,Tenali,bronze,1,ok,cash,0,0
+C-005,Padma Provisions,Guntur,silver,1,watch,net7,80000,71000
+C-006,Srinivasa Agencies,Eluru,gold,1,hold,net15,200000,215000
+C-007,Anjali Supermart,Vijayawada,silver,1,ok,net7,120000,9000
+C-008,Balaji Wholesale,Machilipatnam,gold,1,ok,net30,500000,150000
+C-009,Durga Traders,Vijayawada,bronze,1,ok,cash,0,0
+C-010,Kamala Stores,Tenali,silver,0,ok,net7,60000,0
+C-011,Sai Ram Kirana,Guntur,bronze,1,ok,cash,0,0
+C-012,Vijaya Mart,Ongole,silver,1,ok,net7,90000,12000
+C-013,Raju & Sons,Vijayawada,gold,1,ok,net15,350000,60000
+C-014,Annapurna Stores,Eluru,bronze,1,watch,cash,0,0
+C-015,Ravi Kumar Provisions,Guntur,silver,1,ok,net7,70000,5000
+C-016,Lakshmi Ganapathi Stores,Vijayawada,silver,1,ok,net7,110000,104000
+C-017,Sri Sai Traders,Tenali,gold,1,ok,net15,220000,30000

@@ -1,0 +1,85 @@
+sku,name,brand,type,variant,category,pack_size,size_value,size_unit,units_per_case,gst_rate_pct,mrp_rs,active
+GG-SUN-500,Godavari Gold Sunflower Oil 500 ml,Godavari Gold,sunflower oil,,edible oil,500 ml,500,ml,24,5,88,1
+GG-SUN-1L,Godavari Gold Sunflower Oil 1 L,Godavari Gold,sunflower oil,,edible oil,1 L,1,L,12,5,171,1
+GG-SUN-5L,Godavari Gold Sunflower Oil 5 L,Godavari Gold,sunflower oil,,edible oil,5 L,5,L,4,5,826,1
+GG-SUN-15L,Godavari Gold Sunflower Oil 15 L tin,Godavari Gold,sunflower oil,tin,edible oil,15 L tin,15,L,1,5,2419,1
+DP-SUN-1L,Deccan Pure Sunflower Oil 1 L,Deccan Pure,sunflower oil,,edible oil,1 L,1,L,12,5,165,1
+DP-SUN-5L,Deccan Pure Sunflower Oil 5 L,Deccan Pure,sunflower oil,,edible oil,5 L,5,L,4,5,802,1
+DP-SUN-15L,Deccan Pure Sunflower Oil 15 L tin,Deccan Pure,sunflower oil,tin,edible oil,15 L tin,15,L,1,5,2348,1
+GG-GNUT-1L,Godavari Gold Groundnut Oil 1 L,Godavari Gold,groundnut oil,,edible oil,1 L,1,L,12,5,212,1
+GG-GNUT-5L,Godavari Gold Groundnut Oil 5 L,Godavari Gold,groundnut oil,,edible oil,5 L,5,L,4,5,1027,1
+GG-GNUT-15L,Godavari Gold Groundnut Oil 15 L tin,Godavari Gold,groundnut oil,tin,edible oil,15 L tin,15,L,1,5,3021,1
+KF-PALM-1L,Krishna Fresh Palmolein Oil 1 L,Krishna Fresh,palmolein oil,,edible oil,1 L,1,L,12,5,130,1
+KF-PALM-15L,Krishna Fresh Palmolein Oil 15 L tin,Krishna Fresh,palmolein oil,tin,edible oil,15 L tin,15,L,1,5,1841,1
+NN-RBO-1L,Nellore Naturals Rice Bran Oil 1 L,Nellore Naturals,rice bran oil,,edible oil,1 L,1,L,12,5,159,1
+KS-SES-500,Konaseema Sesame Oil 500 ml,Konaseema,sesame oil,,edible oil,500 ml,500,ml,24,5,177,1
+KS-SES-1L,Konaseema Sesame Oil 1 L,Konaseema,sesame oil,,edible oil,1 L,1,L,12,5,342,1
+NN-COCO-200,Nellore Naturals Coconut Oil 200 ml,Nellore Naturals,coconut oil,,personal care,200 ml,200,ml,48,18,83,1
+NN-COCO-500,Nellore Naturals Coconut Oil 500 ml,Nellore Naturals,coconut oil,,personal care,500 ml,500,ml,24,18,195,1
+KS-SONA-25,Konaseema Sona Masoori Rice 25 kg,Konaseema,sona masoori rice,,rice,25 kg,25,kg,1,5,1711,1
+KS-SONA-10,Konaseema Sona Masoori Rice 10 kg,Konaseema,sona masoori rice,,rice,10 kg,10,kg,2,5,720,1
+PF-BPT-25,Palnadu Farms Bpt Rice 25 kg,Palnadu Farms,bpt rice,,rice,25 kg,25,kg,1,5,1593,1
+PF-BPT-10,Palnadu Farms Bpt Rice 10 kg,Palnadu Farms,bpt rice,,rice,10 kg,10,kg,2,5,673,1
+KF-IDLI-25,Krishna Fresh Idli Rice 25 kg,Krishna Fresh,idli rice,,rice,25 kg,25,kg,1,5,1298,1
+DP-BASM-1,Deccan Pure Basmati Rice 1 kg,Deccan Pure,basmati rice,,rice,1 kg,1,kg,10,5,153,1
+DP-BASM-5,Deccan Pure Basmati Rice 5 kg,Deccan Pure,basmati rice,,rice,5 kg,5,kg,4,5,708,1
+PF-TOOR-1,Palnadu Farms Toor Dal 1 kg,Palnadu Farms,toor dal,,pulses,1 kg,1,kg,20,5,189,1
+PF-TOOR-500,Palnadu Farms Toor Dal 500 g,Palnadu Farms,toor dal,,pulses,500 g,500,g,40,5,98,1
+DP-TOOR-1,Deccan Pure Toor Dal 1 kg,Deccan Pure,toor dal,,pulses,1 kg,1,kg,20,5,182,1
+PF-MOONG-1,Palnadu Farms Moong Dal 1 kg,Palnadu Farms,moong dal,,pulses,1 kg,1,kg,20,5,153,1
+PF-CHANA-1,Palnadu Farms Chana Dal 1 kg,Palnadu Farms,chana dal,,pulses,1 kg,1,kg,20,5,112,1
+PF-URAD-1,Palnadu Farms Urad Dal 1 kg,Palnadu Farms,urad dal,,pulses,1 kg,1,kg,20,5,165,1
+PF-URAD-500,Palnadu Farms Urad Dal 500 g,Palnadu Farms,urad dal,,pulses,500 g,500,g,40,5,86,1
+KF-SUGAR-1,Krishna Fresh Sugar 1 kg,Krishna Fresh,sugar,,staples,1 kg,1,kg,30,5,53,1
+KF-SUGAR-5,Krishna Fresh Sugar 5 kg,Krishna Fresh,sugar,,staples,5 kg,5,kg,6,5,260,1
+KF-SUGAR-50,Krishna Fresh Sugar 50 kg bag,Krishna Fresh,sugar,bag,staples,50 kg bag,50,kg,1,5,2537,1
+KF-ATTA-5,Krishna Fresh Wheat Atta 5 kg,Krishna Fresh,wheat atta,,staples,5 kg,5,kg,4,5,260,1
+KF-ATTA-10,Krishna Fresh Wheat Atta 10 kg,Krishna Fresh,wheat atta,,staples,10 kg,10,kg,2,5,496,1
+DP-ATTA-10,Deccan Pure Wheat Atta 10 kg,Deccan Pure,wheat atta,,staples,10 kg,10,kg,2,5,519,1
+KF-RAVA-1,Krishna Fresh Bombay Rava 1 kg,Krishna Fresh,bombay rava,,staples,1 kg,1,kg,25,5,53,1
+KF-RAVA-500,Krishna Fresh Bombay Rava 500 g,Krishna Fresh,bombay rava,,staples,500 g,500,g,50,5,28,1
+KF-IRAVA-1,Krishna Fresh Idli Rava 1 kg,Krishna Fresh,idli rava,,staples,1 kg,1,kg,25,5,57,1
+KF-SALT-1,Krishna Fresh Salt 1 kg,Krishna Fresh,salt,,staples,1 kg,1,kg,50,0,24,1
+DP-SALT-1,Deccan Pure Salt 1 kg,Deccan Pure,salt,,staples,1 kg,1,kg,50,0,26,1
+PF-JAG-1,Palnadu Farms Jaggery 1 kg,Palnadu Farms,jaggery,,staples,1 kg,1,kg,20,5,77,1
+PF-TAM-1,Palnadu Farms Tamarind 1 kg,Palnadu Farms,tamarind,,staples,1 kg,1,kg,20,5,201,1
+PF-TAM-500,Palnadu Farms Tamarind 500 g,Palnadu Farms,tamarind,,staples,500 g,500,g,40,5,104,1
+KF-POHA-1,Krishna Fresh Poha 1 kg,Krishna Fresh,poha,,staples,1 kg,1,kg,25,5,65,1
+KF-POHA-500,Krishna Fresh Poha 500 g,Krishna Fresh,poha,,staples,500 g,500,g,50,5,34,1
+KK-TURM-100,Kakatiya Turmeric Powder 100 g,Kakatiya,turmeric powder,,spices,100 g,100,g,100,5,28,1
+KK-TURM-200,Kakatiya Turmeric Powder 200 g,Kakatiya,turmeric powder,,spices,200 g,200,g,50,5,53,1
+KK-CHILLI-100,Kakatiya Chilli Powder 100 g,Kakatiya,chilli powder,,spices,100 g,100,g,100,5,35,1
+KK-CHILLI-500,Kakatiya Chilli Powder 500 g,Kakatiya,chilli powder,,spices,500 g,500,g,24,5,165,1
+KK-CHILLI-1K,Kakatiya Chilli Powder 1 kg,Kakatiya,chilli powder,,spices,1 kg,1,kg,12,5,319,1
+KK-CORI-200,Kakatiya Coriander Powder 200 g,Kakatiya,coriander powder,,spices,200 g,200,g,50,5,41,1
+KK-SAMBAR-100,Kakatiya Sambar Powder 100 g,Kakatiya,sambar powder,,spices,100 g,100,g,100,5,53,1
+KK-RASAM-100,Kakatiya Rasam Powder 100 g,Kakatiya,rasam powder,,spices,100 g,100,g,100,5,51,1
+DP-TEA-250,Deccan Pure Tea Powder 250 g,Deccan Pure,tea powder,,beverages,250 g,250,g,40,5,130,1
+DP-TEA-500,Deccan Pure Tea Powder 500 g,Deccan Pure,tea powder,,beverages,500 g,500,g,24,5,254,1
+DP-TEA-1K,Deccan Pure Tea Powder 1 kg,Deccan Pure,tea powder,,beverages,1 kg,1,kg,12,5,496,1
+KF-TEA-250,Krishna Fresh Tea Powder 250 g,Krishna Fresh,tea powder,,beverages,250 g,250,g,40,5,118,1
+DP-COFFEE-200,Deccan Pure Filter Coffee 200 g,Deccan Pure,filter coffee,,beverages,200 g,200,g,40,5,165,1
+DP-COFFEE-500,Deccan Pure Filter Coffee 500 g,Deccan Pure,filter coffee,,beverages,500 g,500,g,24,5,401,1
+GG-BISC-GLU,Godavari Gold Glucose Biscuits 100 g,Godavari Gold,glucose biscuits,,snacks,100 g,100,g,120,18,12,1
+GG-BISC-GLU-250,Godavari Gold Glucose Biscuits 250 g,Godavari Gold,glucose biscuits,,snacks,250 g,250,g,48,18,30,1
+GG-BISC-CRM,Godavari Gold Cream Biscuits 75 g,Godavari Gold,cream biscuits,,snacks,75 g,75,g,96,18,24,1
+KF-BISC-MAR,Krishna Fresh Marie Biscuits 100 g,Krishna Fresh,marie biscuits,,snacks,100 g,100,g,120,18,14,1
+KF-NOOD-70,Krishna Fresh Instant Noodles 70 g,Krishna Fresh,instant noodles,,snacks,70 g,70,g,96,18,15,1
+KF-NOOD-280,Krishna Fresh Instant Noodles 280 g 4-pack,Krishna Fresh,instant noodles,4-pack,snacks,280 g 4-pack,280,g,24,18,59,1
+NN-SOAP-100,Nellore Naturals Bath Soap Sandal 100 g,Nellore Naturals,bath soap,sandal,personal care,100 g,100,g,144,18,35,1
+NN-SOAP-NEEM-100,Nellore Naturals Bath Soap Neem 100 g,Nellore Naturals,bath soap,neem,personal care,100 g,100,g,144,18,34,1
+NN-TOOTH-100,Nellore Naturals Toothpaste 100 g,Nellore Naturals,toothpaste,,personal care,100 g,100,g,72,18,71,1
+NN-TOOTH-200,Nellore Naturals Toothpaste 200 g,Nellore Naturals,toothpaste,,personal care,200 g,200,g,36,18,130,1
+NN-DET-500,Nellore Naturals Detergent Powder 500 g,Nellore Naturals,detergent powder,,home care,500 g,500,g,40,18,55,1
+NN-DET-1K,Nellore Naturals Detergent Powder 1 kg,Nellore Naturals,detergent powder,,home care,1 kg,1,kg,20,18,106,1
+NN-DET-4K,Nellore Naturals Detergent Powder 4 kg,Nellore Naturals,detergent powder,,home care,4 kg,4,kg,5,18,401,1
+NN-DBAR-250,Nellore Naturals Detergent Bar 250 g,Nellore Naturals,detergent bar,,home care,250 g,250,g,60,18,30,1
+NN-DISH-500,Nellore Naturals Dishwash Liquid 500 ml,Nellore Naturals,dishwash liquid,,home care,500 ml,500,ml,24,18,118,1
+NN-DISHBAR-200,Nellore Naturals Dishwash Bar 200 g,Nellore Naturals,dishwash bar,,home care,200 g,200,g,72,18,24,1
+NN-FLOOR-500,Nellore Naturals Floor Cleaner 500 ml,Nellore Naturals,floor cleaner,,home care,500 ml,500,ml,24,18,59,1
+NN-FLOOR-1L,Nellore Naturals Floor Cleaner 1 L,Nellore Naturals,floor cleaner,,home care,1 L,1,L,12,18,106,1
+KS-GHEE-200,Konaseema Ghee 200 ml,Konaseema,ghee,,dairy,200 ml,200,ml,48,12,165,1
+KS-GHEE-500,Konaseema Ghee 500 ml,Konaseema,ghee,,dairy,500 ml,500,ml,24,12,401,1
+KS-GHEE-1L,Konaseema Ghee 1 L,Konaseema,ghee,,dairy,1 L,1,L,12,12,767,1
+DP-MILK-500,Deccan Pure Milk Powder 500 g,Deccan Pure,milk powder,,dairy,500 g,500,g,24,5,307,1
+DP-MILK-1K,Deccan Pure Milk Powder 1 kg,Deccan Pure,milk powder,,dairy,1 kg,1,kg,12,5,602,1
