@@ -4,7 +4,7 @@ pricing.precedence,Use the customer-specific price if one exists; otherwise the 
 discount.eligibility,"The tier discount applies when the line meets the tier's min_cases, the customer is active and credit_status is not 'hold'. It applies to standard and bulk prices, not to customer-specific prices."
 schemes.eligibility,"An active scheme gives free cases (buy_cases -> free_cases, repeated) when the business date is within its validity, the customer's tier is eligible and credit_status is not 'hold'. Free cases are added to the quote line at zero price."
 quantity.cases,"Quotes are in whole cases. Convert other units (pieces, dozens, kg, litres, bags, tins) to cases with the product's units and round up to the next whole case, noting the rounding on the line."
-product.defaults,"If the brand or size is not stated and the customer has bought that product type before, use the SKU from their most recent order of that type. Otherwise ask the operator to clarify; never guess."
+product.defaults,"If only one active SKU fits the request, use it. Otherwise, if the brand or size is not stated and the customer has bought that product type before, use the SKU from their most recent order of that type. Otherwise ask the operator to clarify; never guess."
 customer.ambiguity,"If a name matches more than one customer, ask which one; never guess."
 credit.hold,"Customers on credit hold may receive draft quotes, but with no discount or scheme, and the quote must carry a credit-hold warning."
 credit.limit,"For credit customers (not cash terms), warn when outstanding plus the quote total including GST exceeds the credit limit."

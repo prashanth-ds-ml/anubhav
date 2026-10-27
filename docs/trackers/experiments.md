@@ -8,11 +8,11 @@ tags: [tracker, experiments]
 ## Benchmark composition (target: 48)
 | Split | EN | TE | RT | MIX | Voice variants | Total |
 |---|---|---|---|---|---|---|
-| Dev | | | | | | 32 |
-| Held-out (locked) | | | | | | 16 |
+| Dev | 5 | 8 | 11 | 8 | 0 (later) | 32 |
+| Held-out (locked) | 3 | 4 | 5 | 4 | 0 (later) | 16 |
 | **Target** | 8 | 12 | 16 | 12 | ~8 | **48** |
 
-Locked held-out file: `evals/heldout.jsonl`. Its hash at lock time: ``
+Task file: `datasets/tasks/benchmark_v1.jsonl` (held-out = `split: heldout`). See `datasets/README.md`.
 
 ## Scenario coverage
 | Scenario type | # tasks |
@@ -54,3 +54,31 @@ Locked held-out file: `evals/heldout.jsonl`. Its hash at lock time: ``
 
 ---
 ## Experiment entries
+
+### EXP-001: Baseline B0, "is there anything worth fixing?" (pre-registered 2026-10-27, before running)
+- **Question:** Does a frozen Muse agent fail on enough realistic tasks, for reasons a harness can fix, to justify the self-improvement project?
+- **Setup:** `muse-spark-1.3`, temperature 0, the 8 simple tools in `scripts/eval/run_baseline.py`, a generic system prompt, **no** shop-specific hints. All 48 tasks × 2 repeats, fresh DB per run.
+- **Primary metric:** task success: one draft quote with exactly the expected customer and `(sku, cases)` lines; for clarify/no_quote tasks, no quote created. Reported as mean over repeats and as pass^2 (passes both runs).
+- **Secondary:** unsafe outcomes (a quote created when it should not be, or for the wrong customer), reply-language match, tool calls, cost and latency per task.
+- **Hypothesis:** dev success 65–85%. Failures cluster on hidden shop slang, plus some policy slips (schemes, credit, defaults) and reply-language drift.
+- **Decision rule (owner's thresholds, adopted 2026-10-27 while the run was in progress and before any results were seen):**
+  - **Below 85% mean success:** keep the self-improving agent idea; there is meaningful room for improvement.
+  - **85–95%:** investigate whether we can improve efficiency, reliability over repeats, or adaptation to changing tools.
+  - **Above 95%:** strongly consider pivoting to a different problem where Muse enables something genuinely new.
+  - **Qualifier:** the failures must be *harness-fixable* (missing shop knowledge, policy following, tool-use habits, reply language), not our own tool, grader or task-wording bugs. Bugs get fixed and re-run before applying the thresholds.
+- **Caveat:** this is arm B0 (8 tools, no retrieval problem). Tool discovery at 40 tools is tested separately on Day 4.
+- **Result (run 1, 2026-10-27, `artifacts/baseline/arm-core_v1_20261027_104331.json`):** mean success **80%** (dev 86%, held-out 69%); 38 tasks pass both repeats, 9 fail both, 1 flaky. Unsafe outcomes **0**. Reply language OK 99%. Cost $2.35 (96 runs), 6.9 tool calls and 19 s per run. English 100%, Telugu 83%, Roman 72%, mixed 75%.
+- **Failure analysis (all 10 failing tasks read by hand):**
+  - **Harness-fixable, missing shop knowledge (6):** D09, D15, D23, D29, H05, H10. Every one is hidden slang. Muse asked a clarifying question each time; it never guessed.
+  - **Our bugs (4), to fix before applying the rule:** D25, H09 (`find_customer` matched "Vijaya Mart" on the word "mart"); H12 (policy said "ask" even when only one SKU fits); H13 (task "noodles 10 cases" is genuinely ambiguous: 70 g vs 280 g).
+  - Everything else (units, discounts, bulk, schemes, credit, history defaults, negation, corrections, ambiguity) passed: Muse is strong at reasoning over tools and policies.
+- **Verdict:** not applied yet: re-run after the bug fixes (run 2).
+
+### EXP-002: 40 tools, direct (arm A) vs. Muse tool search (arm B) (pre-registered 2026-10-27, before running)
+- **Question:** Does going from 8 to 40 tools hurt success? Does Muse's built-in tool search (Responses API, every tool deferred in 8 namespaces) keep success while cutting input tokens?
+- **Setup:** same tasks, prompt, grader and repeats as EXP-001 run 2 (after the bug fixes). `core` = 8 tools, `a` = 40 tools passed directly (Chat Completions), `b` = 40 deferred tools + `{"type": "tool_search"}` (Responses API).
+- **Metrics:** task success (mean, pass^2), input tokens and cost per run, tool calls, namespaces loaded per search (from `tool_search_call.paths`).
+- **Already seen in a 2-task smoke test:** Muse's first search loaded 7–8 of the 8 namespaces at once, so retrieval may not be selective. If that holds, B saves little and "tool discovery" headroom has to come from the harness (namespace and tool descriptions, aliases), not from search alone.
+- **Hypothesis:** A ≈ core on success (40 schemas is small for Muse) with ~2× input tokens; B ≈ A on success with modest token savings.
+- **Result:** _pending_
+

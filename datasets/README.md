@@ -31,3 +31,7 @@ This is the headroom for the "learns through verified experience" claim: a froze
 - `expected.flags` and `expected.total_paise` are computed by the pricing engine, not by hand. `tests/test_benchmark.py` re-checks every task against the data: flags, totals, forbidden items, real ambiguity, history defaults, and that hidden terms really are hidden.
 
 A task passes when the agent's draft quote has exactly the expected `(sku, cases)` lines and flags, contains nothing forbidden, and uses the right customer. For `clarify` and `no_quote`, it passes when no quote is created and the operator is told why.
+
+## Changelog
+- **2026-10-27, after baseline run 1** (bugs found by reading every failure, see EXP-001): `product.defaults` policy now says to use the only SKU when just one fits (H12); H13 now says "noodles 70g" because "noodles" alone is genuinely ambiguous. Expected answers are unchanged.
+
