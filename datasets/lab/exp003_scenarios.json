@@ -1,0 +1,454 @@
+[
+ {
+  "id": "L1",
+  "lang": "roman",
+  "business_date": "2026-10-28",
+  "primary": {
+   "sku": "GG-SUN-1L",
+   "name": "Godavari Gold Sunflower Oil 1 L",
+   "gst_pct": 5.0,
+   "stock_cases": 8
+  },
+  "substitute": {
+   "sku": "DP-SUN-1L",
+   "name": "Deccan Pure Sunflower Oil 1 L",
+   "gst_pct": 5.0,
+   "stock_cases": 40,
+   "substitute_cases_per_primary_case": 1
+  },
+  "restock": {
+   "date": "2026-11-02",
+   "cases": 40
+  },
+  "requests": [
+   {
+    "customer_id": "C-008",
+    "name": "Balaji Wholesale",
+    "tier": "gold",
+    "credit_status": "ok",
+    "payment_terms": "net30",
+    "credit_limit_rs": 500000.0,
+    "outstanding_rs": 150000.0,
+    "requested_cases": 30,
+    "received_order": 1,
+    "case_price_rs": 1690.0,
+    "substitute_case_price_rs": 1680.0
+   },
+   {
+    "customer_id": "C-001",
+    "name": "Ravi Traders",
+    "tier": "gold",
+    "credit_status": "ok",
+    "payment_terms": "net15",
+    "credit_limit_rs": 300000.0,
+    "outstanding_rs": 42000.0,
+    "requested_cases": 12,
+    "received_order": 2,
+    "case_price_rs": 1740.0,
+    "substitute_case_price_rs": 1680.0
+   },
+   {
+    "customer_id": "C-007",
+    "name": "Anjali Supermart",
+    "tier": "silver",
+    "credit_status": "ok",
+    "payment_terms": "net7",
+    "credit_limit_rs": 120000.0,
+    "outstanding_rs": 9000.0,
+    "requested_cases": 6,
+    "received_order": 3,
+    "case_price_rs": 1740.0,
+    "substitute_case_price_rs": 1680.0
+   },
+   {
+    "customer_id": "C-009",
+    "name": "Durga Traders",
+    "tier": "bronze",
+    "credit_status": "ok",
+    "payment_terms": "cash",
+    "credit_limit_rs": 0.0,
+    "outstanding_rs": 0.0,
+    "requested_cases": 5,
+    "received_order": 4,
+    "case_price_rs": 1740.0,
+    "substitute_case_price_rs": 1680.0
+   }
+  ],
+  "instructions": [
+   "Balaji Wholesale vallu Deccan Pure teesukoru, substitute vaddu.",
+   "Durga Traders ki repu (Oct 29) delivery kavali, Nov 2 restock varaku aagaleru."
+  ],
+  "gold_constraints": {
+   "C-008": {
+    "no_substitute": true
+   },
+   "C-009": {
+    "deadline": "2026-10-29"
+   }
+  },
+  "design_note": "Shortage; one customer refuses substitutes; one cannot wait for the restock."
+ },
+ {
+  "id": "L2",
+  "lang": "te",
+  "business_date": "2026-10-28",
+  "primary": {
+   "sku": "PF-TOOR-1",
+   "name": "Palnadu Farms Toor Dal 1 kg",
+   "gst_pct": 5.0,
+   "stock_cases": 6
+  },
+  "substitute": {
+   "sku": "DP-TOOR-1",
+   "name": "Deccan Pure Toor Dal 1 kg",
+   "gst_pct": 5.0,
+   "stock_cases": 37,
+   "substitute_cases_per_primary_case": 1
+  },
+  "restock": {
+   "date": "2026-11-03",
+   "cases": 30
+  },
+  "requests": [
+   {
+    "customer_id": "C-013",
+    "name": "Raju & Sons",
+    "tier": "gold",
+    "credit_status": "ok",
+    "payment_terms": "net15",
+    "credit_limit_rs": 350000.0,
+    "outstanding_rs": 60000.0,
+    "requested_cases": 10,
+    "received_order": 1,
+    "case_price_rs": 3120.0,
+    "substitute_case_price_rs": 3080.0
+   },
+   {
+    "customer_id": "C-005",
+    "name": "Padma Provisions",
+    "tier": "silver",
+    "credit_status": "watch",
+    "payment_terms": "net7",
+    "credit_limit_rs": 80000.0,
+    "outstanding_rs": 71000.0,
+    "requested_cases": 4,
+    "received_order": 2,
+    "case_price_rs": 3200.0,
+    "substitute_case_price_rs": 3080.0
+   },
+   {
+    "customer_id": "C-016",
+    "name": "Lakshmi Ganapathi Stores",
+    "tier": "silver",
+    "credit_status": "ok",
+    "payment_terms": "net7",
+    "credit_limit_rs": 110000.0,
+    "outstanding_rs": 104000.0,
+    "requested_cases": 3,
+    "received_order": 3,
+    "case_price_rs": 3200.0,
+    "substitute_case_price_rs": 3080.0
+   },
+   {
+    "customer_id": "C-006",
+    "name": "Srinivasa Agencies",
+    "tier": "gold",
+    "credit_status": "hold",
+    "payment_terms": "net15",
+    "credit_limit_rs": 200000.0,
+    "outstanding_rs": 215000.0,
+    "requested_cases": 8,
+    "received_order": 4,
+    "case_price_rs": 3200.0,
+    "substitute_case_price_rs": 3080.0
+   }
+  ],
+  "instructions": [
+   "శ్రీనివాస ఏజెన్సీస్ వాళ్ళు బాకీ మొత్తం కట్టేశారు, హోల్డ్ తీసేయండి.",
+   "పద్మ ప్రొవిజన్స్ కి క్రెడిట్ లిమిట్ ఇంకో 10,000 రూపాయలు పెంచాం."
+  ],
+  "gold_constraints": {
+   "C-006": {
+    "hold_lifted": true,
+    "outstanding_rs": 0
+   },
+   "C-005": {
+    "credit_limit_add_rs": 10000
+   }
+  },
+  "design_note": "Credit limits bind; the instructions lift a hold and raise one limit."
+ },
+ {
+  "id": "L3",
+  "lang": "mixed",
+  "business_date": "2026-10-28",
+  "primary": {
+   "sku": "GG-SUN-15L",
+   "name": "Godavari Gold Sunflower Oil 15 L tin",
+   "gst_pct": 5.0,
+   "stock_cases": 17
+  },
+  "substitute": {
+   "sku": "DP-SUN-15L",
+   "name": "Deccan Pure Sunflower Oil 15 L tin",
+   "gst_pct": 5.0,
+   "stock_cases": 73,
+   "substitute_cases_per_primary_case": 1
+  },
+  "restock": null,
+  "requests": [
+   {
+    "customer_id": "C-017",
+    "name": "Sri Sai Traders",
+    "tier": "gold",
+    "credit_status": "ok",
+    "payment_terms": "net15",
+    "credit_limit_rs": 220000.0,
+    "outstanding_rs": 30000.0,
+    "requested_cases": 12,
+    "received_order": 1,
+    "case_price_rs": 2010.0,
+    "substitute_case_price_rs": 1990.0
+   },
+   {
+    "customer_id": "C-013",
+    "name": "Raju & Sons",
+    "tier": "gold",
+    "credit_status": "ok",
+    "payment_terms": "net15",
+    "credit_limit_rs": 350000.0,
+    "outstanding_rs": 60000.0,
+    "requested_cases": 9,
+    "received_order": 2,
+    "case_price_rs": 2050.0,
+    "substitute_case_price_rs": 1990.0
+   },
+   {
+    "customer_id": "C-003",
+    "name": "Sri Venkateswara Stores",
+    "tier": "gold",
+    "credit_status": "ok",
+    "payment_terms": "net15",
+    "credit_limit_rs": 250000.0,
+    "outstanding_rs": 0.0,
+    "requested_cases": 5,
+    "received_order": 3,
+    "case_price_rs": 2050.0,
+    "substitute_case_price_rs": 1990.0
+   },
+   {
+    "customer_id": "C-004",
+    "name": "Ganesh General Stores",
+    "tier": "bronze",
+    "credit_status": "ok",
+    "payment_terms": "cash",
+    "credit_limit_rs": 0.0,
+    "outstanding_rs": 0.0,
+    "requested_cases": 3,
+    "received_order": 4,
+    "case_price_rs": 2050.0,
+    "substitute_case_price_rs": 1990.0
+   }
+  ],
+  "instructions": [
+   "Venkateswara Stores order cancel cheyyandi.",
+   "Raju & Sons ki 9 kaadu, 14 tins kavali.",
+   "Sri Sai Traders ki Godavari Gold matrame, Deccan Pure vaddu."
+  ],
+  "gold_constraints": {
+   "C-003": {
+    "cancel": true
+   },
+   "C-013": {
+    "cases": 14
+   },
+   "C-017": {
+    "no_substitute": true
+   }
+  },
+  "design_note": "Instructions change in sequence: a cancellation, a quantity change, a no-substitute."
+ },
+ {
+  "id": "L4",
+  "lang": "roman",
+  "business_date": "2026-10-28",
+  "primary": {
+   "sku": "NN-SOAP-NEEM-100",
+   "name": "Nellore Naturals Bath Soap Neem 100 g",
+   "gst_pct": 18.0,
+   "stock_cases": 3
+  },
+  "substitute": {
+   "sku": "NN-SOAP-100",
+   "name": "Nellore Naturals Bath Soap Sandal 100 g",
+   "gst_pct": 18.0,
+   "stock_cases": 70,
+   "substitute_cases_per_primary_case": 1
+  },
+  "restock": {
+   "date": "2026-10-31",
+   "cases": 10
+  },
+  "requests": [
+   {
+    "customer_id": "C-003",
+    "name": "Sri Venkateswara Stores",
+    "tier": "gold",
+    "credit_status": "ok",
+    "payment_terms": "net15",
+    "credit_limit_rs": 250000.0,
+    "outstanding_rs": 0.0,
+    "requested_cases": 2,
+    "received_order": 1,
+    "case_price_rs": 4176.0,
+    "substitute_case_price_rs": 4320.0
+   },
+   {
+    "customer_id": "C-009",
+    "name": "Durga Traders",
+    "tier": "bronze",
+    "credit_status": "ok",
+    "payment_terms": "cash",
+    "credit_limit_rs": 0.0,
+    "outstanding_rs": 0.0,
+    "requested_cases": 2,
+    "received_order": 2,
+    "case_price_rs": 4176.0,
+    "substitute_case_price_rs": 4320.0
+   },
+   {
+    "customer_id": "C-004",
+    "name": "Ganesh General Stores",
+    "tier": "bronze",
+    "credit_status": "ok",
+    "payment_terms": "cash",
+    "credit_limit_rs": 0.0,
+    "outstanding_rs": 0.0,
+    "requested_cases": 2,
+    "received_order": 3,
+    "case_price_rs": 4176.0,
+    "substitute_case_price_rs": 4320.0
+   },
+   {
+    "customer_id": "C-001",
+    "name": "Ravi Traders",
+    "tier": "gold",
+    "credit_status": "ok",
+    "payment_terms": "net15",
+    "credit_limit_rs": 300000.0,
+    "outstanding_rs": 42000.0,
+    "requested_cases": 3,
+    "received_order": 4,
+    "case_price_rs": 4176.0,
+    "substitute_case_price_rs": 4320.0
+   }
+  ],
+  "instructions": [
+   "Ravi Traders ki neem sabbu full ga ivvandi, substitute vaddu, vallu adigindi neem e.",
+   "Ganesh General Stores ki Friday (Oct 30) lopu kavali."
+  ],
+  "gold_constraints": {
+   "C-001": {
+    "must_fill": true,
+    "no_substitute": true
+   },
+   "C-004": {
+    "deadline": "2026-10-30"
+   }
+  },
+  "design_note": "A late, lower-in-queue customer must be filled in full; another has a deadline before the restock."
+ },
+ {
+  "id": "L5",
+  "lang": "mixed",
+  "business_date": "2026-10-28",
+  "primary": {
+   "sku": "DP-BASM-5",
+   "name": "Deccan Pure Basmati Rice 5 kg",
+   "gst_pct": 5.0,
+   "stock_cases": 0
+  },
+  "substitute": {
+   "sku": "DP-BASM-1",
+   "name": "Deccan Pure Basmati Rice 1 kg",
+   "gst_pct": 5.0,
+   "stock_cases": 70,
+   "substitute_cases_per_primary_case": 2
+  },
+  "restock": {
+   "date": "2026-11-05",
+   "cases": 20
+  },
+  "requests": [
+   {
+    "customer_id": "C-007",
+    "name": "Anjali Supermart",
+    "tier": "silver",
+    "credit_status": "ok",
+    "payment_terms": "net7",
+    "credit_limit_rs": 120000.0,
+    "outstanding_rs": 9000.0,
+    "requested_cases": 4,
+    "received_order": 1,
+    "case_price_rs": 2400.0,
+    "substitute_case_price_rs": 1300.0
+   },
+   {
+    "customer_id": "C-012",
+    "name": "Vijaya Mart",
+    "tier": "silver",
+    "credit_status": "ok",
+    "payment_terms": "net7",
+    "credit_limit_rs": 90000.0,
+    "outstanding_rs": 12000.0,
+    "requested_cases": 6,
+    "received_order": 2,
+    "case_price_rs": 2400.0,
+    "substitute_case_price_rs": 1300.0
+   },
+   {
+    "customer_id": "C-002",
+    "name": "Lakshmi Kirana",
+    "tier": "silver",
+    "credit_status": "ok",
+    "payment_terms": "net7",
+    "credit_limit_rs": 100000.0,
+    "outstanding_rs": 18000.0,
+    "requested_cases": 5,
+    "received_order": 3,
+    "case_price_rs": 2400.0,
+    "substitute_case_price_rs": 1300.0
+   },
+   {
+    "customer_id": "C-016",
+    "name": "Lakshmi Ganapathi Stores",
+    "tier": "silver",
+    "credit_status": "ok",
+    "payment_terms": "net7",
+    "credit_limit_rs": 110000.0,
+    "outstanding_rs": 104000.0,
+    "requested_cases": 2,
+    "received_order": 4,
+    "case_price_rs": 2400.0,
+    "substitute_case_price_rs": 1300.0
+   }
+  ],
+  "instructions": [
+   "Vijaya Mart ki 5 kg bags matrame, 1 kg packets vaddu.",
+   "లక్ష్మి కిరాణా వాళ్ళు నవంబర్ 5 వరకు ఆగలేరు, ఈ వారం లోనే కావాలి (Oct 31 లోపు).",
+   "Lakshmi Ganapathi Stores order 2 kaadu, 3 cases cheyyandi."
+  ],
+  "gold_constraints": {
+   "C-012": {
+    "no_substitute": true
+   },
+   "C-002": {
+    "deadline": "2026-10-31"
+   },
+   "C-016": {
+    "cases": 3
+   }
+  },
+  "design_note": "Primary out of stock; substitute is a different pack (2 substitute cases = 1 primary case); a credit limit binds after a quantity change."
+ }
+]
