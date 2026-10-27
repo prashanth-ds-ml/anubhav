@@ -48,7 +48,7 @@ tags: [tracker, cost]
 | | | | | | | | | |
 
 ### Prices
-Fill in from Baseten once the open-weights model and deployment type are picked (per-token API vs. dedicated GPU).
+Model: always `meta-models/muse-spark-open-1026` (the hackathon override of `meta-models/muse-spark-open` in Baseten's docs), via the per-token Model API at `https://inference.baseten.co/v1`. Fill in per-token prices from Baseten.
 
 ## Partner credits
 | Partner | Amount | Status | Use |
