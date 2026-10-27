@@ -1,0 +1,111 @@
+{
+  "about": "EXP-006 customer B: a second, independent 3PL (Ramappa Carriers) in the same region as customer A (SVR Logistics, exp005_world.json). Same distributors, towns and written area rules; its own fleet, vendors, statuses and private nicknames. 'hidden' is ground truth no tool exposes; 'tasks[].gold' is never shown to the model. All names and numbers are fictional.",
+  "company": "Ramappa Carriers",
+  "now": "2026-10-27 06:00 IST",
+  "distributors": [
+    {"wd_id": "WD-HNK", "name": "Sai Ganesh Agencies", "town": "Hanamkonda", "area": "HNK", "aliases": ["Sai Ganesh", "SGA"], "receive_limit_rs": 10000000, "received_today_rs": 7000000},
+    {"wd_id": "WD-WGL", "name": "Venkata Sri Traders", "town": "Warangal", "area": "WGL", "aliases": ["Venkata Sri", "VST"], "receive_limit_rs": 15000000, "received_today_rs": 2000000},
+    {"wd_id": "WD-WG2", "name": "Sri Durga Distributors", "town": "Warangal", "area": "WGL", "aliases": ["Durga", "SDD"], "receive_limit_rs": 8000000, "received_today_rs": 1000000},
+    {"wd_id": "WD-KZP", "name": "Balaji Distributors", "town": "Kazipet", "area": "KZP", "aliases": ["Balaji"], "receive_limit_rs": 5000000, "received_today_rs": 0},
+    {"wd_id": "WD-KMM", "name": "Ravi Enterprises", "town": "Khammam", "area": "KMM", "aliases": ["Ravi"], "receive_limit_rs": 20000000, "received_today_rs": 3000000},
+    {"wd_id": "WD-JGN", "name": "Lakshmi Agencies", "town": "Jangaon", "area": "JGN", "aliases": ["Lakshmi"], "receive_limit_rs": 6000000, "received_today_rs": 0}
+  ],
+  "vehicle_types": {
+    "LCV": {"label": "LCV (Tata Ace)", "capacity_kg": 750},
+    "9MT": {"label": "9 MT truck", "capacity_kg": 9000},
+    "32FT": {"label": "32 ft container", "capacity_kg": 15000},
+    "36FT": {"label": "36 ft container", "capacity_kg": 20000}
+  },
+  "vehicles": [
+    {"vehicle_id": "B01", "reg_no": "TS03UM1101", "vendor": "Ramappa Carriers", "type": "36FT", "status": "available", "status_updated": "2026-10-27 05:30"},
+    {"vehicle_id": "B02", "reg_no": "TS03UM1102", "vendor": "Ramappa Carriers", "type": "36FT", "status": "maintenance", "status_updated": "2026-10-27 05:30"},
+    {"vehicle_id": "B03", "reg_no": "TS03UN3303", "vendor": "Ramappa Carriers", "type": "32FT", "status": "available", "status_updated": "2026-10-25 17:00"},
+    {"vehicle_id": "B04", "reg_no": "TS03UN3304", "vendor": "Ramappa Carriers", "type": "9MT", "status": "available", "status_updated": "2026-10-27 05:30"},
+    {"vehicle_id": "B05", "reg_no": "TS03UP5505", "vendor": "Bhavani Roadways", "type": "32FT", "status": "available", "status_updated": "2026-10-27 05:10"},
+    {"vehicle_id": "B06", "reg_no": "TS03UP5506", "vendor": "Bhavani Roadways", "type": "9MT", "status": "available", "status_updated": "2026-10-27 05:10"},
+    {"vehicle_id": "B07", "reg_no": "TS03UM1107", "vendor": "Ramappa Carriers", "type": "LCV", "status": "available", "status_updated": "2026-10-27 05:30"},
+    {"vehicle_id": "B08", "reg_no": "TS03UM1108", "vendor": "Ramappa Carriers", "type": "32FT", "status": "available", "status_updated": "2026-10-27 05:30"},
+    {"vehicle_id": "B09", "reg_no": "TS03UP5509", "vendor": "Bhavani Roadways", "type": "36FT", "status": "available", "status_updated": "2026-10-27 05:10"}
+  ],
+  "area_rules": {
+    "HNK": {"allowed_types": ["LCV", "9MT", "32FT", "36FT"], "note": "No restrictions."},
+    "WGL": {"allowed_types": ["LCV", "9MT", "32FT"], "note": "36 ft containers have no entry inside Warangal city limits."},
+    "KZP": {"allowed_types": ["LCV"], "note": "Narrow lanes near the railway colony: Tata Ace only."},
+    "KMM": {"allowed_types": ["LCV", "9MT", "32FT", "36FT"], "note": "No restrictions."},
+    "JGN": {"allowed_types": ["LCV", "9MT", "32FT", "36FT"], "note": "No restrictions."}
+  },
+  "transport_updates": [
+    {"time": "2026-10-26 20:30", "from": "Ramappa Carriers workshop", "text": "TS03UN3303 engine problem near Warangal ORR, workshop lo undi, 2 days pattochu."},
+    {"time": "2026-10-27 05:20", "from": "Bhavani Roadways", "text": "All Bhavani vehicles ready by 6 AM."}
+  ],
+  "existing_assignments": [
+    {"shipment_id": "SH-401", "wd_id": "WD-HNK", "vehicle_id": "B04", "assigned_at": "2026-10-26 22:00"}
+  ],
+  "policies": [
+    "The shipment's total weight (sum of cases x kg per case) must not exceed the vehicle's capacity.",
+    "Only use vehicle types allowed by the destination area's rules.",
+    "A vehicle carries one shipment per day: never assign a vehicle that already has an assignment today.",
+    "Only assign vehicles whose status is 'available'.",
+    "A distributor cannot receive more value per day than its receiving limit (received today + this shipment).",
+    "Follow the operator's instructions about vendor, vehicle type or a specific vehicle.",
+    "If no vehicle satisfies every rule, or the request is ambiguous, do not assign: explain why or ask the operator."
+  ],
+  "hidden": {
+    "vehicle_truth": {
+      "B03": {"usable": false, "reason": "stale_status", "note": "Engine problem 2026-10-26 20:30; status never updated."}
+    },
+    "area_truth": {
+      "JGN": {"allowed_types": ["LCV", "9MT"], "note": "Regional fact (same lane as for customer A): 32/36 ft lorries cannot turn."}
+    },
+    "aliases": {
+      "Pedda godown": {"wd_id": "WD-WGL", "note": "Regional: Warangal planners' name for Venkata Sri Traders' godown."},
+      "Chowrasta load": {"wd_id": "WD-HNK", "note": "Regional: Sai Ganesh Agencies' godown near Hanamkonda chowrasta."},
+      "pacha lorry": {"vehicle_id": "B05", "note": "B-private: the green Bhavani 32 ft."},
+      "Mama vallu": {"vendor": "Bhavani Roadways", "note": "B-private: planners call Bhavani's owner 'mama'."}
+    }
+  },
+  "tasks": [
+    {"id": "BC1", "category": "control", "lang": "en", "request": "Assign a vehicle for today's Khammam shipment (Ravi Enterprises).",
+     "shipments": [{"shipment_id": "SH-501", "wd_id": "WD-KMM", "value_rs": 3000000, "lines": [{"item": "Wheat atta 5 kg x 4", "cases": 700, "kg_per_case": 20}, {"item": "Sunflower oil 1 L x 10", "cases": 400, "kg_per_case": 10}]}],
+     "gold": {"action": "assign", "shipment_id": "SH-501", "vehicles": ["B01", "B09"]}},
+    {"id": "BC2", "category": "control", "lang": "rt", "request": "Hanamkonda Sai Ganesh shipment ki bandi assign cheyyi.",
+     "shipments": [{"shipment_id": "SH-502", "wd_id": "WD-HNK", "value_rs": 2000000, "lines": [{"item": "Soap 72 bars", "cases": 400, "kg_per_case": 9}, {"item": "Biscuits 24 packs", "cases": 400, "kg_per_case": 6}]}],
+     "gold": {"action": "assign", "shipment_id": "SH-502", "vehicles": ["B01", "B05", "B06", "B08", "B09"]}},
+    {"id": "BC3", "category": "control", "lang": "te", "request": "వరంగల్ వెంకట శ్రీ ట్రేడర్స్ షిప్మెంట్ కి ఈరోజు ఒక వెహికల్ assign చెయ్యి.",
+     "shipments": [{"shipment_id": "SH-503", "wd_id": "WD-WGL", "value_rs": 2500000, "lines": [{"item": "Wheat atta 5 kg x 4", "cases": 400, "kg_per_case": 20}, {"item": "Sunflower oil 1 L x 10", "cases": 400, "kg_per_case": 10}]}],
+     "gold": {"action": "assign", "shipment_id": "SH-503", "vehicles": ["B05", "B08"]}},
+    {"id": "BS1", "category": "strategy", "trap": "stale_status B03", "lang": "en", "request": "Assign a 32 ft truck for the Sri Durga Distributors Warangal shipment.",
+     "shipments": [{"shipment_id": "SH-504", "wd_id": "WD-WG2", "value_rs": 2000000, "lines": [{"item": "Soap 72 bars", "cases": 600, "kg_per_case": 9}, {"item": "Sunflower oil 1 L x 10", "cases": 460, "kg_per_case": 10}]}],
+     "gold": {"action": "assign", "shipment_id": "SH-504", "vehicles": ["B05", "B08"], "require_type": "32FT"}},
+    {"id": "BS2", "category": "strategy", "trap": "double_booked B04", "lang": "mix", "request": "Hanamkonda load ki 9 MT bandi pettu.",
+     "shipments": [{"shipment_id": "SH-505", "wd_id": "WD-HNK", "value_rs": 1500000, "lines": [{"item": "Biscuits 24 packs", "cases": 500, "kg_per_case": 6}, {"item": "Noodles 48 packs", "cases": 500, "kg_per_case": 4}]}],
+     "gold": {"action": "assign", "shipment_id": "SH-505", "vehicles": ["B06"], "require_type": "9MT"}},
+    {"id": "BS3", "category": "strategy", "trap": "area_rule (Kazipet LCV only; 1,400 kg)", "lang": "rt", "request": "Kazipet Balaji Distributors shipment ki bandi pettu.",
+     "shipments": [{"shipment_id": "SH-506", "wd_id": "WD-KZP", "value_rs": 500000, "lines": [{"item": "Biscuits 24 packs", "cases": 150, "kg_per_case": 6}, {"item": "Noodles 48 packs", "cases": 125, "kg_per_case": 4}]}],
+     "gold": {"action": "none"}},
+    {"id": "BR1", "category": "regional", "trap": "regional alias 'Pedda godown' = WD-WGL", "lang": "rt", "request": "Pedda godown load ki bandi pettu.",
+     "shipments": [{"shipment_id": "SH-507", "wd_id": "WD-WGL", "value_rs": 2000000, "lines": [{"item": "Wheat atta 5 kg x 4", "cases": 350, "kg_per_case": 20}, {"item": "Sunflower oil 1 L x 10", "cases": 300, "kg_per_case": 10}]},
+                   {"shipment_id": "SH-508", "wd_id": "WD-KMM", "value_rs": 1200000, "lines": [{"item": "Sunflower oil 1 L x 10", "cases": 600, "kg_per_case": 10}]}],
+     "gold": {"action": "assign", "shipment_id": "SH-507", "vehicles": ["B05", "B08"]}},
+    {"id": "BR2", "category": "regional", "trap": "regional alias 'Chowrasta load' = WD-HNK", "lang": "rt", "request": "Chowrasta load ki bandi pettu.",
+     "shipments": [{"shipment_id": "SH-509", "wd_id": "WD-HNK", "value_rs": 1800000, "lines": [{"item": "Wheat atta 5 kg x 4", "cases": 250, "kg_per_case": 20}, {"item": "Sunflower oil 1 L x 10", "cases": 200, "kg_per_case": 10}]},
+                   {"shipment_id": "SH-510", "wd_id": "WD-JGN", "value_rs": 1500000, "lines": [{"item": "Soap 72 bars", "cases": 500, "kg_per_case": 9}, {"item": "Biscuits 24 packs", "cases": 75, "kg_per_case": 6}]}],
+     "gold": {"action": "assign", "shipment_id": "SH-509", "vehicles": ["B01", "B05", "B06", "B08", "B09"]}},
+    {"id": "BR3", "category": "regional", "trap": "regional access rule: Jangaon lane takes 9 MT or smaller (data says no restriction)", "lang": "rt", "request": "Jangaon Lakshmi Agencies ki shipment undi, bandi assign cheyyi.",
+     "shipments": [{"shipment_id": "SH-511", "wd_id": "WD-JGN", "value_rs": 3000000, "lines": [{"item": "Wheat atta 5 kg x 4", "cases": 450, "kg_per_case": 20}, {"item": "Noodles 48 packs", "cases": 500, "kg_per_case": 4}]}],
+     "gold": {"action": "none"}},
+    {"id": "BR4", "category": "regional", "trap": "regional access rule vs an explicit 32 ft request", "lang": "te", "request": "జనగాం లక్ష్మి ఏజెన్సీస్ షిప్మెంట్ కి 32 ft లారీ పెట్టు.",
+     "shipments": [{"shipment_id": "SH-512", "wd_id": "WD-JGN", "value_rs": 2800000, "lines": [{"item": "Wheat atta 5 kg x 4", "cases": 400, "kg_per_case": 20}, {"item": "Sunflower oil 1 L x 10", "cases": 200, "kg_per_case": 10}]}],
+     "gold": {"action": "none", "require_type": "32FT"}},
+    {"id": "BP1", "category": "b_private", "trap": "B-private nickname 'pacha lorry' = B05 (no pack can know it)", "lang": "rt", "request": "Hanamkonda load ki pacha lorry pampu.",
+     "shipments": [{"shipment_id": "SH-513", "wd_id": "WD-HNK", "value_rs": 2000000, "lines": [{"item": "Wheat atta 5 kg x 4", "cases": 300, "kg_per_case": 20}, {"item": "Sunflower oil 1 L x 10", "cases": 300, "kg_per_case": 10}]}],
+     "gold": {"action": "assign", "shipment_id": "SH-513", "vehicles": ["B05"], "require_vehicle": "B05"}},
+    {"id": "BP2", "category": "b_private", "trap": "B-private nickname 'Mama vallu' = Bhavani Roadways", "lang": "rt", "request": "Khammam load Mama vallu bandi lo pampu.",
+     "shipments": [{"shipment_id": "SH-514", "wd_id": "WD-KMM", "value_rs": 2400000, "lines": [{"item": "Wheat atta 5 kg x 4", "cases": 500, "kg_per_case": 20}, {"item": "Sunflower oil 1 L x 10", "cases": 400, "kg_per_case": 10}]}],
+     "gold": {"action": "assign", "shipment_id": "SH-514", "vehicles": ["B05", "B09"], "require_vendor": "Bhavani Roadways"}},
+    {"id": "BX1", "category": "spurious", "trap": "a habit that is not a rule: customer A always sent 36 ft to Khammam (big loads); here 36 ft trucks are booked and the load is 7 t", "lang": "en", "request": "Book a vehicle for the Ravi Enterprises Khammam shipment.",
+     "extra_assignments": [{"shipment_id": "SH-402", "wd_id": "WD-HNK", "vehicle_id": "B01", "assigned_at": "2026-10-26 22:10"}, {"shipment_id": "SH-403", "wd_id": "WD-WG2", "vehicle_id": "B09", "assigned_at": "2026-10-26 22:20"}],
+     "shipments": [{"shipment_id": "SH-515", "wd_id": "WD-KMM", "value_rs": 2100000, "lines": [{"item": "Soap 72 bars", "cases": 500, "kg_per_case": 9}, {"item": "Biscuits 24 packs", "cases": 250, "kg_per_case": 6}, {"item": "Noodles 48 packs", "cases": 250, "kg_per_case": 4}]}],
+     "gold": {"action": "assign", "shipment_id": "SH-515", "vehicles": ["B05", "B06", "B08"]}}
+  ]
+}
