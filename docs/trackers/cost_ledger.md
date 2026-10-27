@@ -45,7 +45,7 @@ tags: [tracker, cost]
 ### Daily spend
 | Date | Model / deployment | Runs | Tokens in | Tokens out | GPU min | $ | Cumulative $ | Billing page check |
 |---|---|---|---|---|---|---|---|---|
-| | | | | | | | | |
+| 2026-10-27 | muse-spark-open-1026 (Model API) | 3 key-check calls ("Hello!") | ~147 each (128 cached) | ~27 each | | <0.01 | <0.01 | ⬜ |
 
 ### Prices
 Model: always `meta-models/muse-spark-open-1026` (the hackathon override of `meta-models/muse-spark-open` in Baseten's docs), via the per-token Model API at `https://inference.baseten.co/v1`. Fill in per-token prices from Baseten.
