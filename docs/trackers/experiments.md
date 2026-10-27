@@ -188,3 +188,18 @@ Task file: `datasets/tasks/benchmark_v1.jsonl` (held-out = `split: heldout`). Se
   - **Transfer shown** if B-pack regional − B-cold regional ≥ 50 points, B-pack control + strategy + spurious is within 1 run of B-cold, and **leak runs = 0**. Any leak fails the transfer claim regardless of accuracy.
   - Also report miner precision and recall vs the 5 true items, what the gate rejected and why, and b_private in both arms (sanity: should not move).
   - **Caveat, stated now:** the history is synthetic, with clean signals at realistic rates. Real logs are noisier, so this shows the mechanism works, not its real-world accuracy.
+- **Result (2026-10-27, `artifacts/dispatch/exp006_20261027_210135.json`):**
+
+| Arm | Mean | Control | Strategy | Unwritten (A tacit / B regional) | B-private | Spurious probe | Unsafe | Unwritten-knowledge unsafe | Leaks | $ |
+|---|---|---|---|---|---|---|---|---|---|---|
+| A-cold | 75% | 100% | 100% | **0%** | — | — | 0 | 2 | — | 0.70 |
+| A-self | 97% | 100% | 94% | **100%** | — | — | 1 | 0 | — | 0.84 |
+| B-cold | 54% | 100% | 100% | **0%** | 0% | 100% | 0 | 4 | 0 | 0.60 |
+| B-pack | 81% | 100% | 100% | **100%** | 0% | 50% | 1 | 0 | **0** | 0.58 |
+
+  - **Mining (Muse Spark 1.3, $0.09 for 2 runs):** both runs proposed exactly the 5 true items (precision 5/5, recall 5/5), including the Jangaon limit from the single failed trip and the driver's Telugu note. **Neither run proposed the Khammam habit**, so the gate's habit check was never exercised by a real proposal; it is covered only by the self-test.
+  - **Muse's own scope labels were unreliable:** "Pedda godown" was called company-specific in both runs (it is regional), and "nalla lorry" was called regional in run 0 (it is one company's truck). The deterministic entity filter put every item in the right place. **Lesson: decide privacy with rules, not with the model's label.**
+  - **Self-improvement (A):** unwritten-knowledge tasks went from 0% to 100% (8/8), and the unsafe Jangaon assignment went from 2 to 0.
+  - **Transfer (B):** regional tasks went from 0% to 100% (8/8), and the unsafe Jangaon assignments went from 4 to 0. B-private stayed at 0% in both arms, as expected (the pack can't contain B's own nicknames). Leak runs: 0.
+  - **Regressions:** one double booking in each knowledge arm. In A-self R3#0 it assigned booked V05, then also V02. In B-pack BX1#0 it assigned booked B04 after listing assignments. Neither relates to the learned items (the Khammam habit was never in the pack), but both happened only with the longer prompt (2/58 runs with knowledge vs 0/58 without). Watch this; a pre-assign check in the harness would catch it.
+- **Verdict (rule fixed above):** **self-improvement shown** (A tacit 100% ≥ 75%; control + strategy 23/24 vs 24/24, within 1 run). **Transfer shown** (B regional +100 points ≥ 50; control + strategy + spurious 13/14 vs 14/14, within 1 run; leaks 0). **Caveat (stated in advance):** the history is synthetic, with clean signals. This shows the mechanism works, not its real-world accuracy, and the habit trap was not tested by a live proposal.

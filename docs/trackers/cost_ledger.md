@@ -35,6 +35,7 @@ tags: [tracker, cost]
 | 2026-10-27 | Benchmark | EXP-003 Lab head-to-head (5 scenarios × 3 repeats, ~60 calls) | | | | 0.85 | ~14.42 | ⬜ |
 | 2026-10-27 | Research | Interview audio transcription (13 min, 7 chunks; transcript kept off-repo) | | | 13.3 | ~0.04 (est.) | ~14.46 | ⬜ |
 | 2026-10-27 | Benchmark | EXP-005 dispatch probe, Spark 1.3 (16 tasks × 2) | | | | 0.71 | ~15.17 | ⬜ |
+| 2026-10-27 | Benchmark | EXP-006 history mining, Spark 1.3 (2 runs) | | | | 0.09 | ~15.26 | ⬜ |
 
 ### Prices (verified 2026-10-27)
 | Model | Input /1M | Output /1M | Cached /1M |
@@ -55,6 +56,7 @@ tags: [tracker, cost]
 | 2026-10-27 | muse-spark-open-1026 (Model API) | 3 key-check calls ("Hello!") | ~147 each (128 cached) | ~27 each | | <0.01 | <0.01 | ⬜ |
 | 2026-10-27 | muse-spark-open-1026 (Model API) | EXP-004: probe + 2-task test + core and A arms (192 runs) | ~3.5M | | | ~5.9 (at tracker prices) | ~5.9 | ⬜ |
 | 2026-10-27 | muse-spark-open-1026 (Model API) | EXP-005 dispatch probe: 1 smoke + 16 tasks × 2 | | | | 0.76 | ~6.7 | ⬜ |
+| 2026-10-27 | muse-spark-open-1026 (Model API) | EXP-006 four arms (116 runs) | | | | 2.72 | ~9.4 | ⬜ |
 
 ### Prices
 Model: always `meta-models/muse-spark-open-1026` (the hackathon override of `meta-models/muse-spark-open` in Baseten's docs), via the per-token Model API at `https://inference.baseten.co/v1`. Fill in per-token prices from Baseten.
