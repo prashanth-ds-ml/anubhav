@@ -5,7 +5,7 @@ tags: [tracker, cost]
 
 | Credit | Total $ | Spent $ | Left $ | Used for |
 |---|---|---|---|---|
-| Meta Model API | 150.00 | ~0.07 | ~149.93 | Muse Spark + Voice Transcribe runtime, evals |
+| Meta Model API | 150.00 | ~0.20 | ~149.80 | Muse Spark + Voice Transcribe runtime, evals |
 | Baseten | 100.00 (+2M TPM) | 0.00 | 100.00 | Open-weights arm (FR-15) |
 
 ## Meta Model API ($150)
@@ -28,6 +28,7 @@ tags: [tracker, cost]
 |---|---|---|---|---|---|---|---|---|
 | 2026-10-27 | Dev | 14 calls (smoke) | ~17k | ~9k | 0.03 (tone test) | ~0.07 | ~0.07 | ⬜ |
 | 2026-10-27 | Dev | 2 live voice tests (1 silent mic, 1 good) | | | 0.67 | 0.002 | ~0.07 | ⬜ |
+| 2026-10-27 | Benchmark | Sample baseline: 5 tasks, 36 tool calls (`sample_run.py`) | | | | 0.131 | ~0.20 | ⬜ |
 
 ### Prices (verified 2026-10-27)
 | Model | Input /1M | Output /1M | Cached /1M |
