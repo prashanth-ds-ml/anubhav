@@ -9,7 +9,7 @@ Summary table first, details below. Newest at the bottom.
 | ID | Date | Area | Symptom | Severity | Status | Fix commit |
 |---|---|---|---|---|---|---|
 | E-001 | 2026-10-27 | voice | Realtime ASR closed with "Ingress audio slower than real-time"; script hung until Ctrl-C | high | fixed | see below |
-| E-002 | 2026-10-27 | voice | Live voice test saved 20 s of digital silence; empty transcript | high | investigating | |
+| E-002 | 2026-10-27 | voice | Live voice test saved 20 s of digital silence; empty transcript | high | fixed (use `--device 0`) | no code change |
 
 **Areas:** model API · MCP · tools · agent · retrieval · verifier · voice · UI · infra · data · cost
 
@@ -38,10 +38,10 @@ Summary table first, details below. Newest at the bottom.
 ---
 
 ### E-002: Live voice recording is silent
-- **Date:** 2026-10-27 · **Severity:** high · **Status:** investigating
+- **Date:** 2026-10-27 · **Severity:** high · **Status:** fixed
 - **Area:** voice (`scripts/smoke/live_voice.py`)
 - **Symptom:** The user spoke for the whole run, but `voice/clean_20261027_021945.wav` is 20 s with peak amplitude 1 and 99.4% zero samples. The transcript came back empty. No "padded blocks" warning, so the mic did deliver frames; they were just zeros.
 - **Finding:** A 1.5 s ambient check per input device showed that device 1 (Intel mic array, MME, the default) returns silence (peak 1). Device 0 (Microsoft Sound Mapper, MME) returns a real noise floor (rms ~129, peak ~1745).
-- **Next step:** Re-run with `--device 0` while speaking and check the transcript.
+- **Fix:** Re-ran with `--device 0` (Sound Mapper) at 09:04; the transcript was correct. Use `--device 0` on this laptop.
 - **Prevention idea:** Warn when the recorded audio is near-silent (e.g. peak < 100), not just when blocks are padded.
 

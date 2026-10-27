@@ -37,7 +37,7 @@ The gate for Day 1: **T2 passes, and the T6 voice decision is made.** Scripts ar
 | T4 | Negation, first turn ×3 | No confirm | ✅ 3/3 | |
 | T4b | Negation, **full loop** with fake tools ×3 | No `confirm_order`; draft created | ✅ 3/3 | Every run: find_customer → check_stock → create_draft_quote. It noted the 4-carton shortfall and said "Order confirm cheyyaledu" ("didn't confirm the order") in Telugu |
 | T5 | 40 tool schemas | Accepted; correct tools picked | ✅ | 40 accepted; still picked the right 2. ~3k input tokens (vs ~0.8k with 3 tools), 7.0 s. **Arm A is feasible** |
-| T6 | Self-recorded voice notes | Transcripts can drive T2 | ⏳ | Endpoint verified with a test tone (format OK). **Needs your recordings** |
+| T6 | Self-recorded voice notes | Transcripts can drive T2 | ✅ (1 of 3 notes) | Live mic run 2026-10-27 09:04 on `--device 0`: accurate Telugu script, English words kept in English. Still to do: noisy note and an order-style note with `--agent` |
 | T7 | Pricing known | Yes | ✅ | See the facts table |
 | T8 | Temperature 0 + seed ×3 | Identical outputs | ❌ (expected) | 2 of 3 identical. **Not deterministic**, so we keep the ×3 repeats (D-008) |
 
@@ -58,9 +58,9 @@ Record 3 notes (phone voice memo is fine; any format; ffmpeg converts), save the
 | Note | What I said | What Muse transcribed (plain / biased) | Usable? |
 |---|---|---|---|
 | 1 clean Telugu | | | |
-| 2 code-mixed | | | |
+| 2 code-mixed (live mic, `clean_20261027_090415.wav`) | Self-intro in Telugu with English words | నా పేరు ప్రశాంత్ మరి నీ పేరు ఏంటి నేను Muse AI Global Developer Hackathon కి పని చేస్తున్నాను. So, నీ help నాకు కావాలి. | ✅ owner: "kinda good and working" |
 | 3 noisy | | | |
 
 ## Decision
-- Voice: ⏳ pending T6 (but Telugu is officially supported, so the outlook is good)
+- Voice: ✅ go. Live Telugu / code-mixed transcription works (owner-confirmed 2026-10-27). Voice stays P0 (D-003)
 - Arm A: ✅ feasible (40 schemas accepted)

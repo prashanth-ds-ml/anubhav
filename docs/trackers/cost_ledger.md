@@ -27,7 +27,7 @@ tags: [tracker, cost]
 | Date | Bucket | Runs | Tokens in | Tokens out | Audio min | $ | Cumulative $ | Billing page check |
 |---|---|---|---|---|---|---|---|---|
 | 2026-10-27 | Dev | 14 calls (smoke) | ~17k | ~9k | 0.03 (tone test) | ~0.07 | ~0.07 | ⬜ |
-| 2026-10-27 | Dev | 1 live voice test (silent mic, empty transcript) | | | 0.33 | 0.001 | ~0.07 | ⬜ |
+| 2026-10-27 | Dev | 2 live voice tests (1 silent mic, 1 good) | | | 0.67 | 0.002 | ~0.07 | ⬜ |
 
 ### Prices (verified 2026-10-27)
 | Model | Input /1M | Output /1M | Cached /1M |

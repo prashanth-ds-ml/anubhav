@@ -9,7 +9,7 @@ ADR-style: newest at the bottom. Never delete an entry; mark it superseded inste
 |---|---|---|---|
 | D-001 | 2026-10-27 | Theme is **Build for Your World** only | superseded by D-018 |
 | D-002 | 2026-10-27 | Rename "Self-Evolving" to **Self-Improving** | accepted |
-| D-003 | 2026-10-27 | Voice-note input is P0, **gated on the Day-1 Telugu transcription test (T6)** | accepted (pending T6) |
+| D-003 | 2026-10-27 | Voice-note input is P0, **gated on the Day-1 Telugu transcription test (T6)** | accepted (T6 passed 2026-10-27) |
 | D-004 | 2026-10-27 | Muse plays 3 roles: agent, transcriber, diagnostician/proposer | accepted |
 | D-005 | 2026-10-27 | No real user data and no testimonials; impact comes from cited stats and measured timing | accepted |
 | D-006 | 2026-10-27 | Cut order: open weights → paraphrase probes → polish → tools 40→25 → arm A → voice | accepted |
