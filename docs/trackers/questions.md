@@ -13,7 +13,7 @@ Office hours run in Discord #office-hours, weekdays: **Oct 27–30 at 7:30–8:3
 | Q-02 | Is there a limit on tools/schemas per request for Muse Spark? | Arm A feasibility | test T5 | No stated limit; 40 work. Docs suggest `defer_loading` + `tool_search` for large sets | ✅ |
 | Q-03 | Is temperature 0 / seed deterministic on Muse Spark? | Repeat strategy | test T8 | **No** (2 of 3 identical) | ✅ |
 | Q-06 | Muse's built-in `tool_search` / `defer_loading` vs. our BigTool retrieval: is it worth comparing as another arm? | Meta tooling score | | | ⬜ |
-| Q-04 | Can judges try a hosted demo, or is the video primary? Any expectations for a "live product"? | FR-14 effort | | | ⬜ |
+| Q-04 | Can judges try a hosted demo, or is the video primary? Any expectations for a "live product"? | FR-14 effort | user read it in hackathon info (2026-10-27) | **Final-round judges try the demo themselves**, following the same flow as the 3-min video. So the hosted demo must reliably reproduce the video script | ✅ |
 | Q-05 | Is using open-source libraries (LangGraph, langgraph-bigtool, MCP SDK) fine if clearly labeled? | Rules / originality | | | ⬜ |
 
 ## Internal / technical
