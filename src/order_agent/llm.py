@@ -18,12 +18,17 @@ load_dotenv(Path(__file__).resolve().parents[2] / ".env")
 BASE_URL = "https://api.meta.ai/v1"
 DEFAULT_MODEL = "muse-spark-1.3"
 
+# Open weights: Muse Spark Open on Baseten. The hackathon key only works with this exact model ID.
+BASETEN_URL = "https://inference.baseten.co/v1"
+OPEN_MODEL = "meta-models/muse-spark-open-1026"
+
 # USD per 1M tokens (input, output), verified 2026-10-27 on the Meta pricing page.
 PRICES = {
     "muse-spark-1.3": (1.25, 4.25),
     "muse-spark-1.2": (1.25, 4.25),
     "muse-spark-1.3-contributor": (0.10, 0.20),
     "muse-spark-1.2-contributor": (0.10, 0.20),
+    OPEN_MODEL: (1.25, 4.25),  # Baseten, per third-party trackers 2026-10-27; confirm on Baseten billing
 }
 
 
@@ -68,12 +73,12 @@ def cost_usd(model: str, tokens_in: int, tokens_out: int) -> float:
 class MuseClient:
     """Meta Model API via the OpenAI-compatible Chat Completions endpoint."""
 
-    def __init__(self, model: str = DEFAULT_MODEL, api_key: str | None = None, **defaults):
+    def __init__(self, model: str = DEFAULT_MODEL, api_key: str | None = None, base_url: str = BASE_URL, **defaults):
         from openai import OpenAI
 
         self.model = model
         self.defaults = defaults
-        self._client = OpenAI(base_url=BASE_URL, api_key=api_key or os.environ["meta_api"])
+        self._client = OpenAI(base_url=base_url, api_key=api_key or os.environ["meta_api"])
 
     def chat(self, messages: list[dict], tools: list[dict] | None = None, **kw) -> ModelResponse:
         t0 = time.perf_counter()
@@ -96,6 +101,11 @@ class MuseClient:
             cost_usd=cost_usd(self.model, usage.prompt_tokens, usage.completion_tokens),
             raw=resp.model_dump(),
         )
+
+
+def open_weights_client(**defaults) -> MuseClient:
+    """Muse Spark Open on Baseten, same OpenAI-compatible interface as MuseClient."""
+    return MuseClient(OPEN_MODEL, os.environ["baseten_api_key"].strip(), BASETEN_URL, **defaults)
 
 
 class MockClient:

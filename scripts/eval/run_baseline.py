@@ -4,6 +4,7 @@ Arms (same system prompt, same grader; only the tool setup differs):
   core  8 core tools, Chat Completions (B0, the first baseline)
   a     all 40 tools passed directly, Chat Completions
   b     all 40 tools deferred in namespaces, Muse hosted tool search, Responses API
+--provider baseten runs core/a on Muse Spark Open (open weights) instead of Muse Spark 1.3.
 Each run uses a freshly reset DB. No shop-specific hints: the frozen model with a generic harness.
 
 Usage:
@@ -24,7 +25,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "src"))
 from order_agent import agent, db, tools  # noqa: E402
-from order_agent.llm import MuseClient  # noqa: E402
+from order_agent.llm import OPEN_MODEL, MuseClient, open_weights_client  # noqa: E402
 
 TASKS = ROOT / "datasets" / "tasks" / "benchmark_v1.jsonl"
 DEFAULT_TASKS = ["D01", "D09", "D16", "D19", "D28"]
@@ -101,11 +102,19 @@ def main():
     ap.add_argument("--workers", type=int, default=1)
     ap.add_argument("--model", default="muse-spark-1.3")
     ap.add_argument("--arm", choices=["core", "a", "b"], default="a")
+    ap.add_argument("--provider", choices=["meta", "baseten"], default="meta")
     args = ap.parse_args()
+    if args.provider == "baseten":
+        if args.arm == "b":
+            ap.error("arm b needs Muse tool search on the Meta Responses API")
+        args.model = OPEN_MODEL
 
     tasks = {t["id"]: t for t in map(json.loads, TASKS.read_text(encoding="utf-8").splitlines())}
     ids = [t for t in tasks if not args.split or tasks[t]["split"] == args.split] if args.all else args.tasks
-    client = agent.responses_client() if args.arm == "b" else MuseClient(model=args.model)
+    if args.provider == "baseten":
+        client = open_weights_client()
+    else:
+        client = agent.responses_client() if args.arm == "b" else MuseClient(model=args.model)
     jobs = [(tid, rep) for rep in range(args.repeats) for tid in ids]
 
     def job(item):
@@ -128,9 +137,10 @@ def main():
     summary = summarize(results, args.repeats)
     print_summary(summary)
     stamp = f"{datetime.now():%Y%m%d_%H%M%S}"
-    out = ROOT / "artifacts" / "baseline" / f"arm-{args.arm}_{stamp}.json"
+    tag = "" if args.provider == "meta" else f"_{args.provider}"
+    out = ROOT / "artifacts" / "baseline" / f"arm-{args.arm}{tag}_{stamp}.json"
     out.parent.mkdir(parents=True, exist_ok=True)
-    out.write_text(json.dumps({"arm": args.arm, "model": args.model, "repeats": args.repeats, "summary": summary, "results": results},
+    out.write_text(json.dumps({"arm": args.arm, "provider": args.provider, "model": args.model, "repeats": args.repeats, "summary": summary, "results": results},
                               ensure_ascii=False, indent=1), encoding="utf-8")
     print(f"Results saved: {out.relative_to(ROOT)}")
 
