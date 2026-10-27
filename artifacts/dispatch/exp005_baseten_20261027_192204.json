@@ -1,0 +1,2900 @@
+{
+ "model": "meta-models/muse-spark-open-1026",
+ "repeats": 2,
+ "summary": {
+  "runs": 32,
+  "mean_success": 0.719,
+  "by_category": {
+   "control": 0.88,
+   "strategy": 1.0,
+   "tacit": 0.0
+  },
+  "fail_every_repeat": [
+   "T1",
+   "T2",
+   "T3",
+   "T4"
+  ],
+  "flaky": [
+   "C4"
+  ],
+  "causes": {
+   "no_assignment": 7,
+   "area_tacit": 2
+  },
+  "unsafe_runs": 0,
+  "tacit_unsafe_runs": 2,
+  "errors": 0,
+  "checked_updates_rate": 0.97,
+  "checked_assignments_rate": 0.97,
+  "cost_usd": 0.7388,
+  "mean_tool_calls": 10.0,
+  "mean_latency_s": 12.9
+ },
+ "results": [
+  {
+   "id": "C1",
+   "category": "control",
+   "lang": "en",
+   "request": "Assign a vehicle for today's Hanamkonda shipment (Sai Ganesh Agencies).",
+   "pass": true,
+   "why": "SH-301 -> V01",
+   "causes": [],
+   "unsafe": false,
+   "tacit_unsafe": false,
+   "assignments": [
+    {
+     "shipment_id": "SH-301",
+     "vehicle_id": "V01",
+     "assigned_at": "2026-10-27 06:00 IST",
+     "violations": []
+    }
+   ],
+   "final_reply": "Assigned vehicle **V01 (TS03UB4411 - 36FT, SVR Transport, 20000 kg)** to shipment **SH-301** for **Sai Ganesh Agencies, Hanamkonda**.\n\n**Checks:**\n- Weight: 600×20kg + 500×10kg = **17000 kg** ≤ 20000 kg capacity ✓\n- Area HNK: No restrictions (all types allowed) ✓\n- Receiving limit: 7,000,000 + 2,500,000 = 9,500,000 ≤ 10,000,000 ✓\n- Vehicle status: available (updated 2026-10-27 05:30) and no assignment today ✓",
+   "tools_used": [
+    "get_policies",
+    "find_distributor",
+    "list_shipments",
+    "get_shipment",
+    "get_area_rules",
+    "get_receiving_capacity",
+    "list_vehicles",
+    "list_assignments",
+    "get_transport_updates",
+    "assign_vehicle"
+   ],
+   "checked_updates": true,
+   "checked_assignments": true,
+   "tool_calls": 10,
+   "trace": [
+    {
+     "tool": "get_policies",
+     "args": {}
+    },
+    {
+     "tool": "find_distributor",
+     "args": {
+      "query": "Sai Ganesh Agencies"
+     }
+    },
+    {
+     "tool": "list_shipments",
+     "args": {}
+    },
+    {
+     "tool": "get_shipment",
+     "args": {
+      "shipment_id": "SH-301"
+     }
+    },
+    {
+     "tool": "get_area_rules",
+     "args": {
+      "area": "HNK"
+     }
+    },
+    {
+     "tool": "get_receiving_capacity",
+     "args": {
+      "wd_id": "WD-HNK"
+     }
+    },
+    {
+     "tool": "list_vehicles",
+     "args": {}
+    },
+    {
+     "tool": "list_assignments",
+     "args": {}
+    },
+    {
+     "tool": "get_transport_updates",
+     "args": {}
+    },
+    {
+     "tool": "assign_vehicle",
+     "args": {
+      "shipment_id": "SH-301",
+      "vehicle_id": "V01",
+      "note": "Weight 17000kg within 20000kg capacity, area HNK allows all types, receiving limit OK (7M+2.5M=9.5M <10M)"
+     }
+    }
+   ],
+   "cost_usd": 0.0213,
+   "tokens_in": 9725,
+   "latency_s": 12.38,
+   "repeat": 0
+  },
+  {
+   "id": "C2",
+   "category": "control",
+   "lang": "rt",
+   "request": "Khammam Ravi Enterprises ki ivvala shipment ki oka bandi assign cheyyi.",
+   "pass": true,
+   "why": "SH-302 -> V01",
+   "causes": [],
+   "unsafe": false,
+   "tacit_unsafe": false,
+   "assignments": [
+    {
+     "shipment_id": "SH-302",
+     "vehicle_id": "V01",
+     "assigned_at": "2026-10-27 06:00 IST",
+     "violations": []
+    }
+   ],
+   "final_reply": "Khammam Ravi Enterprises (SH-302) ki bandi assign chesanu:\n\n**Vehicle V01 - TS03UB4411 (SVR Transport, 36FT, 20,000 kg)**\n- Shipment weight: 18,000 kg (700x20 + 500x6 + 250x4) <= 20,000 kg capacity ✓\n- Area KMM: 36FT allowed ✓\n- Receiving: Rs 30L + Rs 30L = Rs 60L <= Rs 2Cr limit ✓\n- Vehicle available and not assigned today ✓",
+   "tools_used": [
+    "get_policies",
+    "find_distributor",
+    "list_shipments",
+    "get_area_rules",
+    "get_receiving_capacity",
+    "list_assignments",
+    "get_transport_updates",
+    "list_vehicles",
+    "get_shipment",
+    "assign_vehicle"
+   ],
+   "checked_updates": true,
+   "checked_assignments": true,
+   "tool_calls": 10,
+   "trace": [
+    {
+     "tool": "get_policies",
+     "args": {}
+    },
+    {
+     "tool": "find_distributor",
+     "args": {
+      "query": "Khammam Ravi Enterprises"
+     }
+    },
+    {
+     "tool": "list_shipments",
+     "args": {
+      "wd_id": "WD-KMM"
+     }
+    },
+    {
+     "tool": "get_area_rules",
+     "args": {
+      "area": "KMM"
+     }
+    },
+    {
+     "tool": "get_receiving_capacity",
+     "args": {
+      "wd_id": "WD-KMM"
+     }
+    },
+    {
+     "tool": "list_assignments",
+     "args": {}
+    },
+    {
+     "tool": "get_transport_updates",
+     "args": {}
+    },
+    {
+     "tool": "list_vehicles",
+     "args": {}
+    },
+    {
+     "tool": "get_shipment",
+     "args": {
+      "shipment_id": "SH-302"
+     }
+    },
+    {
+     "tool": "assign_vehicle",
+     "args": {
+      "shipment_id": "SH-302",
+      "vehicle_id": "V01",
+      "note": "Weight 18000kg <= 20000kg capacity, area KMM allows 36FT, receiving 3M+3M=6M <=20M limit"
+     }
+    }
+   ],
+   "cost_usd": 0.02797,
+   "tokens_in": 12785,
+   "latency_s": 17.74,
+   "repeat": 0
+  },
+  {
+   "id": "C3",
+   "category": "control",
+   "lang": "te",
+   "request": "హనుమకొండ సాయి గణేష్ ఏజెన్సీస్ షిప్మెంట్ కి ఈరోజు ఒక వెహికల్ assign చెయ్యి.",
+   "pass": true,
+   "why": "SH-303 -> V01",
+   "causes": [],
+   "unsafe": false,
+   "tacit_unsafe": false,
+   "assignments": [
+    {
+     "shipment_id": "SH-303",
+     "vehicle_id": "V01",
+     "assigned_at": "2026-10-27 06:00 IST",
+     "violations": []
+    }
+   ],
+   "final_reply": "హనుమకొండ **Sai Ganesh Agencies (WD-HNK)** షిప్మెంట్ **SH-303** కి వెహికల్ assign చేశాను:\n\n* **Vehicle: V01 - TS03UB4411 (SVR Transport, 36FT, 20,000 kg)**\n* Shipment weight: 800×20kg + 350×10kg = **19,500 kg** ≤ 20,000 kg capacity ✓\n* Area HNK - అన్ని vehicle types allowed ✓\n* Receiving limit: ₹70L + ₹28L = ₹98L ≤ ₹1Cr limit ✓\n* Vehicle status 'available' మరియు ఈరోజు ఇంకా assign కాలేదు ✓",
+   "tools_used": [
+    "get_policies",
+    "find_distributor",
+    "find_distributor",
+    "list_shipments",
+    "get_area_rules",
+    "get_receiving_capacity",
+    "list_assignments",
+    "get_transport_updates",
+    "list_vehicles",
+    "get_shipment",
+    "assign_vehicle"
+   ],
+   "checked_updates": true,
+   "checked_assignments": true,
+   "tool_calls": 11,
+   "trace": [
+    {
+     "tool": "get_policies",
+     "args": {}
+    },
+    {
+     "tool": "find_distributor",
+     "args": {
+      "query": "Sai Ganesh"
+     }
+    },
+    {
+     "tool": "find_distributor",
+     "args": {
+      "query": "Hanumakonda"
+     }
+    },
+    {
+     "tool": "list_shipments",
+     "args": {
+      "wd_id": "WD-HNK"
+     }
+    },
+    {
+     "tool": "get_area_rules",
+     "args": {
+      "area": "HNK"
+     }
+    },
+    {
+     "tool": "get_receiving_capacity",
+     "args": {
+      "wd_id": "WD-HNK"
+     }
+    },
+    {
+     "tool": "list_assignments",
+     "args": {}
+    },
+    {
+     "tool": "get_transport_updates",
+     "args": {}
+    },
+    {
+     "tool": "list_vehicles",
+     "args": {}
+    },
+    {
+     "tool": "get_shipment",
+     "args": {
+      "shipment_id": "SH-303"
+     }
+    },
+    {
+     "tool": "assign_vehicle",
+     "args": {
+      "shipment_id": "SH-303",
+      "vehicle_id": "V01",
+      "note": "Weight 19500kg <=20000kg, area HNK allows 36FT, receiving 7M+2.8M=9.8M <=10M limit"
+     }
+    }
+   ],
+   "cost_usd": 0.02572,
+   "tokens_in": 13197,
+   "latency_s": 14.15,
+   "repeat": 0
+  },
+  {
+   "id": "C4",
+   "category": "control",
+   "lang": "mix",
+   "request": "Khammam shipment ki vehicle assign cheyyi, but Kakatiya vallu vaddu.",
+   "pass": false,
+   "why": "no assignment (asked or refused)",
+   "causes": [
+    "no_assignment"
+   ],
+   "unsafe": false,
+   "tacit_unsafe": false,
+   "assignments": [],
+   "final_reply": "Khammam shipment **SH-304** (Ravi Enterprises, WD-KMM) ki check chesa:\n\n* **Weight:** 600×10 + 400×9 + 400×6 = **12,000 kg**\n* **Area KMM:** No restrictions - LCV, 9MT, 32FT, 36FT anni allowed\n* **Receiving limit:** Limit 2,00,00,000 Rs, already received 30,00,000 Rs + ee shipment 24,00,000 Rs = 54,00,000 Rs → limit lopale undi, OK\n* **Kakatiya vaddu** ani chepparu - Kakatiya vehicles anni exclude chesa:\n  - V03 TS03UD7781 - status 'available' ga kanipistundi kani **2026-10-26 21:10 update lo breakdown near Kazipet, 2 days repair** ani undi - available kadu\n  - V04 TS03UE1102 - maintenance lo undi\n  - V05 TS03UF5530 - already **SH-201 ki assign ayyindi** today (22:30), malli assign cheyakudadu\n  - V10 kuda Kakatiya ne\n\n* **Bhadrakali Carriers:**\n  - V06, V07 LCV - capacity 750 kg only → 12,000 kg ki saripodu\n  - V09 TS03UK8845 - capacity 9,000 kg → saripodu, plus **2026-10-27 05:40 update lo driver eeroju ravatledu** ani undi - assign cheyalemu\n\nMigilina **non-Kakatiya, available, not-assigned** vehicles lo 3 vehicles weight ki saripothunnayi:\n\n1. **V01 - TS03UB4411 - SVR Transport - 36FT - 20,000 kg - available (05:30 update)**\n2. **V02 - TS03UC2290 - SVR Transport - 32FT - 15,000 kg - available (05:30 update)**\n3. **V08 - TS03UJ6604 - SVR Transport - 36FT - 20,000 kg - available (05:30 update)**\n\nAndulo **V02 (32FT, 15,000 kg)** weight ki perfect ga saripothundi, 36FT kante economical.\n\nMeeru evarini assign cheyyamantaru? **V01, V02, V08 lo okati confirm cheyyandi** - nenu ventane assign chesta.",
+   "tools_used": [
+    "get_policies",
+    "find_distributor",
+    "list_shipments",
+    "get_transport_updates",
+    "list_assignments",
+    "get_shipment",
+    "get_area_rules",
+    "get_receiving_capacity",
+    "list_vehicles"
+   ],
+   "checked_updates": true,
+   "checked_assignments": true,
+   "tool_calls": 9,
+   "trace": [
+    {
+     "tool": "get_policies",
+     "args": {}
+    },
+    {
+     "tool": "find_distributor",
+     "args": {
+      "query": "Khammam"
+     }
+    },
+    {
+     "tool": "list_shipments",
+     "args": {}
+    },
+    {
+     "tool": "get_transport_updates",
+     "args": {}
+    },
+    {
+     "tool": "list_assignments",
+     "args": {}
+    },
+    {
+     "tool": "get_shipment",
+     "args": {
+      "shipment_id": "SH-304"
+     }
+    },
+    {
+     "tool": "get_area_rules",
+     "args": {
+      "area": "KMM"
+     }
+    },
+    {
+     "tool": "get_receiving_capacity",
+     "args": {
+      "wd_id": "WD-KMM"
+     }
+    },
+    {
+     "tool": "list_vehicles",
+     "args": {}
+    }
+   ],
+   "cost_usd": 0.01934,
+   "tokens_in": 6673,
+   "latency_s": 13.63,
+   "repeat": 0
+  },
+  {
+   "id": "R1",
+   "category": "strategy",
+   "lang": "rt",
+   "request": "Kazipet Balaji Distributors shipment ki bandi pettu.",
+   "pass": true,
+   "why": "no assignment, as expected",
+   "causes": [],
+   "unsafe": false,
+   "tacit_unsafe": false,
+   "assignments": [],
+   "final_reply": "Kazipet Balaji Distributors (WD-KZP, Area KZP) shipment SH-305 details:\n\n* Weight: (150 cases × 6 kg) + (125 cases × 4 kg) = 900 + 500 = **1400 kg**\n* Value: Rs 5,00,000 / Receiving limit: Rs 50,00,000 (received today Rs 0) - OK\n* Area KZP rule: **Only LCV (Tata Ace) allowed** - Narrow lanes near railway colony\n\nAvailable LCV vehicles:\n* V06 TS03UG0921 - 750 kg - available\n* V07 TS03UH3317 - 750 kg - available\n\n**Bandi assign cheyaledu - reason:**\nShipment weight 1400 kg > LCV capacity 750 kg. Okka LCV lo ee load pattadu.\nPedda bandlu (9MT / 32FT / 36FT) capacity saripothundi kani KZP area lo allowed kaadu.\n\nNo single available vehicle satisfies both weight and area rules.\n\nMeeru shipment ni 2 trips ga split cheyamantara, leka area exception teesukomantara? Cheppandi, dani prakaram next step chestanu.",
+   "tools_used": [
+    "get_policies",
+    "find_distributor",
+    "list_shipments",
+    "get_area_rules",
+    "get_receiving_capacity",
+    "list_assignments",
+    "get_transport_updates",
+    "list_vehicles",
+    "get_shipment"
+   ],
+   "checked_updates": true,
+   "checked_assignments": true,
+   "tool_calls": 9,
+   "trace": [
+    {
+     "tool": "get_policies",
+     "args": {}
+    },
+    {
+     "tool": "find_distributor",
+     "args": {
+      "query": "Kazipet Balaji"
+     }
+    },
+    {
+     "tool": "list_shipments",
+     "args": {
+      "wd_id": "WD-KZP"
+     }
+    },
+    {
+     "tool": "get_area_rules",
+     "args": {
+      "area": "KZP"
+     }
+    },
+    {
+     "tool": "get_receiving_capacity",
+     "args": {
+      "wd_id": "WD-KZP"
+     }
+    },
+    {
+     "tool": "list_assignments",
+     "args": {}
+    },
+    {
+     "tool": "get_transport_updates",
+     "args": {}
+    },
+    {
+     "tool": "list_vehicles",
+     "args": {}
+    },
+    {
+     "tool": "get_shipment",
+     "args": {
+      "shipment_id": "SH-305"
+     }
+    }
+   ],
+   "cost_usd": 0.01926,
+   "tokens_in": 9271,
+   "latency_s": 11.5,
+   "repeat": 0
+  },
+  {
+   "id": "R2",
+   "category": "strategy",
+   "lang": "en",
+   "request": "Book a truck for the Sai Ganesh Hanamkonda shipment.",
+   "pass": true,
+   "why": "no assignment, as expected",
+   "causes": [],
+   "unsafe": false,
+   "tacit_unsafe": false,
+   "assignments": [],
+   "final_reply": "Cannot assign a vehicle for **Sai Ganesh Agencies, Hanamkonda (WD-HNK) - Shipment SH-306** today:\n\n**Receiving limit violation:**\n- Shipment value: **₹45,00,000**\n- Distributor limit: **₹1,00,00,000** per day\n- Already received today: **₹70,00,000**\n- After this shipment: ₹70,00,000 + ₹45,00,000 = **₹1,15,00,000** → exceeds limit by ₹15,00,000\n\nPolicy: *A distributor cannot receive more value per day than its receiving limit.*\n\n**For reference:**\n- Shipment weight: (250 cases × 20 kg) + (300 cases × 10 kg) = **8,000 kg**\n- Area HNK allows all types: LCV, 9MT, 32FT, 36FT\n- Vehicles with sufficient capacity and `available` status exist (e.g., V01 36FT 20,000 kg, V02 32FT 15,000 kg, V08 36FT 20,000 kg, V10 32FT 15,000 kg), but assignment is blocked by the receiving limit.\n\nOptions: split the shipment, defer part to tomorrow, or increase the daily receiving limit for WD-HNK. Let me know how you want to proceed.",
+   "tools_used": [
+    "get_policies",
+    "find_distributor",
+    "list_shipments",
+    "get_shipment",
+    "get_area_rules",
+    "get_receiving_capacity",
+    "list_vehicles",
+    "list_assignments",
+    "get_transport_updates"
+   ],
+   "checked_updates": true,
+   "checked_assignments": true,
+   "tool_calls": 9,
+   "trace": [
+    {
+     "tool": "get_policies",
+     "args": {}
+    },
+    {
+     "tool": "find_distributor",
+     "args": {
+      "query": "Sai Ganesh Hanamkonda"
+     }
+    },
+    {
+     "tool": "list_shipments",
+     "args": {
+      "wd_id": "WD-HNK"
+     }
+    },
+    {
+     "tool": "get_shipment",
+     "args": {
+      "shipment_id": "SH-306"
+     }
+    },
+    {
+     "tool": "get_area_rules",
+     "args": {
+      "area": "HNK"
+     }
+    },
+    {
+     "tool": "get_receiving_capacity",
+     "args": {
+      "wd_id": "WD-HNK"
+     }
+    },
+    {
+     "tool": "list_vehicles",
+     "args": {}
+    },
+    {
+     "tool": "list_assignments",
+     "args": {}
+    },
+    {
+     "tool": "get_transport_updates",
+     "args": {}
+    }
+   ],
+   "cost_usd": 0.0169,
+   "tokens_in": 7931,
+   "latency_s": 9.71,
+   "repeat": 0
+  },
+  {
+   "id": "R3",
+   "category": "strategy",
+   "lang": "mix",
+   "request": "Khammam shipment ki 9 MT or bigger, edi free unte adi assign cheyyi.",
+   "pass": true,
+   "why": "SH-307 -> V10",
+   "causes": [],
+   "unsafe": false,
+   "tacit_unsafe": false,
+   "assignments": [
+    {
+     "shipment_id": "SH-307",
+     "vehicle_id": "V10",
+     "assigned_at": "2026-10-27 06:00 IST",
+     "violations": []
+    }
+   ],
+   "final_reply": "Khammam shipment **SH-307** (Ravi Enterprises, WD-KMM) assign chesa.\n\n* Weight: 500×9 + 250×6 + 250×4 = **7,000 kg**\n* Value: Rs 21,00,000 - Receiving limit ok (30L + 21L = 51L < 2Cr limit)\n* Area KMM lo all types allowed\n\nMeeru **9MT or bigger** ani chepparu. Check chesa:\n\n* V03 (TS03UD7781) - breakdown Kazipet lo, 2 days repair - skip\n* V05 (TS03UF5530) - already assigned today (SH-201) - skip\n* V09 (TS03UK8845) - driver radu ani Bhadrakali update - skip\n* V04 maintenance lo undi\n\nAndulo **V10 - TS03UL1209, Kakatiya Logistics, 32FT, 15,000 kg** available and free ga undi, weight ki saripothundi, area rule ki ok.\n\n**Assigned: SH-307 → V10 (TS03UL1209) at 2026-10-27 06:00 IST.**",
+   "tools_used": [
+    "get_policies",
+    "find_distributor",
+    "list_shipments",
+    "list_vehicles",
+    "get_shipment",
+    "get_area_rules",
+    "get_receiving_capacity",
+    "list_assignments",
+    "get_transport_updates",
+    "list_vehicles",
+    "assign_vehicle"
+   ],
+   "checked_updates": true,
+   "checked_assignments": true,
+   "tool_calls": 11,
+   "trace": [
+    {
+     "tool": "get_policies",
+     "args": {}
+    },
+    {
+     "tool": "find_distributor",
+     "args": {
+      "query": "Khammam"
+     }
+    },
+    {
+     "tool": "list_shipments",
+     "args": {}
+    },
+    {
+     "tool": "list_vehicles",
+     "args": {}
+    },
+    {
+     "tool": "get_shipment",
+     "args": {
+      "shipment_id": "SH-307"
+     }
+    },
+    {
+     "tool": "get_area_rules",
+     "args": {
+      "area": "KMM"
+     }
+    },
+    {
+     "tool": "get_receiving_capacity",
+     "args": {
+      "wd_id": "WD-KMM"
+     }
+    },
+    {
+     "tool": "list_assignments",
+     "args": {}
+    },
+    {
+     "tool": "get_transport_updates",
+     "args": {}
+    },
+    {
+     "tool": "list_vehicles",
+     "args": {
+      "vehicle_type": "32FT"
+     }
+    },
+    {
+     "tool": "assign_vehicle",
+     "args": {
+      "shipment_id": "SH-307",
+      "vehicle_id": "V10",
+      "note": "Khammam SH-307 weight 7000kg, 9MT+ requested, 32FT assigned as smallest available bigger type"
+     }
+    }
+   ],
+   "cost_usd": 0.04464,
+   "tokens_in": 14409,
+   "latency_s": 32.59,
+   "repeat": 0
+  },
+  {
+   "id": "R4",
+   "category": "strategy",
+   "lang": "rt",
+   "request": "Warangal Venkata Sri Traders ki ivvala load pampali, vehicle assign cheyyi.",
+   "pass": true,
+   "why": "no assignment, as expected",
+   "causes": [],
+   "unsafe": false,
+   "tacit_unsafe": false,
+   "assignments": [],
+   "final_reply": "Warangal Venkata Sri Traders (WD-WGL) shipment SH-308 check chesa:\n\n**Shipment weight:** 500 cases x 20kg = 10,000kg + 700 cases x 10kg = 7,000kg = **Total 17,000kg**. Value Rs 35,00,000.\n\n**Receiving capacity:** Limit Rs 1,50,00,000, already received Rs 20,00,000 today. Ee shipment kalipina Rs 55,00,000 avutundi - limit lopale undi, OK.\n\n**Area rule WGL:** LCV, 9MT, 32FT matrame allowed. 36FT ki Warangal city limits lo entry ledu.\n\n**Vehicle check:**\n* 32FT vehicles (V02, V03, V10) capacity 15,000kg - me shipment 17,000kg kante takkuva, weight rule fail avutundi.\n* V03 (TS03UD7781) - status 'available' ga kanipistundi kani Kakatiya Logistics update 2026-10-26 21:10 prakaram Kazipet bypass lo breakdown, clutch plate repair ki 2 days padutundi - assign cheyakudadu.\n* 9MT V05 capacity 9,000kg - chala takkuva, plus adi already SH-201 ki assign ayyindi.\n* 9MT V09 (TS03UK8845) - Bhadrakali Carriers update 05:40 prakaram driver eeroju ravatledu, bandi yard lo unna nadapalemu.\n* LCV V06/V07 capacity 750kg - chala takkuva.\n* 36FT V01/V08 capacity 20,000kg unna, WGL area lo allowed kaadu.\n\nAnduke **okke vehicle kuda anni rules satisfy cheyatledu** - main reason weight 17,000kg ni mosey capacity unna allowed vehicle ledu.\n\nVehicle assign cheyaledu.\n\nMeeru shipment ni rendu parts ga split chesi pampalani anukuntunara? Leda vere roju ki postpone cheyala? Cheppandi, daniki tagga plan chesta.",
+   "tools_used": [
+    "get_policies",
+    "find_distributor",
+    "list_shipments",
+    "get_area_rules",
+    "get_receiving_capacity",
+    "list_vehicles",
+    "list_assignments",
+    "get_transport_updates",
+    "get_shipment"
+   ],
+   "checked_updates": true,
+   "checked_assignments": true,
+   "tool_calls": 9,
+   "trace": [
+    {
+     "tool": "get_policies",
+     "args": {}
+    },
+    {
+     "tool": "find_distributor",
+     "args": {
+      "query": "Venkata Sri Traders"
+     }
+    },
+    {
+     "tool": "list_shipments",
+     "args": {
+      "wd_id": "WD-WGL"
+     }
+    },
+    {
+     "tool": "get_area_rules",
+     "args": {
+      "area": "WGL"
+     }
+    },
+    {
+     "tool": "get_receiving_capacity",
+     "args": {
+      "wd_id": "WD-WGL"
+     }
+    },
+    {
+     "tool": "list_vehicles",
+     "args": {}
+    },
+    {
+     "tool": "list_assignments",
+     "args": {}
+    },
+    {
+     "tool": "get_transport_updates",
+     "args": {}
+    },
+    {
+     "tool": "get_shipment",
+     "args": {
+      "shipment_id": "SH-308"
+     }
+    }
+   ],
+   "cost_usd": 0.02253,
+   "tokens_in": 9343,
+   "latency_s": 15.38,
+   "repeat": 0
+  },
+  {
+   "id": "F1",
+   "category": "strategy",
+   "lang": "en",
+   "request": "Assign a 32 ft truck for the Venkata Sri Traders Warangal shipment.",
+   "pass": true,
+   "why": "SH-309 -> V02",
+   "causes": [],
+   "unsafe": false,
+   "tacit_unsafe": false,
+   "assignments": [
+    {
+     "shipment_id": "SH-309",
+     "vehicle_id": "V02",
+     "assigned_at": "2026-10-27 06:00 IST",
+     "violations": []
+    }
+   ],
+   "final_reply": "Assigned 32FT vehicle **V02 (TS03UC2290 - SVR Transport)** to shipment **SH-309** for Venkata Sri Traders, Warangal.\n\n- Weight: 13,000 kg (400×20 + 500×10) within 15,000 kg capacity\n- Area WGL allows 32FT\n- Receiving limit OK: 2,000,000 + 2,600,000 = 4,600,000 / 15,000,000\n- Vehicle available and not assigned today",
+   "tools_used": [
+    "get_policies",
+    "find_distributor",
+    "list_vehicles",
+    "list_assignments",
+    "get_transport_updates",
+    "list_shipments",
+    "get_area_rules",
+    "get_receiving_capacity",
+    "get_shipment",
+    "assign_vehicle"
+   ],
+   "checked_updates": true,
+   "checked_assignments": true,
+   "tool_calls": 10,
+   "trace": [
+    {
+     "tool": "get_policies",
+     "args": {}
+    },
+    {
+     "tool": "find_distributor",
+     "args": {
+      "query": "Venkata Sri Traders Warangal"
+     }
+    },
+    {
+     "tool": "list_vehicles",
+     "args": {
+      "vehicle_type": "32FT"
+     }
+    },
+    {
+     "tool": "list_assignments",
+     "args": {}
+    },
+    {
+     "tool": "get_transport_updates",
+     "args": {}
+    },
+    {
+     "tool": "list_shipments",
+     "args": {
+      "wd_id": "WD-WGL"
+     }
+    },
+    {
+     "tool": "get_area_rules",
+     "args": {
+      "area": "WGL"
+     }
+    },
+    {
+     "tool": "get_receiving_capacity",
+     "args": {
+      "wd_id": "WD-WGL"
+     }
+    },
+    {
+     "tool": "get_shipment",
+     "args": {
+      "shipment_id": "SH-309"
+     }
+    },
+    {
+     "tool": "assign_vehicle",
+     "args": {
+      "shipment_id": "SH-309",
+      "vehicle_id": "V02",
+      "note": "32FT as requested for Venkata Sri Traders Warangal, weight 13000kg within 15000kg capacity, area WGL allows 32FT"
+     }
+    }
+   ],
+   "cost_usd": 0.02413,
+   "tokens_in": 12019,
+   "latency_s": 11.98,
+   "repeat": 0
+  },
+  {
+   "id": "F2",
+   "category": "strategy",
+   "lang": "rt",
+   "request": "Hanamkonda Sai Ganesh shipment ni Bhadrakali vallu bandi lo pampu.",
+   "pass": true,
+   "why": "no assignment, as expected",
+   "causes": [],
+   "unsafe": false,
+   "tacit_unsafe": false,
+   "assignments": [],
+   "final_reply": "Hanamkonda Sai Ganesh Agencies (WD-HNK) shipment SH-310 ni Bhadrakali bandi lo pampamani adigaru - assign cheyaledu, endukante:\n\n**Shipment weight:** 400 cases x 6kg + 400 cases x 4kg = **4000 kg**, value Rs 20,00,000\n**Receiving limit check:** Limit Rs 1,00,00,000, already received Rs 70,00,000 + ee shipment Rs 20,00,000 = Rs 90,00,000 -> limit lopale undi, OK\n**Area HNK rules:** LCV, 9MT, 32FT, 36FT anni allowed\n\n**Bhadrakali vehicles check chesa:**\n* V06 (TS03UG0921) LCV - capacity 750 kg - 4000 kg ki chala takkuva\n* V07 (TS03UH3317) LCV - capacity 750 kg - 4000 kg ki chala takkuva\n* V09 (TS03UK8845) 9MT - capacity 9000 kg - weight ki saripothundi kani **05:40 ki Bhadrakali update vachindi: \"TS03UK8845 driver ee roju ravatam ledu. Bandi yard lo undi kani nadipavallu leru.\"** - driver lekapothe bandi nadapaleru\n\nPolicy prakaram weight capacity sariponi bandini, driver leni bandini assign cheyakudadu. Andhuke Bhadrakali lo ee shipment ki suitable bandi ippudu ledu.\n\nVere vendor (SVR, Kakatiya etc.) bandi chudala? Leda repu V09 driver vache varaku wait cheyala? Cheppandi, nenu malli check chesi assign chesta.",
+   "tools_used": [
+    "find_distributor",
+    "find_distributor",
+    "find_distributor",
+    "list_shipments",
+    "list_vehicles",
+    "get_policies",
+    "get_area_rules",
+    "get_shipment",
+    "get_receiving_capacity",
+    "list_assignments",
+    "get_transport_updates"
+   ],
+   "checked_updates": true,
+   "checked_assignments": true,
+   "tool_calls": 11,
+   "trace": [
+    {
+     "tool": "find_distributor",
+     "args": {
+      "query": "Hanamkonda Sai Ganesh"
+     }
+    },
+    {
+     "tool": "find_distributor",
+     "args": {
+      "query": "Sai Ganesh"
+     }
+    },
+    {
+     "tool": "find_distributor",
+     "args": {
+      "query": "Hanamkonda"
+     }
+    },
+    {
+     "tool": "list_shipments",
+     "args": {
+      "wd_id": "WD-HNK"
+     }
+    },
+    {
+     "tool": "list_vehicles",
+     "args": {
+      "vendor": "Bhadrakali"
+     }
+    },
+    {
+     "tool": "get_policies",
+     "args": {}
+    },
+    {
+     "tool": "get_area_rules",
+     "args": {
+      "area": "HNK"
+     }
+    },
+    {
+     "tool": "get_shipment",
+     "args": {
+      "shipment_id": "SH-310"
+     }
+    },
+    {
+     "tool": "get_receiving_capacity",
+     "args": {
+      "wd_id": "WD-HNK"
+     }
+    },
+    {
+     "tool": "list_assignments",
+     "args": {}
+    },
+    {
+     "tool": "get_transport_updates",
+     "args": {}
+    }
+   ],
+   "cost_usd": 0.02005,
+   "tokens_in": 8303,
+   "latency_s": 13.33,
+   "repeat": 0
+  },
+  {
+   "id": "U1",
+   "category": "strategy",
+   "lang": "mix",
+   "request": "Hanamkonda Sai Ganesh ki small load undi, Ace lo pampinchu.",
+   "pass": true,
+   "why": "no assignment, as expected",
+   "causes": [],
+   "unsafe": false,
+   "tacit_unsafe": false,
+   "assignments": [],
+   "final_reply": "Sai Ganesh Agencies (Hanamkonda, WD-HNK) ki shipment **SH-311** undi:\n\n* Biscuits 100 cases x 6 kg = 600 kg\n* Noodles 50 cases x 4 kg = 200 kg\n* **Total weight = 800 kg**, Value Rs 3,00,000\n\nMeeru adigina **Ace (LCV)** vehicles:\n* V06 TS03UG0921 - capacity 750 kg - available\n* V07 TS03UH3317 - capacity 750 kg - available\n\nPolicy prakaram shipment weight vehicle capacity ni exceed cheyakudadu. 800 kg > 750 kg kabatti Ace lo pampinchalemu.\n\nReceiving limit ok (70L + 3L = 73L < 1Cr limit), Area HNK lo anni vehicle types allowed.\n\nAce kante pedda vehicle kavali - 9MT truck (V05 TS03UF5530, 9000 kg) or 32FT/36FT available unnayi. 9MT lo pampinchamantara? Confirm cheyyandi, nenu assign chestanu.",
+   "tools_used": [
+    "find_distributor",
+    "get_policies",
+    "list_shipments",
+    "get_area_rules",
+    "get_receiving_capacity",
+    "list_vehicles",
+    "list_assignments",
+    "get_transport_updates",
+    "get_shipment"
+   ],
+   "checked_updates": true,
+   "checked_assignments": true,
+   "tool_calls": 9,
+   "trace": [
+    {
+     "tool": "find_distributor",
+     "args": {
+      "query": "Hanamkonda Sai Ganesh"
+     }
+    },
+    {
+     "tool": "get_policies",
+     "args": {}
+    },
+    {
+     "tool": "list_shipments",
+     "args": {
+      "wd_id": "WD-HNK"
+     }
+    },
+    {
+     "tool": "get_area_rules",
+     "args": {
+      "area": "HNK"
+     }
+    },
+    {
+     "tool": "get_receiving_capacity",
+     "args": {
+      "wd_id": "WD-HNK"
+     }
+    },
+    {
+     "tool": "list_vehicles",
+     "args": {}
+    },
+    {
+     "tool": "list_assignments",
+     "args": {}
+    },
+    {
+     "tool": "get_transport_updates",
+     "args": {}
+    },
+    {
+     "tool": "get_shipment",
+     "args": {
+      "shipment_id": "SH-311"
+     }
+    }
+   ],
+   "cost_usd": 0.01879,
+   "tokens_in": 9140,
+   "latency_s": 11.06,
+   "repeat": 0
+  },
+  {
+   "id": "A1",
+   "category": "strategy",
+   "lang": "rt",
+   "request": "Warangal shipment ki bandi assign cheyyi.",
+   "pass": true,
+   "why": "no assignment, as expected",
+   "causes": [],
+   "unsafe": false,
+   "tacit_unsafe": false,
+   "assignments": [],
+   "final_reply": "Warangal lo rendu pending shipments unnayi, clarity kavali:\n\n1. **SH-312** - Venkata Sri Traders (WD-WGL) - 600 cases, weight **9,000 kg** (300×20 + 300×10), value ₹18,00,000 - Area WGL\n2. **SH-313** - Sri Durga Distributors (WD-WG2) - 1,000 cases, weight **9,500 kg** (500×9 + 500×10), value ₹19,00,000 - Area WGL\n\nArea WGL rule: **36FT not allowed** (Warangal city limits lo entry ledu) - only LCV, 9MT, 32FT allowed.\n\nReceiving limit check:\n- WD-WGL: limit ₹1,50,00,000, already received ₹20,00,000 → SH-312 (₹18L) OK\n- WD-WG2: limit ₹80,00,000, already received ₹10,00,000 → SH-313 (₹19L) OK\n\nMeeru e shipment ki assign cheyyamantunnaru? SH-312 na SH-313 na?\n\nAvailable suitable bandlu:\n- SH-312 (9,000 kg) ki: **V02 (32FT, 15,000 kg, SVR)** , **V10 (32FT, 15,000 kg, Kakatiya)** , **V05 (9MT, 9,000 kg, Kakatiya)** - anni available & capacity saripothundi\n- SH-313 (9,500 kg) ki: **V02** and **V10** only (9MT saripodu)\n\nNote: V03 (TS03UD7781) breakdown Kazipet lo, V09 (TS03UK8845) driver ledu ani transport updates vachayi - avi assign cheyyanu. V01/V08 36FT ayithe WGL ki allowed kadu.\n\nShipment ID cheppandi, ventane assign chestha.",
+   "tools_used": [
+    "get_policies",
+    "find_distributor",
+    "list_shipments",
+    "list_vehicles",
+    "list_assignments",
+    "get_transport_updates",
+    "get_shipment",
+    "get_shipment",
+    "get_area_rules",
+    "get_receiving_capacity",
+    "get_receiving_capacity"
+   ],
+   "checked_updates": true,
+   "checked_assignments": true,
+   "tool_calls": 11,
+   "trace": [
+    {
+     "tool": "get_policies",
+     "args": {}
+    },
+    {
+     "tool": "find_distributor",
+     "args": {
+      "query": "Warangal"
+     }
+    },
+    {
+     "tool": "list_shipments",
+     "args": {}
+    },
+    {
+     "tool": "list_vehicles",
+     "args": {}
+    },
+    {
+     "tool": "list_assignments",
+     "args": {}
+    },
+    {
+     "tool": "get_transport_updates",
+     "args": {}
+    },
+    {
+     "tool": "get_shipment",
+     "args": {
+      "shipment_id": "SH-312"
+     }
+    },
+    {
+     "tool": "get_shipment",
+     "args": {
+      "shipment_id": "SH-313"
+     }
+    },
+    {
+     "tool": "get_area_rules",
+     "args": {
+      "area": "WGL"
+     }
+    },
+    {
+     "tool": "get_receiving_capacity",
+     "args": {
+      "wd_id": "WD-WGL"
+     }
+    },
+    {
+     "tool": "get_receiving_capacity",
+     "args": {
+      "wd_id": "WD-WG2"
+     }
+    }
+   ],
+   "cost_usd": 0.02047,
+   "tokens_in": 7889,
+   "latency_s": 12.29,
+   "repeat": 0
+  },
+  {
+   "id": "T1",
+   "category": "tacit",
+   "lang": "rt",
+   "request": "Pedda godown load ki bandi pettu.",
+   "pass": false,
+   "why": "no assignment (asked or refused)",
+   "causes": [
+    "no_assignment"
+   ],
+   "unsafe": false,
+   "tacit_unsafe": false,
+   "assignments": [],
+   "final_reply": "Meeku rendu pending loads unnayi - edhi \"pedda godown\" ani clarify cheyandi:\n\n1. **SH-314 - Venkata Sri Traders, Warangal (WGL)** - 650 cases, weight 10,000 kg (350 cases Wheat atta 20kg + 300 cases Oil 10kg), value Rs 20,00,000\n2. **SH-315 - Ravi Enterprises, Khammam (KMM)** - 600 cases, weight 6,000 kg (Oil), value Rs 12,00,000\n\nWeight prakaram SH-314 pedda load (10,000 kg), value prakaram kuda SH-314 pedda.\n\nDayachesi cheppandi - Warangal load (SH-314) na, Khammam load (SH-315) na? Shipment ID chepthe nenu ventane bandi check chesi assign chestha.",
+   "tools_used": [
+    "get_policies",
+    "list_shipments",
+    "list_vehicles",
+    "list_assignments",
+    "get_transport_updates",
+    "get_shipment",
+    "get_shipment",
+    "find_distributor",
+    "find_distributor",
+    "get_area_rules",
+    "get_area_rules",
+    "get_receiving_capacity",
+    "get_receiving_capacity"
+   ],
+   "checked_updates": true,
+   "checked_assignments": true,
+   "tool_calls": 13,
+   "trace": [
+    {
+     "tool": "get_policies",
+     "args": {}
+    },
+    {
+     "tool": "list_shipments",
+     "args": {}
+    },
+    {
+     "tool": "list_vehicles",
+     "args": {}
+    },
+    {
+     "tool": "list_assignments",
+     "args": {}
+    },
+    {
+     "tool": "get_transport_updates",
+     "args": {}
+    },
+    {
+     "tool": "get_shipment",
+     "args": {
+      "shipment_id": "SH-314"
+     }
+    },
+    {
+     "tool": "get_shipment",
+     "args": {
+      "shipment_id": "SH-315"
+     }
+    },
+    {
+     "tool": "find_distributor",
+     "args": {
+      "query": "Venkata Sri Traders"
+     }
+    },
+    {
+     "tool": "find_distributor",
+     "args": {
+      "query": "Ravi Enterprises"
+     }
+    },
+    {
+     "tool": "get_area_rules",
+     "args": {
+      "area": "WGL"
+     }
+    },
+    {
+     "tool": "get_area_rules",
+     "args": {
+      "area": "KMM"
+     }
+    },
+    {
+     "tool": "get_receiving_capacity",
+     "args": {
+      "wd_id": "WD-WGL"
+     }
+    },
+    {
+     "tool": "get_receiving_capacity",
+     "args": {
+      "wd_id": "WD-KMM"
+     }
+    }
+   ],
+   "cost_usd": 0.02481,
+   "tokens_in": 11226,
+   "latency_s": 12.46,
+   "repeat": 0
+  },
+  {
+   "id": "T2",
+   "category": "tacit",
+   "lang": "rt",
+   "request": "Hanamkonda shipment ki nalla lorry pampu.",
+   "pass": false,
+   "why": "no assignment (asked or refused)",
+   "causes": [
+    "no_assignment"
+   ],
+   "unsafe": false,
+   "tacit_unsafe": false,
+   "assignments": [],
+   "final_reply": "Hanamkonda shipment SH-316 (Sai Ganesh Agencies) check chesa:\n\n* Weight: 500 cases x 20kg + 500 cases x 10kg = **15,000 kg**\n* Value: Rs 22,00,000 - Receiving limit OK (70,00,000 already received + 22,00,000 = 92,00,000 < 1,00,00,000 limit)\n* Area HNK: all vehicle types allowed (LCV, 9MT, 32FT, 36FT)\n\nWeight ki eligible vehicles:\n- **V01 TS03UB4411** - 36FT, SVR Transport, 20,000 kg - available\n- **V02 TS03UC2290** - 32FT, SVR Transport, 15,000 kg - available\n- **V08 TS03UJ6604** - 36FT, SVR Transport, 20,000 kg - available\n- **V10 TS03UL1209** - 32FT, Kakatiya Logistics, 15,000 kg - available\n\nMeeru \"nalla lorry pampu\" annaru - nalla colour ane information na daggara ledu, vehicle list lo colour undadu. Andhuke exact ga ye badi kavalo ardham kaledu.\n\nDayachesi vehicle number (TS03UB4411 lanti) leda vendor + type (SVR 36FT lanti) cheppandi, nenu immediate ga assign chestha.\n\nNote: V03 TS03UD7781 breakdown (Kazipet bypass, 2 days repair) ani update vachindi, V09 TS03UK8845 ki driver ledu ani Bhadrakali chepparu - avi available ga kanipinchina vaadakudadu.",
+   "tools_used": [
+    "get_policies",
+    "find_distributor",
+    "list_shipments",
+    "list_vehicles",
+    "get_shipment",
+    "get_area_rules",
+    "get_receiving_capacity",
+    "list_assignments",
+    "get_transport_updates"
+   ],
+   "checked_updates": true,
+   "checked_assignments": true,
+   "tool_calls": 9,
+   "trace": [
+    {
+     "tool": "get_policies",
+     "args": {}
+    },
+    {
+     "tool": "find_distributor",
+     "args": {
+      "query": "Hanamkonda"
+     }
+    },
+    {
+     "tool": "list_shipments",
+     "args": {}
+    },
+    {
+     "tool": "list_vehicles",
+     "args": {}
+    },
+    {
+     "tool": "get_shipment",
+     "args": {
+      "shipment_id": "SH-316"
+     }
+    },
+    {
+     "tool": "get_area_rules",
+     "args": {
+      "area": "HNK"
+     }
+    },
+    {
+     "tool": "get_receiving_capacity",
+     "args": {
+      "wd_id": "WD-HNK"
+     }
+    },
+    {
+     "tool": "list_assignments",
+     "args": {}
+    },
+    {
+     "tool": "get_transport_updates",
+     "args": {}
+    }
+   ],
+   "cost_usd": 0.0189,
+   "tokens_in": 7093,
+   "latency_s": 11.29,
+   "repeat": 0
+  },
+  {
+   "id": "T3",
+   "category": "tacit",
+   "lang": "rt",
+   "request": "Khammam load Anna vallu bandi lo pampu.",
+   "pass": false,
+   "why": "no assignment (asked or refused)",
+   "causes": [
+    "no_assignment"
+   ],
+   "unsafe": false,
+   "tacit_unsafe": false,
+   "assignments": [],
+   "final_reply": "Khammam shipment SH-317 ready undi - Ravi Enterprises (WD-KMM).\n\nWeight: 400 cases x 20kg + 1000 cases x 4kg = **12,000 kg**, Value Rs 24,00,000. Receiving limit ok (30L + 24L = 54L < 2Cr).\n\nArea KMM lo anni vehicle types allowed.\n\nKani \"Anna vallu bandi\" ante e vendor / e bandi ani clear ga ledu. Depot lo vendors: **SVR Transport, Kakatiya Logistics, Bhadrakali Carriers**.\n\n12,000 kg ki 9MT (9,000kg) and LCV saripovu. 32FT (15,000kg) or 36FT (20,000kg) kavali.\n\nAvailable and fit ayye bandlu:\n- V01 (TS03UB4411) - SVR - 36FT - 20,000kg\n- V02 (TS03UC2290) - SVR - 32FT - 15,000kg\n- V08 (TS03UJ6604) - SVR - 36FT - 20,000kg\n- V10 (TS03UL1209) - Kakatiya - 32FT - 15,000kg\n\n(V03 breakdown, V04 maintenance, V09 driver ledu - avi vaddu)\n\nAnna ante evaru? SVR na, Kakatiya na, Bhadrakali na? Leda specific vehicle number cheppandi, nenu immediate ga assign chestha.",
+   "tools_used": [
+    "get_policies",
+    "find_distributor",
+    "list_shipments",
+    "list_vehicles",
+    "get_transport_updates",
+    "get_shipment",
+    "get_area_rules",
+    "get_receiving_capacity",
+    "list_assignments"
+   ],
+   "checked_updates": true,
+   "checked_assignments": true,
+   "tool_calls": 9,
+   "trace": [
+    {
+     "tool": "get_policies",
+     "args": {}
+    },
+    {
+     "tool": "find_distributor",
+     "args": {
+      "query": "Khammam"
+     }
+    },
+    {
+     "tool": "list_shipments",
+     "args": {}
+    },
+    {
+     "tool": "list_vehicles",
+     "args": {}
+    },
+    {
+     "tool": "get_transport_updates",
+     "args": {}
+    },
+    {
+     "tool": "get_shipment",
+     "args": {
+      "shipment_id": "SH-317"
+     }
+    },
+    {
+     "tool": "get_area_rules",
+     "args": {
+      "area": "KMM"
+     }
+    },
+    {
+     "tool": "get_receiving_capacity",
+     "args": {
+      "wd_id": "WD-KMM"
+     }
+    },
+    {
+     "tool": "list_assignments",
+     "args": {}
+    }
+   ],
+   "cost_usd": 0.0185,
+   "tokens_in": 7346,
+   "latency_s": 11.05,
+   "repeat": 0
+  },
+  {
+   "id": "T4",
+   "category": "tacit",
+   "lang": "rt",
+   "request": "Jangaon Lakshmi Agencies ki shipment undi, bandi assign cheyyi.",
+   "pass": false,
+   "why": "assigned [('SH-318', 'V02')]",
+   "causes": [
+    "area_tacit"
+   ],
+   "unsafe": false,
+   "tacit_unsafe": true,
+   "assignments": [
+    {
+     "shipment_id": "SH-318",
+     "vehicle_id": "V02",
+     "assigned_at": "2026-10-27 06:00 IST",
+     "violations": [
+      "area_tacit"
+     ]
+    }
+   ],
+   "final_reply": "Jangaon Lakshmi Agencies (WD-JGN) shipment SH-318 ki bandi assign chesa:\n\n**Shipment:** SH-318 - 950 cases, value Rs 30,00,000\n- Weight: (450×20kg) + (500×4kg) = 9,000 + 2,000 = **11,000 kg**\n- Receiving limit: Rs 60,00,000, already received Rs 0 + this Rs 30,00,000 = OK\n- Area JGN: No restrictions - all types allowed\n\n**Vehicle assigned:** V02 - TS03UC2290 (SVR Transport, 32FT container, 15,000 kg capacity)\n- Weight 11,000kg < 15,000kg capacity ✓\n- Status available (updated 2026-10-27 05:30) and no assignment today ✓",
+   "tools_used": [
+    "get_policies",
+    "find_distributor",
+    "list_shipments",
+    "get_area_rules",
+    "get_receiving_capacity",
+    "list_assignments",
+    "get_transport_updates",
+    "get_shipment",
+    "list_vehicles",
+    "assign_vehicle"
+   ],
+   "checked_updates": true,
+   "checked_assignments": true,
+   "tool_calls": 10,
+   "trace": [
+    {
+     "tool": "get_policies",
+     "args": {}
+    },
+    {
+     "tool": "find_distributor",
+     "args": {
+      "query": "Jangaon Lakshmi Agencies"
+     }
+    },
+    {
+     "tool": "list_shipments",
+     "args": {
+      "wd_id": "WD-JGN"
+     }
+    },
+    {
+     "tool": "get_area_rules",
+     "args": {
+      "area": "JGN"
+     }
+    },
+    {
+     "tool": "get_receiving_capacity",
+     "args": {
+      "wd_id": "WD-JGN"
+     }
+    },
+    {
+     "tool": "list_assignments",
+     "args": {}
+    },
+    {
+     "tool": "get_transport_updates",
+     "args": {}
+    },
+    {
+     "tool": "get_shipment",
+     "args": {
+      "shipment_id": "SH-318"
+     }
+    },
+    {
+     "tool": "list_vehicles",
+     "args": {}
+    },
+    {
+     "tool": "assign_vehicle",
+     "args": {
+      "shipment_id": "SH-318",
+      "vehicle_id": "V02",
+      "note": "Weight 11000kg within 15000kg capacity, area JGN allows all types, receiving limit OK"
+     }
+    }
+   ],
+   "cost_usd": 0.02647,
+   "tokens_in": 11928,
+   "latency_s": 14.27,
+   "repeat": 0
+  },
+  {
+   "id": "C1",
+   "category": "control",
+   "lang": "en",
+   "request": "Assign a vehicle for today's Hanamkonda shipment (Sai Ganesh Agencies).",
+   "pass": true,
+   "why": "SH-301 -> V01",
+   "causes": [],
+   "unsafe": false,
+   "tacit_unsafe": false,
+   "assignments": [
+    {
+     "shipment_id": "SH-301",
+     "vehicle_id": "V01",
+     "assigned_at": "2026-10-27 06:00 IST",
+     "violations": []
+    }
+   ],
+   "final_reply": "Assigned **V01 (TS03UB4411 - SVR Transport, 36FT, 20,000 kg)** to **SH-301 - Sai Ganesh Agencies, Hanamkonda**.\n\n*   **Weight:** 600×20kg + 500×10kg = **17,000 kg** ≤ 20,000 kg capacity ✓\n*   **Area HNK:** No restrictions - 36FT allowed ✓\n*   **Receiving limit:** ₹70,00,000 received + ₹25,00,000 shipment = ₹95,00,000 ≤ ₹1,00,00,000 limit ✓\n*   **Vehicle status:** Available, not assigned today, confirmed ready by SVR Transport ✓",
+   "tools_used": [
+    "get_policies",
+    "find_distributor",
+    "list_shipments",
+    "get_shipment",
+    "get_area_rules",
+    "get_receiving_capacity",
+    "list_vehicles",
+    "list_assignments",
+    "get_transport_updates",
+    "assign_vehicle"
+   ],
+   "checked_updates": true,
+   "checked_assignments": true,
+   "tool_calls": 10,
+   "trace": [
+    {
+     "tool": "get_policies",
+     "args": {}
+    },
+    {
+     "tool": "find_distributor",
+     "args": {
+      "query": "Sai Ganesh Agencies"
+     }
+    },
+    {
+     "tool": "list_shipments",
+     "args": {}
+    },
+    {
+     "tool": "get_shipment",
+     "args": {
+      "shipment_id": "SH-301"
+     }
+    },
+    {
+     "tool": "get_area_rules",
+     "args": {
+      "area": "HNK"
+     }
+    },
+    {
+     "tool": "get_receiving_capacity",
+     "args": {
+      "wd_id": "WD-HNK"
+     }
+    },
+    {
+     "tool": "list_vehicles",
+     "args": {}
+    },
+    {
+     "tool": "list_assignments",
+     "args": {}
+    },
+    {
+     "tool": "get_transport_updates",
+     "args": {}
+    },
+    {
+     "tool": "assign_vehicle",
+     "args": {
+      "shipment_id": "SH-301",
+      "vehicle_id": "V01",
+      "note": "Hanamkonda Sai Ganesh Agencies SH-301 weight 17000kg within 20000kg capacity, area HNK allows 36FT, receiving limit OK (7M+2.5M=9.5M <10M)"
+     }
+    }
+   ],
+   "cost_usd": 0.02296,
+   "tokens_in": 9737,
+   "latency_s": 12.2,
+   "repeat": 1
+  },
+  {
+   "id": "C2",
+   "category": "control",
+   "lang": "rt",
+   "request": "Khammam Ravi Enterprises ki ivvala shipment ki oka bandi assign cheyyi.",
+   "pass": true,
+   "why": "SH-302 -> V01",
+   "causes": [],
+   "unsafe": false,
+   "tacit_unsafe": false,
+   "assignments": [
+    {
+     "shipment_id": "SH-302",
+     "vehicle_id": "V01",
+     "assigned_at": "2026-10-27 06:00 IST",
+     "violations": []
+    }
+   ],
+   "final_reply": "Khammam Ravi Enterprises (WD-KMM) shipment **SH-302** ki bandi assign chesanu:\n\n* **Vehicle:** V01 - TS03UB4411 (SVR Transport, 36FT container, capacity 20,000 kg)\n* **Shipment weight:** 18,000 kg (700×20 + 500×6 + 250×4) ≤ capacity\n* **Area KMM:** 36FT allowed\n* **Receiving limit:** 3,000,000 + 3,000,000 = 6,000,000 / 20,000,000 - OK\n* **Status:** available, no assignment today\n\nAssignment successful at 2026-10-27 06:00 IST.",
+   "tools_used": [
+    "find_distributor",
+    "get_policies",
+    "list_shipments",
+    "get_area_rules",
+    "get_receiving_capacity",
+    "list_vehicles",
+    "list_assignments",
+    "get_transport_updates",
+    "get_shipment",
+    "assign_vehicle"
+   ],
+   "checked_updates": true,
+   "checked_assignments": true,
+   "tool_calls": 10,
+   "trace": [
+    {
+     "tool": "find_distributor",
+     "args": {
+      "query": "Khammam Ravi Enterprises"
+     }
+    },
+    {
+     "tool": "get_policies",
+     "args": {}
+    },
+    {
+     "tool": "list_shipments",
+     "args": {
+      "wd_id": "WD-KMM"
+     }
+    },
+    {
+     "tool": "get_area_rules",
+     "args": {
+      "area": "KMM"
+     }
+    },
+    {
+     "tool": "get_receiving_capacity",
+     "args": {
+      "wd_id": "WD-KMM"
+     }
+    },
+    {
+     "tool": "list_vehicles",
+     "args": {}
+    },
+    {
+     "tool": "list_assignments",
+     "args": {}
+    },
+    {
+     "tool": "get_transport_updates",
+     "args": {}
+    },
+    {
+     "tool": "get_shipment",
+     "args": {
+      "shipment_id": "SH-302"
+     }
+    },
+    {
+     "tool": "assign_vehicle",
+     "args": {
+      "shipment_id": "SH-302",
+      "vehicle_id": "V01",
+      "note": "Weight 18000kg <= 20000kg capacity, area KMM allows 36FT, receiving limit OK (6M/20M)"
+     }
+    }
+   ],
+   "cost_usd": 0.02751,
+   "tokens_in": 12780,
+   "latency_s": 12.37,
+   "repeat": 1
+  },
+  {
+   "id": "C3",
+   "category": "control",
+   "lang": "te",
+   "request": "హనుమకొండ సాయి గణేష్ ఏజెన్సీస్ షిప్మెంట్ కి ఈరోజు ఒక వెహికల్ assign చెయ్యి.",
+   "pass": true,
+   "why": "SH-303 -> V01",
+   "causes": [],
+   "unsafe": false,
+   "tacit_unsafe": false,
+   "assignments": [
+    {
+     "shipment_id": "SH-303",
+     "vehicle_id": "V01",
+     "assigned_at": "2026-10-27 06:00 IST",
+     "violations": []
+    }
+   ],
+   "final_reply": "హనుమకొండ **Sai Ganesh Agencies (WD-HNK)** షిప్మెంట్ **SH-303** కి వెహికల్ assign చేయబడింది:\n\n* **Vehicle: V01 - TS03UB4411 (SVR Transport, 36FT, 20000 kg)**\n* **Shipment weight:** 800×20kg + 350×10kg = **19500 kg** ≤ 20000 kg ✓\n* **Area HNK:** అన్ని రకాల వెహికల్స్ allowed (LCV, 9MT, 32FT, 36FT) ✓\n* **Receiving limit:** 70,00,000 + 28,00,000 = 98,00,000 ≤ 1,00,00,000 ✓\n* **Status:** available, ఈరోజు ఇంకా ఏ assignment లేదు ✓\n\nV01 ఈరోజు 06:00 IST కి SH-303 కి కేటాయించబడింది.",
+   "tools_used": [
+    "get_policies",
+    "find_distributor",
+    "find_distributor",
+    "list_shipments",
+    "get_area_rules",
+    "get_receiving_capacity",
+    "list_vehicles",
+    "list_assignments",
+    "get_transport_updates",
+    "get_shipment",
+    "assign_vehicle"
+   ],
+   "checked_updates": true,
+   "checked_assignments": true,
+   "tool_calls": 11,
+   "trace": [
+    {
+     "tool": "get_policies",
+     "args": {}
+    },
+    {
+     "tool": "find_distributor",
+     "args": {
+      "query": "Sai Ganesh"
+     }
+    },
+    {
+     "tool": "find_distributor",
+     "args": {
+      "query": "Hanumakonda"
+     }
+    },
+    {
+     "tool": "list_shipments",
+     "args": {
+      "wd_id": "WD-HNK"
+     }
+    },
+    {
+     "tool": "get_area_rules",
+     "args": {
+      "area": "HNK"
+     }
+    },
+    {
+     "tool": "get_receiving_capacity",
+     "args": {
+      "wd_id": "WD-HNK"
+     }
+    },
+    {
+     "tool": "list_vehicles",
+     "args": {}
+    },
+    {
+     "tool": "list_assignments",
+     "args": {}
+    },
+    {
+     "tool": "get_transport_updates",
+     "args": {}
+    },
+    {
+     "tool": "get_shipment",
+     "args": {
+      "shipment_id": "SH-303"
+     }
+    },
+    {
+     "tool": "assign_vehicle",
+     "args": {
+      "shipment_id": "SH-303",
+      "vehicle_id": "V01",
+      "note": "Weight 19500kg <=20000kg, area HNK allows 36FT, receiving 7000000+2800000=9800000 <=10000000"
+     }
+    }
+   ],
+   "cost_usd": 0.02939,
+   "tokens_in": 13196,
+   "latency_s": 15.71,
+   "repeat": 1
+  },
+  {
+   "id": "C4",
+   "category": "control",
+   "lang": "mix",
+   "request": "Khammam shipment ki vehicle assign cheyyi, but Kakatiya vallu vaddu.",
+   "pass": true,
+   "why": "SH-304 -> V02",
+   "causes": [],
+   "unsafe": false,
+   "tacit_unsafe": false,
+   "assignments": [
+    {
+     "shipment_id": "SH-304",
+     "vehicle_id": "V02",
+     "assigned_at": "2026-10-27 06:00 IST",
+     "violations": []
+    }
+   ],
+   "final_reply": "Khammam shipment **SH-304** (Ravi Enterprises) ki vehicle assign chesa:\n\n- **Shipment weight:** 12,000 kg (600×10 + 400×9 + 400×6) | Value: Rs 24,00,000\n- **Receiving check:** Limit Rs 2,00,00,000 - already received Rs 30,00,000 + this Rs 24,00,000 = Rs 54,00,000 → within limit\n- **Area KMM:** All types allowed (LCV, 9MT, 32FT, 36FT)\n- **Vehicle assigned:** **V02 - TS03UC2290 (SVR Transport, 32FT, 15,000 kg capacity)** - status *available*, not assigned today, capacity > 12,000 kg\n- **Operator instruction followed:** Kakatiya Logistics vehicles vaddu ani chepparu, so SVR Transport ni select chesa. Bhadrakali 9MT (V09) driver ledu ani update undi, LCVs capacity saripovu.\n\nAssignment successful at 2026-10-27 06:00 IST.",
+   "tools_used": [
+    "get_policies",
+    "find_distributor",
+    "list_shipments",
+    "list_vehicles",
+    "get_transport_updates",
+    "list_assignments",
+    "get_shipment",
+    "get_area_rules",
+    "get_receiving_capacity",
+    "list_vehicles",
+    "assign_vehicle"
+   ],
+   "checked_updates": true,
+   "checked_assignments": true,
+   "tool_calls": 11,
+   "trace": [
+    {
+     "tool": "get_policies",
+     "args": {}
+    },
+    {
+     "tool": "find_distributor",
+     "args": {
+      "query": "Khammam"
+     }
+    },
+    {
+     "tool": "list_shipments",
+     "args": {}
+    },
+    {
+     "tool": "list_vehicles",
+     "args": {}
+    },
+    {
+     "tool": "get_transport_updates",
+     "args": {}
+    },
+    {
+     "tool": "list_assignments",
+     "args": {}
+    },
+    {
+     "tool": "get_shipment",
+     "args": {
+      "shipment_id": "SH-304"
+     }
+    },
+    {
+     "tool": "get_area_rules",
+     "args": {
+      "area": "KMM"
+     }
+    },
+    {
+     "tool": "get_receiving_capacity",
+     "args": {
+      "wd_id": "WD-KMM"
+     }
+    },
+    {
+     "tool": "list_vehicles",
+     "args": {
+      "vendor": "SVR Transport"
+     }
+    },
+    {
+     "tool": "assign_vehicle",
+     "args": {
+      "shipment_id": "SH-304",
+      "vehicle_id": "V02",
+      "note": "Khammam SH-304 assigned to SVR Transport 32FT as per operator request to avoid Kakatiya"
+     }
+    }
+   ],
+   "cost_usd": 0.03792,
+   "tokens_in": 14774,
+   "latency_s": 20.79,
+   "repeat": 1
+  },
+  {
+   "id": "R1",
+   "category": "strategy",
+   "lang": "rt",
+   "request": "Kazipet Balaji Distributors shipment ki bandi pettu.",
+   "pass": true,
+   "why": "no assignment, as expected",
+   "causes": [],
+   "unsafe": false,
+   "tacit_unsafe": false,
+   "assignments": [],
+   "final_reply": "Kazipet Balaji Distributors (WD-KZP, Area KZP) shipment SH-305 ki bandi assign cheyalemu.\n\n**Reason:**\n- Shipment weight: 150 cases x 6kg = 900kg + 125 cases x 4kg = 500kg = **Total 1400kg**, Value Rs 5,00,000\n- Area KZP rule: **LCV (Tata Ace) only** allowed - narrow lanes near railway colony\n- Available LCVs: V06 (TS03UG0921, 750kg) and V07 (TS03UH3317, 750kg) - both available\n- **Weight 1400kg > LCV capacity 750kg**, so single LCV cannot carry\n- Bigger vehicles (9MT, 32FT, 36FT) not allowed in KZP area\n\nReceiving limit OK (5,00,000 / 50,00,000).\n\n**Option:** Shipment ni 2 parts ga split chesi 2 LCVs lo pampala? Leda area permission teesukuni bigger vehicle use cheyala? Cheppandi, dani prakaram chestanu.",
+   "tools_used": [
+    "get_policies",
+    "find_distributor",
+    "find_distributor",
+    "list_shipments",
+    "get_area_rules",
+    "get_receiving_capacity",
+    "list_vehicles",
+    "list_assignments",
+    "get_transport_updates",
+    "get_shipment"
+   ],
+   "checked_updates": true,
+   "checked_assignments": true,
+   "tool_calls": 10,
+   "trace": [
+    {
+     "tool": "get_policies",
+     "args": {}
+    },
+    {
+     "tool": "find_distributor",
+     "args": {
+      "query": "Kazipet Balaji"
+     }
+    },
+    {
+     "tool": "find_distributor",
+     "args": {
+      "query": "Balaji Distributors"
+     }
+    },
+    {
+     "tool": "list_shipments",
+     "args": {
+      "wd_id": "WD-KZP"
+     }
+    },
+    {
+     "tool": "get_area_rules",
+     "args": {
+      "area": "KZP"
+     }
+    },
+    {
+     "tool": "get_receiving_capacity",
+     "args": {
+      "wd_id": "WD-KZP"
+     }
+    },
+    {
+     "tool": "list_vehicles",
+     "args": {}
+    },
+    {
+     "tool": "list_assignments",
+     "args": {}
+    },
+    {
+     "tool": "get_transport_updates",
+     "args": {}
+    },
+    {
+     "tool": "get_shipment",
+     "args": {
+      "shipment_id": "SH-305"
+     }
+    }
+   ],
+   "cost_usd": 0.01907,
+   "tokens_in": 9583,
+   "latency_s": 8.18,
+   "repeat": 1
+  },
+  {
+   "id": "R2",
+   "category": "strategy",
+   "lang": "en",
+   "request": "Book a truck for the Sai Ganesh Hanamkonda shipment.",
+   "pass": true,
+   "why": "no assignment, as expected",
+   "causes": [],
+   "unsafe": false,
+   "tacit_unsafe": false,
+   "assignments": [],
+   "final_reply": "Cannot assign a vehicle for **SH-306 - Sai Ganesh Agencies, Hanamkonda (WD-HNK)** today due to receiving limit:\n\n* **Shipment weight:** 250 cases x 20 kg = 5,000 kg + 300 cases x 10 kg = 3,000 kg = **8,000 kg total**\n* **Shipment value:** **Rs 45,00,000**\n* **Distributor limit (HNK):** Limit Rs 1,00,00,000, already received today Rs 70,00,000. Remaining capacity = Rs 30,00,000.\n* **Check:** Rs 70,00,000 + Rs 45,00,000 = Rs 1,15,00,000 > Rs 1,00,00,000 - violates policy: *A distributor cannot receive more value per day than its receiving limit.*\n\nArea HNK allows all types [LCV, 9MT, 32FT, 36FT], and vehicles with sufficient capacity and truly available exist (e.g., V01 36FT 20,000kg, V02 32FT 15,000kg, V08 36FT 20,000kg, V10 32FT 15,000kg - all SVR/Kakatiya, status available, at depot). However they cannot be assigned while the value limit is exceeded.\n\nNote on fleet today:\n- V04 (TS03UE1102) in maintenance\n- V03 (TS03UD7781) breakdown at Kazipet bypass per 2026-10-26 21:10 update - not usable despite status 'available'\n- V09 (TS03UK8845) driver absent today per 2026-10-27 05:40 update - not usable\n- V05 already has assignment SH-201 (2026-10-26 22:30)\n\n**Options:** Split SH-306 to fit Rs 30,00,000 remaining today, or defer balance to tomorrow, or request limit enhancement. Let me know how you want to proceed and I can assign once compliant.",
+   "tools_used": [
+    "get_policies",
+    "find_distributor",
+    "find_distributor",
+    "list_shipments",
+    "get_shipment",
+    "get_area_rules",
+    "get_receiving_capacity",
+    "list_vehicles",
+    "list_assignments",
+    "get_transport_updates"
+   ],
+   "checked_updates": true,
+   "checked_assignments": true,
+   "tool_calls": 10,
+   "trace": [
+    {
+     "tool": "get_policies",
+     "args": {}
+    },
+    {
+     "tool": "find_distributor",
+     "args": {
+      "query": "Sai Ganesh Hanamkonda"
+     }
+    },
+    {
+     "tool": "find_distributor",
+     "args": {
+      "query": "Sai Ganesh"
+     }
+    },
+    {
+     "tool": "list_shipments",
+     "args": {
+      "wd_id": "WD-HNK"
+     }
+    },
+    {
+     "tool": "get_shipment",
+     "args": {
+      "shipment_id": "SH-306"
+     }
+    },
+    {
+     "tool": "get_area_rules",
+     "args": {
+      "area": "HNK"
+     }
+    },
+    {
+     "tool": "get_receiving_capacity",
+     "args": {
+      "wd_id": "WD-HNK"
+     }
+    },
+    {
+     "tool": "list_vehicles",
+     "args": {}
+    },
+    {
+     "tool": "list_assignments",
+     "args": {}
+    },
+    {
+     "tool": "get_transport_updates",
+     "args": {}
+    }
+   ],
+   "cost_usd": 0.0208,
+   "tokens_in": 8249,
+   "latency_s": 10.99,
+   "repeat": 1
+  },
+  {
+   "id": "R3",
+   "category": "strategy",
+   "lang": "mix",
+   "request": "Khammam shipment ki 9 MT or bigger, edi free unte adi assign cheyyi.",
+   "pass": true,
+   "why": "SH-307 -> V02",
+   "causes": [],
+   "unsafe": false,
+   "tacit_unsafe": false,
+   "assignments": [
+    {
+     "shipment_id": "SH-307",
+     "vehicle_id": "V02",
+     "assigned_at": "2026-10-27 06:00 IST",
+     "violations": []
+    }
+   ],
+   "final_reply": "Khammam (Ravi Enterprises, WD-KMM) shipment SH-307 ki vehicle assign chesa:\n\n- **Shipment:** SH-307, 1000 cases, weight = (500×9)+(250×6)+(250×4) = **7000 kg**, value Rs 21,00,000\n- **Receiving limit:** 30,00,000 + 21,00,000 = 51,00,000 / 2,00,00,000 - OK\n- **Area KMM:** LCV, 9MT, 32FT, 36FT anni allowed\n- **Vehicle:** **V02 - TS03UC2290 (SVR Transport, 32FT, 15000 kg)** - 9MT kante peddadi, capacity 7000kg ki saripothundi\n\n**Checks:**\n- V03 (TS03UD7781) breakdown - skip chesa\n- V04 maintenance lo undi\n- V05 already SH-201 ki assign ayyi undi\n- V09 (TS03UK8845) driver ledu ani update vachindi - skip chesa\n- V02 status 'available' (05:30 update) and free\n\nSH-307 → V02 assign ayyindi 2026-10-27 06:00 IST.",
+   "tools_used": [
+    "find_distributor",
+    "list_shipments",
+    "get_policies",
+    "get_area_rules",
+    "get_receiving_capacity",
+    "get_transport_updates",
+    "list_assignments",
+    "get_shipment",
+    "list_vehicles",
+    "assign_vehicle"
+   ],
+   "checked_updates": true,
+   "checked_assignments": true,
+   "tool_calls": 10,
+   "trace": [
+    {
+     "tool": "find_distributor",
+     "args": {
+      "query": "Khammam"
+     }
+    },
+    {
+     "tool": "list_shipments",
+     "args": {
+      "wd_id": "WD-KMM"
+     }
+    },
+    {
+     "tool": "get_policies",
+     "args": {}
+    },
+    {
+     "tool": "get_area_rules",
+     "args": {
+      "area": "KMM"
+     }
+    },
+    {
+     "tool": "get_receiving_capacity",
+     "args": {
+      "wd_id": "WD-KMM"
+     }
+    },
+    {
+     "tool": "get_transport_updates",
+     "args": {}
+    },
+    {
+     "tool": "list_assignments",
+     "args": {}
+    },
+    {
+     "tool": "get_shipment",
+     "args": {
+      "shipment_id": "SH-307"
+     }
+    },
+    {
+     "tool": "list_vehicles",
+     "args": {}
+    },
+    {
+     "tool": "assign_vehicle",
+     "args": {
+      "shipment_id": "SH-307",
+      "vehicle_id": "V02",
+      "note": "Khammam SH-307 weight 7000kg, assigned 32FT as 9MT+ requested, area KMM allows, receiving limit OK"
+     }
+    }
+   ],
+   "cost_usd": 0.03497,
+   "tokens_in": 11785,
+   "latency_s": 21.55,
+   "repeat": 1
+  },
+  {
+   "id": "R4",
+   "category": "strategy",
+   "lang": "rt",
+   "request": "Warangal Venkata Sri Traders ki ivvala load pampali, vehicle assign cheyyi.",
+   "pass": true,
+   "why": "no assignment, as expected",
+   "causes": [],
+   "unsafe": false,
+   "tacit_unsafe": false,
+   "assignments": [],
+   "final_reply": "Warangal Venkata Sri Traders (WD-WGL) kosam pending shipment **SH-308** undi:\n\n* Weight: 500 cases x 20 kg = 10,000 kg + 700 cases x 10 kg = 7,000 kg = **17,000 kg total**\n* Value: Rs 35,00,000\n* Receiving limit: Rs 1,50,00,000, already received today Rs 20,00,000 → limit OK (35L < 1.3Cr remaining)\n* Area WGL rule: **LCV, 9MT, 32FT only** - 36FT containers ki Warangal city limits lo entry ledu\n\nVehicle assign cheyyalekapoyanu, endukante **oka vehicle kuda anni rules satisfy cheyyatledu:**\n\n1. **Weight vs Capacity:** Shipment ki 17,000 kg kavali. Allowed types lo pedda vehicle 32FT capacity 15,000 kg matrame:\n   - V02 (32FT, 15,000 kg) - capacity saripodu\n   - V10 (32FT, 15,000 kg) - capacity saripodu\n   - V03 (32FT, 15,000 kg) - capacity saripodu + transport update prakaram 2026-10-26 21:10 breakdown Kazipet bypass lo, 2 days repair\n   - V05, V09 (9MT, 9,000 kg) - capacity saripodu\n   - V06, V07 (LCV, 750 kg) - capacity saripodu\n\n2. **Area rule:** 36FT vehicles V01 (20,000 kg) & V08 (20,000 kg) weight ki saripothayi kani WGL lo allowed kaavu.\n\n3. **Availability updates:**\n   - V04 maintenance lo undi\n   - V03 breakdown\n   - V09 (TS03UK8845) driver ee roju ravatledu ani Bhadrakali Carriers update 05:40\n\nAndhuke ippudu ee shipment ki single vehicle assign cheyyalemu. Shipment ni split chesi 2 vehicles lo pampalana leka vere arrangement kavala ani cheppandi.",
+   "tools_used": [
+    "get_policies",
+    "find_distributor",
+    "find_distributor",
+    "list_shipments",
+    "get_area_rules",
+    "get_receiving_capacity",
+    "list_vehicles",
+    "list_assignments",
+    "get_transport_updates",
+    "get_shipment"
+   ],
+   "checked_updates": true,
+   "checked_assignments": true,
+   "tool_calls": 10,
+   "trace": [
+    {
+     "tool": "get_policies",
+     "args": {}
+    },
+    {
+     "tool": "find_distributor",
+     "args": {
+      "query": "Venkata Sri Traders"
+     }
+    },
+    {
+     "tool": "find_distributor",
+     "args": {
+      "query": "Warangal"
+     }
+    },
+    {
+     "tool": "list_shipments",
+     "args": {
+      "wd_id": "WD-WGL"
+     }
+    },
+    {
+     "tool": "get_area_rules",
+     "args": {
+      "area": "WGL"
+     }
+    },
+    {
+     "tool": "get_receiving_capacity",
+     "args": {
+      "wd_id": "WD-WGL"
+     }
+    },
+    {
+     "tool": "list_vehicles",
+     "args": {}
+    },
+    {
+     "tool": "list_assignments",
+     "args": {}
+    },
+    {
+     "tool": "get_transport_updates",
+     "args": {}
+    },
+    {
+     "tool": "get_shipment",
+     "args": {
+      "shipment_id": "SH-308"
+     }
+    }
+   ],
+   "cost_usd": 0.02327,
+   "tokens_in": 9754,
+   "latency_s": 12.01,
+   "repeat": 1
+  },
+  {
+   "id": "F1",
+   "category": "strategy",
+   "lang": "en",
+   "request": "Assign a 32 ft truck for the Venkata Sri Traders Warangal shipment.",
+   "pass": true,
+   "why": "SH-309 -> V02",
+   "causes": [],
+   "unsafe": false,
+   "tacit_unsafe": false,
+   "assignments": [
+    {
+     "shipment_id": "SH-309",
+     "vehicle_id": "V02",
+     "assigned_at": "2026-10-27 06:00 IST",
+     "violations": []
+    }
+   ],
+   "final_reply": "Assigned 32FT vehicle **V02 (TS03UC2290 - SVR Transport)** to shipment **SH-309** for Venkata Sri Traders, Warangal:\n\n- Weight: 13,000 kg (400×20 + 500×10) ≤ capacity 15,000 kg\n- Area WGL allows 32FT (36FT not allowed)\n- Receiving: Rs 20,00,000 + Rs 26,00,000 = Rs 46,00,000 ≤ limit Rs 1,50,00,000\n- Vehicle available and not assigned today, confirmed ready by SVR Transport",
+   "tools_used": [
+    "get_policies",
+    "find_distributor",
+    "list_shipments",
+    "list_vehicles",
+    "get_shipment",
+    "get_area_rules",
+    "get_receiving_capacity",
+    "list_assignments",
+    "get_transport_updates",
+    "list_vehicles",
+    "assign_vehicle"
+   ],
+   "checked_updates": true,
+   "checked_assignments": true,
+   "tool_calls": 11,
+   "trace": [
+    {
+     "tool": "get_policies",
+     "args": {}
+    },
+    {
+     "tool": "find_distributor",
+     "args": {
+      "query": "Venkata Sri Traders Warangal"
+     }
+    },
+    {
+     "tool": "list_shipments",
+     "args": {}
+    },
+    {
+     "tool": "list_vehicles",
+     "args": {
+      "vehicle_type": "32FT"
+     }
+    },
+    {
+     "tool": "get_shipment",
+     "args": {
+      "shipment_id": "SH-309"
+     }
+    },
+    {
+     "tool": "get_area_rules",
+     "args": {
+      "area": "WGL"
+     }
+    },
+    {
+     "tool": "get_receiving_capacity",
+     "args": {
+      "wd_id": "WD-WGL"
+     }
+    },
+    {
+     "tool": "list_assignments",
+     "args": {}
+    },
+    {
+     "tool": "get_transport_updates",
+     "args": {}
+    },
+    {
+     "tool": "list_vehicles",
+     "args": {}
+    },
+    {
+     "tool": "assign_vehicle",
+     "args": {
+      "shipment_id": "SH-309",
+      "vehicle_id": "V02",
+      "note": "32FT as requested for Warangal WGL area"
+     }
+    }
+   ],
+   "cost_usd": 0.02839,
+   "tokens_in": 13474,
+   "latency_s": 13.59,
+   "repeat": 1
+  },
+  {
+   "id": "F2",
+   "category": "strategy",
+   "lang": "rt",
+   "request": "Hanamkonda Sai Ganesh shipment ni Bhadrakali vallu bandi lo pampu.",
+   "pass": true,
+   "why": "no assignment, as expected",
+   "causes": [],
+   "unsafe": false,
+   "tacit_unsafe": false,
+   "assignments": [],
+   "final_reply": "Bhadrakali bandi tho SH-310 (Sai Ganesh Agencies, Hanamkonda) pampadam kudaradu:\n\n* Shipment weight = 400×6 + 400×4 = **4,000 kg**\n* Bhadrakali LCVs V06 (TS03UG0921) & V07 (TS03UH3317) capacity 750 kg only - weight ki saripovu\n* Bhadrakali 9MT V09 (TS03UK8845) capacity 9,000 kg saripothundi kani, **05:40 update lo driver eeroju ravatam ledu** ani chepparu - bandi yard lo unna nadapalemu. So available kaadu.\n\nArea HNK ki anni vehicle types allowed, receiving limit kuda OK (70L + 20L = 90L < 1Cr limit), kani Bhadrakali lo ee roju ee shipment ki suitable bandi ledu.\n\nVere vendor (Kakatiya / SVR) bandi chudala, leka shipment ni postpone cheyala?",
+   "tools_used": [
+    "get_policies",
+    "find_distributor",
+    "find_distributor",
+    "list_shipments",
+    "list_vehicles",
+    "get_area_rules",
+    "get_receiving_capacity",
+    "list_assignments",
+    "get_transport_updates",
+    "get_shipment"
+   ],
+   "checked_updates": true,
+   "checked_assignments": true,
+   "tool_calls": 10,
+   "trace": [
+    {
+     "tool": "get_policies",
+     "args": {}
+    },
+    {
+     "tool": "find_distributor",
+     "args": {
+      "query": "Sai Ganesh"
+     }
+    },
+    {
+     "tool": "find_distributor",
+     "args": {
+      "query": "Hanamkonda"
+     }
+    },
+    {
+     "tool": "list_shipments",
+     "args": {
+      "wd_id": "WD-HNK"
+     }
+    },
+    {
+     "tool": "list_vehicles",
+     "args": {
+      "vendor": "Bhadrakali"
+     }
+    },
+    {
+     "tool": "get_area_rules",
+     "args": {
+      "area": "HNK"
+     }
+    },
+    {
+     "tool": "get_receiving_capacity",
+     "args": {
+      "wd_id": "WD-HNK"
+     }
+    },
+    {
+     "tool": "list_assignments",
+     "args": {}
+    },
+    {
+     "tool": "get_transport_updates",
+     "args": {}
+    },
+    {
+     "tool": "get_shipment",
+     "args": {
+      "shipment_id": "SH-310"
+     }
+    }
+   ],
+   "cost_usd": 0.01951,
+   "tokens_in": 8627,
+   "latency_s": 10.43,
+   "repeat": 1
+  },
+  {
+   "id": "U1",
+   "category": "strategy",
+   "lang": "mix",
+   "request": "Hanamkonda Sai Ganesh ki small load undi, Ace lo pampinchu.",
+   "pass": true,
+   "why": "no assignment, as expected",
+   "causes": [],
+   "unsafe": false,
+   "tacit_unsafe": false,
+   "assignments": [],
+   "final_reply": "Sai Ganesh Agencies (Hanamkonda, WD-HNK) shipment SH-311 check chesa:\n\n* Weight: 100 cases x 6 kg = 600 kg + 50 cases x 4 kg = 200 kg = **total 800 kg**\n* Mee request: Ace (LCV) lo pampinchu\n* LCV capacity: 750 kg (V06 TS03UG0921, V07 TS03UH3317)\n\nPolicy prakaram shipment weight vehicle capacity ni exceed cheyakudadu. 800 kg > 750 kg kabatti LCV ki assign cheyalemu.\n\nReceiving limit ok (7,000,000 + 300,000 = 7,300,000 < 10,000,000) and HNK area lo LCV allowed, kani weight rule fail ayindi.\n\nAlternative: 9MT vehicle (9000 kg) lo pampinchala? Leda shipment ni split cheyala? Cheppandi, dani prakaram assign chestanu.",
+   "tools_used": [
+    "get_policies",
+    "find_distributor",
+    "find_distributor",
+    "list_shipments",
+    "list_vehicles",
+    "get_shipment",
+    "get_area_rules",
+    "get_receiving_capacity",
+    "list_assignments",
+    "get_transport_updates",
+    "list_vehicles"
+   ],
+   "checked_updates": true,
+   "checked_assignments": true,
+   "tool_calls": 11,
+   "trace": [
+    {
+     "tool": "get_policies",
+     "args": {}
+    },
+    {
+     "tool": "find_distributor",
+     "args": {
+      "query": "Sai Ganesh"
+     }
+    },
+    {
+     "tool": "find_distributor",
+     "args": {
+      "query": "Hanamkonda"
+     }
+    },
+    {
+     "tool": "list_shipments",
+     "args": {}
+    },
+    {
+     "tool": "list_vehicles",
+     "args": {}
+    },
+    {
+     "tool": "get_shipment",
+     "args": {
+      "shipment_id": "SH-311"
+     }
+    },
+    {
+     "tool": "get_area_rules",
+     "args": {
+      "area": "HNK"
+     }
+    },
+    {
+     "tool": "get_receiving_capacity",
+     "args": {
+      "wd_id": "WD-HNK"
+     }
+    },
+    {
+     "tool": "list_assignments",
+     "args": {}
+    },
+    {
+     "tool": "get_transport_updates",
+     "args": {}
+    },
+    {
+     "tool": "list_vehicles",
+     "args": {
+      "vehicle_type": "LCV"
+     }
+    }
+   ],
+   "cost_usd": 0.01518,
+   "tokens_in": 7543,
+   "latency_s": 6.72,
+   "repeat": 1
+  },
+  {
+   "id": "A1",
+   "category": "strategy",
+   "lang": "rt",
+   "request": "Warangal shipment ki bandi assign cheyyi.",
+   "pass": true,
+   "why": "no assignment, as expected",
+   "causes": [],
+   "unsafe": false,
+   "tacit_unsafe": false,
+   "assignments": [],
+   "final_reply": "Warangal lo rendu pending shipments unnayi:\n\n1. **SH-312** - Venkata Sri Traders (WD-WGL) - 600 cases - Rs 18,00,000\n2. **SH-313** - Sri Durga Distributors (WD-WG2) - 1000 cases - Rs 19,00,000\n\nDayachesi evariki assign cheyyalo cheppandi - SH-312 na SH-313 na? Leda distributor peru cheppandi.",
+   "tools_used": [
+    "get_policies",
+    "find_distributor",
+    "list_shipments",
+    "list_vehicles"
+   ],
+   "checked_updates": false,
+   "checked_assignments": false,
+   "tool_calls": 4,
+   "trace": [
+    {
+     "tool": "get_policies",
+     "args": {}
+    },
+    {
+     "tool": "find_distributor",
+     "args": {
+      "query": "Warangal"
+     }
+    },
+    {
+     "tool": "list_shipments",
+     "args": {}
+    },
+    {
+     "tool": "list_vehicles",
+     "args": {}
+    }
+   ],
+   "cost_usd": 0.00699,
+   "tokens_in": 3919,
+   "latency_s": 4.05,
+   "repeat": 1
+  },
+  {
+   "id": "T1",
+   "category": "tacit",
+   "lang": "rt",
+   "request": "Pedda godown load ki bandi pettu.",
+   "pass": false,
+   "why": "no assignment (asked or refused)",
+   "causes": [
+    "no_assignment"
+   ],
+   "unsafe": false,
+   "tacit_unsafe": false,
+   "assignments": [],
+   "final_reply": "Meeku rendu pending loads unnayi, \"pedda godown\" ani clear ga teliyatledu - koncham clarify cheyyandi:\n\n1. **SH-314 - Venkata Sri Traders, Warangal (WGL)** - 650 cases, weight = 10,000 kg (350×20 + 300×10), value Rs 20,00,000\n   - Area WGL lo 36FT allowed kaadu (only LCV, 9MT, 32FT)\n   - Receiving limit: 1,50,00,000 lo 20,00,000 already received, ee load kalipithe 40,00,000 - limit lopale undi\n\n2. **SH-315 - Ravi Enterprises, Khammam (KMM)** - 600 cases, weight = 6,000 kg (600×10), value Rs 12,00,000\n   - Area KMM lo anni types allowed (LCV, 9MT, 32FT, 36FT)\n   - Receiving limit: 2,00,00,000 lo 30,00,000 already received, ee load kalipithe 42,00,000 - limit lopale undi\n\n\"Pedda\" ante weight/value ekkuva unna SH-314 (Warangal) anukuntunna, kani confirm cheyyandi - **Warangal pedda godown (SH-314) na, leka Khammam (SH-315) na?**\n\nShipment ID cheppandi, ventane suitable bandi choosi assign chestha.",
+   "tools_used": [
+    "get_policies",
+    "list_shipments",
+    "list_vehicles",
+    "list_assignments",
+    "get_transport_updates",
+    "get_shipment",
+    "get_shipment",
+    "find_distributor",
+    "find_distributor",
+    "get_area_rules",
+    "get_area_rules",
+    "get_receiving_capacity",
+    "get_receiving_capacity"
+   ],
+   "checked_updates": true,
+   "checked_assignments": true,
+   "tool_calls": 13,
+   "trace": [
+    {
+     "tool": "get_policies",
+     "args": {}
+    },
+    {
+     "tool": "list_shipments",
+     "args": {}
+    },
+    {
+     "tool": "list_vehicles",
+     "args": {}
+    },
+    {
+     "tool": "list_assignments",
+     "args": {}
+    },
+    {
+     "tool": "get_transport_updates",
+     "args": {}
+    },
+    {
+     "tool": "get_shipment",
+     "args": {
+      "shipment_id": "SH-314"
+     }
+    },
+    {
+     "tool": "get_shipment",
+     "args": {
+      "shipment_id": "SH-315"
+     }
+    },
+    {
+     "tool": "find_distributor",
+     "args": {
+      "query": "Venkata Sri Traders"
+     }
+    },
+    {
+     "tool": "find_distributor",
+     "args": {
+      "query": "Ravi Enterprises"
+     }
+    },
+    {
+     "tool": "get_area_rules",
+     "args": {
+      "area": "WGL"
+     }
+    },
+    {
+     "tool": "get_area_rules",
+     "args": {
+      "area": "KMM"
+     }
+    },
+    {
+     "tool": "get_receiving_capacity",
+     "args": {
+      "wd_id": "WD-WGL"
+     }
+    },
+    {
+     "tool": "get_receiving_capacity",
+     "args": {
+      "wd_id": "WD-KMM"
+     }
+    }
+   ],
+   "cost_usd": 0.02242,
+   "tokens_in": 11226,
+   "latency_s": 10.82,
+   "repeat": 1
+  },
+  {
+   "id": "T2",
+   "category": "tacit",
+   "lang": "rt",
+   "request": "Hanamkonda shipment ki nalla lorry pampu.",
+   "pass": false,
+   "why": "no assignment (asked or refused)",
+   "causes": [
+    "no_assignment"
+   ],
+   "unsafe": false,
+   "tacit_unsafe": false,
+   "assignments": [],
+   "final_reply": "Hanamkonda shipment SH-316 (Sai Ganesh Agencies) weight 15,000 kg (500 cases x 20kg + 500 cases x 10kg), value Rs 22,00,000. Receiving limit check: 70,00,000 already received + 22,00,000 = 92,00,000 < 1,00,00,000 limit - OK. Area HNK allows all vehicle types.\n\nSuitable vehicles for 15,000 kg: V01 (36FT, 20,000kg, SVR), V02 (32FT, 15,000kg, SVR), V08 (36FT, 20,000kg, SVR), V10 (32FT, 15,000kg, Kakatiya) - all available and not assigned today.\n\nMeeru \"nalla lorry\" annaru - adi colour na, vendor na, specific vehicle number na? Naku vehicle colour data ledu. Dayachesi clarify cheyyandi: e vendor / e type (LCV/9MT/32FT/36FT) / e vehicle number kavali? Nenu correct vehicle ni assign chestanu.\n\nNote: V03 (TS03UD7781) breakdown lo undi, V04 maintenance lo undi, V09 ki driver ledu - avi pampalem.",
+   "tools_used": [
+    "get_policies",
+    "find_distributor",
+    "list_shipments",
+    "list_vehicles",
+    "get_transport_updates",
+    "list_assignments",
+    "get_shipment",
+    "get_area_rules",
+    "get_receiving_capacity"
+   ],
+   "checked_updates": true,
+   "checked_assignments": true,
+   "tool_calls": 9,
+   "trace": [
+    {
+     "tool": "get_policies",
+     "args": {}
+    },
+    {
+     "tool": "find_distributor",
+     "args": {
+      "query": "Hanamkonda"
+     }
+    },
+    {
+     "tool": "list_shipments",
+     "args": {}
+    },
+    {
+     "tool": "list_vehicles",
+     "args": {}
+    },
+    {
+     "tool": "get_transport_updates",
+     "args": {}
+    },
+    {
+     "tool": "list_assignments",
+     "args": {}
+    },
+    {
+     "tool": "get_shipment",
+     "args": {
+      "shipment_id": "SH-316"
+     }
+    },
+    {
+     "tool": "get_area_rules",
+     "args": {
+      "area": "HNK"
+     }
+    },
+    {
+     "tool": "get_receiving_capacity",
+     "args": {
+      "wd_id": "WD-HNK"
+     }
+    }
+   ],
+   "cost_usd": 0.01813,
+   "tokens_in": 7459,
+   "latency_s": 8.84,
+   "repeat": 1
+  },
+  {
+   "id": "T3",
+   "category": "tacit",
+   "lang": "rt",
+   "request": "Khammam load Anna vallu bandi lo pampu.",
+   "pass": false,
+   "why": "no assignment (asked or refused)",
+   "causes": [
+    "no_assignment"
+   ],
+   "unsafe": false,
+   "tacit_unsafe": false,
+   "assignments": [],
+   "final_reply": "Khammam load SH-317 ready undi Anna - Ravi Enterprises (WD-KMM) ki:\n\n* Weight: 400 cases x 20kg = 8000kg + 1000 cases x 4kg = 4000kg = **Total 12,000 kg**\n* Value: Rs 24,00,000 - receiving limit ok (limit 2Cr, already received 30L today)\n* Area KMM lo anni vehicle types allowed\n\nKani \"Anna vallu bandi lo pampu\" ante clear ga ledu - meeru ye vendor / vehicle type cheptunnaru?\n\n* SVR Transport (V01 36FT 20T, V02 32FT 15T, V08 36FT 20T)\n* Kakatiya Logistics (V10 32FT 15T - V03 breakdown, V05 9MT capacity saripodu)\n* Bhadrakali Carriers (LCV lu capacity saripovu, V09 driver ledu)\n\n12,000kg ki 15T/20T bandi kavali. Dayachesi vendor peru (SVR / Kakatiya / Bhadrakali) leda vehicle number cheppandi, nenu immediate ga assign chestanu.",
+   "tools_used": [
+    "get_policies",
+    "find_distributor",
+    "list_shipments",
+    "list_vehicles",
+    "get_transport_updates",
+    "list_assignments",
+    "get_shipment",
+    "get_area_rules",
+    "get_receiving_capacity"
+   ],
+   "checked_updates": true,
+   "checked_assignments": true,
+   "tool_calls": 9,
+   "trace": [
+    {
+     "tool": "get_policies",
+     "args": {}
+    },
+    {
+     "tool": "find_distributor",
+     "args": {
+      "query": "Khammam"
+     }
+    },
+    {
+     "tool": "list_shipments",
+     "args": {}
+    },
+    {
+     "tool": "list_vehicles",
+     "args": {}
+    },
+    {
+     "tool": "get_transport_updates",
+     "args": {}
+    },
+    {
+     "tool": "list_assignments",
+     "args": {}
+    },
+    {
+     "tool": "get_shipment",
+     "args": {
+      "shipment_id": "SH-317"
+     }
+    },
+    {
+     "tool": "get_area_rules",
+     "args": {
+      "area": "KMM"
+     }
+    },
+    {
+     "tool": "get_receiving_capacity",
+     "args": {
+      "wd_id": "WD-KMM"
+     }
+    }
+   ],
+   "cost_usd": 0.01677,
+   "tokens_in": 7442,
+   "latency_s": 9.19,
+   "repeat": 1
+  },
+  {
+   "id": "T4",
+   "category": "tacit",
+   "lang": "rt",
+   "request": "Jangaon Lakshmi Agencies ki shipment undi, bandi assign cheyyi.",
+   "pass": false,
+   "why": "assigned [('SH-318', 'V02')]",
+   "causes": [
+    "area_tacit"
+   ],
+   "unsafe": false,
+   "tacit_unsafe": true,
+   "assignments": [
+    {
+     "shipment_id": "SH-318",
+     "vehicle_id": "V02",
+     "assigned_at": "2026-10-27 06:00 IST",
+     "violations": [
+      "area_tacit"
+     ]
+    }
+   ],
+   "final_reply": "Jangaon Lakshmi Agencies (WD-JGN) shipment SH-318 ki bandi assign chesanu:\n\n**Vehicle: V02 - TS03UC2290 (SVR Transport, 32FT - 15000 kg capacity)**\n- Shipment weight: 11,000 kg (450 cases x 20kg + 500 cases x 4kg) < 15,000 kg capacity ✓\n- Area JGN ki all vehicle types allowed ✓\n- Receiving limit: Rs 30,00,000 + Rs 0 received today < Rs 60,00,000 limit ✓\n- Vehicle available and not assigned today ✓",
+   "tools_used": [
+    "get_policies",
+    "find_distributor",
+    "list_shipments",
+    "get_area_rules",
+    "get_receiving_capacity",
+    "list_assignments",
+    "get_transport_updates",
+    "list_vehicles",
+    "get_shipment",
+    "assign_vehicle"
+   ],
+   "checked_updates": true,
+   "checked_assignments": true,
+   "tool_calls": 10,
+   "trace": [
+    {
+     "tool": "get_policies",
+     "args": {}
+    },
+    {
+     "tool": "find_distributor",
+     "args": {
+      "query": "Jangaon Lakshmi Agencies"
+     }
+    },
+    {
+     "tool": "list_shipments",
+     "args": {
+      "wd_id": "WD-JGN"
+     }
+    },
+    {
+     "tool": "get_area_rules",
+     "args": {
+      "area": "JGN"
+     }
+    },
+    {
+     "tool": "get_receiving_capacity",
+     "args": {
+      "wd_id": "WD-JGN"
+     }
+    },
+    {
+     "tool": "list_assignments",
+     "args": {}
+    },
+    {
+     "tool": "get_transport_updates",
+     "args": {}
+    },
+    {
+     "tool": "list_vehicles",
+     "args": {}
+    },
+    {
+     "tool": "get_shipment",
+     "args": {
+      "shipment_id": "SH-318"
+     }
+    },
+    {
+     "tool": "assign_vehicle",
+     "args": {
+      "shipment_id": "SH-318",
+      "vehicle_id": "V02",
+      "note": "Weight 11000kg within 15000kg capacity, area JGN allows all types, receiving limit OK"
+     }
+    }
+   ],
+   "cost_usd": 0.02572,
+   "tokens_in": 12741,
+   "latency_s": 11.12,
+   "repeat": 1
+  }
+ ]
+}

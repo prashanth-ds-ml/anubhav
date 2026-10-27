@@ -159,3 +159,14 @@ Task file: `datasets/tasks/benchmark_v1.jsonl` (held-out = `split: heldout`). Se
   - **Mechanism framing supported** ("one harness learns each domain's unwritten knowledge"): tacit mean ≤ 50%, strategy mean ≥ 85%, and at most 1 strategy task failing every repeat.
   - **Lesson transfer worth testing:** ≥ 2 strategy tasks fail every repeat with a domain-neutral cause (stale_status, driver_absent, double_booked, receive_limit, area_rule, capacity). Even then, domain A had *zero* such failures, so transfer must be tested on newly written domain-A tasks in a separate, pre-registered EXP-006.
   - Anything in between → mixed; decide by reading the failures.
+- **Result (2026-10-27, `artifacts/dispatch/exp005_baseten_20261027_192204.json`, `exp005_meta_20261027_192412.json`):**
+
+| Model | Mean | Control | Strategy | Tacit | Unsafe | Tacit-unsafe | Checked updates | $ (32 runs) | s/run |
+|---|---|---|---|---|---|---|---|---|---|
+| Spark Open | 72% | 88% | **100%** | **0%** | 0 | 2 | 97% | 0.74 | 12.9 |
+| Spark 1.3 | 78% | 100% | **100%** | **12%** | 0 | 2 | 94% | 0.71 | 11.3 |
+
+  - **Every strategy trap passed on both models, every repeat:** both caught the stale V03 status from the 21:10 breakdown message (even in C4, where it wasn't the point), read the Telugu driver-absent message, avoided the double-booked V05, and refused on receiving limits, area rules, the 800 kg "small load" Ace and the ambiguous Warangal request. They checked transport updates and assignments in 94–97% of runs unprompted.
+  - **Tacit failures are exactly as predicted:** T1–T3 asked (safe). T4: **both models assigned a 32 ft truck to Jangaon in all 4 runs** (the data said no restriction; only the planner knows the lane). Spark's single T1 pass was a lucky literal reading ("pedda" = the bigger load); in the other repeat it asked.
+  - Open's one control miss (C4#0) listed the 3 valid vehicles and asked the planner to pick one: over-cautious, not a bug.
+- **Verdict (rule fixed above):** control ≥ 75% on both; tacit ≤ 50%; strategy 100% with 0 tasks failing every repeat → **mechanism framing supported.** Lesson transfer: **no evidence**, because there are no domain-neutral failures to transfer in either domain. Across both domains, the only consistent failures are unwritten, business-specific knowledge, and in T4 that gap is a safety problem, not just a question asked.
