@@ -36,4 +36,4 @@ tags: [tracker, cost]
 | Meta Model API | $150 | ✅ received | Core runtime |
 | Baseten | $100 + 2M TPM | ✅ received (2026-10-27) | Open-weights arm (FR-15) |
 | Modal | $100 | ⏳ pending | Open-weights arm / hosting alternative |
-| Fireworks | $25 | not applied | Selective; email only |
+| Fireworks | $25 | ⏳ pending (applied 2026-10-27) | Selective; email only |
