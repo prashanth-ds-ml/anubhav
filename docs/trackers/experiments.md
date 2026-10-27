@@ -128,5 +128,21 @@ Task file: `datasets/tasks/benchmark_v1.jsonl` (held-out = `split: heldout`). Se
   - Report separately whether Muse planning directly (one-shot / feedback) matches the heuristic; any shortfall counts as "conventional algorithm beats Muse".
   - **NO-GO** otherwise.
   - **Either way, before pivoting:** "Muse reads Telugu instructions accurately" is the same capability the 48-task benchmark already showed at ~100% outside slang. A GO must therefore also beat the original project on novelty, not just on feasibility.
-- **Result:** _pending_
+- **Result (2026-10-27, `artifacts/lab/exp003_20261027_122039.json`, 3 repeats):**
+
+| Method | L1 | L2 | L3 | L4 | L5 | Mean | Feasible | $/run | s/run |
+|---|---|---|---|---|---|---|---|---|---|
+| Basic greedy | 0.168 | 0.265 | 0.630 | 0.000 | 0.000 | 0.212 | 80% | 0 | ~0 |
+| Strong heuristic, no instructions | 0.000 | 0.503 | 0.000 | 0.000 | 0.000 | 0.101 | 20% | 0 | ~0 |
+| Strong heuristic, gold reading | 0.732 | 0.874 | 0.963 | 0.947 | 0.717 | 0.847 | 100% | 0 | ~0 |
+| Exact optimum, gold reading | 0.732 | 0.874 | 0.963 | 0.947 | 0.717 | 0.847 | 100% | 0 | ~0 |
+| Muse one-shot | 0.732 | 0.874 | 0.963 | 0.947 | 0.717 | 0.847 | 100% | 0.014 | 10 |
+| Muse + feedback (≤ 2 revisions) | 0.732 | 0.874 | 0.963 | 0.947 | 0.717 | 0.847 | 100% | 0.046 | 35 |
+| Hybrid (Muse extracts → ILP) | 0.732 | 0.874 | 0.963 | 0.947 | 0.717 | 0.847 | 100% | 0.005 | 4 |
+
+  - Muse planning directly hit the **exact optimum in 15/15 runs with 0 violations**, one-shot. Feedback never changed a plan: 3× the cost and latency for no gain.
+  - Instruction extraction **42/45 fields (93%)**. The only miss, all 3 repeats: L1 Durga "repu delivery kavali, aagaleru" read as deadline **plus** must-fill (gold: deadline only). A defensible, stricter reading; harmless here.
+  - **Where conventional algorithms match or beat Muse:** given the correct constraints, a 30-line heuristic equals the optimum in every scenario at zero cost and in milliseconds; Muse costs $0.005–0.046 and 4–35 s per plan. **Muse adds no optimization value at this scale.** Its value is entirely in reading the instructions: without them, the same heuristic scores 0.101 and breaks rules in 4 of 5 scenarios.
+  - Not tested: larger multi-SKU problems, where heuristic and optimum may diverge and Muse's direct planning may degrade.
+- **Verdict:** the narrow GO criteria are met (hybrid 100% of optimum, 100% feasible, extraction 93%). **But the novelty clause fails:** the Lab's only Muse contribution is multilingual instruction reading, which the 48-task benchmark already showed, and there is no failure or improvement to demonstrate (Muse is already optimal; a heuristic matches it). **Recommendation: NO-GO on pivoting to the Lab.** Keep the hybrid pattern (Muse reads instructions → solver plans) as a possible shortage-allocation feature inside the original agent.
 

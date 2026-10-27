@@ -1,0 +1,3550 @@
+{
+ "model": "muse-spark-1.3",
+ "rows": [
+  {
+   "scenario": "L1",
+   "method": "greedy",
+   "repeat": 0,
+   "feasible": true,
+   "violations": [],
+   "weighted_fulfillment": 0.1678,
+   "score": 0.1678,
+   "revenue_now_rs": 14196,
+   "revenue_backorder_rs": 0,
+   "cost_usd": 0.0,
+   "latency_s": 0.0034,
+   "plan": {
+    "C-008": {
+     "now": 8,
+     "sub": 0,
+     "bo": 0
+    },
+    "C-001": {
+     "now": 0,
+     "sub": 0,
+     "bo": 0
+    },
+    "C-007": {
+     "now": 0,
+     "sub": 0,
+     "bo": 0
+    },
+    "C-009": {
+     "now": 0,
+     "sub": 0,
+     "bo": 0
+    }
+   }
+  },
+  {
+   "scenario": "L1",
+   "method": "heuristic_base",
+   "repeat": 0,
+   "feasible": false,
+   "violations": [
+    "C-008: must not receive substitutes",
+    "C-009: backorder not allowed (no restock, or restock after deadline 2026-10-29)"
+   ],
+   "weighted_fulfillment": 0.9028,
+   "score": 0.0,
+   "revenue_now_rs": 84756,
+   "revenue_backorder_rs": 9135,
+   "cost_usd": 0.0,
+   "latency_s": 0.0034,
+   "plan": {
+    "C-008": {
+     "now": 8,
+     "sub": 22,
+     "bo": 0
+    },
+    "C-001": {
+     "now": 0,
+     "sub": 12,
+     "bo": 0
+    },
+    "C-007": {
+     "now": 0,
+     "sub": 6,
+     "bo": 0
+    },
+    "C-009": {
+     "now": 0,
+     "sub": 0,
+     "bo": 5
+    }
+   }
+  },
+  {
+   "scenario": "L1",
+   "method": "heuristic_gold",
+   "repeat": 0,
+   "feasible": true,
+   "violations": [],
+   "weighted_fulfillment": 0.7322,
+   "score": 0.7322,
+   "revenue_now_rs": 54768,
+   "revenue_backorder_rs": 39039,
+   "cost_usd": 0.0,
+   "latency_s": 0.0034,
+   "plan": {
+    "C-008": {
+     "now": 8,
+     "sub": 0,
+     "bo": 22
+    },
+    "C-001": {
+     "now": 0,
+     "sub": 12,
+     "bo": 0
+    },
+    "C-007": {
+     "now": 0,
+     "sub": 6,
+     "bo": 0
+    },
+    "C-009": {
+     "now": 0,
+     "sub": 5,
+     "bo": 0
+    }
+   }
+  },
+  {
+   "scenario": "L1",
+   "method": "optimum_gold",
+   "repeat": 0,
+   "feasible": true,
+   "violations": [],
+   "weighted_fulfillment": 0.7322,
+   "score": 0.7322,
+   "revenue_now_rs": 54768,
+   "revenue_backorder_rs": 39039,
+   "cost_usd": 0.0,
+   "latency_s": 0.0034,
+   "plan": {
+    "C-008": {
+     "now": 8,
+     "sub": 0,
+     "bo": 22
+    },
+    "C-001": {
+     "now": 0,
+     "sub": 12,
+     "bo": 0
+    },
+    "C-007": {
+     "now": 0,
+     "sub": 6,
+     "bo": 0
+    },
+    "C-009": {
+     "now": 0,
+     "sub": 5,
+     "bo": 0
+    }
+   }
+  },
+  {
+   "scenario": "L1",
+   "method": "muse_oneshot",
+   "repeat": 0,
+   "feasible": true,
+   "violations": [],
+   "weighted_fulfillment": 0.7322,
+   "score": 0.7322,
+   "revenue_now_rs": 54768,
+   "revenue_backorder_rs": 39039,
+   "cost_usd": 0.01257,
+   "latency_s": 10.16,
+   "plan": {
+    "C-008": {
+     "now": 8,
+     "sub": 0,
+     "bo": 22
+    },
+    "C-001": {
+     "now": 0,
+     "sub": 12,
+     "bo": 0
+    },
+    "C-007": {
+     "now": 0,
+     "sub": 6,
+     "bo": 0
+    },
+    "C-009": {
+     "now": 0,
+     "sub": 5,
+     "bo": 0
+    }
+   }
+  },
+  {
+   "scenario": "L1",
+   "method": "muse_feedback",
+   "repeat": 0,
+   "feasible": true,
+   "violations": [],
+   "weighted_fulfillment": 0.7322,
+   "score": 0.7322,
+   "revenue_now_rs": 54768,
+   "revenue_backorder_rs": 39039,
+   "cost_usd": 0.04296,
+   "latency_s": 35.17,
+   "plan": {
+    "C-008": {
+     "now": 8,
+     "sub": 0,
+     "bo": 22
+    },
+    "C-001": {
+     "now": 0,
+     "sub": 12,
+     "bo": 0
+    },
+    "C-007": {
+     "now": 0,
+     "sub": 6,
+     "bo": 0
+    },
+    "C-009": {
+     "now": 0,
+     "sub": 5,
+     "bo": 0
+    }
+   }
+  },
+  {
+   "scenario": "L1",
+   "method": "hybrid",
+   "repeat": 0,
+   "feasible": true,
+   "violations": [],
+   "weighted_fulfillment": 0.7322,
+   "score": 0.7322,
+   "revenue_now_rs": 54768,
+   "revenue_backorder_rs": 39039,
+   "cost_usd": 0.00525,
+   "latency_s": 4.7,
+   "plan": {
+    "C-008": {
+     "now": 8,
+     "sub": 0,
+     "bo": 22
+    },
+    "C-001": {
+     "now": 0,
+     "sub": 12,
+     "bo": 0
+    },
+    "C-007": {
+     "now": 0,
+     "sub": 6,
+     "bo": 0
+    },
+    "C-009": {
+     "now": 0,
+     "sub": 5,
+     "bo": 0
+    }
+   }
+  },
+  {
+   "scenario": "L1",
+   "method": "muse_oneshot",
+   "repeat": 1,
+   "feasible": true,
+   "violations": [],
+   "weighted_fulfillment": 0.7322,
+   "score": 0.7322,
+   "revenue_now_rs": 54768,
+   "revenue_backorder_rs": 39039,
+   "cost_usd": 0.01339,
+   "latency_s": 11.08,
+   "plan": {
+    "C-008": {
+     "now": 8,
+     "sub": 0,
+     "bo": 22
+    },
+    "C-001": {
+     "now": 0,
+     "sub": 12,
+     "bo": 0
+    },
+    "C-007": {
+     "now": 0,
+     "sub": 6,
+     "bo": 0
+    },
+    "C-009": {
+     "now": 0,
+     "sub": 5,
+     "bo": 0
+    }
+   }
+  },
+  {
+   "scenario": "L1",
+   "method": "muse_feedback",
+   "repeat": 1,
+   "feasible": true,
+   "violations": [],
+   "weighted_fulfillment": 0.7322,
+   "score": 0.7322,
+   "revenue_now_rs": 54768,
+   "revenue_backorder_rs": 39039,
+   "cost_usd": 0.04614,
+   "latency_s": 38.6,
+   "plan": {
+    "C-008": {
+     "now": 8,
+     "sub": 0,
+     "bo": 22
+    },
+    "C-001": {
+     "now": 0,
+     "sub": 12,
+     "bo": 0
+    },
+    "C-007": {
+     "now": 0,
+     "sub": 6,
+     "bo": 0
+    },
+    "C-009": {
+     "now": 0,
+     "sub": 5,
+     "bo": 0
+    }
+   }
+  },
+  {
+   "scenario": "L1",
+   "method": "hybrid",
+   "repeat": 1,
+   "feasible": true,
+   "violations": [],
+   "weighted_fulfillment": 0.7322,
+   "score": 0.7322,
+   "revenue_now_rs": 54768,
+   "revenue_backorder_rs": 39039,
+   "cost_usd": 0.00597,
+   "latency_s": 5.36,
+   "plan": {
+    "C-008": {
+     "now": 8,
+     "sub": 0,
+     "bo": 22
+    },
+    "C-001": {
+     "now": 0,
+     "sub": 12,
+     "bo": 0
+    },
+    "C-007": {
+     "now": 0,
+     "sub": 6,
+     "bo": 0
+    },
+    "C-009": {
+     "now": 0,
+     "sub": 5,
+     "bo": 0
+    }
+   }
+  },
+  {
+   "scenario": "L1",
+   "method": "muse_oneshot",
+   "repeat": 2,
+   "feasible": true,
+   "violations": [],
+   "weighted_fulfillment": 0.7322,
+   "score": 0.7322,
+   "revenue_now_rs": 54768,
+   "revenue_backorder_rs": 39039,
+   "cost_usd": 0.01456,
+   "latency_s": 9.73,
+   "plan": {
+    "C-008": {
+     "now": 8,
+     "sub": 0,
+     "bo": 22
+    },
+    "C-001": {
+     "now": 0,
+     "sub": 12,
+     "bo": 0
+    },
+    "C-007": {
+     "now": 0,
+     "sub": 6,
+     "bo": 0
+    },
+    "C-009": {
+     "now": 0,
+     "sub": 5,
+     "bo": 0
+    }
+   }
+  },
+  {
+   "scenario": "L1",
+   "method": "muse_feedback",
+   "repeat": 2,
+   "feasible": true,
+   "violations": [],
+   "weighted_fulfillment": 0.7322,
+   "score": 0.7322,
+   "revenue_now_rs": 54768,
+   "revenue_backorder_rs": 39039,
+   "cost_usd": 0.05101,
+   "latency_s": 35.33,
+   "plan": {
+    "C-008": {
+     "now": 8,
+     "sub": 0,
+     "bo": 22
+    },
+    "C-001": {
+     "now": 0,
+     "sub": 12,
+     "bo": 0
+    },
+    "C-007": {
+     "now": 0,
+     "sub": 6,
+     "bo": 0
+    },
+    "C-009": {
+     "now": 0,
+     "sub": 5,
+     "bo": 0
+    }
+   }
+  },
+  {
+   "scenario": "L1",
+   "method": "hybrid",
+   "repeat": 2,
+   "feasible": true,
+   "violations": [],
+   "weighted_fulfillment": 0.7322,
+   "score": 0.7322,
+   "revenue_now_rs": 54768,
+   "revenue_backorder_rs": 39039,
+   "cost_usd": 0.00734,
+   "latency_s": 6.14,
+   "plan": {
+    "C-008": {
+     "now": 8,
+     "sub": 0,
+     "bo": 22
+    },
+    "C-001": {
+     "now": 0,
+     "sub": 12,
+     "bo": 0
+    },
+    "C-007": {
+     "now": 0,
+     "sub": 6,
+     "bo": 0
+    },
+    "C-009": {
+     "now": 0,
+     "sub": 5,
+     "bo": 0
+    }
+   }
+  },
+  {
+   "scenario": "L2",
+   "method": "greedy",
+   "repeat": 0,
+   "feasible": true,
+   "violations": [],
+   "weighted_fulfillment": 0.2647,
+   "score": 0.2647,
+   "revenue_now_rs": 19656,
+   "revenue_backorder_rs": 0,
+   "cost_usd": 0.0,
+   "latency_s": 0.0021,
+   "plan": {
+    "C-013": {
+     "now": 6,
+     "sub": 0,
+     "bo": 0
+    },
+    "C-005": {
+     "now": 0,
+     "sub": 0,
+     "bo": 0
+    },
+    "C-016": {
+     "now": 0,
+     "sub": 0,
+     "bo": 0
+    },
+    "C-006": {
+     "now": 0,
+     "sub": 0,
+     "bo": 0
+    }
+   }
+  },
+  {
+   "scenario": "L2",
+   "method": "heuristic_base",
+   "repeat": 0,
+   "feasible": true,
+   "violations": [],
+   "weighted_fulfillment": 0.5029,
+   "score": 0.5029,
+   "revenue_now_rs": 42294,
+   "revenue_backorder_rs": 0,
+   "cost_usd": 0.0,
+   "latency_s": 0.0021,
+   "plan": {
+    "C-013": {
+     "now": 6,
+     "sub": 4,
+     "bo": 0
+    },
+    "C-006": {
+     "now": 0,
+     "sub": 0,
+     "bo": 0
+    },
+    "C-005": {
+     "now": 0,
+     "sub": 2,
+     "bo": 0
+    },
+    "C-016": {
+     "now": 0,
+     "sub": 1,
+     "bo": 0
+    }
+   }
+  },
+  {
+   "scenario": "L2",
+   "method": "heuristic_gold",
+   "repeat": 0,
+   "feasible": true,
+   "violations": [],
+   "weighted_fulfillment": 0.8735,
+   "score": 0.8735,
+   "revenue_now_rs": 74634,
+   "revenue_backorder_rs": 0,
+   "cost_usd": 0.0,
+   "latency_s": 0.0021,
+   "plan": {
+    "C-013": {
+     "now": 6,
+     "sub": 4,
+     "bo": 0
+    },
+    "C-006": {
+     "now": 0,
+     "sub": 8,
+     "bo": 0
+    },
+    "C-005": {
+     "now": 0,
+     "sub": 4,
+     "bo": 0
+    },
+    "C-016": {
+     "now": 0,
+     "sub": 1,
+     "bo": 0
+    }
+   }
+  },
+  {
+   "scenario": "L2",
+   "method": "optimum_gold",
+   "repeat": 0,
+   "feasible": true,
+   "violations": [],
+   "weighted_fulfillment": 0.8735,
+   "score": 0.8735,
+   "revenue_now_rs": 75138,
+   "revenue_backorder_rs": 0,
+   "cost_usd": 0.0,
+   "latency_s": 0.0021,
+   "plan": {
+    "C-013": {
+     "now": 0,
+     "sub": 10,
+     "bo": 0
+    },
+    "C-005": {
+     "now": 0,
+     "sub": 4,
+     "bo": 0
+    },
+    "C-016": {
+     "now": 0,
+     "sub": 1,
+     "bo": 0
+    },
+    "C-006": {
+     "now": 6,
+     "sub": 2,
+     "bo": 0
+    }
+   }
+  },
+  {
+   "scenario": "L2",
+   "method": "muse_oneshot",
+   "repeat": 0,
+   "feasible": true,
+   "violations": [],
+   "weighted_fulfillment": 0.8735,
+   "score": 0.8735,
+   "revenue_now_rs": 74634,
+   "revenue_backorder_rs": 0,
+   "cost_usd": 0.01661,
+   "latency_s": 12.18,
+   "plan": {
+    "C-013": {
+     "now": 6,
+     "sub": 4,
+     "bo": 0
+    },
+    "C-005": {
+     "now": 0,
+     "sub": 4,
+     "bo": 0
+    },
+    "C-016": {
+     "now": 0,
+     "sub": 1,
+     "bo": 0
+    },
+    "C-006": {
+     "now": 0,
+     "sub": 8,
+     "bo": 0
+    }
+   }
+  },
+  {
+   "scenario": "L2",
+   "method": "muse_feedback",
+   "repeat": 0,
+   "feasible": true,
+   "violations": [],
+   "weighted_fulfillment": 0.8735,
+   "score": 0.8735,
+   "revenue_now_rs": 74634,
+   "revenue_backorder_rs": 0,
+   "cost_usd": 0.05463,
+   "latency_s": 40.37,
+   "plan": {
+    "C-013": {
+     "now": 6,
+     "sub": 4,
+     "bo": 0
+    },
+    "C-005": {
+     "now": 0,
+     "sub": 4,
+     "bo": 0
+    },
+    "C-016": {
+     "now": 0,
+     "sub": 1,
+     "bo": 0
+    },
+    "C-006": {
+     "now": 0,
+     "sub": 8,
+     "bo": 0
+    }
+   }
+  },
+  {
+   "scenario": "L2",
+   "method": "hybrid",
+   "repeat": 0,
+   "feasible": true,
+   "violations": [],
+   "weighted_fulfillment": 0.8735,
+   "score": 0.8735,
+   "revenue_now_rs": 75138,
+   "revenue_backorder_rs": 0,
+   "cost_usd": 0.00481,
+   "latency_s": 3.82,
+   "plan": {
+    "C-013": {
+     "now": 0,
+     "sub": 10,
+     "bo": 0
+    },
+    "C-005": {
+     "now": 0,
+     "sub": 4,
+     "bo": 0
+    },
+    "C-016": {
+     "now": 0,
+     "sub": 1,
+     "bo": 0
+    },
+    "C-006": {
+     "now": 6,
+     "sub": 2,
+     "bo": 0
+    }
+   }
+  },
+  {
+   "scenario": "L2",
+   "method": "muse_oneshot",
+   "repeat": 1,
+   "feasible": true,
+   "violations": [],
+   "weighted_fulfillment": 0.8735,
+   "score": 0.8735,
+   "revenue_now_rs": 74886,
+   "revenue_backorder_rs": 0,
+   "cost_usd": 0.01647,
+   "latency_s": 12.72,
+   "plan": {
+    "C-013": {
+     "now": 3,
+     "sub": 7,
+     "bo": 0
+    },
+    "C-005": {
+     "now": 0,
+     "sub": 4,
+     "bo": 0
+    },
+    "C-016": {
+     "now": 0,
+     "sub": 1,
+     "bo": 0
+    },
+    "C-006": {
+     "now": 3,
+     "sub": 5,
+     "bo": 0
+    }
+   }
+  },
+  {
+   "scenario": "L2",
+   "method": "muse_feedback",
+   "repeat": 1,
+   "feasible": true,
+   "violations": [],
+   "weighted_fulfillment": 0.8735,
+   "score": 0.8735,
+   "revenue_now_rs": 74886,
+   "revenue_backorder_rs": 0,
+   "cost_usd": 0.05365,
+   "latency_s": 42.19,
+   "plan": {
+    "C-013": {
+     "now": 3,
+     "sub": 7,
+     "bo": 0
+    },
+    "C-005": {
+     "now": 0,
+     "sub": 4,
+     "bo": 0
+    },
+    "C-016": {
+     "now": 0,
+     "sub": 1,
+     "bo": 0
+    },
+    "C-006": {
+     "now": 3,
+     "sub": 5,
+     "bo": 0
+    }
+   }
+  },
+  {
+   "scenario": "L2",
+   "method": "hybrid",
+   "repeat": 1,
+   "feasible": true,
+   "violations": [],
+   "weighted_fulfillment": 0.8735,
+   "score": 0.8735,
+   "revenue_now_rs": 75138,
+   "revenue_backorder_rs": 0,
+   "cost_usd": 0.00424,
+   "latency_s": 4.04,
+   "plan": {
+    "C-013": {
+     "now": 0,
+     "sub": 10,
+     "bo": 0
+    },
+    "C-005": {
+     "now": 0,
+     "sub": 4,
+     "bo": 0
+    },
+    "C-016": {
+     "now": 0,
+     "sub": 1,
+     "bo": 0
+    },
+    "C-006": {
+     "now": 6,
+     "sub": 2,
+     "bo": 0
+    }
+   }
+  },
+  {
+   "scenario": "L2",
+   "method": "muse_oneshot",
+   "repeat": 2,
+   "feasible": true,
+   "violations": [],
+   "weighted_fulfillment": 0.8735,
+   "score": 0.8735,
+   "revenue_now_rs": 74634,
+   "revenue_backorder_rs": 0,
+   "cost_usd": 0.01562,
+   "latency_s": 12.25,
+   "plan": {
+    "C-013": {
+     "now": 6,
+     "sub": 4,
+     "bo": 0
+    },
+    "C-005": {
+     "now": 0,
+     "sub": 4,
+     "bo": 0
+    },
+    "C-016": {
+     "now": 0,
+     "sub": 1,
+     "bo": 0
+    },
+    "C-006": {
+     "now": 0,
+     "sub": 8,
+     "bo": 0
+    }
+   }
+  },
+  {
+   "scenario": "L2",
+   "method": "muse_feedback",
+   "repeat": 2,
+   "feasible": true,
+   "violations": [],
+   "weighted_fulfillment": 0.8735,
+   "score": 0.8735,
+   "revenue_now_rs": 74634,
+   "revenue_backorder_rs": 0,
+   "cost_usd": 0.05186,
+   "latency_s": 41.06,
+   "plan": {
+    "C-013": {
+     "now": 6,
+     "sub": 4,
+     "bo": 0
+    },
+    "C-005": {
+     "now": 0,
+     "sub": 4,
+     "bo": 0
+    },
+    "C-016": {
+     "now": 0,
+     "sub": 1,
+     "bo": 0
+    },
+    "C-006": {
+     "now": 0,
+     "sub": 8,
+     "bo": 0
+    }
+   }
+  },
+  {
+   "scenario": "L2",
+   "method": "hybrid",
+   "repeat": 2,
+   "feasible": true,
+   "violations": [],
+   "weighted_fulfillment": 0.8735,
+   "score": 0.8735,
+   "revenue_now_rs": 75138,
+   "revenue_backorder_rs": 0,
+   "cost_usd": 0.00501,
+   "latency_s": 4.31,
+   "plan": {
+    "C-013": {
+     "now": 0,
+     "sub": 10,
+     "bo": 0
+    },
+    "C-005": {
+     "now": 0,
+     "sub": 4,
+     "bo": 0
+    },
+    "C-016": {
+     "now": 0,
+     "sub": 1,
+     "bo": 0
+    },
+    "C-006": {
+     "now": 6,
+     "sub": 2,
+     "bo": 0
+    }
+   }
+  },
+  {
+   "scenario": "L3",
+   "method": "greedy",
+   "repeat": 0,
+   "feasible": true,
+   "violations": [],
+   "weighted_fulfillment": 0.6296,
+   "score": 0.6296,
+   "revenue_now_rs": 36088,
+   "revenue_backorder_rs": 0,
+   "cost_usd": 0.0,
+   "latency_s": 0.0024,
+   "plan": {
+    "C-017": {
+     "now": 12,
+     "sub": 0,
+     "bo": 0
+    },
+    "C-013": {
+     "now": 5,
+     "sub": 0,
+     "bo": 0
+    },
+    "C-003": {
+     "now": 0,
+     "sub": 0,
+     "bo": 0
+    },
+    "C-004": {
+     "now": 0,
+     "sub": 0,
+     "bo": 0
+    }
+   }
+  },
+  {
+   "scenario": "L3",
+   "method": "heuristic_base",
+   "repeat": 0,
+   "feasible": false,
+   "violations": [
+    "C-003: 5 cases allocated, wants 0"
+   ],
+   "weighted_fulfillment": 0.963,
+   "score": 0.0,
+   "revenue_now_rs": 61162,
+   "revenue_backorder_rs": 0,
+   "cost_usd": 0.0,
+   "latency_s": 0.0024,
+   "plan": {
+    "C-017": {
+     "now": 12,
+     "sub": 0,
+     "bo": 0
+    },
+    "C-013": {
+     "now": 5,
+     "sub": 4,
+     "bo": 0
+    },
+    "C-003": {
+     "now": 0,
+     "sub": 5,
+     "bo": 0
+    },
+    "C-004": {
+     "now": 0,
+     "sub": 3,
+     "bo": 0
+    }
+   }
+  },
+  {
+   "scenario": "L3",
+   "method": "heuristic_gold",
+   "repeat": 0,
+   "feasible": true,
+   "violations": [],
+   "weighted_fulfillment": 0.963,
+   "score": 0.963,
+   "revenue_now_rs": 61162,
+   "revenue_backorder_rs": 0,
+   "cost_usd": 0.0,
+   "latency_s": 0.0024,
+   "plan": {
+    "C-017": {
+     "now": 12,
+     "sub": 0,
+     "bo": 0
+    },
+    "C-013": {
+     "now": 5,
+     "sub": 9,
+     "bo": 0
+    },
+    "C-003": {
+     "now": 0,
+     "sub": 0,
+     "bo": 0
+    },
+    "C-004": {
+     "now": 0,
+     "sub": 3,
+     "bo": 0
+    }
+   }
+  },
+  {
+   "scenario": "L3",
+   "method": "optimum_gold",
+   "repeat": 0,
+   "feasible": true,
+   "violations": [],
+   "weighted_fulfillment": 0.963,
+   "score": 0.963,
+   "revenue_now_rs": 61162,
+   "revenue_backorder_rs": 0,
+   "cost_usd": 0.0,
+   "latency_s": 0.0024,
+   "plan": {
+    "C-017": {
+     "now": 12,
+     "sub": 0,
+     "bo": 0
+    },
+    "C-013": {
+     "now": 5,
+     "sub": 9,
+     "bo": 0
+    },
+    "C-003": {
+     "now": 0,
+     "sub": 0,
+     "bo": 0
+    },
+    "C-004": {
+     "now": 0,
+     "sub": 3,
+     "bo": 0
+    }
+   }
+  },
+  {
+   "scenario": "L3",
+   "method": "muse_oneshot",
+   "repeat": 0,
+   "feasible": true,
+   "violations": [],
+   "weighted_fulfillment": 0.963,
+   "score": 0.963,
+   "revenue_now_rs": 61162,
+   "revenue_backorder_rs": 0,
+   "cost_usd": 0.0104,
+   "latency_s": 8.13,
+   "plan": {
+    "C-017": {
+     "now": 12,
+     "sub": 0,
+     "bo": 0
+    },
+    "C-013": {
+     "now": 5,
+     "sub": 9,
+     "bo": 0
+    },
+    "C-003": {
+     "now": 0,
+     "sub": 0,
+     "bo": 0
+    },
+    "C-004": {
+     "now": 0,
+     "sub": 3,
+     "bo": 0
+    }
+   }
+  },
+  {
+   "scenario": "L3",
+   "method": "muse_feedback",
+   "repeat": 0,
+   "feasible": true,
+   "violations": [],
+   "weighted_fulfillment": 0.963,
+   "score": 0.963,
+   "revenue_now_rs": 61162,
+   "revenue_backorder_rs": 0,
+   "cost_usd": 0.03607,
+   "latency_s": 28.0,
+   "plan": {
+    "C-017": {
+     "now": 12,
+     "sub": 0,
+     "bo": 0
+    },
+    "C-013": {
+     "now": 5,
+     "sub": 9,
+     "bo": 0
+    },
+    "C-003": {
+     "now": 0,
+     "sub": 0,
+     "bo": 0
+    },
+    "C-004": {
+     "now": 0,
+     "sub": 3,
+     "bo": 0
+    }
+   }
+  },
+  {
+   "scenario": "L3",
+   "method": "hybrid",
+   "repeat": 0,
+   "feasible": true,
+   "violations": [],
+   "weighted_fulfillment": 0.963,
+   "score": 0.963,
+   "revenue_now_rs": 61162,
+   "revenue_backorder_rs": 0,
+   "cost_usd": 0.00487,
+   "latency_s": 3.61,
+   "plan": {
+    "C-017": {
+     "now": 12,
+     "sub": 0,
+     "bo": 0
+    },
+    "C-013": {
+     "now": 5,
+     "sub": 9,
+     "bo": 0
+    },
+    "C-003": {
+     "now": 0,
+     "sub": 0,
+     "bo": 0
+    },
+    "C-004": {
+     "now": 0,
+     "sub": 3,
+     "bo": 0
+    }
+   }
+  },
+  {
+   "scenario": "L3",
+   "method": "muse_oneshot",
+   "repeat": 1,
+   "feasible": true,
+   "violations": [],
+   "weighted_fulfillment": 0.963,
+   "score": 0.963,
+   "revenue_now_rs": 61162,
+   "revenue_backorder_rs": 0,
+   "cost_usd": 0.01132,
+   "latency_s": 8.38,
+   "plan": {
+    "C-017": {
+     "now": 12,
+     "sub": 0,
+     "bo": 0
+    },
+    "C-013": {
+     "now": 5,
+     "sub": 9,
+     "bo": 0
+    },
+    "C-003": {
+     "now": 0,
+     "sub": 0,
+     "bo": 0
+    },
+    "C-004": {
+     "now": 0,
+     "sub": 3,
+     "bo": 0
+    }
+   }
+  },
+  {
+   "scenario": "L3",
+   "method": "muse_feedback",
+   "repeat": 1,
+   "feasible": true,
+   "violations": [],
+   "weighted_fulfillment": 0.963,
+   "score": 0.963,
+   "revenue_now_rs": 61162,
+   "revenue_backorder_rs": 0,
+   "cost_usd": 0.03763,
+   "latency_s": 29.52,
+   "plan": {
+    "C-017": {
+     "now": 12,
+     "sub": 0,
+     "bo": 0
+    },
+    "C-013": {
+     "now": 5,
+     "sub": 9,
+     "bo": 0
+    },
+    "C-003": {
+     "now": 0,
+     "sub": 0,
+     "bo": 0
+    },
+    "C-004": {
+     "now": 0,
+     "sub": 3,
+     "bo": 0
+    }
+   }
+  },
+  {
+   "scenario": "L3",
+   "method": "hybrid",
+   "repeat": 1,
+   "feasible": true,
+   "violations": [],
+   "weighted_fulfillment": 0.963,
+   "score": 0.963,
+   "revenue_now_rs": 61162,
+   "revenue_backorder_rs": 0,
+   "cost_usd": 0.00367,
+   "latency_s": 4.38,
+   "plan": {
+    "C-017": {
+     "now": 12,
+     "sub": 0,
+     "bo": 0
+    },
+    "C-013": {
+     "now": 5,
+     "sub": 9,
+     "bo": 0
+    },
+    "C-003": {
+     "now": 0,
+     "sub": 0,
+     "bo": 0
+    },
+    "C-004": {
+     "now": 0,
+     "sub": 3,
+     "bo": 0
+    }
+   }
+  },
+  {
+   "scenario": "L3",
+   "method": "muse_oneshot",
+   "repeat": 2,
+   "feasible": true,
+   "violations": [],
+   "weighted_fulfillment": 0.963,
+   "score": 0.963,
+   "revenue_now_rs": 61162,
+   "revenue_backorder_rs": 0,
+   "cost_usd": 0.01061,
+   "latency_s": 8.38,
+   "plan": {
+    "C-017": {
+     "now": 12,
+     "sub": 0,
+     "bo": 0
+    },
+    "C-013": {
+     "now": 5,
+     "sub": 9,
+     "bo": 0
+    },
+    "C-003": {
+     "now": 0,
+     "sub": 0,
+     "bo": 0
+    },
+    "C-004": {
+     "now": 0,
+     "sub": 3,
+     "bo": 0
+    }
+   }
+  },
+  {
+   "scenario": "L3",
+   "method": "muse_feedback",
+   "repeat": 2,
+   "feasible": true,
+   "violations": [],
+   "weighted_fulfillment": 0.963,
+   "score": 0.963,
+   "revenue_now_rs": 61162,
+   "revenue_backorder_rs": 0,
+   "cost_usd": 0.03631,
+   "latency_s": 28.35,
+   "plan": {
+    "C-017": {
+     "now": 12,
+     "sub": 0,
+     "bo": 0
+    },
+    "C-013": {
+     "now": 5,
+     "sub": 9,
+     "bo": 0
+    },
+    "C-003": {
+     "now": 0,
+     "sub": 0,
+     "bo": 0
+    },
+    "C-004": {
+     "now": 0,
+     "sub": 3,
+     "bo": 0
+    }
+   }
+  },
+  {
+   "scenario": "L3",
+   "method": "hybrid",
+   "repeat": 2,
+   "feasible": true,
+   "violations": [],
+   "weighted_fulfillment": 0.963,
+   "score": 0.963,
+   "revenue_now_rs": 61162,
+   "revenue_backorder_rs": 0,
+   "cost_usd": 0.00447,
+   "latency_s": 3.2,
+   "plan": {
+    "C-017": {
+     "now": 12,
+     "sub": 0,
+     "bo": 0
+    },
+    "C-013": {
+     "now": 5,
+     "sub": 9,
+     "bo": 0
+    },
+    "C-003": {
+     "now": 0,
+     "sub": 0,
+     "bo": 0
+    },
+    "C-004": {
+     "now": 0,
+     "sub": 3,
+     "bo": 0
+    }
+   }
+  },
+  {
+   "scenario": "L4",
+   "method": "greedy",
+   "repeat": 0,
+   "feasible": false,
+   "violations": [
+    "C-001: must be filled in full (3), got 0"
+   ],
+   "weighted_fulfillment": 0.3684,
+   "score": 0.0,
+   "revenue_now_rs": 14783,
+   "revenue_backorder_rs": 0,
+   "cost_usd": 0.0,
+   "latency_s": 0.0028,
+   "plan": {
+    "C-003": {
+     "now": 2,
+     "sub": 0,
+     "bo": 0
+    },
+    "C-009": {
+     "now": 1,
+     "sub": 0,
+     "bo": 0
+    },
+    "C-004": {
+     "now": 0,
+     "sub": 0,
+     "bo": 0
+    },
+    "C-001": {
+     "now": 0,
+     "sub": 0,
+     "bo": 0
+    }
+   }
+  },
+  {
+   "scenario": "L4",
+   "method": "heuristic_base",
+   "repeat": 0,
+   "feasible": false,
+   "violations": [
+    "C-001: must not receive substitutes"
+   ],
+   "weighted_fulfillment": 0.9474,
+   "score": 0.0,
+   "revenue_now_rs": 45369,
+   "revenue_backorder_rs": 0,
+   "cost_usd": 0.0,
+   "latency_s": 0.0028,
+   "plan": {
+    "C-003": {
+     "now": 2,
+     "sub": 0,
+     "bo": 0
+    },
+    "C-001": {
+     "now": 1,
+     "sub": 2,
+     "bo": 0
+    },
+    "C-009": {
+     "now": 0,
+     "sub": 2,
+     "bo": 0
+    },
+    "C-004": {
+     "now": 0,
+     "sub": 2,
+     "bo": 0
+    }
+   }
+  },
+  {
+   "scenario": "L4",
+   "method": "heuristic_gold",
+   "repeat": 0,
+   "feasible": true,
+   "violations": [],
+   "weighted_fulfillment": 0.9474,
+   "score": 0.9474,
+   "revenue_now_rs": 45369,
+   "revenue_backorder_rs": 0,
+   "cost_usd": 0.0,
+   "latency_s": 0.0028,
+   "plan": {
+    "C-001": {
+     "now": 3,
+     "sub": 0,
+     "bo": 0
+    },
+    "C-003": {
+     "now": 0,
+     "sub": 2,
+     "bo": 0
+    },
+    "C-009": {
+     "now": 0,
+     "sub": 2,
+     "bo": 0
+    },
+    "C-004": {
+     "now": 0,
+     "sub": 2,
+     "bo": 0
+    }
+   }
+  },
+  {
+   "scenario": "L4",
+   "method": "optimum_gold",
+   "repeat": 0,
+   "feasible": true,
+   "violations": [],
+   "weighted_fulfillment": 0.9474,
+   "score": 0.9474,
+   "revenue_now_rs": 45369,
+   "revenue_backorder_rs": 0,
+   "cost_usd": 0.0,
+   "latency_s": 0.0028,
+   "plan": {
+    "C-003": {
+     "now": 0,
+     "sub": 2,
+     "bo": 0
+    },
+    "C-009": {
+     "now": 0,
+     "sub": 2,
+     "bo": 0
+    },
+    "C-004": {
+     "now": 0,
+     "sub": 2,
+     "bo": 0
+    },
+    "C-001": {
+     "now": 3,
+     "sub": 0,
+     "bo": 0
+    }
+   }
+  },
+  {
+   "scenario": "L4",
+   "method": "muse_oneshot",
+   "repeat": 0,
+   "feasible": true,
+   "violations": [],
+   "weighted_fulfillment": 0.9474,
+   "score": 0.9474,
+   "revenue_now_rs": 45369,
+   "revenue_backorder_rs": 0,
+   "cost_usd": 0.01202,
+   "latency_s": 9.57,
+   "plan": {
+    "C-003": {
+     "now": 0,
+     "sub": 2,
+     "bo": 0
+    },
+    "C-009": {
+     "now": 0,
+     "sub": 2,
+     "bo": 0
+    },
+    "C-004": {
+     "now": 0,
+     "sub": 2,
+     "bo": 0
+    },
+    "C-001": {
+     "now": 3,
+     "sub": 0,
+     "bo": 0
+    }
+   }
+  },
+  {
+   "scenario": "L4",
+   "method": "muse_feedback",
+   "repeat": 0,
+   "feasible": true,
+   "violations": [],
+   "weighted_fulfillment": 0.9474,
+   "score": 0.9474,
+   "revenue_now_rs": 45369,
+   "revenue_backorder_rs": 0,
+   "cost_usd": 0.03988,
+   "latency_s": 32.8,
+   "plan": {
+    "C-003": {
+     "now": 0,
+     "sub": 2,
+     "bo": 0
+    },
+    "C-009": {
+     "now": 0,
+     "sub": 2,
+     "bo": 0
+    },
+    "C-004": {
+     "now": 0,
+     "sub": 2,
+     "bo": 0
+    },
+    "C-001": {
+     "now": 3,
+     "sub": 0,
+     "bo": 0
+    }
+   }
+  },
+  {
+   "scenario": "L4",
+   "method": "hybrid",
+   "repeat": 0,
+   "feasible": true,
+   "violations": [],
+   "weighted_fulfillment": 0.9474,
+   "score": 0.9474,
+   "revenue_now_rs": 45369,
+   "revenue_backorder_rs": 0,
+   "cost_usd": 0.00382,
+   "latency_s": 4.1,
+   "plan": {
+    "C-003": {
+     "now": 0,
+     "sub": 2,
+     "bo": 0
+    },
+    "C-009": {
+     "now": 0,
+     "sub": 2,
+     "bo": 0
+    },
+    "C-004": {
+     "now": 0,
+     "sub": 2,
+     "bo": 0
+    },
+    "C-001": {
+     "now": 3,
+     "sub": 0,
+     "bo": 0
+    }
+   }
+  },
+  {
+   "scenario": "L4",
+   "method": "muse_oneshot",
+   "repeat": 1,
+   "feasible": true,
+   "violations": [],
+   "weighted_fulfillment": 0.9474,
+   "score": 0.9474,
+   "revenue_now_rs": 45369,
+   "revenue_backorder_rs": 0,
+   "cost_usd": 0.01094,
+   "latency_s": 7.98,
+   "plan": {
+    "C-003": {
+     "now": 0,
+     "sub": 2,
+     "bo": 0
+    },
+    "C-009": {
+     "now": 0,
+     "sub": 2,
+     "bo": 0
+    },
+    "C-004": {
+     "now": 0,
+     "sub": 2,
+     "bo": 0
+    },
+    "C-001": {
+     "now": 3,
+     "sub": 0,
+     "bo": 0
+    }
+   }
+  },
+  {
+   "scenario": "L4",
+   "method": "muse_feedback",
+   "repeat": 1,
+   "feasible": true,
+   "violations": [],
+   "weighted_fulfillment": 0.9474,
+   "score": 0.9474,
+   "revenue_now_rs": 45369,
+   "revenue_backorder_rs": 0,
+   "cost_usd": 0.03658,
+   "latency_s": 27.56,
+   "plan": {
+    "C-003": {
+     "now": 0,
+     "sub": 2,
+     "bo": 0
+    },
+    "C-009": {
+     "now": 0,
+     "sub": 2,
+     "bo": 0
+    },
+    "C-004": {
+     "now": 0,
+     "sub": 2,
+     "bo": 0
+    },
+    "C-001": {
+     "now": 3,
+     "sub": 0,
+     "bo": 0
+    }
+   }
+  },
+  {
+   "scenario": "L4",
+   "method": "hybrid",
+   "repeat": 1,
+   "feasible": true,
+   "violations": [],
+   "weighted_fulfillment": 0.9474,
+   "score": 0.9474,
+   "revenue_now_rs": 45369,
+   "revenue_backorder_rs": 0,
+   "cost_usd": 0.00378,
+   "latency_s": 3.63,
+   "plan": {
+    "C-003": {
+     "now": 0,
+     "sub": 2,
+     "bo": 0
+    },
+    "C-009": {
+     "now": 0,
+     "sub": 2,
+     "bo": 0
+    },
+    "C-004": {
+     "now": 0,
+     "sub": 2,
+     "bo": 0
+    },
+    "C-001": {
+     "now": 3,
+     "sub": 0,
+     "bo": 0
+    }
+   }
+  },
+  {
+   "scenario": "L4",
+   "method": "muse_oneshot",
+   "repeat": 2,
+   "feasible": true,
+   "violations": [],
+   "weighted_fulfillment": 0.9474,
+   "score": 0.9474,
+   "revenue_now_rs": 45369,
+   "revenue_backorder_rs": 0,
+   "cost_usd": 0.0137,
+   "latency_s": 10.72,
+   "plan": {
+    "C-003": {
+     "now": 0,
+     "sub": 2,
+     "bo": 0
+    },
+    "C-009": {
+     "now": 0,
+     "sub": 2,
+     "bo": 0
+    },
+    "C-004": {
+     "now": 0,
+     "sub": 2,
+     "bo": 0
+    },
+    "C-001": {
+     "now": 3,
+     "sub": 0,
+     "bo": 0
+    }
+   }
+  },
+  {
+   "scenario": "L4",
+   "method": "muse_feedback",
+   "repeat": 2,
+   "feasible": true,
+   "violations": [],
+   "weighted_fulfillment": 0.9474,
+   "score": 0.9474,
+   "revenue_now_rs": 45369,
+   "revenue_backorder_rs": 0,
+   "cost_usd": 0.04506,
+   "latency_s": 35.32,
+   "plan": {
+    "C-003": {
+     "now": 0,
+     "sub": 2,
+     "bo": 0
+    },
+    "C-009": {
+     "now": 0,
+     "sub": 2,
+     "bo": 0
+    },
+    "C-004": {
+     "now": 0,
+     "sub": 2,
+     "bo": 0
+    },
+    "C-001": {
+     "now": 3,
+     "sub": 0,
+     "bo": 0
+    }
+   }
+  },
+  {
+   "scenario": "L4",
+   "method": "hybrid",
+   "repeat": 2,
+   "feasible": true,
+   "violations": [],
+   "weighted_fulfillment": 0.9474,
+   "score": 0.9474,
+   "revenue_now_rs": 45369,
+   "revenue_backorder_rs": 0,
+   "cost_usd": 0.00397,
+   "latency_s": 3.16,
+   "plan": {
+    "C-003": {
+     "now": 0,
+     "sub": 2,
+     "bo": 0
+    },
+    "C-009": {
+     "now": 0,
+     "sub": 2,
+     "bo": 0
+    },
+    "C-004": {
+     "now": 0,
+     "sub": 2,
+     "bo": 0
+    },
+    "C-001": {
+     "now": 3,
+     "sub": 0,
+     "bo": 0
+    }
+   }
+  },
+  {
+   "scenario": "L5",
+   "method": "greedy",
+   "repeat": 0,
+   "feasible": true,
+   "violations": [],
+   "weighted_fulfillment": 0.0,
+   "score": 0.0,
+   "revenue_now_rs": 0,
+   "revenue_backorder_rs": 0,
+   "cost_usd": 0.0,
+   "latency_s": 0.0027,
+   "plan": {
+    "C-007": {
+     "now": 0,
+     "sub": 0,
+     "bo": 0
+    },
+    "C-012": {
+     "now": 0,
+     "sub": 0,
+     "bo": 0
+    },
+    "C-002": {
+     "now": 0,
+     "sub": 0,
+     "bo": 0
+    },
+    "C-016": {
+     "now": 0,
+     "sub": 0,
+     "bo": 0
+    }
+   }
+  },
+  {
+   "scenario": "L5",
+   "method": "heuristic_base",
+   "repeat": 0,
+   "feasible": false,
+   "violations": [
+    "C-012: must not receive substitutes"
+   ],
+   "weighted_fulfillment": 0.85,
+   "score": 0.0,
+   "revenue_now_rs": 46410,
+   "revenue_backorder_rs": 0,
+   "cost_usd": 0.0,
+   "latency_s": 0.0027,
+   "plan": {
+    "C-007": {
+     "now": 0,
+     "sub": 8,
+     "bo": 0
+    },
+    "C-012": {
+     "now": 0,
+     "sub": 12,
+     "bo": 0
+    },
+    "C-002": {
+     "now": 0,
+     "sub": 10,
+     "bo": 0
+    },
+    "C-016": {
+     "now": 0,
+     "sub": 4,
+     "bo": 0
+    }
+   }
+  },
+  {
+   "scenario": "L5",
+   "method": "heuristic_gold",
+   "repeat": 0,
+   "feasible": true,
+   "violations": [],
+   "weighted_fulfillment": 0.7167,
+   "score": 0.7167,
+   "revenue_now_rs": 30030,
+   "revenue_backorder_rs": 15120,
+   "cost_usd": 0.0,
+   "latency_s": 0.0027,
+   "plan": {
+    "C-012": {
+     "now": 0,
+     "sub": 0,
+     "bo": 6
+    },
+    "C-007": {
+     "now": 0,
+     "sub": 8,
+     "bo": 0
+    },
+    "C-002": {
+     "now": 0,
+     "sub": 10,
+     "bo": 0
+    },
+    "C-016": {
+     "now": 0,
+     "sub": 4,
+     "bo": 0
+    }
+   }
+  },
+  {
+   "scenario": "L5",
+   "method": "optimum_gold",
+   "repeat": 0,
+   "feasible": true,
+   "violations": [],
+   "weighted_fulfillment": 0.7167,
+   "score": 0.7167,
+   "revenue_now_rs": 30030,
+   "revenue_backorder_rs": 15120,
+   "cost_usd": 0.0,
+   "latency_s": 0.0027,
+   "plan": {
+    "C-007": {
+     "now": 0,
+     "sub": 8,
+     "bo": 0
+    },
+    "C-012": {
+     "now": 0,
+     "sub": 0,
+     "bo": 6
+    },
+    "C-002": {
+     "now": 0,
+     "sub": 10,
+     "bo": 0
+    },
+    "C-016": {
+     "now": 0,
+     "sub": 4,
+     "bo": 0
+    }
+   }
+  },
+  {
+   "scenario": "L5",
+   "method": "muse_oneshot",
+   "repeat": 0,
+   "feasible": true,
+   "violations": [],
+   "weighted_fulfillment": 0.7167,
+   "score": 0.7167,
+   "revenue_now_rs": 30030,
+   "revenue_backorder_rs": 15120,
+   "cost_usd": 0.01622,
+   "latency_s": 12.03,
+   "plan": {
+    "C-007": {
+     "now": 0,
+     "sub": 8,
+     "bo": 0
+    },
+    "C-012": {
+     "now": 0,
+     "sub": 0,
+     "bo": 6
+    },
+    "C-002": {
+     "now": 0,
+     "sub": 10,
+     "bo": 0
+    },
+    "C-016": {
+     "now": 0,
+     "sub": 4,
+     "bo": 0
+    }
+   }
+  },
+  {
+   "scenario": "L5",
+   "method": "muse_feedback",
+   "repeat": 0,
+   "feasible": true,
+   "violations": [],
+   "weighted_fulfillment": 0.7167,
+   "score": 0.7167,
+   "revenue_now_rs": 30030,
+   "revenue_backorder_rs": 15120,
+   "cost_usd": 0.05552,
+   "latency_s": 42.0,
+   "plan": {
+    "C-007": {
+     "now": 0,
+     "sub": 8,
+     "bo": 0
+    },
+    "C-012": {
+     "now": 0,
+     "sub": 0,
+     "bo": 6
+    },
+    "C-002": {
+     "now": 0,
+     "sub": 10,
+     "bo": 0
+    },
+    "C-016": {
+     "now": 0,
+     "sub": 4,
+     "bo": 0
+    }
+   }
+  },
+  {
+   "scenario": "L5",
+   "method": "hybrid",
+   "repeat": 0,
+   "feasible": true,
+   "violations": [],
+   "weighted_fulfillment": 0.7167,
+   "score": 0.7167,
+   "revenue_now_rs": 30030,
+   "revenue_backorder_rs": 15120,
+   "cost_usd": 0.00685,
+   "latency_s": 5.91,
+   "plan": {
+    "C-007": {
+     "now": 0,
+     "sub": 8,
+     "bo": 0
+    },
+    "C-012": {
+     "now": 0,
+     "sub": 0,
+     "bo": 6
+    },
+    "C-002": {
+     "now": 0,
+     "sub": 10,
+     "bo": 0
+    },
+    "C-016": {
+     "now": 0,
+     "sub": 4,
+     "bo": 0
+    }
+   }
+  },
+  {
+   "scenario": "L5",
+   "method": "muse_oneshot",
+   "repeat": 1,
+   "feasible": true,
+   "violations": [],
+   "weighted_fulfillment": 0.7167,
+   "score": 0.7167,
+   "revenue_now_rs": 30030,
+   "revenue_backorder_rs": 15120,
+   "cost_usd": 0.01426,
+   "latency_s": 10.15,
+   "plan": {
+    "C-007": {
+     "now": 0,
+     "sub": 8,
+     "bo": 0
+    },
+    "C-012": {
+     "now": 0,
+     "sub": 0,
+     "bo": 6
+    },
+    "C-002": {
+     "now": 0,
+     "sub": 10,
+     "bo": 0
+    },
+    "C-016": {
+     "now": 0,
+     "sub": 4,
+     "bo": 0
+    }
+   }
+  },
+  {
+   "scenario": "L5",
+   "method": "muse_feedback",
+   "repeat": 1,
+   "feasible": true,
+   "violations": [],
+   "weighted_fulfillment": 0.7167,
+   "score": 0.7167,
+   "revenue_now_rs": 30030,
+   "revenue_backorder_rs": 15120,
+   "cost_usd": 0.04793,
+   "latency_s": 34.14,
+   "plan": {
+    "C-007": {
+     "now": 0,
+     "sub": 8,
+     "bo": 0
+    },
+    "C-012": {
+     "now": 0,
+     "sub": 0,
+     "bo": 6
+    },
+    "C-002": {
+     "now": 0,
+     "sub": 10,
+     "bo": 0
+    },
+    "C-016": {
+     "now": 0,
+     "sub": 4,
+     "bo": 0
+    }
+   }
+  },
+  {
+   "scenario": "L5",
+   "method": "hybrid",
+   "repeat": 1,
+   "feasible": true,
+   "violations": [],
+   "weighted_fulfillment": 0.7167,
+   "score": 0.7167,
+   "revenue_now_rs": 30030,
+   "revenue_backorder_rs": 15120,
+   "cost_usd": 0.00514,
+   "latency_s": 3.68,
+   "plan": {
+    "C-007": {
+     "now": 0,
+     "sub": 8,
+     "bo": 0
+    },
+    "C-012": {
+     "now": 0,
+     "sub": 0,
+     "bo": 6
+    },
+    "C-002": {
+     "now": 0,
+     "sub": 10,
+     "bo": 0
+    },
+    "C-016": {
+     "now": 0,
+     "sub": 4,
+     "bo": 0
+    }
+   }
+  },
+  {
+   "scenario": "L5",
+   "method": "muse_oneshot",
+   "repeat": 2,
+   "feasible": true,
+   "violations": [],
+   "weighted_fulfillment": 0.7167,
+   "score": 0.7167,
+   "revenue_now_rs": 30030,
+   "revenue_backorder_rs": 15120,
+   "cost_usd": 0.01658,
+   "latency_s": 11.51,
+   "plan": {
+    "C-007": {
+     "now": 0,
+     "sub": 8,
+     "bo": 0
+    },
+    "C-012": {
+     "now": 0,
+     "sub": 0,
+     "bo": 6
+    },
+    "C-002": {
+     "now": 0,
+     "sub": 10,
+     "bo": 0
+    },
+    "C-016": {
+     "now": 0,
+     "sub": 4,
+     "bo": 0
+    }
+   }
+  },
+  {
+   "scenario": "L5",
+   "method": "muse_feedback",
+   "repeat": 2,
+   "feasible": true,
+   "violations": [],
+   "weighted_fulfillment": 0.7167,
+   "score": 0.7167,
+   "revenue_now_rs": 30030,
+   "revenue_backorder_rs": 15120,
+   "cost_usd": 0.05548,
+   "latency_s": 39.16,
+   "plan": {
+    "C-007": {
+     "now": 0,
+     "sub": 8,
+     "bo": 0
+    },
+    "C-012": {
+     "now": 0,
+     "sub": 0,
+     "bo": 6
+    },
+    "C-002": {
+     "now": 0,
+     "sub": 10,
+     "bo": 0
+    },
+    "C-016": {
+     "now": 0,
+     "sub": 4,
+     "bo": 0
+    }
+   }
+  },
+  {
+   "scenario": "L5",
+   "method": "hybrid",
+   "repeat": 2,
+   "feasible": true,
+   "violations": [],
+   "weighted_fulfillment": 0.7167,
+   "score": 0.7167,
+   "revenue_now_rs": 30030,
+   "revenue_backorder_rs": 15120,
+   "cost_usd": 0.00575,
+   "latency_s": 4.62,
+   "plan": {
+    "C-007": {
+     "now": 0,
+     "sub": 8,
+     "bo": 0
+    },
+    "C-012": {
+     "now": 0,
+     "sub": 0,
+     "bo": 6
+    },
+    "C-002": {
+     "now": 0,
+     "sub": 10,
+     "bo": 0
+    },
+    "C-016": {
+     "now": 0,
+     "sub": 4,
+     "bo": 0
+    }
+   }
+  }
+ ],
+ "details": [
+  {
+   "scenario": "L1",
+   "repeat": 0,
+   "extracted": {
+    "C-008": {
+     "no_substitute": true
+    },
+    "C-009": {
+     "deadline": "2026-10-29",
+     "must_fill": true
+    }
+   },
+   "extraction_right": 2,
+   "extraction_total": 3,
+   "plans": [
+    {
+     "C-008": {
+      "now": 8,
+      "sub": 0,
+      "bo": 22
+     },
+     "C-001": {
+      "now": 0,
+      "sub": 12,
+      "bo": 0
+     },
+     "C-007": {
+      "now": 0,
+      "sub": 6,
+      "bo": 0
+     },
+     "C-009": {
+      "now": 0,
+      "sub": 5,
+      "bo": 0
+     }
+    },
+    {
+     "C-008": {
+      "now": 8,
+      "sub": 0,
+      "bo": 22
+     },
+     "C-001": {
+      "now": 0,
+      "sub": 12,
+      "bo": 0
+     },
+     "C-007": {
+      "now": 0,
+      "sub": 6,
+      "bo": 0
+     },
+     "C-009": {
+      "now": 0,
+      "sub": 5,
+      "bo": 0
+     }
+    },
+    {
+     "C-008": {
+      "now": 8,
+      "sub": 0,
+      "bo": 22
+     },
+     "C-001": {
+      "now": 0,
+      "sub": 12,
+      "bo": 0
+     },
+     "C-007": {
+      "now": 0,
+      "sub": 6,
+      "bo": 0
+     },
+     "C-009": {
+      "now": 0,
+      "sub": 5,
+      "bo": 0
+     }
+    }
+   ]
+  },
+  {
+   "scenario": "L1",
+   "repeat": 1,
+   "extracted": {
+    "C-008": {
+     "no_substitute": true
+    },
+    "C-009": {
+     "deadline": "2026-10-29",
+     "must_fill": true
+    }
+   },
+   "extraction_right": 2,
+   "extraction_total": 3,
+   "plans": [
+    {
+     "C-008": {
+      "now": 8,
+      "sub": 0,
+      "bo": 22
+     },
+     "C-001": {
+      "now": 0,
+      "sub": 12,
+      "bo": 0
+     },
+     "C-007": {
+      "now": 0,
+      "sub": 6,
+      "bo": 0
+     },
+     "C-009": {
+      "now": 0,
+      "sub": 5,
+      "bo": 0
+     }
+    },
+    {
+     "C-008": {
+      "now": 8,
+      "sub": 0,
+      "bo": 22
+     },
+     "C-001": {
+      "now": 0,
+      "sub": 12,
+      "bo": 0
+     },
+     "C-007": {
+      "now": 0,
+      "sub": 6,
+      "bo": 0
+     },
+     "C-009": {
+      "now": 0,
+      "sub": 5,
+      "bo": 0
+     }
+    },
+    {
+     "C-008": {
+      "now": 8,
+      "sub": 0,
+      "bo": 22
+     },
+     "C-001": {
+      "now": 0,
+      "sub": 12,
+      "bo": 0
+     },
+     "C-007": {
+      "now": 0,
+      "sub": 6,
+      "bo": 0
+     },
+     "C-009": {
+      "now": 0,
+      "sub": 5,
+      "bo": 0
+     }
+    }
+   ]
+  },
+  {
+   "scenario": "L1",
+   "repeat": 2,
+   "extracted": {
+    "C-008": {
+     "no_substitute": true
+    },
+    "C-009": {
+     "deadline": "2026-10-29",
+     "must_fill": true
+    }
+   },
+   "extraction_right": 2,
+   "extraction_total": 3,
+   "plans": [
+    {
+     "C-008": {
+      "now": 8,
+      "sub": 0,
+      "bo": 22
+     },
+     "C-001": {
+      "now": 0,
+      "sub": 12,
+      "bo": 0
+     },
+     "C-007": {
+      "now": 0,
+      "sub": 6,
+      "bo": 0
+     },
+     "C-009": {
+      "now": 0,
+      "sub": 5,
+      "bo": 0
+     }
+    },
+    {
+     "C-008": {
+      "now": 8,
+      "sub": 0,
+      "bo": 22
+     },
+     "C-001": {
+      "now": 0,
+      "sub": 12,
+      "bo": 0
+     },
+     "C-007": {
+      "now": 0,
+      "sub": 6,
+      "bo": 0
+     },
+     "C-009": {
+      "now": 0,
+      "sub": 5,
+      "bo": 0
+     }
+    },
+    {
+     "C-008": {
+      "now": 8,
+      "sub": 0,
+      "bo": 22
+     },
+     "C-001": {
+      "now": 0,
+      "sub": 12,
+      "bo": 0
+     },
+     "C-007": {
+      "now": 0,
+      "sub": 6,
+      "bo": 0
+     },
+     "C-009": {
+      "now": 0,
+      "sub": 5,
+      "bo": 0
+     }
+    }
+   ]
+  },
+  {
+   "scenario": "L2",
+   "repeat": 0,
+   "extracted": {
+    "C-006": {
+     "hold_lifted": true,
+     "outstanding_rs": 0
+    },
+    "C-005": {
+     "credit_limit_add_rs": 10000
+    }
+   },
+   "extraction_right": 3,
+   "extraction_total": 3,
+   "plans": [
+    {
+     "C-013": {
+      "now": 6,
+      "sub": 4,
+      "bo": 0
+     },
+     "C-005": {
+      "now": 0,
+      "sub": 4,
+      "bo": 0
+     },
+     "C-016": {
+      "now": 0,
+      "sub": 1,
+      "bo": 0
+     },
+     "C-006": {
+      "now": 0,
+      "sub": 8,
+      "bo": 0
+     }
+    },
+    {
+     "C-013": {
+      "now": 6,
+      "sub": 4,
+      "bo": 0
+     },
+     "C-005": {
+      "now": 0,
+      "sub": 4,
+      "bo": 0
+     },
+     "C-016": {
+      "now": 0,
+      "sub": 1,
+      "bo": 0
+     },
+     "C-006": {
+      "now": 0,
+      "sub": 8,
+      "bo": 0
+     }
+    },
+    {
+     "C-013": {
+      "now": 6,
+      "sub": 4,
+      "bo": 0
+     },
+     "C-005": {
+      "now": 0,
+      "sub": 4,
+      "bo": 0
+     },
+     "C-016": {
+      "now": 0,
+      "sub": 1,
+      "bo": 0
+     },
+     "C-006": {
+      "now": 0,
+      "sub": 8,
+      "bo": 0
+     }
+    }
+   ]
+  },
+  {
+   "scenario": "L2",
+   "repeat": 1,
+   "extracted": {
+    "C-006": {
+     "hold_lifted": true,
+     "outstanding_rs": 0
+    },
+    "C-005": {
+     "credit_limit_add_rs": 10000
+    }
+   },
+   "extraction_right": 3,
+   "extraction_total": 3,
+   "plans": [
+    {
+     "C-013": {
+      "now": 3,
+      "sub": 7,
+      "bo": 0
+     },
+     "C-005": {
+      "now": 0,
+      "sub": 4,
+      "bo": 0
+     },
+     "C-016": {
+      "now": 0,
+      "sub": 1,
+      "bo": 0
+     },
+     "C-006": {
+      "now": 3,
+      "sub": 5,
+      "bo": 0
+     }
+    },
+    {
+     "C-013": {
+      "now": 3,
+      "sub": 7,
+      "bo": 0
+     },
+     "C-005": {
+      "now": 0,
+      "sub": 4,
+      "bo": 0
+     },
+     "C-016": {
+      "now": 0,
+      "sub": 1,
+      "bo": 0
+     },
+     "C-006": {
+      "now": 3,
+      "sub": 5,
+      "bo": 0
+     }
+    },
+    {
+     "C-013": {
+      "now": 3,
+      "sub": 7,
+      "bo": 0
+     },
+     "C-005": {
+      "now": 0,
+      "sub": 4,
+      "bo": 0
+     },
+     "C-016": {
+      "now": 0,
+      "sub": 1,
+      "bo": 0
+     },
+     "C-006": {
+      "now": 3,
+      "sub": 5,
+      "bo": 0
+     }
+    }
+   ]
+  },
+  {
+   "scenario": "L2",
+   "repeat": 2,
+   "extracted": {
+    "C-006": {
+     "hold_lifted": true,
+     "outstanding_rs": 0
+    },
+    "C-005": {
+     "credit_limit_add_rs": 10000
+    }
+   },
+   "extraction_right": 3,
+   "extraction_total": 3,
+   "plans": [
+    {
+     "C-013": {
+      "now": 6,
+      "sub": 4,
+      "bo": 0
+     },
+     "C-005": {
+      "now": 0,
+      "sub": 4,
+      "bo": 0
+     },
+     "C-016": {
+      "now": 0,
+      "sub": 1,
+      "bo": 0
+     },
+     "C-006": {
+      "now": 0,
+      "sub": 8,
+      "bo": 0
+     }
+    },
+    {
+     "C-013": {
+      "now": 6,
+      "sub": 4,
+      "bo": 0
+     },
+     "C-005": {
+      "now": 0,
+      "sub": 4,
+      "bo": 0
+     },
+     "C-016": {
+      "now": 0,
+      "sub": 1,
+      "bo": 0
+     },
+     "C-006": {
+      "now": 0,
+      "sub": 8,
+      "bo": 0
+     }
+    },
+    {
+     "C-013": {
+      "now": 6,
+      "sub": 4,
+      "bo": 0
+     },
+     "C-005": {
+      "now": 0,
+      "sub": 4,
+      "bo": 0
+     },
+     "C-016": {
+      "now": 0,
+      "sub": 1,
+      "bo": 0
+     },
+     "C-006": {
+      "now": 0,
+      "sub": 8,
+      "bo": 0
+     }
+    }
+   ]
+  },
+  {
+   "scenario": "L3",
+   "repeat": 0,
+   "extracted": {
+    "C-003": {
+     "cancel": true
+    },
+    "C-013": {
+     "cases": 14
+    },
+    "C-017": {
+     "no_substitute": true
+    }
+   },
+   "extraction_right": 3,
+   "extraction_total": 3,
+   "plans": [
+    {
+     "C-017": {
+      "now": 12,
+      "sub": 0,
+      "bo": 0
+     },
+     "C-013": {
+      "now": 5,
+      "sub": 9,
+      "bo": 0
+     },
+     "C-003": {
+      "now": 0,
+      "sub": 0,
+      "bo": 0
+     },
+     "C-004": {
+      "now": 0,
+      "sub": 3,
+      "bo": 0
+     }
+    },
+    {
+     "C-017": {
+      "now": 12,
+      "sub": 0,
+      "bo": 0
+     },
+     "C-013": {
+      "now": 5,
+      "sub": 9,
+      "bo": 0
+     },
+     "C-003": {
+      "now": 0,
+      "sub": 0,
+      "bo": 0
+     },
+     "C-004": {
+      "now": 0,
+      "sub": 3,
+      "bo": 0
+     }
+    },
+    {
+     "C-017": {
+      "now": 12,
+      "sub": 0,
+      "bo": 0
+     },
+     "C-013": {
+      "now": 5,
+      "sub": 9,
+      "bo": 0
+     },
+     "C-003": {
+      "now": 0,
+      "sub": 0,
+      "bo": 0
+     },
+     "C-004": {
+      "now": 0,
+      "sub": 3,
+      "bo": 0
+     }
+    }
+   ]
+  },
+  {
+   "scenario": "L3",
+   "repeat": 1,
+   "extracted": {
+    "C-003": {
+     "cancel": true
+    },
+    "C-013": {
+     "cases": 14
+    },
+    "C-017": {
+     "no_substitute": true
+    }
+   },
+   "extraction_right": 3,
+   "extraction_total": 3,
+   "plans": [
+    {
+     "C-017": {
+      "now": 12,
+      "sub": 0,
+      "bo": 0
+     },
+     "C-013": {
+      "now": 5,
+      "sub": 9,
+      "bo": 0
+     },
+     "C-003": {
+      "now": 0,
+      "sub": 0,
+      "bo": 0
+     },
+     "C-004": {
+      "now": 0,
+      "sub": 3,
+      "bo": 0
+     }
+    },
+    {
+     "C-017": {
+      "now": 12,
+      "sub": 0,
+      "bo": 0
+     },
+     "C-013": {
+      "now": 5,
+      "sub": 9,
+      "bo": 0
+     },
+     "C-003": {
+      "now": 0,
+      "sub": 0,
+      "bo": 0
+     },
+     "C-004": {
+      "now": 0,
+      "sub": 3,
+      "bo": 0
+     }
+    },
+    {
+     "C-017": {
+      "now": 12,
+      "sub": 0,
+      "bo": 0
+     },
+     "C-013": {
+      "now": 5,
+      "sub": 9,
+      "bo": 0
+     },
+     "C-003": {
+      "now": 0,
+      "sub": 0,
+      "bo": 0
+     },
+     "C-004": {
+      "now": 0,
+      "sub": 3,
+      "bo": 0
+     }
+    }
+   ]
+  },
+  {
+   "scenario": "L3",
+   "repeat": 2,
+   "extracted": {
+    "C-003": {
+     "cancel": true
+    },
+    "C-013": {
+     "cases": 14
+    },
+    "C-017": {
+     "no_substitute": true
+    }
+   },
+   "extraction_right": 3,
+   "extraction_total": 3,
+   "plans": [
+    {
+     "C-017": {
+      "now": 12,
+      "sub": 0,
+      "bo": 0
+     },
+     "C-013": {
+      "now": 5,
+      "sub": 9,
+      "bo": 0
+     },
+     "C-003": {
+      "now": 0,
+      "sub": 0,
+      "bo": 0
+     },
+     "C-004": {
+      "now": 0,
+      "sub": 3,
+      "bo": 0
+     }
+    },
+    {
+     "C-017": {
+      "now": 12,
+      "sub": 0,
+      "bo": 0
+     },
+     "C-013": {
+      "now": 5,
+      "sub": 9,
+      "bo": 0
+     },
+     "C-003": {
+      "now": 0,
+      "sub": 0,
+      "bo": 0
+     },
+     "C-004": {
+      "now": 0,
+      "sub": 3,
+      "bo": 0
+     }
+    },
+    {
+     "C-017": {
+      "now": 12,
+      "sub": 0,
+      "bo": 0
+     },
+     "C-013": {
+      "now": 5,
+      "sub": 9,
+      "bo": 0
+     },
+     "C-003": {
+      "now": 0,
+      "sub": 0,
+      "bo": 0
+     },
+     "C-004": {
+      "now": 0,
+      "sub": 3,
+      "bo": 0
+     }
+    }
+   ]
+  },
+  {
+   "scenario": "L4",
+   "repeat": 0,
+   "extracted": {
+    "C-001": {
+     "must_fill": true,
+     "no_substitute": true
+    },
+    "C-004": {
+     "deadline": "2026-10-30"
+    }
+   },
+   "extraction_right": 3,
+   "extraction_total": 3,
+   "plans": [
+    {
+     "C-003": {
+      "now": 0,
+      "sub": 2,
+      "bo": 0
+     },
+     "C-009": {
+      "now": 0,
+      "sub": 2,
+      "bo": 0
+     },
+     "C-004": {
+      "now": 0,
+      "sub": 2,
+      "bo": 0
+     },
+     "C-001": {
+      "now": 3,
+      "sub": 0,
+      "bo": 0
+     }
+    },
+    {
+     "C-003": {
+      "now": 0,
+      "sub": 2,
+      "bo": 0
+     },
+     "C-009": {
+      "now": 0,
+      "sub": 2,
+      "bo": 0
+     },
+     "C-004": {
+      "now": 0,
+      "sub": 2,
+      "bo": 0
+     },
+     "C-001": {
+      "now": 3,
+      "sub": 0,
+      "bo": 0
+     }
+    },
+    {
+     "C-003": {
+      "now": 0,
+      "sub": 2,
+      "bo": 0
+     },
+     "C-009": {
+      "now": 0,
+      "sub": 2,
+      "bo": 0
+     },
+     "C-004": {
+      "now": 0,
+      "sub": 2,
+      "bo": 0
+     },
+     "C-001": {
+      "now": 3,
+      "sub": 0,
+      "bo": 0
+     }
+    }
+   ]
+  },
+  {
+   "scenario": "L4",
+   "repeat": 1,
+   "extracted": {
+    "C-001": {
+     "must_fill": true,
+     "no_substitute": true
+    },
+    "C-004": {
+     "deadline": "2026-10-30"
+    }
+   },
+   "extraction_right": 3,
+   "extraction_total": 3,
+   "plans": [
+    {
+     "C-003": {
+      "now": 0,
+      "sub": 2,
+      "bo": 0
+     },
+     "C-009": {
+      "now": 0,
+      "sub": 2,
+      "bo": 0
+     },
+     "C-004": {
+      "now": 0,
+      "sub": 2,
+      "bo": 0
+     },
+     "C-001": {
+      "now": 3,
+      "sub": 0,
+      "bo": 0
+     }
+    },
+    {
+     "C-003": {
+      "now": 0,
+      "sub": 2,
+      "bo": 0
+     },
+     "C-009": {
+      "now": 0,
+      "sub": 2,
+      "bo": 0
+     },
+     "C-004": {
+      "now": 0,
+      "sub": 2,
+      "bo": 0
+     },
+     "C-001": {
+      "now": 3,
+      "sub": 0,
+      "bo": 0
+     }
+    },
+    {
+     "C-003": {
+      "now": 0,
+      "sub": 2,
+      "bo": 0
+     },
+     "C-009": {
+      "now": 0,
+      "sub": 2,
+      "bo": 0
+     },
+     "C-004": {
+      "now": 0,
+      "sub": 2,
+      "bo": 0
+     },
+     "C-001": {
+      "now": 3,
+      "sub": 0,
+      "bo": 0
+     }
+    }
+   ]
+  },
+  {
+   "scenario": "L4",
+   "repeat": 2,
+   "extracted": {
+    "C-001": {
+     "must_fill": true,
+     "no_substitute": true
+    },
+    "C-004": {
+     "deadline": "2026-10-30"
+    }
+   },
+   "extraction_right": 3,
+   "extraction_total": 3,
+   "plans": [
+    {
+     "C-003": {
+      "now": 0,
+      "sub": 2,
+      "bo": 0
+     },
+     "C-009": {
+      "now": 0,
+      "sub": 2,
+      "bo": 0
+     },
+     "C-004": {
+      "now": 0,
+      "sub": 2,
+      "bo": 0
+     },
+     "C-001": {
+      "now": 3,
+      "sub": 0,
+      "bo": 0
+     }
+    },
+    {
+     "C-003": {
+      "now": 0,
+      "sub": 2,
+      "bo": 0
+     },
+     "C-009": {
+      "now": 0,
+      "sub": 2,
+      "bo": 0
+     },
+     "C-004": {
+      "now": 0,
+      "sub": 2,
+      "bo": 0
+     },
+     "C-001": {
+      "now": 3,
+      "sub": 0,
+      "bo": 0
+     }
+    },
+    {
+     "C-003": {
+      "now": 0,
+      "sub": 2,
+      "bo": 0
+     },
+     "C-009": {
+      "now": 0,
+      "sub": 2,
+      "bo": 0
+     },
+     "C-004": {
+      "now": 0,
+      "sub": 2,
+      "bo": 0
+     },
+     "C-001": {
+      "now": 3,
+      "sub": 0,
+      "bo": 0
+     }
+    }
+   ]
+  },
+  {
+   "scenario": "L5",
+   "repeat": 0,
+   "extracted": {
+    "C-012": {
+     "no_substitute": true
+    },
+    "C-002": {
+     "deadline": "2026-10-31"
+    },
+    "C-016": {
+     "cases": 3
+    }
+   },
+   "extraction_right": 3,
+   "extraction_total": 3,
+   "plans": [
+    {
+     "C-007": {
+      "now": 0,
+      "sub": 8,
+      "bo": 0
+     },
+     "C-012": {
+      "now": 0,
+      "sub": 0,
+      "bo": 6
+     },
+     "C-002": {
+      "now": 0,
+      "sub": 10,
+      "bo": 0
+     },
+     "C-016": {
+      "now": 0,
+      "sub": 4,
+      "bo": 0
+     }
+    },
+    {
+     "C-007": {
+      "now": 0,
+      "sub": 8,
+      "bo": 0
+     },
+     "C-012": {
+      "now": 0,
+      "sub": 0,
+      "bo": 6
+     },
+     "C-002": {
+      "now": 0,
+      "sub": 10,
+      "bo": 0
+     },
+     "C-016": {
+      "now": 0,
+      "sub": 4,
+      "bo": 0
+     }
+    },
+    {
+     "C-007": {
+      "now": 0,
+      "sub": 8,
+      "bo": 0
+     },
+     "C-012": {
+      "now": 0,
+      "sub": 0,
+      "bo": 6
+     },
+     "C-002": {
+      "now": 0,
+      "sub": 10,
+      "bo": 0
+     },
+     "C-016": {
+      "now": 0,
+      "sub": 4,
+      "bo": 0
+     }
+    }
+   ]
+  },
+  {
+   "scenario": "L5",
+   "repeat": 1,
+   "extracted": {
+    "C-012": {
+     "no_substitute": true
+    },
+    "C-002": {
+     "deadline": "2026-10-31"
+    },
+    "C-016": {
+     "cases": 3
+    }
+   },
+   "extraction_right": 3,
+   "extraction_total": 3,
+   "plans": [
+    {
+     "C-007": {
+      "now": 0,
+      "sub": 8,
+      "bo": 0
+     },
+     "C-012": {
+      "now": 0,
+      "sub": 0,
+      "bo": 6
+     },
+     "C-002": {
+      "now": 0,
+      "sub": 10,
+      "bo": 0
+     },
+     "C-016": {
+      "now": 0,
+      "sub": 4,
+      "bo": 0
+     }
+    },
+    {
+     "C-007": {
+      "now": 0,
+      "sub": 8,
+      "bo": 0
+     },
+     "C-012": {
+      "now": 0,
+      "sub": 0,
+      "bo": 6
+     },
+     "C-002": {
+      "now": 0,
+      "sub": 10,
+      "bo": 0
+     },
+     "C-016": {
+      "now": 0,
+      "sub": 4,
+      "bo": 0
+     }
+    },
+    {
+     "C-007": {
+      "now": 0,
+      "sub": 8,
+      "bo": 0
+     },
+     "C-012": {
+      "now": 0,
+      "sub": 0,
+      "bo": 6
+     },
+     "C-002": {
+      "now": 0,
+      "sub": 10,
+      "bo": 0
+     },
+     "C-016": {
+      "now": 0,
+      "sub": 4,
+      "bo": 0
+     }
+    }
+   ]
+  },
+  {
+   "scenario": "L5",
+   "repeat": 2,
+   "extracted": {
+    "C-012": {
+     "no_substitute": true
+    },
+    "C-002": {
+     "deadline": "2026-10-31"
+    },
+    "C-016": {
+     "cases": 3
+    }
+   },
+   "extraction_right": 3,
+   "extraction_total": 3,
+   "plans": [
+    {
+     "C-007": {
+      "now": 0,
+      "sub": 8,
+      "bo": 0
+     },
+     "C-012": {
+      "now": 0,
+      "sub": 0,
+      "bo": 6
+     },
+     "C-002": {
+      "now": 0,
+      "sub": 10,
+      "bo": 0
+     },
+     "C-016": {
+      "now": 0,
+      "sub": 4,
+      "bo": 0
+     }
+    },
+    {
+     "C-007": {
+      "now": 0,
+      "sub": 8,
+      "bo": 0
+     },
+     "C-012": {
+      "now": 0,
+      "sub": 0,
+      "bo": 6
+     },
+     "C-002": {
+      "now": 0,
+      "sub": 10,
+      "bo": 0
+     },
+     "C-016": {
+      "now": 0,
+      "sub": 4,
+      "bo": 0
+     }
+    },
+    {
+     "C-007": {
+      "now": 0,
+      "sub": 8,
+      "bo": 0
+     },
+     "C-012": {
+      "now": 0,
+      "sub": 0,
+      "bo": 6
+     },
+     "C-002": {
+      "now": 0,
+      "sub": 10,
+      "bo": 0
+     },
+     "C-016": {
+      "now": 0,
+      "sub": 4,
+      "bo": 0
+     }
+    }
+   ]
+  }
+ ]
+}

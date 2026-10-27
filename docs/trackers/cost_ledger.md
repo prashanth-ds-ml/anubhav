@@ -5,7 +5,7 @@ tags: [tracker, cost]
 
 | Credit | Total $ | Spent $ | Left $ | Used for |
 |---|---|---|---|---|
-| Meta Model API | 150.00 | ~13.57 | ~136.43 | Muse Spark + Voice Transcribe runtime, evals |
+| Meta Model API | 150.00 | ~14.42 | ~135.58 | Muse Spark + Voice Transcribe runtime, evals |
 | Baseten | 100.00 (+2M TPM) | ~5.90 | ~94.10 | Open-weights arm (FR-15) |
 
 ## Meta Model API ($150)
@@ -32,6 +32,7 @@ tags: [tracker, cost]
 | 2026-10-27 | Benchmark | EXP-001 run 1 (core, 96 runs) + runner tests | | | | 2.41 | ~2.61 | ⬜ |
 | 2026-10-27 | Benchmark | Arm B smoke tests (incl. one 36-call loop from our namespace bug) | | | | 0.37 | ~2.98 | ⬜ |
 | 2026-10-27 | Benchmark | EXP-001 run 2 (core) + EXP-002 arms A and B (288 runs) + 4 re-runs | | | | 10.59 | ~13.57 | ⬜ |
+| 2026-10-27 | Benchmark | EXP-003 Lab head-to-head (5 scenarios × 3 repeats, ~60 calls) | | | | 0.85 | ~14.42 | ⬜ |
 
 ### Prices (verified 2026-10-27)
 | Model | Input /1M | Output /1M | Cached /1M |
