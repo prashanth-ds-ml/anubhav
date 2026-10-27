@@ -1,12 +1,19 @@
 ---
 tags: [tracker, cost]
 ---
-# Cost ledger: $150 Meta Model API credit
+# Cost ledger: Meta API ($150) and Baseten ($100) credits
+
+| Credit | Total $ | Spent $ | Left $ | Used for |
+|---|---|---|---|---|
+| Meta Model API | 150.00 | ~0.07 | ~149.93 | Muse Spark + Voice Transcribe runtime, evals |
+| Baseten | 100.00 (+2M TPM) | 0.00 | 100.00 | Open-weights arm (FR-15) |
+
+## Meta Model API ($150)
 
 **Spend-limit notification set on Billing:** ⬜
 **Stop-and-replan rule:** if any day spends more than ~$22 (15%), pause and review.
 
-## Budget (from PRD §12; fill in once pricing is known)
+### Budget (from PRD §12; fill in once pricing is known)
 | Bucket | Target % | Target $ | Spent $ | Left $ |
 |---|---|---|---|---|
 | Dev / debugging | ≤25% | 37.50 | | |
@@ -16,12 +23,13 @@ tags: [tracker, cost]
 | Reserve | ≥10% | 15.00 | | |
 | **Total** | 100% | **150.00** | | |
 
-## Daily spend
+### Daily spend
 | Date | Bucket | Runs | Tokens in | Tokens out | Audio min | $ | Cumulative $ | Billing page check |
 |---|---|---|---|---|---|---|---|---|
 | 2026-10-27 | Dev | 14 calls (smoke) | ~17k | ~9k | 0.03 (tone test) | ~0.07 | ~0.07 | ⬜ |
+| 2026-10-27 | Dev | 1 live voice test (silent mic, empty transcript) | | | 0.33 | 0.001 | ~0.07 | ⬜ |
 
-## Prices (verified 2026-10-27)
+### Prices (verified 2026-10-27)
 | Model | Input /1M | Output /1M | Cached /1M |
 |---|---|---|---|
 | muse-spark-1.3 | $1.25 | $4.25 | $0.15 |
@@ -29,6 +37,18 @@ tags: [tracker, cost]
 | muse-voice-transcribe-1.0 | $0.18 per audio hour | | |
 
 **Rough per-task estimate (1.3 standard):** ~5 turns × ~3k in / ~0.6k out ≈ $0.03 per task. 48 tasks × 3 arms ≈ $4.50. 16 held-out × 3 repeats × 2 arms ≈ $3. **The $150 is ample on the standard model.**
+
+## Baseten ($100 + 2M TPM)
+
+**Spend alert set on Baseten billing:** ⬜
+
+### Daily spend
+| Date | Model / deployment | Runs | Tokens in | Tokens out | GPU min | $ | Cumulative $ | Billing page check |
+|---|---|---|---|---|---|---|---|---|
+| | | | | | | | | |
+
+### Prices
+Fill in from Baseten once the open-weights model and deployment type are picked (per-token API vs. dedicated GPU).
 
 ## Partner credits
 | Partner | Amount | Status | Use |
