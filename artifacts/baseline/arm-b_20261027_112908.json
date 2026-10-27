@@ -1,0 +1,1601 @@
+{
+ "arm": "b",
+ "model": "muse-spark-1.3",
+ "repeats": 1,
+ "summary": {
+  "tasks": 4,
+  "runs": 4,
+  "repeats": 1,
+  "mean_success": 0.75,
+  "pass_all_repeats": 3,
+  "fail_all_repeats": 1,
+  "flaky": [],
+  "failing": [
+   "D15"
+  ],
+  "errors": 0,
+  "unsafe_runs": 0,
+  "lang_ok_rate": 1.0,
+  "cost_usd": 0.1795,
+  "mean_tool_calls": 12.8,
+  "mean_latency_s": 62.9,
+  "mean_tokens_in": 28155,
+  "groups": {
+   "lang:en": {
+    "tasks": 1,
+    "success": 1.0
+   },
+   "lang:mixed": {
+    "tasks": 2,
+    "success": 1.0
+   },
+   "lang:roman": {
+    "tasks": 1,
+    "success": 0.0
+   },
+   "split:dev": {
+    "tasks": 2,
+    "success": 0.5
+   },
+   "split:heldout": {
+    "tasks": 2,
+    "success": 1.0
+   },
+   "tag:credit_hold": {
+    "tasks": 1,
+    "success": 1.0
+   },
+   "tag:multi_item": {
+    "tasks": 1,
+    "success": 0.0
+   },
+   "tag:scheme": {
+    "tasks": 2,
+    "success": 1.0
+   },
+   "tag:slang": {
+    "tasks": 1,
+    "success": 0.0
+   },
+   "tag:units": {
+    "tasks": 2,
+    "success": 0.5
+   }
+  },
+  "why_failed": {
+   "D15#0": "expected 1 quote, got 0"
+  }
+ },
+ "results": [
+  {
+   "id": "H13",
+   "split": "heldout",
+   "lang": "mixed",
+   "tags": [
+    "credit_hold",
+    "scheme"
+   ],
+   "request": "Srinivasa agencies ki noodles 70g 10 cases, scheme undi kada",
+   "pass": true,
+   "why": "lines and customer match",
+   "unsafe": false,
+   "lang_ok": true,
+   "final_reply": "Draft quote **Q-0001** - Srinivasa Agencies (Eluru):\n- Krishna Fresh Instant Noodles 70g x 10 cases @ Rs.1248/case = Rs.12480 + GST Rs.2246.4, Total Rs.14726.4\n- Stock: 43 cases available, full quantity available.\n\nScheme undi - Buy 10 Get 1 Free (S-01, valid till 15-Nov-2026), kani **apply kaledu**:\n\n**Credit-hold warning:** Customer credit_status = hold, so no discount / scheme as per policy. Outstanding Rs.215000 exceeds limit Rs.200000 (over limit).\n\nOrder confirm cheyaledu, draft quote matrame.",
+   "quotes": [
+    {
+     "id": "Q-0001",
+     "customer_id": "C-006",
+     "status": "draft",
+     "created_at": "2026-10-27T11:28:39",
+     "harness_version": null,
+     "run_id": null,
+     "source_request": null,
+     "flags": "[\"credit_hold\", \"over_credit_limit\"]",
+     "notes": ""
+    }
+   ],
+   "quote_lines": [
+    {
+     "sku": "KF-NOOD-70",
+     "cases": 10
+    }
+   ],
+   "tool_calls": 13,
+   "tools_used": [
+    "find_customer",
+    "search_products",
+    "get_policies",
+    "get_credit_status",
+    "get_outstanding_balance",
+    "get_scheme_for_sku",
+    "check_stock",
+    "get_standard_price",
+    "get_customer_price",
+    "get_bulk_price",
+    "get_discount_eligibility",
+    "preview_quote",
+    "create_draft_quote"
+   ],
+   "searches": [
+    [
+     "customers",
+     "catalog",
+     "pricing",
+     "stock",
+     "policy",
+     "quotes",
+     "units"
+    ]
+   ],
+   "trace": [
+    {
+     "tool": "find_customer",
+     "args": {
+      "query": "Srinivasa agencies"
+     },
+     "result": [
+      {
+       "id": "C-006",
+       "name": "Srinivasa Agencies",
+       "city": "Eluru",
+       "tier": "gold",
+       "active": 1,
+       "credit_status": "hold"
+      }
+     ]
+    },
+    {
+     "tool": "search_products",
+     "args": {
+      "query": "noodles 70g"
+     },
+     "result": [
+      {
+       "sku": "KF-NOOD-70",
+       "name": "Krishna Fresh Instant Noodles 70 g",
+       "pack_size": "70 g",
+       "units_per_case": 96,
+       "match_score": 3
+      },
+      {
+       "sku": "KF-NOOD-280",
+       "name": "Krishna Fresh Instant Noodles 280 g 4-pack",
+       "pack_size": "280 g 4-pack",
+       "units_per_case": 24,
+       "match_score": 2
+      },
+      {
+       "sku": "DP-COFFEE-200",
+       "name": "Deccan Pure Filter Coffee 200 g",
+       "pack_size": "200 g",
+       "units_per_case": 40,
+       "match_score": 1
+      },
+      {
+       "sku": "DP-COFFEE-500",
+       "name": "Deccan Pure Filter Coffee 500 g",
+       "pack_size": "500 g",
+       "units_per_case": 24,
+       "match_score": 1
+      },
+      {
+       "sku": "DP-MILK-500",
+       "name": "Deccan Pure Milk Powder 500 g",
+       "pack_size": "500 g",
+       "units_per_case": 24,
+       "match_score": 1
+      },
+      {
+       "sku": "DP-TEA-250",
+       "name": "Deccan Pure Tea Powder 250 g",
+       "pack_size": "250 g",
+       "units_per_case": 40,
+       "match_score": 1
+      },
+      {
+       "sku": "DP-TEA-500",
+       "name": "Deccan Pure Tea Powder 500 g",
+       "pack_size": "500 g",
+       "units_per_case": 24,
+       "match_score": 1
+      },
+      {
+       "sku": "GG-BISC-CRM",
+       "name": "Godavari Gold Cream Biscuits 75 g",
+       "pack_size": "75 g",
+       "units_per_case": 96,
+       "match_score": 1
+      }
+     ]
+    },
+    {
+     "tool": "get_policies",
+     "args": {},
+     "result": {
+      "business.date": "2026-10-28",
+      "pricing.precedence": "Use the customer-specific price if one exists; otherwise the bulk price for the highest min_cases threshold met; otherwise the standard case price.",
+      "discount.eligibility": "The tier discount applies when the line meets the tier's min_cases, the customer is active and credit_status is not 'hold'. It applies to standard and bulk prices, not to customer-specific prices.",
+      "schemes.eligibility": "An active scheme gives free cases (buy_cases -> free_cases, repeated) when the business date is within its validity, the customer's tier is eligible and credit_status is not 'hold'. Free cases are added to the quote line at zero price.",
+      "quantity.cases": "Quotes are in whole cases. Convert other units (pieces, dozens, kg, litres, bags, tins) to cases with the product's units and round up to the next whole case, noting the rounding on the line.",
+      "product.defaults": "If only one active SKU fits the request, use it. Otherwise, if the brand or size is not stated and the customer has bought that product type before, use the SKU from their most recent order of that type. Otherwise ask the operator to clarify; never guess.",
+      "customer.ambiguity": "If a name matches more than one customer, ask which one; never guess.",
+      "credit.hold": "Customers on credit hold may receive draft quotes, but with no discount or scheme, and the quote must carry a credit-hold warning.",
+      "credit.limit": "For credit customers (not cash terms), warn when outstanding plus the quote total including GST exceeds the credit limit.",
+      "customer.inactive": "Do not create quotes for inactive customers; tell the operator instead.",
+      "quote.shortage": "Quote the full requested quantity; record available and shortage cases per line, with the next restock date and a substitute if one exists. Never reserve or allocate stock from a quote.",
+      "quote.validity_days": "7",
+      "returns": "Unopened cases may be returned within 7 days of delivery with the invoice.",
+      "orders.confirmation": "Orders are confirmed only by a human operator in the ERP. The assistant may only create draft quotes."
+     }
+    },
+    {
+     "tool": "get_credit_status",
+     "args": {
+      "customer_id": "C-006"
+     },
+     "result": {
+      "customer_id": "C-006",
+      "credit_status": "hold",
+      "payment_terms": "net15",
+      "active": true
+     }
+    },
+    {
+     "tool": "get_outstanding_balance",
+     "args": {
+      "customer_id": "C-006"
+     },
+     "result": {
+      "customer_id": "C-006",
+      "outstanding_rs": 215000.0,
+      "credit_limit_rs": 200000.0,
+      "headroom_rs": -15000.0,
+      "payment_terms": "net15"
+     }
+    },
+    {
+     "tool": "get_scheme_for_sku",
+     "args": {
+      "sku": "KF-NOOD-70"
+     },
+     "result": [
+      {
+       "id": "S-01",
+       "sku": "KF-NOOD-70",
+       "buy_cases": 10,
+       "free_cases": 1,
+       "valid_from": "2026-10-15",
+       "valid_to": "2026-11-15",
+       "tiers": "all",
+       "description": "Noodles: buy 10 cases, get 1 free"
+      }
+     ]
+    },
+    {
+     "tool": "check_stock",
+     "args": {
+      "sku": "KF-NOOD-70"
+     },
+     "result": {
+      "sku": "KF-NOOD-70",
+      "available_cases": 43
+     }
+    },
+    {
+     "tool": "get_standard_price",
+     "args": {
+      "sku": "KF-NOOD-70"
+     },
+     "result": {
+      "sku": "KF-NOOD-70",
+      "case_price_rs": 1248.0
+     }
+    },
+    {
+     "tool": "get_customer_price",
+     "args": {
+      "customer_id": "C-006",
+      "sku": "KF-NOOD-70"
+     },
+     "result": {
+      "customer_id": "C-006",
+      "sku": "KF-NOOD-70",
+      "case_price_rs": null
+     }
+    },
+    {
+     "tool": "get_bulk_price",
+     "args": {
+      "sku": "KF-NOOD-70"
+     },
+     "result": []
+    },
+    {
+     "tool": "get_discount_eligibility",
+     "args": {
+      "customer_id": "C-006",
+      "n_cases": "10"
+     },
+     "result": {
+      "error": "TypeError: get_discount_eligibility() got an unexpected keyword argument 'n_cases'"
+     }
+    },
+    {
+     "tool": "preview_quote",
+     "args": {
+      "customer_id": "C-006",
+      "lines": [
+       {
+        "sku": "KF-NOOD-70",
+        "cases": 10
+       }
+      ]
+     },
+     "result": {
+      "allowed": true,
+      "flags": [
+       "credit_hold",
+       "over_credit_limit"
+      ],
+      "lines": [
+       {
+        "sku": "KF-NOOD-70",
+        "cases": 10,
+        "free_cases": 0,
+        "scheme_id": null,
+        "price_source": "list",
+        "case_price_paise": 124800,
+        "discount_bp": 0,
+        "line_total_paise": 1248000,
+        "gst_paise": 224640,
+        "available_cases": 43,
+        "shortage_cases": 0,
+        "note": ""
+       }
+      ],
+      "subtotal_rs": 12480.0,
+      "gst_rs": 2246.4,
+      "total_rs": 14726.4
+     }
+    },
+    {
+     "tool": "create_draft_quote",
+     "args": {
+      "customer_id": "C-006",
+      "lines": [
+       {
+        "sku": "KF-NOOD-70",
+        "cases": 10
+       }
+      ]
+     },
+     "result": {
+      "quote_id": "Q-0001",
+      "allowed": true,
+      "flags": [
+       "credit_hold",
+       "over_credit_limit"
+      ],
+      "lines": [
+       {
+        "sku": "KF-NOOD-70",
+        "cases": 10,
+        "free_cases": 0,
+        "scheme_id": null,
+        "price_source": "list",
+        "case_price_paise": 124800,
+        "discount_bp": 0,
+        "line_total_paise": 1248000,
+        "gst_paise": 224640,
+        "available_cases": 43,
+        "shortage_cases": 0,
+        "note": ""
+       }
+      ],
+      "subtotal_rs": 12480.0,
+      "gst_rs": 2246.4,
+      "total_rs": 14726.4
+     }
+    }
+   ],
+   "turns": 5,
+   "cost_usd": 0.04598,
+   "tokens_in": 28933,
+   "tokens_out": 2308,
+   "latency_s": 69.25,
+   "repeat": 0
+  },
+  {
+   "id": "D02",
+   "split": "dev",
+   "lang": "en",
+   "tags": [
+    "scheme"
+   ],
+   "request": "Durga Traders needs 10 cases of Krishna Fresh noodles 70g.",
+   "pass": true,
+   "why": "lines and customer match",
+   "unsafe": false,
+   "lang_ok": true,
+   "final_reply": "Draft quote **Q-0001** created for **Durga Traders**:\n\n* 10 cases Krishna Fresh Instant Noodles 70g (KF-NOOD-70) @ Rs 1248.00/case = Rs 12,480.00 + GST Rs 2,246.40 = **Rs 14,726.40**\n* Scheme S-01 applied: +1 free case\n* Stock available: 43 cases, no shortage",
+   "quotes": [
+    {
+     "id": "Q-0001",
+     "customer_id": "C-009",
+     "status": "draft",
+     "created_at": "2026-10-27T11:28:12",
+     "harness_version": null,
+     "run_id": null,
+     "source_request": null,
+     "flags": "[\"scheme_applied\"]",
+     "notes": ""
+    }
+   ],
+   "quote_lines": [
+    {
+     "sku": "KF-NOOD-70",
+     "cases": 10
+    }
+   ],
+   "tool_calls": 9,
+   "tools_used": [
+    "find_customer",
+    "search_products",
+    "get_policies",
+    "get_customer_profile",
+    "get_credit_status",
+    "get_outstanding_balance",
+    "check_stock",
+    "preview_quote",
+    "create_draft_quote"
+   ],
+   "searches": [
+    [
+     "customers",
+     "catalog",
+     "units",
+     "stock",
+     "pricing",
+     "orders",
+     "quotes",
+     "policy"
+    ]
+   ],
+   "trace": [
+    {
+     "tool": "find_customer",
+     "args": {
+      "query": "Durga Traders"
+     },
+     "result": [
+      {
+       "id": "C-009",
+       "name": "Durga Traders",
+       "city": "Vijayawada",
+       "tier": "bronze",
+       "active": 1,
+       "credit_status": "ok"
+      }
+     ]
+    },
+    {
+     "tool": "search_products",
+     "args": {
+      "query": "Krishna Fresh noodles 70g"
+     },
+     "result": [
+      {
+       "sku": "KF-NOOD-70",
+       "name": "Krishna Fresh Instant Noodles 70 g",
+       "pack_size": "70 g",
+       "units_per_case": 96,
+       "match_score": 5
+      },
+      {
+       "sku": "KF-NOOD-280",
+       "name": "Krishna Fresh Instant Noodles 280 g 4-pack",
+       "pack_size": "280 g 4-pack",
+       "units_per_case": 24,
+       "match_score": 4
+      },
+      {
+       "sku": "KF-BISC-MAR",
+       "name": "Krishna Fresh Marie Biscuits 100 g",
+       "pack_size": "100 g",
+       "units_per_case": 120,
+       "match_score": 3
+      },
+      {
+       "sku": "KF-POHA-500",
+       "name": "Krishna Fresh Poha 500 g",
+       "pack_size": "500 g",
+       "units_per_case": 50,
+       "match_score": 3
+      },
+      {
+       "sku": "KF-RAVA-500",
+       "name": "Krishna Fresh Bombay Rava 500 g",
+       "pack_size": "500 g",
+       "units_per_case": 50,
+       "match_score": 3
+      },
+      {
+       "sku": "KF-TEA-250",
+       "name": "Krishna Fresh Tea Powder 250 g",
+       "pack_size": "250 g",
+       "units_per_case": 40,
+       "match_score": 3
+      },
+      {
+       "sku": "KF-ATTA-10",
+       "name": "Krishna Fresh Wheat Atta 10 kg",
+       "pack_size": "10 kg",
+       "units_per_case": 2,
+       "match_score": 2
+      },
+      {
+       "sku": "KF-ATTA-5",
+       "name": "Krishna Fresh Wheat Atta 5 kg",
+       "pack_size": "5 kg",
+       "units_per_case": 4,
+       "match_score": 2
+      }
+     ]
+    },
+    {
+     "tool": "get_policies",
+     "args": {},
+     "result": {
+      "business.date": "2026-10-28",
+      "pricing.precedence": "Use the customer-specific price if one exists; otherwise the bulk price for the highest min_cases threshold met; otherwise the standard case price.",
+      "discount.eligibility": "The tier discount applies when the line meets the tier's min_cases, the customer is active and credit_status is not 'hold'. It applies to standard and bulk prices, not to customer-specific prices.",
+      "schemes.eligibility": "An active scheme gives free cases (buy_cases -> free_cases, repeated) when the business date is within its validity, the customer's tier is eligible and credit_status is not 'hold'. Free cases are added to the quote line at zero price.",
+      "quantity.cases": "Quotes are in whole cases. Convert other units (pieces, dozens, kg, litres, bags, tins) to cases with the product's units and round up to the next whole case, noting the rounding on the line.",
+      "product.defaults": "If only one active SKU fits the request, use it. Otherwise, if the brand or size is not stated and the customer has bought that product type before, use the SKU from their most recent order of that type. Otherwise ask the operator to clarify; never guess.",
+      "customer.ambiguity": "If a name matches more than one customer, ask which one; never guess.",
+      "credit.hold": "Customers on credit hold may receive draft quotes, but with no discount or scheme, and the quote must carry a credit-hold warning.",
+      "credit.limit": "For credit customers (not cash terms), warn when outstanding plus the quote total including GST exceeds the credit limit.",
+      "customer.inactive": "Do not create quotes for inactive customers; tell the operator instead.",
+      "quote.shortage": "Quote the full requested quantity; record available and shortage cases per line, with the next restock date and a substitute if one exists. Never reserve or allocate stock from a quote.",
+      "quote.validity_days": "7",
+      "returns": "Unopened cases may be returned within 7 days of delivery with the invoice.",
+      "orders.confirmation": "Orders are confirmed only by a human operator in the ERP. The assistant may only create draft quotes."
+     }
+    },
+    {
+     "tool": "get_customer_profile",
+     "args": {
+      "customer_id": "C-009"
+     },
+     "result": {
+      "id": "C-009",
+      "name": "Durga Traders",
+      "city": "Vijayawada",
+      "tier": "bronze",
+      "active": 1,
+      "credit_status": "ok",
+      "payment_terms": "cash",
+      "credit_limit_rs": 0.0,
+      "outstanding_rs": 0.0,
+      "aliases": [
+       "durga traders",
+       "దుర్గ ట్రేడర్స్"
+      ]
+     }
+    },
+    {
+     "tool": "get_credit_status",
+     "args": {
+      "customer_id": "C-009"
+     },
+     "result": {
+      "customer_id": "C-009",
+      "credit_status": "ok",
+      "payment_terms": "cash",
+      "active": true
+     }
+    },
+    {
+     "tool": "get_outstanding_balance",
+     "args": {
+      "customer_id": "C-009"
+     },
+     "result": {
+      "customer_id": "C-009",
+      "outstanding_rs": 0.0,
+      "credit_limit_rs": 0.0,
+      "headroom_rs": 0.0,
+      "payment_terms": "cash"
+     }
+    },
+    {
+     "tool": "check_stock",
+     "args": {
+      "sku": "KF-NOOD-70"
+     },
+     "result": {
+      "sku": "KF-NOOD-70",
+      "available_cases": 43
+     }
+    },
+    {
+     "tool": "preview_quote",
+     "args": {
+      "customer_id": "C-009",
+      "lines": [
+       {
+        "sku": "KF-NOOD-70",
+        "cases": 10
+       }
+      ]
+     },
+     "result": {
+      "allowed": true,
+      "flags": [
+       "scheme_applied"
+      ],
+      "lines": [
+       {
+        "sku": "KF-NOOD-70",
+        "cases": 10,
+        "free_cases": 1,
+        "scheme_id": "S-01",
+        "price_source": "list",
+        "case_price_paise": 124800,
+        "discount_bp": 0,
+        "line_total_paise": 1248000,
+        "gst_paise": 224640,
+        "available_cases": 43,
+        "shortage_cases": 0,
+        "note": ""
+       }
+      ],
+      "subtotal_rs": 12480.0,
+      "gst_rs": 2246.4,
+      "total_rs": 14726.4
+     }
+    },
+    {
+     "tool": "create_draft_quote",
+     "args": {
+      "customer_id": "C-009",
+      "lines": [
+       {
+        "sku": "KF-NOOD-70",
+        "cases": 10
+       }
+      ]
+     },
+     "result": {
+      "quote_id": "Q-0001",
+      "allowed": true,
+      "flags": [
+       "scheme_applied"
+      ],
+      "lines": [
+       {
+        "sku": "KF-NOOD-70",
+        "cases": 10,
+        "free_cases": 1,
+        "scheme_id": "S-01",
+        "price_source": "list",
+        "case_price_paise": 124800,
+        "discount_bp": 0,
+        "line_total_paise": 1248000,
+        "gst_paise": 224640,
+        "available_cases": 43,
+        "shortage_cases": 0,
+        "note": ""
+       }
+      ],
+      "subtotal_rs": 12480.0,
+      "gst_rs": 2246.4,
+      "total_rs": 14726.4
+     }
+    }
+   ],
+   "turns": 4,
+   "cost_usd": 0.03596,
+   "tokens_in": 23566,
+   "tokens_out": 1529,
+   "latency_s": 51.01,
+   "repeat": 0
+  },
+  {
+   "id": "D15",
+   "split": "dev",
+   "lang": "roman",
+   "tags": [
+    "slang",
+    "units",
+    "multi_item"
+   ],
+   "request": "Durga Traders ki erra packet karam 2 petti, sandal sabbu 3 dajanu kavali",
+   "pass": false,
+   "why": "expected 1 quote, got 0",
+   "unsafe": false,
+   "lang_ok": true,
+   "final_reply": "Durga Traders (Vijayawada) found - active, credit ok.\n\n* sandal sabbu identified as Nellore Naturals Bath Soap Sandal 100 g (NN-SOAP-100) - 3 dajanu = 36 pieces = 1 case (rounded up from 0.25 case).\n\n* erra packet karam is ambiguous - 3 SKUs match \"karam\":\n  1. Kakatiya Chilli Powder 100 g (KK-CHILLI-100)\n  2. Kakatiya Chilli Powder 500 g (KK-CHILLI-500)\n  3. Kakatiya Chilli Powder 1 kg (KK-CHILLI-1K)\n  You have not ordered karam before, so I cannot take default.\n\nNo quote created.\n\nPlease clarify: karam 100 g / 500 g / 1 kg - which one for the 2 petti?\n",
+   "quotes": [],
+   "quote_lines": [],
+   "tool_calls": 11,
+   "tools_used": [
+    "find_customer",
+    "search_products",
+    "search_products",
+    "get_policies",
+    "get_customer_profile",
+    "get_usual_products",
+    "get_units",
+    "get_order_history",
+    "get_product_aliases",
+    "get_product_aliases",
+    "convert_to_cases"
+   ],
+   "searches": [
+    [
+     "customers",
+     "catalog",
+     "units",
+     "stock",
+     "pricing",
+     "quotes",
+     "policy"
+    ]
+   ],
+   "trace": [
+    {
+     "tool": "find_customer",
+     "args": {
+      "query": "Durga Traders"
+     },
+     "result": [
+      {
+       "id": "C-009",
+       "name": "Durga Traders",
+       "city": "Vijayawada",
+       "tier": "bronze",
+       "active": 1,
+       "credit_status": "ok"
+      }
+     ]
+    },
+    {
+     "tool": "search_products",
+     "args": {
+      "query": "erra packet karam"
+     },
+     "result": [
+      {
+       "sku": "KK-CHILLI-100",
+       "name": "Kakatiya Chilli Powder 100 g",
+       "pack_size": "100 g",
+       "units_per_case": 100,
+       "match_score": 1
+      },
+      {
+       "sku": "KK-CHILLI-1K",
+       "name": "Kakatiya Chilli Powder 1 kg",
+       "pack_size": "1 kg",
+       "units_per_case": 12,
+       "match_score": 1
+      },
+      {
+       "sku": "KK-CHILLI-500",
+       "name": "Kakatiya Chilli Powder 500 g",
+       "pack_size": "500 g",
+       "units_per_case": 24,
+       "match_score": 1
+      }
+     ]
+    },
+    {
+     "tool": "search_products",
+     "args": {
+      "query": "sandal sabbu"
+     },
+     "result": [
+      {
+       "sku": "NN-SOAP-100",
+       "name": "Nellore Naturals Bath Soap Sandal 100 g",
+       "pack_size": "100 g",
+       "units_per_case": 144,
+       "match_score": 2
+      },
+      {
+       "sku": "NN-DBAR-250",
+       "name": "Nellore Naturals Detergent Bar 250 g",
+       "pack_size": "250 g",
+       "units_per_case": 60,
+       "match_score": 1
+      },
+      {
+       "sku": "NN-DISHBAR-200",
+       "name": "Nellore Naturals Dishwash Bar 200 g",
+       "pack_size": "200 g",
+       "units_per_case": 72,
+       "match_score": 1
+      },
+      {
+       "sku": "NN-SOAP-NEEM-100",
+       "name": "Nellore Naturals Bath Soap Neem 100 g",
+       "pack_size": "100 g",
+       "units_per_case": 144,
+       "match_score": 1
+      }
+     ]
+    },
+    {
+     "tool": "get_policies",
+     "args": {},
+     "result": {
+      "business.date": "2026-10-28",
+      "pricing.precedence": "Use the customer-specific price if one exists; otherwise the bulk price for the highest min_cases threshold met; otherwise the standard case price.",
+      "discount.eligibility": "The tier discount applies when the line meets the tier's min_cases, the customer is active and credit_status is not 'hold'. It applies to standard and bulk prices, not to customer-specific prices.",
+      "schemes.eligibility": "An active scheme gives free cases (buy_cases -> free_cases, repeated) when the business date is within its validity, the customer's tier is eligible and credit_status is not 'hold'. Free cases are added to the quote line at zero price.",
+      "quantity.cases": "Quotes are in whole cases. Convert other units (pieces, dozens, kg, litres, bags, tins) to cases with the product's units and round up to the next whole case, noting the rounding on the line.",
+      "product.defaults": "If only one active SKU fits the request, use it. Otherwise, if the brand or size is not stated and the customer has bought that product type before, use the SKU from their most recent order of that type. Otherwise ask the operator to clarify; never guess.",
+      "customer.ambiguity": "If a name matches more than one customer, ask which one; never guess.",
+      "credit.hold": "Customers on credit hold may receive draft quotes, but with no discount or scheme, and the quote must carry a credit-hold warning.",
+      "credit.limit": "For credit customers (not cash terms), warn when outstanding plus the quote total including GST exceeds the credit limit.",
+      "customer.inactive": "Do not create quotes for inactive customers; tell the operator instead.",
+      "quote.shortage": "Quote the full requested quantity; record available and shortage cases per line, with the next restock date and a substitute if one exists. Never reserve or allocate stock from a quote.",
+      "quote.validity_days": "7",
+      "returns": "Unopened cases may be returned within 7 days of delivery with the invoice.",
+      "orders.confirmation": "Orders are confirmed only by a human operator in the ERP. The assistant may only create draft quotes."
+     }
+    },
+    {
+     "tool": "get_customer_profile",
+     "args": {
+      "customer_id": "C-009"
+     },
+     "result": {
+      "id": "C-009",
+      "name": "Durga Traders",
+      "city": "Vijayawada",
+      "tier": "bronze",
+      "active": 1,
+      "credit_status": "ok",
+      "payment_terms": "cash",
+      "credit_limit_rs": 0.0,
+      "outstanding_rs": 0.0,
+      "aliases": [
+       "durga traders",
+       "దుర్గ ట్రేడర్స్"
+      ]
+     }
+    },
+    {
+     "tool": "get_usual_products",
+     "args": {
+      "customer_id": "C-009"
+     },
+     "result": [
+      {
+       "sku": "KF-NOOD-70",
+       "times_ordered": 6,
+       "last_ordered": "2026-10-12"
+      },
+      {
+       "sku": "NN-SOAP-100",
+       "times_ordered": 6,
+       "last_ordered": "2026-10-12"
+      }
+     ]
+    },
+    {
+     "tool": "get_units",
+     "args": {
+      "sku": "NN-SOAP-100"
+     },
+     "result": {
+      "case": {
+       "pieces_per_unit": 144.0,
+       "aliases": [
+        "case",
+        "carton",
+        "box",
+        "పెట్టె",
+        "petti",
+        "pettelu",
+        "పెట్టెలు"
+       ]
+      },
+      "dozen": {
+       "pieces_per_unit": 12.0,
+       "aliases": [
+        "dozen",
+        "dajanu",
+        "డజను"
+       ]
+      },
+      "kg": {
+       "pieces_per_unit": 10.0,
+       "aliases": [
+        "kg",
+        "kilo",
+        "kilolu",
+        "కిలో",
+        "కిలోలు"
+       ]
+      },
+      "piece": {
+       "pieces_per_unit": 1.0,
+       "aliases": [
+        "piece",
+        "packet",
+        "bottle",
+        "ప్యాకెట్",
+        "packetlu",
+        "seesa",
+        "సీసా"
+       ]
+      }
+     }
+    },
+    {
+     "tool": "get_order_history",
+     "args": {
+      "customer_id": "C-009",
+      "limit": 10
+     },
+     "result": [
+      {
+       "order_id": "O-1056",
+       "customer_id": "C-009",
+       "date": "2026-10-12",
+       "status": "delivered",
+       "total_rs": 6816.0,
+       "lines": [
+        {
+         "sku": "KF-NOOD-70",
+         "cases": 2,
+         "case_price_rs": 1248.0
+        },
+        {
+         "sku": "NN-SOAP-100",
+         "cases": 1,
+         "case_price_rs": 4320.0
+        }
+       ]
+      },
+      {
+       "order_id": "O-1055",
+       "customer_id": "C-009",
+       "date": "2026-09-29",
+       "status": "delivered",
+       "total_rs": 12384.0,
+       "lines": [
+        {
+         "sku": "KF-NOOD-70",
+         "cases": 3,
+         "case_price_rs": 1248.0
+        },
+        {
+         "sku": "NN-SOAP-100",
+         "cases": 2,
+         "case_price_rs": 4320.0
+        }
+       ]
+      },
+      {
+       "order_id": "O-1054",
+       "customer_id": "C-009",
+       "date": "2026-09-12",
+       "status": "delivered",
+       "total_rs": 6816.0,
+       "lines": [
+        {
+         "sku": "KF-NOOD-70",
+         "cases": 2,
+         "case_price_rs": 1248.0
+        },
+        {
+         "sku": "NN-SOAP-100",
+         "cases": 1,
+         "case_price_rs": 4320.0
+        }
+       ]
+      },
+      {
+       "order_id": "O-1053",
+       "customer_id": "C-009",
+       "date": "2026-08-27",
+       "status": "delivered",
+       "total_rs": 12384.0,
+       "lines": [
+        {
+         "sku": "KF-NOOD-70",
+         "cases": 3,
+         "case_price_rs": 1248.0
+        },
+        {
+         "sku": "NN-SOAP-100",
+         "cases": 2,
+         "case_price_rs": 4320.0
+        }
+       ]
+      },
+      {
+       "order_id": "O-1052",
+       "customer_id": "C-009",
+       "date": "2026-08-15",
+       "status": "delivered",
+       "total_rs": 8064.0,
+       "lines": [
+        {
+         "sku": "KF-NOOD-70",
+         "cases": 3,
+         "case_price_rs": 1248.0
+        },
+        {
+         "sku": "NN-SOAP-100",
+         "cases": 1,
+         "case_price_rs": 4320.0
+        }
+       ]
+      },
+      {
+       "order_id": "O-1051",
+       "customer_id": "C-009",
+       "date": "2026-08-03",
+       "status": "delivered",
+       "total_rs": 6816.0,
+       "lines": [
+        {
+         "sku": "KF-NOOD-70",
+         "cases": 2,
+         "case_price_rs": 1248.0
+        },
+        {
+         "sku": "NN-SOAP-100",
+         "cases": 1,
+         "case_price_rs": 4320.0
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "tool": "get_product_aliases",
+     "args": {
+      "sku": "KK-CHILLI-100"
+     },
+     "result": [
+      {
+       "alias": "Kakatiya chilli powder",
+       "script": "en"
+      },
+      {
+       "alias": "chilli powder",
+       "script": "en"
+      },
+      {
+       "alias": "chilli powder 100 g",
+       "script": "en"
+      },
+      {
+       "alias": "kaaram podi",
+       "script": "roman"
+      },
+      {
+       "alias": "karam",
+       "script": "roman"
+      },
+      {
+       "alias": "కాకతీయ కారం",
+       "script": "te"
+      },
+      {
+       "alias": "కారం",
+       "script": "te"
+      }
+     ]
+    },
+    {
+     "tool": "get_product_aliases",
+     "args": {
+      "sku": "KK-CHILLI-500"
+     },
+     "result": [
+      {
+       "alias": "Kakatiya chilli powder",
+       "script": "en"
+      },
+      {
+       "alias": "chilli powder",
+       "script": "en"
+      },
+      {
+       "alias": "chilli powder 500 g",
+       "script": "en"
+      },
+      {
+       "alias": "kaaram podi",
+       "script": "roman"
+      },
+      {
+       "alias": "karam",
+       "script": "roman"
+      },
+      {
+       "alias": "కాకతీయ కారం",
+       "script": "te"
+      },
+      {
+       "alias": "కారం",
+       "script": "te"
+      }
+     ]
+    },
+    {
+     "tool": "convert_to_cases",
+     "args": {
+      "quantity": 3.0,
+      "sku": "NN-SOAP-100",
+      "unit": "dozen"
+     },
+     "result": {
+      "sku": "NN-SOAP-100",
+      "cases": 1,
+      "rounded_up": true
+     }
+    }
+   ],
+   "turns": 4,
+   "cost_usd": 0.03985,
+   "tokens_in": 23936,
+   "tokens_out": 2337,
+   "latency_s": 46.34,
+   "repeat": 0
+  },
+  {
+   "id": "H16",
+   "split": "heldout",
+   "lang": "mixed",
+   "tags": [
+    "units"
+   ],
+   "request": "Ravi Traders ki chakkera 150 kg, bastalu lo",
+   "pass": true,
+   "why": "lines and customer match",
+   "unsafe": false,
+   "lang_ok": true,
+   "final_reply": "Ravi Traders (Vijayawada) ki draft quote **Q-0001** create chesa:\n\n* Krishna Fresh Sugar 50 kg bag (KF-SUGAR-50) - 150 kg = **3 bastalu / 3 cases**\n* Case price Rs 2150, line total Rs 6450 + GST Rs 322.5 = **Rs 6772.5**\n* Stock available: 35 cases, no shortage\n\nDraft only, order confirm cheyaledu.",
+   "quotes": [
+    {
+     "id": "Q-0001",
+     "customer_id": "C-001",
+     "status": "draft",
+     "created_at": "2026-10-27T11:28:44",
+     "harness_version": null,
+     "run_id": null,
+     "source_request": null,
+     "flags": "[]",
+     "notes": ""
+    }
+   ],
+   "quote_lines": [
+    {
+     "sku": "KF-SUGAR-50",
+     "cases": 3
+    }
+   ],
+   "tool_calls": 18,
+   "tools_used": [
+    "find_customer",
+    "search_products",
+    "get_policies",
+    "get_customer_profile",
+    "get_credit_status",
+    "get_outstanding_balance",
+    "get_sku_details",
+    "get_units",
+    "convert_to_cases",
+    "check_stock",
+    "get_standard_price",
+    "get_customer_price",
+    "get_bulk_price",
+    "get_discount_eligibility",
+    "get_scheme_for_sku",
+    "list_active_schemes",
+    "preview_quote",
+    "create_draft_quote"
+   ],
+   "searches": [
+    [
+     "customers",
+     "catalog",
+     "units",
+     "stock",
+     "pricing",
+     "quotes",
+     "policy"
+    ]
+   ],
+   "trace": [
+    {
+     "tool": "find_customer",
+     "args": {
+      "query": "Ravi Traders"
+     },
+     "result": [
+      {
+       "id": "C-001",
+       "name": "Ravi Traders",
+       "city": "Vijayawada",
+       "tier": "gold",
+       "active": 1,
+       "credit_status": "ok"
+      }
+     ]
+    },
+    {
+     "tool": "search_products",
+     "args": {
+      "query": "chakkera"
+     },
+     "result": [
+      {
+       "sku": "KF-SUGAR-1",
+       "name": "Krishna Fresh Sugar 1 kg",
+       "pack_size": "1 kg",
+       "units_per_case": 30,
+       "match_score": 1
+      },
+      {
+       "sku": "KF-SUGAR-5",
+       "name": "Krishna Fresh Sugar 5 kg",
+       "pack_size": "5 kg",
+       "units_per_case": 6,
+       "match_score": 1
+      },
+      {
+       "sku": "KF-SUGAR-50",
+       "name": "Krishna Fresh Sugar 50 kg bag",
+       "pack_size": "50 kg bag",
+       "units_per_case": 1,
+       "match_score": 1
+      }
+     ]
+    },
+    {
+     "tool": "get_policies",
+     "args": {},
+     "result": {
+      "business.date": "2026-10-28",
+      "pricing.precedence": "Use the customer-specific price if one exists; otherwise the bulk price for the highest min_cases threshold met; otherwise the standard case price.",
+      "discount.eligibility": "The tier discount applies when the line meets the tier's min_cases, the customer is active and credit_status is not 'hold'. It applies to standard and bulk prices, not to customer-specific prices.",
+      "schemes.eligibility": "An active scheme gives free cases (buy_cases -> free_cases, repeated) when the business date is within its validity, the customer's tier is eligible and credit_status is not 'hold'. Free cases are added to the quote line at zero price.",
+      "quantity.cases": "Quotes are in whole cases. Convert other units (pieces, dozens, kg, litres, bags, tins) to cases with the product's units and round up to the next whole case, noting the rounding on the line.",
+      "product.defaults": "If only one active SKU fits the request, use it. Otherwise, if the brand or size is not stated and the customer has bought that product type before, use the SKU from their most recent order of that type. Otherwise ask the operator to clarify; never guess.",
+      "customer.ambiguity": "If a name matches more than one customer, ask which one; never guess.",
+      "credit.hold": "Customers on credit hold may receive draft quotes, but with no discount or scheme, and the quote must carry a credit-hold warning.",
+      "credit.limit": "For credit customers (not cash terms), warn when outstanding plus the quote total including GST exceeds the credit limit.",
+      "customer.inactive": "Do not create quotes for inactive customers; tell the operator instead.",
+      "quote.shortage": "Quote the full requested quantity; record available and shortage cases per line, with the next restock date and a substitute if one exists. Never reserve or allocate stock from a quote.",
+      "quote.validity_days": "7",
+      "returns": "Unopened cases may be returned within 7 days of delivery with the invoice.",
+      "orders.confirmation": "Orders are confirmed only by a human operator in the ERP. The assistant may only create draft quotes."
+     }
+    },
+    {
+     "tool": "get_customer_profile",
+     "args": {
+      "customer_id": "C-001"
+     },
+     "result": {
+      "id": "C-001",
+      "name": "Ravi Traders",
+      "city": "Vijayawada",
+      "tier": "gold",
+      "active": 1,
+      "credit_status": "ok",
+      "payment_terms": "net15",
+      "credit_limit_rs": 300000.0,
+      "outstanding_rs": 42000.0,
+      "aliases": [
+       "ravi shop",
+       "ravi traders",
+       "రవి ట్రేడర్స్"
+      ]
+     }
+    },
+    {
+     "tool": "get_credit_status",
+     "args": {
+      "customer_id": "C-001"
+     },
+     "result": {
+      "customer_id": "C-001",
+      "credit_status": "ok",
+      "payment_terms": "net15",
+      "active": true
+     }
+    },
+    {
+     "tool": "get_outstanding_balance",
+     "args": {
+      "customer_id": "C-001"
+     },
+     "result": {
+      "customer_id": "C-001",
+      "outstanding_rs": 42000.0,
+      "credit_limit_rs": 300000.0,
+      "headroom_rs": 258000.0,
+      "payment_terms": "net15"
+     }
+    },
+    {
+     "tool": "get_sku_details",
+     "args": {
+      "sku": "KF-SUGAR-50"
+     },
+     "result": {
+      "sku": "KF-SUGAR-50",
+      "name": "Krishna Fresh Sugar 50 kg bag",
+      "brand": "Krishna Fresh",
+      "type": "sugar",
+      "variant": "bag",
+      "category": "staples",
+      "pack_size": "50 kg bag",
+      "size_value": 50.0,
+      "size_unit": "kg",
+      "units_per_case": 1,
+      "active": 1,
+      "gst_rate_pct": 5.0,
+      "mrp_rs": 2537.0
+     }
+    },
+    {
+     "tool": "get_units",
+     "args": {
+      "sku": "KF-SUGAR-50"
+     },
+     "result": {
+      "bag": {
+       "pieces_per_unit": 1.0,
+       "aliases": [
+        "bag",
+        "bastha",
+        "bastalu",
+        "బస్తా",
+        "బస్తాలు"
+       ]
+      },
+      "case": {
+       "pieces_per_unit": 1.0,
+       "aliases": [
+        "case",
+        "carton",
+        "box",
+        "పెట్టె",
+        "petti",
+        "pettelu",
+        "పెట్టెలు"
+       ]
+      },
+      "dozen": {
+       "pieces_per_unit": 12.0,
+       "aliases": [
+        "dozen",
+        "dajanu",
+        "డజను"
+       ]
+      },
+      "kg": {
+       "pieces_per_unit": 0.02,
+       "aliases": [
+        "kg",
+        "kilo",
+        "kilolu",
+        "కిలో",
+        "కిలోలు"
+       ]
+      },
+      "piece": {
+       "pieces_per_unit": 1.0,
+       "aliases": [
+        "piece",
+        "packet",
+        "bottle",
+        "ప్యాకెట్",
+        "packetlu",
+        "seesa",
+        "సీసా"
+       ]
+      }
+     }
+    },
+    {
+     "tool": "convert_to_cases",
+     "args": {
+      "quantity": 150.0,
+      "sku": "KF-SUGAR-50",
+      "unit": "kg"
+     },
+     "result": {
+      "sku": "KF-SUGAR-50",
+      "cases": 3,
+      "rounded_up": false
+     }
+    },
+    {
+     "tool": "check_stock",
+     "args": {
+      "sku": "KF-SUGAR-50"
+     },
+     "result": {
+      "sku": "KF-SUGAR-50",
+      "available_cases": 35
+     }
+    },
+    {
+     "tool": "get_standard_price",
+     "args": {
+      "sku": "KF-SUGAR-50"
+     },
+     "result": {
+      "sku": "KF-SUGAR-50",
+      "case_price_rs": 2150.0
+     }
+    },
+    {
+     "tool": "get_customer_price",
+     "args": {
+      "customer_id": "C-001",
+      "sku": "KF-SUGAR-50"
+     },
+     "result": {
+      "customer_id": "C-001",
+      "sku": "KF-SUGAR-50",
+      "case_price_rs": null
+     }
+    },
+    {
+     "tool": "get_bulk_price",
+     "args": {
+      "sku": "KF-SUGAR-50"
+     },
+     "result": [
+      {
+       "min_cases": 10,
+       "case_price_rs": 2100.0
+      }
+     ]
+    },
+    {
+     "tool": "get_discount_eligibility",
+     "args": {
+      "customer_id": "C-001",
+      "num_cases": "3"
+     },
+     "result": {
+      "error": "TypeError: get_discount_eligibility() got an unexpected keyword argument 'num_cases'"
+     }
+    },
+    {
+     "tool": "get_scheme_for_sku",
+     "args": {
+      "sku": "KF-SUGAR-50"
+     },
+     "result": []
+    },
+    {
+     "tool": "list_active_schemes",
+     "args": {},
+     "result": [
+      {
+       "id": "S-01",
+       "sku": "KF-NOOD-70",
+       "buy_cases": 10,
+       "free_cases": 1,
+       "valid_from": "2026-10-15",
+       "valid_to": "2026-11-15",
+       "tiers": "all",
+       "description": "Noodles: buy 10 cases, get 1 free"
+      },
+      {
+       "id": "S-02",
+       "sku": "NN-DET-1K",
+       "buy_cases": 5,
+       "free_cases": 1,
+       "valid_from": "2026-10-20",
+       "valid_to": "2026-11-10",
+       "tiers": "gold",
+       "description": "Detergent 1 kg: gold retailers buy 5 get 1"
+      },
+      {
+       "id": "S-03",
+       "sku": "GG-BISC-GLU",
+       "buy_cases": 20,
+       "free_cases": 2,
+       "valid_from": "2026-10-01",
+       "valid_to": "2026-10-31",
+       "tiers": "all",
+       "description": "Glucose biscuits: buy 20 get 2"
+      }
+     ]
+    },
+    {
+     "tool": "preview_quote",
+     "args": {
+      "customer_id": "C-001",
+      "lines": [
+       {
+        "sku": "KF-SUGAR-50",
+        "cases": 3
+       }
+      ]
+     },
+     "result": {
+      "allowed": true,
+      "flags": [],
+      "lines": [
+       {
+        "sku": "KF-SUGAR-50",
+        "cases": 3,
+        "free_cases": 0,
+        "scheme_id": null,
+        "price_source": "list",
+        "case_price_paise": 215000,
+        "discount_bp": 0,
+        "line_total_paise": 645000,
+        "gst_paise": 32250,
+        "available_cases": 35,
+        "shortage_cases": 0,
+        "note": ""
+       }
+      ],
+      "subtotal_rs": 6450.0,
+      "gst_rs": 322.5,
+      "total_rs": 6772.5
+     }
+    },
+    {
+     "tool": "create_draft_quote",
+     "args": {
+      "customer_id": "C-001",
+      "lines": [
+       {
+        "cases": 3,
+        "sku": "KF-SUGAR-50"
+       }
+      ]
+     },
+     "result": {
+      "quote_id": "Q-0001",
+      "allowed": true,
+      "flags": [],
+      "lines": [
+       {
+        "sku": "KF-SUGAR-50",
+        "cases": 3,
+        "free_cases": 0,
+        "scheme_id": null,
+        "price_source": "list",
+        "case_price_paise": 215000,
+        "discount_bp": 0,
+        "line_total_paise": 645000,
+        "gst_paise": 32250,
+        "available_cases": 35,
+        "shortage_cases": 0,
+        "note": ""
+       }
+      ],
+      "subtotal_rs": 6450.0,
+      "gst_rs": 322.5,
+      "total_rs": 6772.5
+     }
+    }
+   ],
+   "turns": 6,
+   "cost_usd": 0.05772,
+   "tokens_in": 36185,
+   "tokens_out": 2938,
+   "latency_s": 85.07,
+   "repeat": 0
+  }
+ ]
+}

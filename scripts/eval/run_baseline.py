@@ -35,15 +35,18 @@ def tokens(text: str) -> list[str]:
 
 
 def run_task(arm, client, model, task):
-    with tempfile.TemporaryDirectory() as tmp:
+    # ignore_cleanup_errors: on Windows a failed run must not hide its real error behind a file-lock error
+    with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as tmp:
         conn = db.connect(db.reset(Path(tmp) / "business.db"))
-        if arm == "b":
-            run = agent.run_responses(conn, task["request"], client, model)
-        else:
-            run = agent.run_chat(conn, task["request"], client, tools.CORE if arm == "core" else None)
-        quotes = [dict(q) for q in conn.execute("SELECT * FROM quotes")]
-        lines = [dict(sku=r["sku"], cases=r["cases"]) for r in conn.execute("SELECT sku, cases FROM quote_lines")]
-        conn.close()
+        try:
+            if arm == "b":
+                run = agent.run_responses(conn, task["request"], client, model)
+            else:
+                run = agent.run_chat(conn, task["request"], client, tools.CORE if arm == "core" else None)
+            quotes = [dict(q) for q in conn.execute("SELECT * FROM quotes")]
+            lines = [dict(sku=r["sku"], cases=r["cases"]) for r in conn.execute("SELECT sku, cases FROM quote_lines")]
+        finally:
+            conn.close()
     verdict, why = grade(task["expected"], quotes, lines)
     if run.hit_turn_limit:
         why += " (hit turn limit)"
