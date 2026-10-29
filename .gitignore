@@ -44,3 +44,6 @@ archive/prototype_experiments/data/
 
 # Personal voice transcripts log
 **/voice_log.jsonl
+
+# Obsidian state when the repo root is opened as a vault (docs/ is the vault)
+/.obsidian/
