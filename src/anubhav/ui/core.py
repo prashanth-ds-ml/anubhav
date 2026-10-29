@@ -4,6 +4,7 @@ runs the agent (live or replay), and turns a trace into something a person can r
 import json
 import shutil
 import sqlite3
+from contextlib import closing
 from pathlib import Path
 
 import streamlit as st
@@ -63,24 +64,28 @@ def load_exp008_lessons():
     if not bundle.exists():
         return False
     st.cache_resource.clear()
-    if dst.exists():
-        dst.unlink()
-    LessonStore(dst)                             # creates the schema
+    _empty(dst)
     data = json.loads(bundle.read_text(encoding="utf-8"))
-    con = sqlite3.connect(dst)
-    with con:
+    with closing(sqlite3.connect(dst)) as con, con:
         for table, rows in data.items():
             for r in rows:
                 con.execute(f"insert into {table} ({','.join(r)}) values ({','.join('?' * len(r))})", list(r.values()))
-    con.close()
     return True
+
+
+def _empty(path):
+    """Empty a lesson store in place (the running app may hold the file open, so it can't be deleted on Windows)."""
+    LessonStore(path)                            # creates the schema if missing
+    with closing(sqlite3.connect(path)) as con, con:
+        for (t,) in con.execute("select name from sqlite_master where type = 'table'").fetchall():
+            con.execute(f"delete from {t}")
 
 
 def clear_lessons():
     st.cache_resource.clear()
     p = WORLD / "learning" / "demo.sqlite"
     if p.exists():
-        p.unlink()
+        _empty(p)
 
 
 @st.cache_resource
