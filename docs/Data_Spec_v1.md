@@ -353,7 +353,11 @@ This tests both failure modes: trusting too fast (one note → a rule) and trust
 - **Driver notes:** on failures, delays and some normal trips. Example: "Jangaon godown north gate lo 32 adugula lorry tiragaledu, load venakki vachindi."
 - **Language mix (staff preference order):** ~50% Roman Telugu, ~30% Telugu script, ~20% English or mixed.
 - **Realism:** typos, missing details, wrong guesses by drivers (H-12), different spellings (Hanamkonda / Hanumakonda, Jangaon / Janagama).
-- **Generation:** template families per event type, filled from truth and events. Muse may later paraphrase templates for variety, but **facts and labels always come from code**.
+- **WhatsApp style:** short, abbreviated, polite forms: "Load ready sir", "Anna 2 hrs late avthadi" ("it'll be 2 hours late"), "LR 4512 return", "ok vachindi" ("ok, it arrived"). Timestamps match the daily rhythm (§2.1).
+- **Numbers and units written many ways:** "14 ton", "14T", "14000 kg", "padhnalugu ton" (fourteen tons), "350 cases", "200 bags", "boxes". The agent must normalise them; the validator knows the true quantity.
+- **Driver voice notes:** ~15–20% of driver notes are **voice-note transcripts**, with small speech-to-text slips (dropped words, mis-heard place names, numbers as words). Separately, **you record 2–3 real Telugu voice notes** for the demo, transcribed live with Muse Voice Transcribe.
+- **Wrong or vague notes (~10%):** a driver blames the "gate" when the godown was full; "problem undi" ("there's a problem") with no detail; a note posted against the wrong LR number. These are planted alongside true notes and must not become lessons on their own.
+- **Generation:** template families per event type, filled from truth and events with controlled variation. **Muse may rewrite a share of notes for natural variety**, under a fact lock: entities, numbers, times and outcomes are fixed by code, and a check rejects any rewrite that changes them. You review a sample for realism (Layer 1.6).
 - **No oracle leaks:** a note may describe what happened, never the hidden rule ID, the "correct" answer or a test case.
 
 ---
