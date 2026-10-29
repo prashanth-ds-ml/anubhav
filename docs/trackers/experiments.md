@@ -318,3 +318,25 @@ Packs: T01→TNEW 4 lessons (1 skipped: no matching site), T02→TNEW 4 lessons 
   - receiving hours: the claimed hour must match the earliest held arrival, with ≥ 2 observations;
   - vendor reliability: a proper significance test instead of a 2× ratio;
   - aliases: reject a phrase that equally fits every vehicle of a class.
+
+
+### EXP-010: Does the agent learn to use its tools better through practice? (frozen 2026-10-29 before any Muse call)
+- **Question:** The owner's goal is that the agent learns to pick and use the right tools by trial and error. Given generic tools (incl. new `list_sites`, `trip_history`, `order_history`), does one round of practice → Muse-proposed harness patch → test improve answers on held-out questions without regressions?
+- **Frozen files (sha256 prefix):** `exp010_tool_practice.py` `a72b51167a800ef5` · `practice.py` `bfd858c5bb00908c` · `loop.py` `468ec031345d8f2c` · `store.py` `c3d7333a478785ed` · `graph.py` `014f917846cb8892` · `broker.py` `65f60372da9f0838`. 216 tests pass.
+- **Setup:**
+  - T01, Muse Spark Open as the agent, the active harness (h-000) as the baseline.
+  - **Dev practice:** 19 questions generated from T01's records. Six generic question types (sites in a town, towns served, stops in a month, returns at a site, open orders in a town, orders from a site in a month), in RT/TE/EN, with checkable answers.
+  - **Held-out:** 17 questions of the same types but with different towns and sites; the fixed 'towns served' question is excluded.
+  - **What the proposer sees:** only what went wrong (no lookup, answer didn't match records, tool error), never the expected tool. Muse Spark proposes ONE patch; code checks it.
+  - **Regression check:** the golden Jangaon request must still produce a draft.
+  - **Excluded:** tester feedback (D-035).
+- **Metrics (held-out, base vs candidate):** answer accuracy (number or names match the records), right-tool rate (evaluation only), no-lookup rate, tool errors, cost; golden-path draft.
+- **Decision rule (fixed now):**
+  - **Tool learning shown** if held-out accuracy improves by ≥ 10 points, there are no more tool errors, the golden draft is not lost, and cost ≤ +50% (the code gate `practice.gate` plus the 10-point bar).
+  - If baseline held-out accuracy is already ≥ 90%: **ceiling**, nothing to learn; report it.
+  - One round only; any further round is reported separately.
+  - Activation stays a person's decision in the app.
+- **Caveats stated now:**
+  - The question types are written by us (a curriculum). Answers come from data, and the agent never sees the expected tools.
+  - Number checks can still match by chance; both arms share that noise.
+- **Budget:** about 55 agent runs + 1 proposer call, about $1.2.

@@ -97,7 +97,7 @@ with left:
                            icon=":material/history:")
         else:
             with st.spinner("Muse is planning…"):
-                r = core.run_live(cid, prompt, core.MODELS[mode], use)
+                r = core.run_live(cid, prompt, core.MODELS[mode], use, history)
         if r:
             history.append({"request": prompt, "run": r})
             st.rerun()

@@ -95,6 +95,9 @@ class HarnessStore:
             con.executescript("""
                 create table if not exists versions (version_id text primary key, parent text, surfaces text, status text,
                     created text, patch text, rationale text, probe text, decided_by text, decided text, note text);
+                create table if not exists practice (ts text, round text, version_id text, split text, company text,
+                    qid text, qtype text, lang text, question text, tools text, used_tool int, right_tool int,
+                    tool_errors int, answer_ok int, cost_usd real, reply text, run_id text);
                 create table if not exists feedback (feedback_id text primary key, ts text, company text, run_id text,
                     request text, reply text, rating int, category text, note text, source text, status text,
                     use_lessons int);
@@ -166,6 +169,18 @@ class HarnessStore:
                         (by, _now(), cur["version_id"]))
             con.execute("update versions set status = 'active' where version_id = ?", (cur["parent"],))
         return self.active()
+
+    # ---------- practice results (the Skills view reads these)
+    def add_practice(self, round_id, version_id, results):
+        with self._con() as con:
+            con.executemany("insert into practice values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", [
+                (_now(), round_id, version_id, x["split"], x["company"], x["id"], x["type"], x["lang"], x["question"],
+                 json.dumps(x["tools"]), int(x["used_tool"]), int(x["right_tool"]), x["tool_errors"], int(x["answer_ok"]),
+                 x["cost_usd"], x["reply"], x["run_id"]) for x in results])
+
+    def practice(self):
+        with self._con() as con:
+            return [dict(r) for r in con.execute("select * from practice order by ts")]
 
     # ---------- feedback
     def add_feedback(self, company, run, rating, category, note, source="tester"):

@@ -396,6 +396,79 @@ def inspect_contract(b, a: CapabilityName):
     return t.manifest(ROLES)
 
 
+class ListSites(Args):
+    town: str | None = Field(None, description="Only sites in this town (any spelling)")
+    site_type: str | None = Field(None, description="old_town_godown, highway_warehouse, modern_trade or rural_substockist")
+    limit: int = Field(60, ge=1, le=200)
+
+
+class History(Args):
+    site_id: str | None = None
+    town: str | None = Field(None, description="Only this town (any spelling)")
+    date_from: str | None = Field(None, description="YYYY-MM-DD, inclusive")
+    date_to: str | None = Field(None, description="YYYY-MM-DD, inclusive")
+    status: str | None = Field(None, description="Filter by outcome or order status")
+    limit: int = Field(25, ge=1, le=100)
+
+
+def _town_match(b, wanted, town):
+    return not wanted or _close(wanted.lower(), {town.lower()}, 0.75)
+
+
+def _dates(b, a):
+    for d in (a.date_from, a.date_to):
+        b._date(d) if d else None
+    return a.date_from or "0000-00-00", a.date_to or "9999-12-31"
+
+
+def list_sites(b, a: ListSites):
+    """The company's customer sites, with a count per town."""
+    sites = [s for s in b.C.sites.values() if _town_match(b, a.town, s["town"])
+             and (not a.site_type or s["type"] == a.site_type)]
+    towns = Counter(s["town"] for s in sites)
+    return {"total_sites": len(sites), "towns": [{"town": t, "sites": n} for t, n in towns.most_common()],
+            "sites": [{"site_id": s["site_id"], "name": s["name"], "town": s["town"], "type": s["type"]}
+                      for s in sorted(sites, key=lambda s: (s["town"], s["name"]))[: a.limit]]}
+
+
+def trip_history(b, a: History):
+    """Past delivery stops: counts by outcome and town, plus the most recent rows."""
+    lo, hi = _dates(b, a)
+    ships = {s["shipment_id"]: s for s in b.C.t.get("shipments", [])}
+    rows = []
+    for o in b.C.t.get("trip_outcomes", []):
+        s, site = ships.get(o["shipment_id"], {}), b.C.sites.get(o["site_id"], {})
+        day = (o.get("arrived_at") or "")[:10]
+        if (a.site_id and o["site_id"] != a.site_id) or not _town_match(b, a.town, site.get("town", "")) \
+                or not (lo <= day <= hi) or (a.status and o["status"] != a.status):
+            continue
+        rows.append({"date": day, "site_id": o["site_id"], "site": site.get("name"), "town": site.get("town"),
+                     "vehicle_id": s.get("vehicle_id"), "vehicle_class": s.get("vehicle_class"), "status": o["status"],
+                     "wait_min": o.get("wait_min") or 0})
+    rows.sort(key=lambda r: r["date"], reverse=True)
+    return {"trips": len(rows), "by_status": dict(Counter(r["status"] for r in rows)),
+            "by_town": dict(Counter(r["town"] for r in rows).most_common(15)), "recent": rows[: a.limit]}
+
+
+def order_history(b, a: History):
+    """Orders by delivery date: counts by status and town, totals, and the most recent rows."""
+    lo, hi = _dates(b, a)
+    rows = []
+    for o in b.C.orders.values():
+        site = b.C.sites.get(o["site_id"], {})
+        if (a.site_id and o["site_id"] != a.site_id) or not _town_match(b, a.town, site.get("town", "")) \
+                or not (lo <= o["delivery_date"] <= hi) or (a.status and o["status"] != a.status):
+            continue
+        ld = b.C.order_load(o["order_id"])
+        rows.append({"order_id": o["order_id"], "delivery_date": o["delivery_date"], "site": site.get("name"),
+                     "town": site.get("town"), "status": o["status"], "kg": ld["kg"], "value_rs": ld["value_rs"]})
+    rows.sort(key=lambda r: r["delivery_date"], reverse=True)
+    return {"orders": len(rows), "by_status": dict(Counter(r["status"] for r in rows)),
+            "by_town": dict(Counter(r["town"] for r in rows).most_common(15)),
+            "total_kg": round(sum(r["kg"] for r in rows)), "total_value_rs": sum(r["value_rs"] for r in rows),
+            "recent": rows[: a.limit]}
+
+
 REGISTRY = [
     Tool("discover_capabilities", "List the capabilities this session may use (works the same for every client).", NoArgs, "read", discover_capabilities),
     Tool("inspect_contract", "One capability's contract: inputs, units, side effects, required role.", CapabilityName, "read", inspect_contract),
@@ -413,4 +486,7 @@ REGISTRY = [
     Tool("list_trip_outcomes", "Recent delivery outcomes, optionally for one site.", TripOutcomes, "read", list_trip_outcomes),
     Tool("get_transport_policy", "The company's written dispatch policies.", NoArgs, "read", get_transport_policy),
     Tool("search_notes", "Search past driver notes, planner messages and feedback by keywords.", SearchNotes, "read", search_notes),
+    Tool("list_sites", "All of the company's customer sites, optionally for one town or type, with a count per town.", ListSites, "read", list_sites),
+    Tool("trip_history", "Past delivery stops (any date range, site or town): counts by outcome and town, and recent trips.", History, "read", trip_history),
+    Tool("order_history", "Past and current orders by delivery date (any range, site or town): counts, totals and recent orders.", History, "read", order_history),
 ]

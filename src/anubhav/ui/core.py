@@ -85,9 +85,12 @@ def broker(cid: str, use_lessons: bool, role="dispatcher", user="demo"):
     return Broker(C, Session(cid, role, user), policies, advisories), knowledge
 
 
-def run_live(cid, request, model_key, use_lessons):
+def run_live(cid, request, model_key, use_lessons, history=()):
     b, knowledge = broker(cid, use_lessons)
-    r = graph.run(b, muse.client(model_key), request, knowledge=knowledge, harness=active_harness())
+    turns = []
+    for h in list(history)[-6:]:                 # the last few exchanges, so follow-ups make sense
+        turns += [{"role": "user", "content": h["request"]}, {"role": "assistant", "content": h["run"]["reply"]}]
+    r = graph.run(b, muse.client(model_key), request, knowledge=knowledge, harness=active_harness(), history=turns)
     trace.save(r, label=f"ui:{cid}:{'lessons' if use_lessons else 'cold'}")
     return r
 
