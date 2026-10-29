@@ -218,6 +218,34 @@ Hidden (unwritten) rules stay in §7. Written rules here are the **control**: th
 
 Length, payload and volume are separate attributes. Site rules usually limit **length**; capacity limits **weight and volume**.
 
+### 5.1 Body types
+| Body | Share | Effect |
+|---|---|---|
+| **Open body** | most trucks (cheaper) | Needs a tarpaulin; in rain, light/bulky food (biscuits, snacks) should not go open-body |
+| **Closed container** | ~30–40% of T14 and larger | Preferred for FMCG; higher rate |
+| **Reefer** | T03 only | Dairy only |
+
+### 5.2 Names planners actually use
+Vehicle class labels in notes and messages follow trade slang: "Ace", "407", "Eicher", "14 feet", "19 feet", "22 feet" / "9 ton", "32 SXL" / "32 MXL", "container", "open bandi", "reefer". Plus company-private nicknames for specific trucks (H-05, H-07, H-24).
+
+### 5.3 Each truck has a life
+| Attribute | Purpose |
+|---|---|
+| Owner type: own / attached vendor / spot | Reliability, rate, GPS |
+| Age (years) | Older trucks break down more often |
+| Document expiry dates: fitness, permit, insurance, pollution | An expired document → can't be dispatched (§4.4) |
+| Monthly maintenance day (own trucks) | Unavailable that day |
+| GPS: own yes, attached some, spot no | Whether a live location exists in events |
+| Registration number (fictional, TS-format) | Realistic IDs in notes |
+
+Some documents expire **during** the 90 days, so availability changes over time. A few trucks are listed as "available" in the system while their documents have actually lapsed. That is a written-data check the agent should catch from the tools.
+
+### 5.4 Real capacity can differ from paper capacity (hidden, learnable)
+1–2 old trucks per company really carry **less than their paper payload**, because of a weak suspension or an old body. Example: a 32 MXL rated 15,000 kg that safely carries ~12,000 kg.
+- **Evidence:** loads above the real limit get caught at the weighbridge or partially unloaded, with notes like "V12 lo 14 ton ekkadu, 2 ton digipoyindi" ("14 tons won't fit in V12; we offloaded 2 tons").
+- **Correct outcome:** a private, truck-specific lesson ("V12: plan ≤ 12 t"), never shared (it's about that company's truck).
+- Listed as hidden rules **H-14** (T01) and **H-25** (T03) in §7.
+
 ---
 
 ## 6. Canonical entity model
@@ -265,6 +293,7 @@ Agent-invisible (`truth/hidden_rules.json`). Each rule lists the evidence the ge
 | H-11 | Time window | Hanamkonda Chowrasta market area: no T22 or longer **09:00–20:00** | Daytime long trucks wait or fail; early/late ones succeed | Learn as time-scoped rule | Yes |
 | H-12 | Contradiction | Mahabubabad, Ganesh Stores: one Aug note says "lorry lopaliki raadu" (truck can't get in), but 32 ft trucks deliver fine | 1 failure note (actually a driver error), then 4+ successes | Candidate → **challenged/rejected** | — |
 | H-13 | Receiving hours | Venkata Sri Traders unloads only before 18:00 | "Unloaded next morning" notes for late arrivals | Learn (advisory) | Yes |
+| H-14 | Real capacity (truck) | One old T01 32 MXL safely carries ~12,000 kg, not 15,000 | Weighbridge catches and partial offloads above ~12 t, with driver notes | Learn as a private truck lesson | **No** (T01 truck) |
 
 ### Hyderabad region
 | ID | Kind | Truth | Planted evidence | Correct outcome | Shareable? |
@@ -274,6 +303,7 @@ Agent-invisible (`truth/hidden_rules.json`). Each rule lists the evidence the ge
 | H-22 | Cross-region alias clash | At T03, "Pedda godown" = **its own Medchal mega-warehouse** | T03 messages | Learn for T03; **must not** map to the Warangal site | — |
 | H-23 | Cold chain | Dairy needs REEFER; one summer note says "ice boxes enough" | A non-reefer dairy trip has a spoilage return | Learn the rule; reject the shortcut | — |
 | H-24 | Private aliases | T03 truck and vendor nicknames | T03 messages | Learn (T03) | **No** |
+| H-25 | Real capacity (truck) | One old T03 T22 safely carries ~7,500 kg, not 9,000 | Weighbridge catches above ~7.5 t | Learn as a private truck lesson | **No** (T03 truck) |
 
 ### Everyone
 | ID | Kind | Truth | Evidence |
