@@ -32,7 +32,7 @@ Used as dependencies only, installed from PyPI and not vendored. Exact versions 
 | openai (Python SDK) | Apache-2.0 | OpenAI-compatible client for the Meta and Baseten APIs |
 | httpx | BSD-3-Clause | voice transcription calls |
 | pydantic | MIT | tool argument models |
-| numpy | BSD-3-Clause (with bundled MIT/0BSD/Zlib parts) | data generation |
+| numpy | BSD-3-Clause (with bundled MIT/0BSD/Zlib parts) | archived prototypes (declared dependency) |
 | pyyaml | MIT | configs |
 | python-dotenv | BSD-3-Clause | local keys |
 | websockets | BSD-3-Clause | archived live-voice smoke test |

@@ -8,35 +8,35 @@ tags: [tracker, submission]
 
 ## Required by the guide
 - [ ] Submitted via the Cerebral Valley platform ("Submit Project")
-- [ ] **Public** GitHub repo, accessible in incognito: https://github.com/prashanth-ds-ml/anubhav
+- [x] **Public** GitHub repo, accessible in incognito: https://github.com/prashanth-ds-ml/anubhav
 - [ ] **3-minute demo video**, link accessible
 - [ ] Video shows only features built during the hackathon
-- [ ] Everyone who worked on it is listed (solo: just me)
-- [ ] Track: **Indie Developer**
+- [x] Everyone who worked on it is listed (solo: just me)
+- [x] Track: **Indie Developer**
 - [ ] Theme: **Push the Frontier**
-- [ ] Meta model usage is obvious (Stage 1 pass)
+- [x] Meta model usage is obvious (Stage 1 pass)
 
 ## Originality and rules
-- [ ] README section: "Built during the hackathon (Oct 26 – Nov 4, 2026)" vs. "Third-party libraries used"
-- [ ] Commit history starts Oct 27, with daily commits
-- [ ] No code, data or assets without rights; all brands and customers fictional
+- [x] README section: "Built during the hackathon (Oct 26 – Nov 4, 2026)" vs. "Third-party libraries used"
+- [x] Commit history starts Oct 27, with daily commits (73 commits, all by prashanth-ds-ml; checked 2026-10-29)
+- [x] No code, data or assets without rights; all brands and customers fictional
 - [ ] Not an anti-project (not basic RAG, medical, education, etc.)
-- [ ] No Claude co-author trailer or collaborator
+- [x] No Claude co-author trailer or collaborator
 
 ## Security
-- [ ] No `.env`, keys or tokens anywhere in the history (scan before going public)
-- [ ] `Hackathon_info/` not committed
-- [ ] Hosted demo spend cap active through judging (Nov 5–9)
+- [x] No `.env`, keys or tokens anywhere in the history (scan before going public)
+- [x] `Hackathon_info/` not committed
+- [ ] Hosted demo spend cap active through judging (Nov 5–9) — 8 live runs per session built; deploy without keys = $0
 
 ## README contents
 - [ ] One-line pitch, plus a GIF or screenshot
 - [ ] The problem and who benefits (with cited stats)
-- [ ] Meta models used, and how (3 roles)
-- [ ] Architecture diagram
-- [ ] Setup: one command, plus mock mode
-- [ ] How to reproduce the benchmark and replay
-- [ ] Results table (honest, with spread)
-- [ ] Limitations and next steps
+- [x] Meta models used, and how (3 roles)
+- [x] Architecture diagram
+- [x] Setup: one command, plus replay mode (no keys)
+- [x] How to reproduce the benchmark and replay
+- [ ] Results table (honest, with spread) — table in README; one run per case, so no spread yet
+- [x] Limitations and next steps
 - [ ] Links: video, hosted demo
 
 ## Post-submission
