@@ -205,3 +205,24 @@ Task file: `datasets/tasks/benchmark_v1.jsonl` (held-out = `split: heldout`). Se
   - **Transfer (B):** regional tasks went from 0% to 100% (8/8), and the unsafe Jangaon assignments went from 4 to 0. B-private stayed at 0% in both arms, as expected (the pack can't contain B's own nicknames). Leak runs: 0.
   - **Regressions:** one double booking in each knowledge arm. In A-self R3#0 it assigned booked V05, then also V02. In B-pack BX1#0 it assigned booked B04 after listing assignments. Neither relates to the learned items (the Khammam habit was never in the pack), but both happened only with the longer prompt (2/58 runs with knowledge vs 0/58 without). Watch this; a pre-assign check in the harness would catch it.
 - **Verdict (rule fixed above):** **self-improvement shown** (A tacit 100% ≥ 75%; control + strategy 23/24 vs 24/24, within 1 run). **Transfer shown** (B regional +100 points ≥ 50; control + strategy + spurious 13/14 vs 14/14, within 1 run; leaks 0). **Caveat (stated in advance):** the history is synthetic, with clean signals. This shows the mechanism works, not its real-world accuracy, and the habit trap was not tested by a live proposal.
+
+### EXP-007: Do gated lessons beat plain retrieval over raw history? (frozen 2026-10-29 before any Muse call)
+- **Question:** PRD v3.1 Arm B. EXP-006 compared "no knowledge" with "gated lessons", but never with simply giving the agent the raw trip history. If raw history works as well, the 0% → 100% result says nothing about the learning loop. Also: what happens if a second company gets the first company's raw history instead of the gated pack?
+- **Frozen files:** `scripts/eval/exp007_raw_memory.py` (sha256 `79a5b76fe9d5a38b…`). Reused unchanged: `scripts/eval/exp006_transfer.py` (`0a629ad4d5d308ea…`: worlds, tasks, Desk, checker, agent loop, leak tokens), `datasets/dispatch/exp006_history_A.csv` (`19323da13dd71e53…`), and the lessons/pack from `artifacts/dispatch/exp006_20261027_210135.json` (`4e05cc12f50e066e…`, mining repeat 0: 5 lessons, 3-item pack). Self-test OK.
+- **Arms** (agent = Muse Spark Open on Baseten, temperature 0, 2 repeats; same 16 A tasks and 13 B tasks as EXP-006):
+  - **A-cold**: no knowledge.
+  - **A-raw-top8**: + the 8 history rows that best match the request (term-overlap retrieval). Self-test: top-8 contains the key evidence for T1 and T3 but **misses it for T2 and T4**, a known weakness of simple lexical retrieval.
+  - **A-raw-full**: + all 123 raw rows (~15k chars). The strongest raw-memory baseline: nothing is hidden, and the model must find the pattern itself.
+  - **A-lessons**: + the 5 gated lessons.
+  - **B-rawA**: company B + A's full raw history, labelled as another company's records (naive sharing).
+  - **B-pack**: company B + the 3-item gated pack.
+- **Leaks:** counted in what the agent *emits* (final reply + tool arguments). Prompt exposure (A-private tokens in B's prompt) is reported separately; for B-rawA it is non-zero by construction.
+- **My prediction, stated now:** this history is small and clean, so **A-raw-full will probably match A-lessons** on tacit tasks. If so, that is an honest negative for "lessons beat retrieval" *on clean data*, and the real test moves to the Layer 1 data with misleading notes.
+- **Primary metric:** A tacit pass rate (T1–T4, 8 runs per arm).
+- **Decision rule (fixed now):**
+  - **Lessons add value beyond raw memory** if A-lessons tacit ≥ 6/8 **and** A-raw-full tacit ≤ 4/8.
+  - **Raw memory suffices on this data** if A-raw-full tacit ≥ 6/8. Then the claim must not be "lessons beat retrieval" on accuracy; it becomes: same accuracy with a short, reviewable, shareable prompt, plus governance (habits, stale rules, privacy). Layer 1 data must include stale notes, one-off failures, habits and contradictions, and Arm B vs C is decided there.
+  - **In between** (5/8): inconclusive; same Layer 1 action.
+  - **Sharing:** naive sharing is unsafe if B-rawA has any emitted leak **or** any unknown/foreign vehicle id assigned. Report B-rawA vs B-pack regional pass and leak runs either way.
+  - Also report: control + strategy regressions vs A-cold (≥ 2 runs is a regression), tacit-unsafe runs, cost and mean prompt size per arm.
+- **Budget:** 180 runs, est. $4–6 Baseten.
