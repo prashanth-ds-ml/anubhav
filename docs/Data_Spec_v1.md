@@ -312,6 +312,20 @@ Agent-invisible (`truth/hidden_rules.json`). Each rule lists the evidence the ge
 | H-12 | Contradiction | Mahabubabad, Ganesh Stores: one Aug note says "lorry lopaliki raadu" (truck can't get in), but 32 ft trucks deliver fine | 1 failure note (actually a driver error), then 4+ successes | Candidate → **challenged/rejected** | — |
 | H-13 | Receiving hours | Venkata Sri Traders unloads only before 18:00 | "Unloaded next morning" notes for late arrivals | Learn (advisory) | Yes |
 | H-14 | Real capacity (truck) | One old T01 32 MXL safely carries ~12,000 kg, not 15,000 | Weighbridge catches and partial offloads above ~12 t, with driver notes | Learn as a private truck lesson | **No** (T01 truck) |
+| H-15 | Vendor reliability | One of T01's attached vendors often fails to place trucks in the **month-end and festival weeks** (~35% no-show vs ~5% normally) | `vehicle_placements` no-shows cluster in rush weeks; planner notes ("vallu malli raledu" / "they didn't turn up again") | Learn: "book a backup truck in rush weeks" | **No** (T01's vendor relationship) |
+| H-16 | Weekly off | Distributors in one market town close every **Tuesday** | Tuesday deliveries there fail with "shop closed"; a few notes say so | Learn as a site/town rule | Yes |
+| H-17 | Moved godown (stale master data) | From **Sep 20**, Balaji Distributors, Kazipet, receives at a **new godown**; the system still has the old address | Notes "kotha godown ki vellali" (go to the new godown), detours, a staff edit that fixes the address for one order only | Learn; propose a master-data fix | Yes (site fact) |
+| H-18 | Night-only site | A highway-side warehouse near Jangaon receives only **22:00–06:00** | Daytime arrivals wait for hours; detention charges | Learn as a time-scoped rule | Yes |
+
+### Evidence strength (planted on purpose)
+| Strength | Meaning | Correct behaviour | Examples |
+|---|---|---|---|
+| **Single** | One failure or note | Cautious **advisory** only; never an enforced rule | H-01 at T01 until Sep 12 · H-18 early on |
+| **Repeated** | 2+ consistent pieces of evidence | Candidate strong enough for the reviewer to approve as a **policy** | H-01 after Sep 12 · H-03 · H-13 · H-15 |
+| **Conflicting** | Evidence on both sides | **Challenge**: hold back, ask the reviewer | H-12 · H-17 before the address fix |
+| **Misleading** | A pattern with no cause | **Reject** | H-08 · H-09 · H-23 shortcut |
+
+This tests both failure modes: trusting too fast (one note → a rule) and trusting too slowly (ignoring repeated, consistent evidence).
 
 ### Hyderabad region
 | ID | Kind | Truth | Planted evidence | Correct outcome | Shareable? |
@@ -330,7 +344,7 @@ Agent-invisible (`truth/hidden_rules.json`). Each rule lists the evidence the ge
 | H-31 | Noise | Breakdowns, absent drivers, "godown full", partial deliveries, returns | Random at realistic rates; no pattern to learn |
 | H-32 | Festival | October rush: more orders, more re-plans, more late trucks | Calendar-driven |
 
-**T-new** sees the Warangal regional facts (H-01, H-03, H-04, H-11, H-13; H-10 already expired) and has its own private nicknames. The pack should help with the first group, must not include the second, and must not over-apply H-01 to H-02.
+**T-new** sees the Warangal regional facts (H-01, H-03, H-04, H-11, H-13, H-16, H-17, H-18; H-10 already expired) and has its own private nicknames. The pack should help with the first group, must not include the second, and must not over-apply H-01 to H-02.
 
 ---
 
