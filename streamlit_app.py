@@ -34,12 +34,17 @@ with st.sidebar:
     if st.session_state.model != "Replay (free)":
         st.caption(":orange[:material/payments:] Live mode calls Muse (about $0.05 per request).")
 
-pages = [
-    st.Page("app_pages/workbench.py", title="Workbench", icon=":material/forum:", default=True),
-    st.Page("app_pages/learning_lab.py", title="Learning Lab", icon=":material/school:"),
-    st.Page("app_pages/tuning.py", title="Tuning", icon=":material/tune:"),
-    st.Page("app_pages/share.py", title="Share", icon=":material/share:"),
-    st.Page("app_pages/proof.py", title="Proof & audit", icon=":material/fact_check:"),
-    st.Page("app_pages/report.py", title="Weekly report", icon=":material/mail:"),
-]
+pages = {
+    "Work": [st.Page("app_pages/workbench.py", title="Workbench", icon=":material/forum:", default=True)],
+    "Learning Lab": [
+        st.Page("app_pages/learning_lab.py", title="Lessons: what it knows", icon=":material/school:"),
+        st.Page("app_pages/skills.py", title="Skills: how it uses tools", icon=":material/fitness_center:"),
+        st.Page("app_pages/tuning.py", title="Tuning: propose and test", icon=":material/tune:"),
+    ],
+    "Share & proof": [
+        st.Page("app_pages/share.py", title="Share", icon=":material/share:"),
+        st.Page("app_pages/proof.py", title="Proof & audit", icon=":material/fact_check:"),
+        st.Page("app_pages/report.py", title="Weekly report", icon=":material/mail:"),
+    ],
+}
 st.navigation(pages, position="top").run()

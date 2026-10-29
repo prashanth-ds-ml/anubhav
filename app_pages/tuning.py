@@ -92,10 +92,16 @@ for v in cands:
                            icon=":material/check_circle:")
             else:
                 st.warning("Did not pass: " + "; ".join(g["reasons"]), icon=":material/cancel:")
-            fa = g["feedback_addressed"]
-            st.caption(f"Feedback addressed (Muse judge, diagnostic): old {fa['base']}/{fa['of']} → new {fa['cand']}/{fa['of']} · "
-                       f"cost ${g['cost']['base']} → ${g['cost']['cand']}")
-            for row in v["probe"]["rows"]:
+            if v["probe"].get("kind") == "practice":
+                pb, pc = v["probe"]["base"], v["probe"]["cand"]
+                st.caption(f"Held-out practice: answers right {pb['answer_ok']:.0%} → {pc['answer_ok']:.0%} · "
+                           f"no lookup {pb['no_lookup']:.0%} → {pc['no_lookup']:.0%} · tool errors {pb['tool_errors']} → "
+                           f"{pc['tool_errors']} · golden drafts {v['probe']['golden']} · details on the Skills page")
+            else:
+                fa = g["feedback_addressed"]
+                st.caption(f"Feedback addressed (Muse judge, diagnostic): old {fa['base']}/{fa['of']} → new {fa['cand']}/{fa['of']} · "
+                           f"cost ${g['cost']['base']} → ${g['cost']['cand']}")
+            for row in ([] if v["probe"].get("kind") == "practice" else v["probe"]["rows"]):
                 with st.expander(f"{row['origin']}: {row['request'][:70]}"):
                     a, b = st.columns(2)
                     a.markdown(f"**Old** · {row['base']['tool_calls']} calls, {row['base']['tool_errors']} errors, "
