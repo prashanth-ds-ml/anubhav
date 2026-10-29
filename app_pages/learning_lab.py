@@ -1,7 +1,8 @@
+import altair as alt
 import streamlit as st
 
 from anubhav import muse
-from anubhav.learning import digest, miner
+from anubhav.learning import digest, miner, timeline
 from anubhav.learning.store import ReviewError
 from anubhav.ui import core
 
@@ -33,6 +34,29 @@ with st.container(horizontal=True, vertical_alignment="center"):
 if not lessons:
     st.info("No lessons yet for this company.", icon=":material/school:")
     st.stop()
+
+@st.cache_data(max_entries=8)
+def learning_curve(cid, ids, _C, _lessons):
+    return timeline.curve(_C, _lessons, "2026-08-01", _C.t["orders"] and max(o["delivery_date"] for o in _C.t["orders"]))
+
+
+st.subheader("When could it have known?")
+st.caption("The same evidence check, replayed day by day on only the records that existed by then. "
+           "No model calls: the dates come from the data.")
+curve = [r for r in learning_curve(cid, tuple(l["lesson_id"] for l in lessons), C, lessons) if r["learnable"]]
+if curve:
+    pts = [{"date": r["learnable"], "lessons known": i + 1, "lesson": r["claim"] or r["kind"],
+            "incidents after": r["incidents_after"]} for i, r in enumerate(curve)]
+    base = alt.Chart(alt.Data(values=pts)).encode(x=alt.X("date:T", title=None),
+                                                  y=alt.Y("lessons known:Q", title="Lessons the records support"))
+    st.altair_chart(base.mark_line(interpolate="step-after", color="#0F7A74") +
+                    base.mark_circle(size=90, color="#0F7A74").encode(tooltip=["date:T", "lesson:N", "incidents after:Q"]),
+                    alt="Cumulative lessons supported by the records over the 90 days")
+    st.dataframe([{"Lesson": r["claim"] or r["kind"], "First sign": r["first_seen"], "Could have known": r["learnable"],
+                   "Incidents after that day": r["incidents_after"]} for r in curve], hide_index=True,
+                 alt="When each lesson became knowable and how many incidents happened after")
+    st.caption("Incidents after = further refusals, long waits, offloads, no-shows or nickname uses that happened once "
+               "the lesson was already knowable: what learning earlier would have saved (or confirmed).")
 
 LABEL = {"CANDIDATE": "to review", "NEEDS_EVIDENCE": "to review (1 observation)", "ACTIVE_POLICY": "rule",
          "ACTIVE_ADVISORY": "advice", "REJECTED": "rejected", "EXPIRED": "no longer true", "CHALLENGED": "challenged",

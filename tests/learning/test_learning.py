@@ -194,3 +194,21 @@ def test_report_explains_decisions(C, S):
     S.approve(ids[0], "rev", "policy", "3 refused trips")
     text = report.weekly(S, "T01", c)
     assert "Approved and in use" in text and "Rejected (and why)" in text and "habit, not a rule" in text
+
+
+def test_learning_curve_replays_the_gate_day_by_day(C, S):
+    from anubhav.learning import timeline
+    c = C("T01")
+    true, _ = truth_and_traps(c)
+    S.add_proposals("T01", digest.Facts(c), [true["H-01"], true["H-14"]])
+    rows = {r["kind"]: r for r in timeline.curve(c, S.list("T01"), "2026-08-01", "2026-10-29")}
+    j = rows["site_access"]
+    assert j["first_seen"] == "2026-08-19" and j["learnable"] == "2026-08-20" and j["incidents_after"] == 1
+    assert rows["real_capacity"]["learnable"] < j["learnable"] and rows["real_capacity"]["incidents_after"] > 10
+
+
+def test_facts_cutoff_hides_later_records(C):
+    c = C("T01")
+    early, full = digest.Facts(c, until="2026-08-10"), digest.Facts(c)
+    assert len(early.visits) < len(full.visits) and all(v["date"] <= "2026-08-10" for v in early.visits)
+    assert early.today == "2026-08-10"

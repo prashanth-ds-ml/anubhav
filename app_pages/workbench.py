@@ -5,7 +5,7 @@ import streamlit as st
 
 from anubhav import muse
 from anubhav.harness.store import CATEGORIES as CATS
-from anubhav.ui import core
+from anubhav.ui import core, graphs
 
 cid, use = st.session_state.company, st.session_state.use_lessons
 mode = st.session_state.model or "Replay (free)"
@@ -52,6 +52,9 @@ def render_run(r):
         st.markdown(r["reply"] or "_(no reply)_")
         for k in core.lessons_used(r):
             st.badge(k.rsplit(" [", 1)[0][:90], icon=":material/school:", color="green")
+        if st.toggle("Show as a graph", key=f"g:{r['run_id']}", value=True):
+            st.graphviz_chart(graphs.run_dot(r, C), width="stretch",
+                              alt="The question, the tools the agent called in order, the lessons it used, and its decision")
         feedback_box(r)
 
 

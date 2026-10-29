@@ -12,9 +12,16 @@ WEEKDAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
 class Facts:
     """Indexes over CompanyData.t used by both the digest and the gate."""
 
-    def __init__(self, C):
+    def __init__(self, C, until=None):
+        """until='YYYY-MM-DD' keeps only records up to that day (to replay what was knowable then)."""
         self.C = C
-        t = C.t
+        self.today = until or C.today
+        cut = (until or "9999-12-31") + "T99"
+        keep = lambda ts: (ts or "") <= cut
+        t = {k: [r for r in v if keep(r.get("ts") or r.get("arrived_at") or r.get("confirmed_at")
+                                       or r.get("planned_at") or "")] if isinstance(v, list) else v
+             for k, v in C.t.items()} if until else C.t
+        self.messages = t.get("planner_messages", [])
         self.ships = {s["shipment_id"]: s for s in t.get("shipments", [])}
         self.stops = defaultdict(dict)
         for x in t.get("shipment_stops", []):

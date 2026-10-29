@@ -125,7 +125,7 @@ def alias(F, p):
     phrase, kind, target = str(p["phrase"]).strip().lower(), p["target_kind"], str(p["target_id"])
     if len(phrase) < 3:
         return _out("rejected", "phrase too short")
-    msgs = [m for m in F.C.t.get("planner_messages", []) if phrase in m["text"].lower() and m.get("shipment_id") in F.ships]
+    msgs = [m for m in F.messages if phrase in m["text"].lower() and m.get("shipment_id") in F.ships]
 
     def hit(m):
         sid = m["shipment_id"]
@@ -192,7 +192,7 @@ def closure(F, p):
     if len(rows) < 3:
         return _out("rejected", f"only {len(rows)} closure delays near {p['town']}")
     last = date.fromisoformat(rows[-1])
-    today = date.fromisoformat(F.C.today)
+    today = date.fromisoformat(F.today)
     valid = {"valid_from": rows[0], "valid_to": rows[-1]}
     if (today - last).days > STALE_DAYS:
         return _out("expired", f"{len(rows)} closure delays from {rows[0]} to {rows[-1]}; none for {(today - last).days} days",
