@@ -10,9 +10,6 @@ from pathlib import Path
 
 from ..data.store import to_canonical
 
-SPELLINGS = {"hanumakonda": "hanamkonda", "hnk": "hanamkonda", "janagama": "jangaon", "kajipet": "kazipet",
-             "narsampeta": "narsampet", "kammam": "khammam", "mbd": "mahabubabad", "wgl": "warangal"}
-
 
 class CompanyData:
     def __init__(self, world_dir: Path, company: str, runtime_dir: Path | None = None):

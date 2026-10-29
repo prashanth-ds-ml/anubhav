@@ -79,16 +79,13 @@ def site_digest(F, max_sites=45, max_rows=14):
     return "\n".join(lines)
 
 
-NOISE = {"load", "ki", "pettu", "pampu", "repu", "assign", "cheyyi", "bandi", "lo", "vellali", "send", "for", "on", "to",
-         "the", "tomorrow", "morning", "reach", "avvali", "ke", "and", "ni", "feet", "no", "show", "from", "using", "truck",
-         "didn", "turn", "up", "switch", "vallu", "malli", "pettaledu", "marchu", "raledu", "ice", "boxes", "saripotayi",
-         # trade names for vehicle classes are vocabulary, not nicknames
-         "ace", "sxl", "mxl", "eicher", "container", "open", "reefer", "ton", "tons", "lorry", "lori", "free", "ledu"}
-
-
-def phrase_digest(F, min_count=3, max_phrases=25, examples=5):
+def phrase_digest(F, min_count=3, max_phrases=25, examples=5, common_df=0.12):
     """Recurring words/phrases in planner messages that aren't in the company's master data, with what each
-    message's shipment actually went to. Muse decides what (if anything) a phrase means."""
+    message's shipment actually went to. Muse decides what (if anything) a phrase means.
+
+    No hand-written word lists: words in more than `common_df` of all messages count as everyday language, and
+    candidates are ranked by how consistently their messages point to one site, vehicle or vendor (a statistic,
+    not a decision; the gate still checks every proposed alias against the records)."""
     C = F.C
     vocab = set()
     for s in C.sites.values():
@@ -96,18 +93,35 @@ def phrase_digest(F, min_count=3, max_phrases=25, examples=5):
     for v in C.vehicles.values():
         vocab |= set(re.findall(r"[a-z0-9]+", f"{v['vehicle_id']} {v['reg_no']} {v['vendor']}".lower()))
     msgs = [m for m in C.t.get("planner_messages", []) if m.get("shipment_id") in F.ships]
-    grams = Counter()
-    for m in msgs:
-        toks = re.findall(r"[a-z]+", m["text"].lower())
+    toks = [re.findall(r"[a-z]+", m["text"].lower()) for m in msgs]
+    df = Counter(w for ts in toks for w in set(ts))
+    common = {w for w, n in df.items() if n > common_df * max(1, len(msgs))}
+
+    def targets(m):
+        sid = m["shipment_id"]
+        vehs = F.ship_vehicles(sid)
+        return set(F.stops[sid].values()) | vehs | {C.vehicles[v]["vendor"] for v in vehs if v in C.vehicles}
+
+    grams = defaultdict(list)
+    for m, ts in zip(msgs, toks):
+        seen = set()
         for n in (1, 2):
-            for i in range(len(toks) - n + 1):
-                g = toks[i:i + n]
-                if all(w not in vocab and w not in NOISE and len(w) > 2 for w in g):
-                    grams[" ".join(g)] += 1
+            for i in range(len(ts) - n + 1):
+                g = ts[i:i + n]
+                if all(w not in vocab and w not in common and len(w) > 2 for w in g) and " ".join(g) not in seen:
+                    seen.add(" ".join(g))
+                    grams[" ".join(g)].append(m)
+    scored = []
+    for g, ms in grams.items():
+        if len(ms) < min_count:
+            continue
+        tally = Counter(x for m in ms for x in targets(m))
+        concentration = tally.most_common(1)[0][1] / len(ms) if tally else 0
+        scored.append((concentration * (1 + len(ms)) ** 0.5, g, ms))
     lines = []
-    for g, n in [x for x in grams.most_common() if x[1] >= min_count][:max_phrases]:
-        lines.append(f'\nPHRASE "{g}" in {n} messages; examples:')
-        for m in [m for m in msgs if re.search(rf"\b{re.escape(g)}\b", m["text"].lower())][:examples]:
+    for _, g, ms in sorted(scored, key=lambda x: (-x[0], x[1]))[:max_phrases]:
+        lines.append(f'\nPHRASE "{g}" in {len(ms)} messages; examples:')
+        for m in ms[:examples]:
             sid = m["shipment_id"]
             sites = [f"{x} {C.sites[x]['name']} ({C.sites[x]['town']})" for x in F.stops[sid].values()]
             vehs = [f"{v} ({C.vehicles[v]['vendor']})" for v in sorted(F.ship_vehicles(sid)) if v in C.vehicles]

@@ -65,7 +65,7 @@ def test_clients_really_use_different_schemas(world):
 @pytest.mark.parametrize("company", ["T01", "T02", "TNEW"])
 def test_find_site_resolves_names_and_spellings_but_not_private_nicknames(broker_for, company):
     b = broker_for(company)
-    assert b.call("find_site", {"query": "Lakshmi Agencies Janagama"})["result"]["matches"][0]["name"] == "Lakshmi Agencies"
+    assert b.call("find_site", {"query": "Lakshmi Agencies Jangoan"})["result"]["matches"][0]["name"] == "Lakshmi Agencies"
     assert b.call("find_site", {"query": "Pedda godown"})["result"]["matches"] == []      # nobody wrote it down
 
 

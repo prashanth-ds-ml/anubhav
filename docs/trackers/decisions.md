@@ -40,6 +40,7 @@ ADR-style: newest at the bottom. Never delete an entry; mark it superseded inste
 | D-031 | 2026-10-29 | Project name changed from Anubhavam to **Anubhav** everywhere (package `anubhav`, docs, configs) | accepted |
 | D-032 | 2026-10-29 | MCP server per authenticated session (MCP SDK 2.x `MCPServer`): `tools/list` shows only what the role may use; company and role never come from tool arguments | accepted |
 | D-033 | 2026-10-29 | Rule-related staff fixes stay local to the order (never written to the site master), matching the interview: constraints live in planners' heads | accepted |
+| D-034 | 2026-10-29 | **No hard-coded knowledge.** Nothing the agent, miner, gate or tools use may contain facts, word lists or spellings written from knowledge of the generated world; use statistics computed from each company's own data, or let the agent learn it. Truth lives only in `learning/evaluate.py` (evaluation) and the generator | accepted |
 
 ---
 

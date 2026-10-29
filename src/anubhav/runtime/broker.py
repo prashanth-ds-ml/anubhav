@@ -10,23 +10,21 @@ The 3PL tools (PRD v3.1 §6.3, plus find_site and search_notes):
   append: record_driver_note
 """
 
+import difflib
 import json
-import math
 import re
 import uuid
+from collections import Counter
 from dataclasses import dataclass, field
 from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field, ValidationError
 
-from .company import SPELLINGS, CompanyData, Conflict
+from .company import CompanyData, Conflict
 from .safety import validate_draft
 
 ROLES = {"dispatcher": {"read", "draft", "append"}, "viewer": {"read"}, "reviewer": {"read"}}
 SPOOF_KEYS = {"tenant", "tenant_id", "company", "company_id", "role", "user", "approved", "approval"}
-GENERIC_WORDS = {"godown", "agencies", "traders", "distributors", "enterprises", "stores", "general", "kirana",
-                 "wholesale", "warehousing", "logistics", "marketing", "mart", "supermarket", "hypermarket", "fresh",
-                 "load", "road", "main", "sri", "shop", "the", "and"}
 UNTRUSTED = "untrusted_text"
 
 
@@ -208,18 +206,27 @@ def route_km(C, s):
 
 
 # ---------- tool implementations (all read through CompanyData, all scoped to the session's company)
+def _name_tokens(s):
+    return set(re.findall(r"[a-z0-9]+", f"{s['name']} {s['town']} {s.get('street', '')}".lower()))
+
+
+def _close(w, tokens, cutoff=0.8):
+    """Exact or near spelling (Hanumakonda ~ Hanamkonda). Different names (Janagama vs Jangaon) are learned, not guessed."""
+    return w in tokens or bool(difflib.get_close_matches(w, tokens, n=1, cutoff=cutoff))
+
+
 def find_site(b, a: FindSite):
-    q = a.query.lower().strip()
-    for k, v in SPELLINGS.items():
-        q = re.sub(rf"\b{k}\b", v, q)
-    words = [w for w in re.findall(r"[a-z0-9]+", q) if len(w) > 2]
-    distinct = [w for w in words if w not in GENERIC_WORDS]
+    sites = list(b.C.sites.values())
+    df = Counter(w for s in sites for w in _name_tokens(s))
+    generic = {w for w, n in df.items() if n > 0.05 * len(sites)}    # words common across this company's site names
+    words = [w for w in re.findall(r"[a-z0-9]+", a.query.lower()) if len(w) > 2]
+    distinct = [w for w in words if w not in generic]
     hits = []
-    for s in b.C.sites.values():
-        tokens = set(re.findall(r"[a-z0-9]+", f"{s['name']} {s['town']} {s.get('street', '')}".lower()))
-        if distinct and not any(w in tokens for w in distinct):
-            continue                    # a match on generic words only ('godown') is not a match
-        score = sum(w in tokens for w in words)
+    for s in sites:
+        tokens = _name_tokens(s)
+        if distinct and sum(_close(w, tokens) for w in distinct) < 0.6 * len(distinct):
+            continue                    # most distinctive words must match ('Pedda godown' is not '... Godown')
+        score = sum(_close(w, tokens) for w in words)
         if score:
             hits.append((score, s))
     hits.sort(key=lambda x: (-x[0], x[1]["name"]))

@@ -257,6 +257,7 @@ Task file: `datasets/tasks/benchmark_v1.jsonl` (held-out = `split: heldout`). Se
   - agent and runtime: `agent/graph.py` `3ebe72a732c4fd83` · `runtime/broker.py` `8efe61b28c404c53` · `runtime/safety.py` `94a303889885791e`
   - World `full_seed20261104`: config `0011e017e1a01962`; snapshots T01 `c1b31c2f28bab875`, T02 `8cc9363a974279c8`, T03 `880d122069ef8072`, TNEW `5c8b8606bfb33df7`.
   - 199 tests pass.
+- **Re-frozen 2026-10-29, still before any Muse call** (owner: "don't hardcode any info; the agent should learn by itself"). Hand-written word lists were removed: digest noise words → document-frequency + concentration statistics; find_site spelling map and generic-word list → fuzzy matching + per-company statistics. New hashes: `digest.py` `75f6b2def33b9565` · `runtime/broker.py` `d2ee7b4fc5e84ccc` · `runtime/company.py` `8ed6f00dd55262c8`; all other hashes unchanged. 199 tests pass.
 - **Setup:**
   - **Part A:** Muse Spark 1.3 (temperature 0) mines each company's evidence digest (only agent-visible records). 2 repeats × T01, T02, T03. The gate checks every proposal against the full records.
   - **Truth (evaluation only):**
