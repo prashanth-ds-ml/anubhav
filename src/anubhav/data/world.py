@@ -205,7 +205,7 @@ def _fleet(W):
                     docs[d] = (start + timedelta(days=r.randint(10, 85))).isoformat()
                 W.vehicles.append({
                     "company": cid, "vehicle_id": fmt.format(n), "class": cls, "length_ft": vc[cls]["length_ft"],
-                    "payload_kg": vc[cls]["payload_kg"], "volume_m3": vc[cls]["volume_m3"],
+                    "payload_kg": vc[cls]["payload_kg"], "volume_m3": vc[cls]["volume_m3"], "type_label": vc[cls]["label"],
                     "body": "reefer" if cls == "REEFER14" else ("closed" if cls in ("T14", "T22", "T32S", "T32M") and r.random() < 0.35 else "open"),
                     "owner": "own" if own else "attached", "vendor": c["name"] if own else r.choice(c["vendors"]),
                     "reg_no": f"{r.choice(rto)} {r.choice(['U', 'T', 'Z'])}{r.choice('ABCDEFGH')} {r.randint(1000, 9999)}",
@@ -215,7 +215,7 @@ def _fleet(W):
             cls = r.choice(["LCV407", "T14", "T22", "T32S"])
             W.vehicles.append({
                 "company": cid, "vehicle_id": f"SPOT-{i + 1:02d}", "class": cls, "length_ft": vc[cls]["length_ft"],
-                "payload_kg": vc[cls]["payload_kg"], "volume_m3": vc[cls]["volume_m3"], "body": "open", "owner": "spot",
+                "payload_kg": vc[cls]["payload_kg"], "volume_m3": vc[cls]["volume_m3"], "type_label": vc[cls]["label"], "body": "open", "owner": "spot",
                 "vendor": "market", "reg_no": f"{r.choice(rto)} {r.choice('UTV')}{r.choice('ABCDEFGH')} {r.randint(1000, 9999)}",
                 "age_years": r.randint(4, 15), "fitness_until": "2027-06-30", "permit_until": "2027-06-30",
                 "insurance_until": "2027-06-30", "puc_until": "2027-06-30", "maintenance_day": None, "gps": False,

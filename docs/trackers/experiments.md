@@ -358,3 +358,17 @@ Packs: T01→TNEW 4 lessons (1 skipped: no matching site), T02→TNEW 4 lessons 
   2. The failures the owner saw while testing (0-tool answers to history questions; "only tomorrow" answers) were a **missing-tool** problem, not a tool-skill problem. Tester feedback found the gap; adding generic tools closed it.
   3. These question types are too easy to demonstrate tool learning. A real test needs harder practice: multi-step and comparative questions, subtle tool semantics, and efficiency (calls and cost per correct answer). The candidate's extra calls show efficiency is the more realistic thing to improve.
 - **Not claimed:** "the agent learned to pick tools". We do not have that evidence yet.
+
+
+### EXP-009: Does a sharper evidence gate raise precision without losing recall? (frozen 2026-10-29 before any Muse call)
+- **Question:** EXP-008 mining precision was 0.73 (bar 0.85). Its false lessons were: wrong-hour closing times, a noisy vendor pattern, and truck-type words taken as nicknames. Do data-driven fixes raise precision on **unseen** data?
+- **Changes (no hard-coding, D-034):**
+  1. `receiving_hours`: the claimed hour must match where the evidence starts (earliest arrival held overnight ≤ claim + 1 h).
+  2. `vendor_reliability`: one-sided Fisher exact test, p < 0.05 and ≥ 3 month-end no-shows (replaces the 2× ratio).
+  3. `alias`: a phrase that is the target vehicle's type name (new `type_label` column in the vehicle master, as real fleet systems have) is rejected.
+- **Frozen files (sha256 prefix):** `exp009_gate.py` `97bfe21e31193d26` · `gate.py` `401a6b71e45df6a0` · `digest.py` `6a74c5927fb98ad1` · `miner.py` `0a6e8f5c89910ca9` · `evaluate.py` `3964e163acb977de` · `store.py` `7cd8c9c48a0394d5`. Fresh world `full_seed4111` (config / snapshots): 1fb8c7bb0422 T01:ef177cdf8c07 T02:964b6c4b8aea T03:c8958760ccb2 TNEW:4cc590caac49. 222 tests pass.
+- **Design:**
+  - **Primary (honest):** seed 4111 world, generated today and never inspected. Muse Spark 1.3 mines T01, T02 and T03 once each; the refined gate checks; the evaluator scores against that world's truth.
+  - **Diagnostic only:** EXP-008's rep-0 proposals re-checked by the refined gate on the original world. In-sample: the fixes were designed after seeing these, so this number is **not** evidence.
+- **Decision rule (fixed now):** **precision fixed** if primary pooled precision ≥ 0.85, pooled recall ≥ 0.60, and traps admitted = 0. Otherwise report the gap.
+- **Budget:** 3 mining calls, about $0.25.

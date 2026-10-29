@@ -221,3 +221,29 @@ def test_relearning_adds_only_new_findings(C, S):
     first = S.add_proposals("T01", F, [true["H-01"], true["H-03"]])
     again = S.add_proposals("T01", F, [true["H-01"], true["H-03"], traps["H-08 habit"]])
     assert len(first) == 2 and len(again) == 1 and len(S.list("T01")) == 3
+
+
+# ---------- EXP-009 gate refinements
+def test_vendor_claims_need_statistical_significance():
+    assert gate.fisher_greater(3, 9, 0, 36) < 0.01            # 3/9 vs 0/36: real
+    assert gate.fisher_greater(9, 46, 5, 65) > 0.05           # 9/46 vs 5/65: could be luck
+    assert gate.fisher_greater(2, 26, 4, 60) > 0.5
+
+
+def test_closing_hour_must_match_where_the_evidence_starts(C):
+    c = C("T01")
+    F = digest.Facts(c)
+    sid = next(iter(F.by_site))
+    base = dict(F.by_site[sid][0], status="delivered", status_seen=None)
+    F.by_site[sid] = [dict(base, hour=21, wait_min=600, arrived="2026-09-01T21:00"),
+                      dict(base, hour=22, wait_min=560, arrived="2026-09-02T22:00")]
+    assert gate.check(F, {"kind": "receiving_hours", "params": {"site_id": sid, "until_hour": 18}})["verdict"] == "rejected"
+    assert gate.check(F, {"kind": "receiving_hours", "params": {"site_id": sid, "until_hour": 21}})["verdict"] == "candidate"
+
+
+def test_vehicle_type_names_are_not_nicknames(C):
+    c = C("T01")
+    F = digest.Facts(c)
+    v = next(v for v in c.vehicles.values() if v["class"] == "T32S" and v["owner"] != "spot")
+    r = gate.check(F, {"kind": "alias", "params": {"phrase": "32 SXL bandi", "target_kind": "vehicle", "target_id": v["vehicle_id"]}})
+    assert r["verdict"] == "rejected" and "type name" in r["reason"]

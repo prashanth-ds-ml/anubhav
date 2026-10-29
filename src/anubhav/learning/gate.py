@@ -6,6 +6,7 @@ Muse's confidence and wording never count. Outcomes:
   expired         a time-bound fact whose evidence stopped (e.g. a closure that ended)
 Thresholds are fixed here and pre-registered with each experiment that reports on them."""
 
+import math
 import re
 from collections import Counter
 from datetime import date, timedelta
@@ -75,6 +76,10 @@ def receiving_hours(F, p):
     late = [x for x in F.by_site[sid] if x["hour"] >= h and x["status"] != "returned"]
     held = [x for x in late if x["wait_min"] >= 300]
     ok = [x for x in late if x["wait_min"] < 60]
+    if held and not ok and min(x["hour"] for x in held) - h > 1:
+        first = min(x["hour"] for x in held)
+        return _out("rejected", f"imprecise: the earliest arrival held overnight came at {first}:00; nothing in the records "
+                    f"shows the site stops receiving at {h}:00", len(held), 0)
     return _out(_level(len(held), len(ok)), f"{len(held)} arrivals at/after {h}:00 held overnight, {len(ok)} unloaded promptly",
                 len(held), len(ok))
 
@@ -142,6 +147,10 @@ def alias(F, p):
         names = {w for w in re.findall(r"[a-z]+", F.C.sites[target]["name"].lower())}
         if set(phrase.split()) <= names:
             return _out("rejected", "the phrase is just the site's own name")
+    if kind == "vehicle":
+        label = set(re.findall(r"[a-z0-9]+", str(F.C.vehicles[target].get("type_label", "")).lower()))
+        if label and set(re.findall(r"[a-z0-9]+", phrase)) - {"bandi", "lorry", "truck"} <= label:
+            return _out("rejected", f"'{phrase}' is the vehicle's type name ({F.C.vehicles[target]['type_label']}), not a nickname")
     return _out(_level(good, len(msgs) - good), f"{good} of {len(msgs)} messages using it point to {target}", good, len(msgs) - good)
 
 
@@ -180,9 +189,20 @@ def vendor_reliability(F, p):
     if not rt:
         return _out("rejected", "no month-end bookings")
     rate_r, rate_n = rn / rt, nn / max(1, nt)
-    ok = rn >= 3 and rate_r >= 2 * max(rate_n, 0.01)
-    return _out("candidate" if ok else "rejected", f"month-end no-shows {rn}/{rt} ({rate_r:.0%}) vs other days {nn}/{nt} ({rate_n:.0%})",
-                rn, nn)
+    p_value = fisher_greater(rn, rt, nn, nt)
+    ok = rn >= 3 and rate_r > rate_n and p_value < ALPHA
+    return _out("candidate" if ok else "rejected", f"month-end no-shows {rn}/{rt} ({rate_r:.0%}) vs other days {nn}/{nt} "
+                f"({rate_n:.0%}); chance of a gap this big by luck p={p_value:.3f}", rn, nn)
+
+
+ALPHA = 0.05
+
+
+def fisher_greater(a, n1, b, n2):
+    """One-sided Fisher exact test: probability of seeing >= a 'hits' out of n1 by chance, given a + b hits in n1 + n2."""
+    N, K = n1 + n2, a + b
+    total = math.comb(N, n1)
+    return sum(math.comb(K, k) * math.comb(N - K, n1 - k) for k in range(a, min(K, n1) + 1)) / total if total else 1.0
 
 
 def closure(F, p):
