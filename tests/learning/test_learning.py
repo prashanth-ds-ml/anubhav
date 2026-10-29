@@ -212,3 +212,12 @@ def test_facts_cutoff_hides_later_records(C):
     early, full = digest.Facts(c, until="2026-08-10"), digest.Facts(c)
     assert len(early.visits) < len(full.visits) and all(v["date"] <= "2026-08-10" for v in early.visits)
     assert early.today == "2026-08-10"
+
+
+def test_relearning_adds_only_new_findings(C, S):
+    c = C("T01")
+    F = digest.Facts(c)
+    true, traps = truth_and_traps(c)
+    first = S.add_proposals("T01", F, [true["H-01"], true["H-03"]])
+    again = S.add_proposals("T01", F, [true["H-01"], true["H-03"], traps["H-08 habit"]])
+    assert len(first) == 2 and len(again) == 1 and len(S.list("T01")) == 3

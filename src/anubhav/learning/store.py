@@ -48,11 +48,18 @@ class LessonStore:
                     (datetime.now().isoformat(timespec="seconds"), lid, company, actor, action, a, b, note))
 
     # ---------- adding proposals (always through the gate)
-    def add_proposals(self, company, F, proposals, miner_meta=None, source="mined"):
+    def add_proposals(self, company, F, proposals, miner_meta=None, source="mined", skip_known=True):
+        """Gate and store proposals. A finding the store already has (same kind and scope) is not added again."""
         out = []
+        key = lambda kind, params: (kind, json.dumps({k: str(v).lower() for k, v in (params or {}).items()
+                                                     if k not in ("valid_from", "valid_to", "reason", "what")}, sort_keys=True))
+        known = {key(l["kind"], l["params"]) for l in self.list(company)} if skip_known else set()
         with self._con() as con:
             n = con.execute("select count(*) from lessons where company = ?", (company,)).fetchone()[0]
             for p in proposals:
+                if key(p.get("kind"), p.get("params")) in known:
+                    continue
+                known.add(key(p.get("kind"), p.get("params")))
                 g = G.check(F, p)
                 n += 1
                 lid = f"L-{company}-{n:03d}"
@@ -139,25 +146,10 @@ class LessonStore:
         """Turn active lessons into (knowledge text for the agent, enforceable policies, advisories for drafts)."""
         knowledge, policies, advisories = [], [], []
         for les in self.list(company, ACTIVE):
-            p, lid = les["params"], les["lesson_id"]
-            k = les["kind"]
+            p, lid, k = les["params"], les["lesson_id"], les["kind"]
             site = C.sites.get(p.get("site_id") or p.get("target_id") or "", {})
-            where = f"{site.get('name')}, {site.get('town')} (site {site.get('site_id')})" if site else ""
             tag = "approved rule" if les["state"] == "ACTIVE_POLICY" else "advice"
-            text = {
-                "site_access": f"{where}: vehicles longer than {p.get('max_length_ft')} ft cannot enter",
-                "receiving_hours": f"{where}: does not receive after {p.get('until_hour')}:00; plan arrival earlier",
-                "night_only": f"{where}: receives only at night ({p.get('from_hour')}:00-{p.get('to_hour')}:00)",
-                "time_window": f"{where}: vehicles of {p.get('min_length_ft')} ft or longer can't unload {p.get('from_hour')}:00-{p.get('to_hour')}:00",
-                "weekly_off": f"{where or p.get('town')}: closed on {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'][int(p.get('weekday', 0))]}",
-                "alias": f"\"{p.get('phrase')}\" means " + (where if p.get("target_kind") == "site" else
-                                                           f"vehicle {p.get('target_id')}" if p.get("target_kind") == "vehicle"
-                                                           else f"vendor {p.get('target_id')}"),
-                "real_capacity": f"vehicle {p.get('vehicle_id')} safely carries at most {p.get('max_kg')} kg (less than its paper payload)",
-                "vendor_reliability": f"vendor {p.get('vendor')} often fails to place trucks in the last week of the month; book a backup",
-                "closure": f"{p.get('town')}: {p.get('what', 'road problem')} (from {les.get('valid_from')} to {les.get('valid_to')})",
-                "moved_site": f"{where}: has moved to a new godown; the master address is out of date, confirm the address",
-            }.get(k, les["claim"])
+            text = describe(les, C)
             knowledge.append(f"{text} [{tag} {lid}]")
             if k == "site_access" and les["state"] == "ACTIVE_POLICY":
                 policies.append({"site_id": p["site_id"], "max_length_ft": int(p["max_length_ft"]), "id": lid,
@@ -165,3 +157,25 @@ class LessonStore:
             elif k in ("site_access", "time_window", "receiving_hours", "night_only", "weekly_off", "moved_site") and site:
                 advisories.append({"site_id": site["site_id"], "id": lid, "text": text.split(": ", 1)[-1]})
         return knowledge, policies, advisories
+
+
+def describe(les, C):
+    """A lesson in plain words, with the company's own names."""
+    p, k = les["params"] or {}, les["kind"]
+    site = C.sites.get(p.get("site_id") or p.get("target_id") or "", {})
+    where = f"{site.get('name')}, {site.get('town')} (site {site.get('site_id')})" if site else ""
+    days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+    return {
+        "site_access": f"{where}: vehicles longer than {p.get('max_length_ft')} ft cannot enter",
+        "receiving_hours": f"{where}: does not receive after {p.get('until_hour')}:00; plan arrival earlier",
+        "night_only": f"{where}: receives only at night ({p.get('from_hour')}:00-{p.get('to_hour')}:00)",
+        "time_window": f"{where}: vehicles of {p.get('min_length_ft')} ft or longer can't unload {p.get('from_hour')}:00-{p.get('to_hour')}:00",
+        "weekly_off": f"{where or p.get('town')}: closed on {days[int(p.get('weekday', 0)) % 7]}",
+        "alias": f"\"{p.get('phrase')}\" means " + (where if p.get("target_kind") == "site" else
+                                                   f"vehicle {p.get('target_id')}" if p.get("target_kind") == "vehicle"
+                                                   else f"vendor {p.get('target_id')}"),
+        "real_capacity": f"vehicle {p.get('vehicle_id')} safely carries at most {p.get('max_kg')} kg (less than its paper payload)",
+        "vendor_reliability": f"vendor {p.get('vendor')} often fails to place trucks in the last week of the month; book a backup",
+        "closure": f"{p.get('town')}: {p.get('what', 'road problem')} (from {les.get('valid_from')} to {les.get('valid_to')})",
+        "moved_site": f"{where}: has moved to a new godown; the master address is out of date, confirm the address",
+    }.get(k, les.get("claim") or k)
