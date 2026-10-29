@@ -53,7 +53,7 @@ def render_run(r):
         for k in core.lessons_used(r):
             st.badge(k.rsplit(" [", 1)[0][:90], icon=":material/school:", color="green")
         if st.toggle("Show as a graph", key=f"g:{r['run_id']}", value=True):
-            st.graphviz_chart(graphs.run_dot(r, C), width="stretch",
+            st.graphviz_chart(graphs.run_dot(r, C), width="content",
                               alt="The question, the tools the agent called in order, the lessons it used, and its decision")
         feedback_box(r)
 

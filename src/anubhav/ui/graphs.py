@@ -49,17 +49,18 @@ def tool_map_dot(rows, title=""):
 
 def run_dot(r, C=None):
     """DOT source for one run. Green tool = ok, red = error; teal notes = approved lessons the reply cites."""
-    L = ['digraph run {', 'rankdir=TB; nodesep=0.35; ranksep=0.35; bgcolor="transparent"; node [fontname="Inter", fontsize=11, style="rounded,filled"];',
-         'edge [color="#8A939E", arrowsize=0.7];',
-         f'q [label="{_q(r["request"], 48)}", shape=box, fillcolor="#15181D", fontcolor="white"];']
+    L = ['digraph run {', 'rankdir=TB; size="3.4,6"; nodesep=0.15; ranksep=0.18; bgcolor="transparent";',
+         'node [fontname="Inter", fontsize=9, style="rounded,filled", height=0.25, margin="0.08,0.03"];',
+         'edge [color="#8A939E", arrowsize=0.5];',
+         f'q [label="{_q(r["request"], 34)}", shape=box, fillcolor="#15181D", fontcolor="white"];']
     prev = "q"
     steps = [s for s in r.get("trace", []) if s["type"] == "tool"]
     for i, s in enumerate(steps):
         ok = s["ok"]
         args = s.get("arguments")
         args = json.loads(args) if isinstance(args, str) else (args or {})
-        arg = ", ".join(f"{k}={v}" for k, v in list(args.items())[:2])
-        label = f'{s["name"]}\\n{_q(arg, 34)}' if arg else s["name"]
+        arg = ", ".join(str(v) for v in list(args.values())[:1])
+        label = f'{s["name"]} · {_q(arg, 18)}' if arg else s["name"]
         if not ok:
             label += f'\\n✗ {s["error"]["code"]}'
         L.append(f't{i} [label="{label}", shape=box, fillcolor="{"#E3F1EA" if ok else "#FBE3E0"}", color="{"#1E7B4F" if ok else "#A1281B"}"];')
