@@ -13,6 +13,12 @@ What the generator builds, and why. It implements [[Data_Benchmark_Blueprint_v1.
 2. **Real places, fictional businesses.** Towns, PIN codes and distances are real. Every company, person, vehicle number and phone number is invented.
 3. **Messy on purpose.** EXP-007 showed that raw history is enough when it's small and clean. This world is large and noisy: stale notes, one-off failures, misleading habits, contradictions and look-alike sites. That is where governed lessons should earn their place.
 4. **Reproducible.** One master seed, separate random substreams, versioned config, hashes for everything.
+5. **Three layers: neat truth, messy evidence, neat lessons.**
+   - *Truth* (hidden) is precise and structured, so every lesson can be checked. Example: "Lakshmi Agencies, Jangaon, north gate: max 22 ft".
+   - *Evidence* (notes, trips, messages) is messy, as in real life, and only partly reveals the truth.
+   - *Lessons* (Anubhavam's output) are structured again: scoped, evidenced, approved and expiring, so other planners and other companies can use them.
+
+   Turning messy experience into usable knowledge is the product. It is never done by cleaning the evidence.
 
 ---
 
@@ -148,6 +154,54 @@ So the agent can't trust the master data blindly, and it has nothing to learn fr
 | T-new | New 3PL | Warangal area | 2 FMCG brands | ~9 vehicles (own + 2 attached vendors + spot) | yes |
 
 Consignees are distributors, wholesalers and modern-trade stores. Some (e.g. the big Warangal and Jangaon distributors) are served by **both** T01 and T02. That overlap is what makes regional sharing meaningful.
+
+### 4.1 What a medium regional 3PL looks like
+- One depot next to its clients' CFA warehouses; 15–25 trucks managed (own + attached + spot).
+- Small team: 1–2 planners, a supervisor, an accounts person; a driver pool of ~1.2× the trucks.
+- Coordination over phone and WhatsApp with drivers, vendors and distributors. Planner messages and driver notes in the data look like these chats.
+- 2–4 client brands per company.
+
+### 4.2 Company personalities
+| Company | Personality | Effect on the data |
+|---|---|---|
+| T01 | Old company; experienced senior planner | Many nicknames and shortcuts; lots of unwritten knowledge; the main learning story |
+| T02 | Newer; staff write more formally | Fewer nicknames; more English; less written down about sites |
+| T03 | Bigger, more systematic (Hyderabad) | More written policies and site rules; less to learn from notes; more volume |
+| T-new | Just starting | Basic master data only; no history |
+
+Each company has 2–3 planner personas with distinct writing styles: one types Roman Telugu, one Telugu script, one mostly English. The mix per company follows the staff preference order (§8).
+
+### 4.3 Products and how they load
+Each SKU has: case weight (kg), case volume (m³), max stacking height, temperature band, and a **handling class**.
+
+| Handling class | Examples | Planning effect |
+|---|---|---|
+| Dense food | Edible oil, atta, rice, sugar | Truck fills on **weight** first ("weighs out") |
+| Light / bulky food | Biscuits, snacks, noodles | Truck fills on **volume** first ("cubes out"); stacking limit (crushing) |
+| Chemicals / home care | Detergent, toilet cleaner, soap | **Must not be loaded with food** (segregation) |
+| Liquids / breakables | Beverages, glass bottles | Heavy; breakage claims; upright stacking |
+| Chilled (T03 only) | Milk, curd, paneer | Reefer only; temperature band 2–8 °C (assumed) |
+
+### 4.4 Genuine rules (real-world, public sources)
+These are real Indian rules or standard industry practice. In the data they are **written** (visible to the agent through `written_policies` or document fields), so they test following rules, not learning them. Where a number depends on a state notification, the config value is an assumption, labelled as such.
+
+| Rule | Source / basis | In the data |
+|---|---|---|
+| **E-way bill** required for goods movement above **₹50,000** consignment value | GST e-way bill rules | `eway_bills` table; missing or expired bill → checkpost detention |
+| E-way bill **validity**: about 1 day per 200 km for normal cargo | GST e-way bill rules | Long trips that slip past validity need an extension |
+| **No overloading** beyond the vehicle's permitted gross weight; fines at weighbridges | Motor Vehicles Act (overloading penalties), MoRTH axle-load norms | Overload → caught at weighbridge → reload/split |
+| **Vehicle documents valid**: registration, fitness, permit, insurance, pollution certificate | Motor Vehicles Act | Expired document → vehicle can't be dispatched |
+| **Food carried apart from chemicals**; clean, covered vehicles for food | FSSAI food-safety hygiene requirements | Segregation rule in loading; dirty/uncovered truck rejected at loading |
+| **Lorry Receipt (LR) / consignment note** per consignment; signed copy as proof of delivery | Standard Indian road-transport practice | `proof_of_delivery` with LR number and signature status |
+| **FEFO** (first expiry, first out) when picking stock | Standard FMCG warehouse practice | Picking order; wrong batch → return |
+| **Last drop loaded first** on multi-drop trips | Standard loading practice | Load sequence per trip; wrong order → longer unloading |
+| **Tarpaulin cover** for open trucks in rain | Standard practice | Rain + no tarpaulin → damage claim |
+| **City heavy-vehicle entry hours** (Hyderabad) | Traffic police notifications (hours set in config) | Long trucks wait outside city limits during restricted hours |
+| **Driver rest**: no driver beyond the company's daily duty limit | Company policy, based on motor transport labour rules | Driver availability; tired-driver reassignment |
+| **Credit hold**: no dispatch to a distributor over its credit limit | Standard distributor practice | Orders on hold until payment |
+| **Detention charges** after free unloading time | Standard transporter contract term | Long unloading waits cost money; shows up in vendor bills |
+
+Hidden (unwritten) rules stay in §7. Written rules here are the **control**: the agent should follow them from the tools from day 1.
 
 ---
 
