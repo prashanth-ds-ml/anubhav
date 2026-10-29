@@ -88,35 +88,59 @@ def leaks(pack, src):
     return sorted(t for t in toks if t in text)
 
 
+def _key(kind, params):
+    return kind, json.dumps({k: str(v).lower() for k, v in (params or {}).items()}, sort_keys=True)
+
+
 def import_pack(store, pack, dst, accepted_by, accept_policies=False):
-    """Recipient side: opt in. Lessons arrive as advice unless the recipient also accepts enforceable policies."""
+    """Recipient side: opt in. Lessons arrive as advice unless the recipient also accepts enforceable policies.
+    A lesson the recipient already received from another partner is not duplicated: it gains a confirmation."""
     if not accepted_by:
         raise PermissionError("importing a pack needs the recipient's opt-in")
+    existing = {_key(l["kind"], l["params"]): l for l in store.list(dst.company, ACTIVE)}
     ids = []
     with store._con() as con:
         n = con.execute("select count(*) from lessons where company = ?", (dst.company,)).fetchone()[0]
         for it in pack["items"]:
+            now = datetime.now().isoformat(timespec="seconds")
+            prior = existing.get(_key(it["kind"], it["params"]))
+            if prior:
+                g = dict(prior["gate"])
+                g["confirmed_by"] = sorted(set(g.get("confirmed_by", [])) | {pack["pack_id"]})
+                g["reason"] = f"confirmed by {len(g['confirmed_by'])} partner companies"
+                con.execute("update lessons set gate = ?, updated = ? where lesson_id = ?", (json.dumps(g), now, prior["lesson_id"]))
+                store._event(con, prior["lesson_id"], dst.company, accepted_by, "confirm", prior["state"], prior["state"], pack["pack_id"])
+                ids.append(prior["lesson_id"])
+                continue
             n += 1
             lid = f"L-{dst.company}-{n:03d}"
             state = "ACTIVE_POLICY" if accept_policies and it["effect"] == "policy" else "ACTIVE_ADVISORY"
-            now = datetime.now().isoformat(timespec="seconds")
-            gate = {"verdict": "imported", "reason": f"from pack {pack['pack_id']}: {it['evidence']}",
-                    "enforceable": it["kind"] == "site_access"}
+            gate = {"verdict": "imported", "reason": f"from a partner company: {it['evidence']}",
+                    "enforceable": it["kind"] == "site_access", "confirmed_by": [pack["pack_id"]]}
             con.execute("insert into lessons values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
                         (lid, dst.company, it["kind"], json.dumps(it["params"], ensure_ascii=False), "", state,
                          "policy" if state == "ACTIVE_POLICY" else "advisory", json.dumps(gate), json.dumps({}),
                          f"pack:{pack['pack_id']}", now, now, accepted_by, "imported", None, None))
             store._event(con, lid, dst.company, accepted_by, "import", None, state, pack["pack_id"])
+            existing[_key(it["kind"], it["params"])] = {"lesson_id": lid, "kind": it["kind"],
+                                                                                   "params": it["params"], "gate": gate, "state": state}
             ids.append(lid)
-    return ids
+    return list(dict.fromkeys(ids))
 
 
 def revoke(store, pack_id, dst_company, actor):
-    """Revoking a pack retires every lesson that came from it."""
+    """Revoking a pack removes its confirmation; a lesson no other partner confirms is retired."""
     out = []
     for les in store.list(dst_company, ACTIVE):
-        if les["source"] == f"pack:{pack_id}":
+        conf = les["gate"].get("confirmed_by") or ([les["source"].split(":", 1)[1]] if les["source"].startswith("pack:") else [])
+        if pack_id not in conf:
+            continue
+        rest = [c for c in conf if c != pack_id]
+        if rest:
+            g = dict(les["gate"], confirmed_by=rest, reason=f"confirmed by {len(rest)} partner compan{'y' if len(rest) == 1 else 'ies'}")
+            with store._con() as con:
+                con.execute("update lessons set gate = ?, source = ? where lesson_id = ?", (json.dumps(g), f"pack:{rest[0]}", les["lesson_id"]))
+                store._event(con, les["lesson_id"], dst_company, actor, "unconfirm", les["state"], les["state"], pack_id)
+            out.append(store.get(les["lesson_id"]))
+        else:
             out.append(store.retire(les["lesson_id"], actor, f"pack {pack_id} revoked"))
-    with store._con() as con:
-        con.execute("update packs set status = 'revoked' where pack_id = ?", (pack_id,))
-    return out

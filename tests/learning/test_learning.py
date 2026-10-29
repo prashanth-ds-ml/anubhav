@@ -247,3 +247,20 @@ def test_vehicle_type_names_are_not_nicknames(C):
     v = next(v for v in c.vehicles.values() if v["class"] == "T32S" and v["owner"] != "spot")
     r = gate.check(F, {"kind": "alias", "params": {"phrase": "32 SXL bandi", "target_kind": "vehicle", "target_id": v["vehicle_id"]}})
     assert r["verdict"] == "rejected" and "type name" in r["reason"]
+
+
+def test_same_lesson_from_two_partners_is_merged_and_revocation_respects_the_other(C, S):
+    src, dst = C("T01"), C("TNEW")
+    lak = sid(src, "Lakshmi Agencies", "Jangaon")
+    (lid,) = S.add_proposals("T01", digest.Facts(src), [{"kind": "site_access", "params": {"site_id": lak, "max_length_ft": 22}}])
+    S.approve(lid, "rev", "policy", "measured")
+    p1 = pack.publish(S, src, dst, "owner")
+    p2 = dict(p1, pack_id=p1["pack_id"] + "-B")                 # the same lesson arriving from a second partner
+    a = pack.import_pack(S, p1, dst, "new-owner", True)
+    b = pack.import_pack(S, p2, dst, "new-owner", True)
+    assert a == b and len(S.list("TNEW")) == 1
+    assert len(S.get(a[0])["gate"]["confirmed_by"]) == 2
+    pack.revoke(S, p1["pack_id"], "TNEW", "owner")
+    assert S.get(a[0])["state"] == "ACTIVE_POLICY"               # still confirmed by the other partner
+    pack.revoke(S, p2["pack_id"], "TNEW", "owner")
+    assert S.get(a[0])["state"] == "RETIRED"

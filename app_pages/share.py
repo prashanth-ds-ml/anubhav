@@ -43,10 +43,10 @@ else:
     knowledge, _, _ = S.active_for(target, dst)
     text = {k.rsplit(" [", 1)[1].split()[-1].rstrip("]"): k.rsplit(" [", 1)[0] for k in knowledge}
     st.dataframe([{"Lesson": text.get(ls[0]["lesson_id"], ls[0]["kind"]),
-                   "Confirmed by": f"{len(ls)} compan{'y' if len(ls) == 1 else 'ies'}",
+                   "Confirmed by": (lambda n: f"{n} compan{'y' if n == 1 else 'ies'}")(len(ls[0]["gate"].get("confirmed_by") or ls)),
                    "Arrives as": "rule" if any(x["state"] == "ACTIVE_POLICY" for x in ls) else "advice"}
                   for ls in merged.values()], hide_index=True, alt="Lessons received from partner companies")
     if st.button("Revoke all packs", icon=":material/block:"):
-        for pid in {l["source"].split(":", 1)[1] for l in imported}:
+        for pid in {p for l in imported for p in (l["gate"].get("confirmed_by") or [l["source"].split(":", 1)[1]])}:
             pack.revoke(S, pid, target, "owner")
         st.rerun()
