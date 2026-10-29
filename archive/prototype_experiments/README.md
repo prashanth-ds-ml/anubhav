@@ -10,6 +10,7 @@ Everything here was built on Oct 27, 2026, before the project settled on Anubhav
 | EXP-004 | Spark Open vs Spark 1.3? | About equal | `scripts/eval/run_baseline.py` |
 | EXP-005 | Where does Muse fail at dispatch planning? | Unwritten knowledge 0–12% | `scripts/eval/exp005_dispatch.py`, `datasets/dispatch/` |
 | EXP-006 | Can it learn that knowledge from history and share it? | 0% → 100%, 0 leaks | `scripts/eval/exp006_transfer.py`, `datasets/dispatch/` |
+| EXP-007 | Do lessons beat raw-history retrieval? | Full raw history 8/8 = lessons 7/8 on clean data; raw sharing 3/8 vs pack 8/8 | `scripts/eval/exp007_raw_memory.py` |
 
 All data is fictional and synthetic. Raw results are in `artifacts/`.
 

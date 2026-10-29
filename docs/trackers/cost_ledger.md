@@ -6,7 +6,7 @@ tags: [tracker, cost]
 | Credit | Total $ | Spent $ | Left $ | Used for |
 |---|---|---|---|---|
 | Meta Model API | 150.00 | ~14.42 | ~135.58 | Muse Spark + Voice Transcribe runtime, evals |
-| Baseten | 100.00 (+2M TPM) | ~5.90 | ~94.10 | Open-weights arm (FR-15) |
+| Baseten | 100.00 (+2M TPM) | ~15.3 | ~84.7 | Open-weights arm (FR-15) |
 
 ## Meta Model API ($150)
 
@@ -57,6 +57,7 @@ tags: [tracker, cost]
 | 2026-10-27 | muse-spark-open-1026 (Model API) | EXP-004: probe + 2-task test + core and A arms (192 runs) | ~3.5M | | | ~5.9 (at tracker prices) | ~5.9 | ⬜ |
 | 2026-10-27 | muse-spark-open-1026 (Model API) | EXP-005 dispatch probe: 1 smoke + 16 tasks × 2 | | | | 0.76 | ~6.7 | ⬜ |
 | 2026-10-27 | muse-spark-open-1026 (Model API) | EXP-006 four arms (116 runs) | | | | 2.72 | ~9.4 | ⬜ |
+| 2026-10-29 | muse-spark-open-1026 (Model API) | EXP-007 six arms (180 runs; raw-history arms have ~15k-char prompts) | | | | 5.93 | ~15.3 | ⬜ |
 
 ### Prices
 Model: always `meta-models/muse-spark-open-1026` (the hackathon override of `meta-models/muse-spark-open` in Baseten's docs), via the per-token Model API at `https://inference.baseten.co/v1`. Fill in per-token prices from Baseten.

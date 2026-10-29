@@ -24,7 +24,7 @@ Office hours run in Discord #office-hours, weekdays: **Oct 27–30 at 7:30–8:3
 | I-02 | Hosting: Hugging Face Spaces vs. Streamlit Community Cloud vs. Modal | | ⬜ |
 | I-03 | Embedding model for BigTool retrieval (local vs. API) | | ⬜ |
 | I-04 | Sources for the impact stats (Census 2011 Telugu speakers; MSME counts) | | ⬜ |
-| I-05 | Do the Harness² repo / arXiv 2610.14224 and the MCP 2026-07-28 spec link actually exist? | Layer 0.2 | ⬜ |
+| I-05 | Do the Harness² repo / arXiv 2610.14224 and the MCP 2026-07-28 spec link actually exist? | **All 4 verified 2026-10-29:** google-research/harness2 (Apache-2.0, Propose–Probe–Compose); arXiv 2610.14224 "Harness^2: Recursive Agent Harnessing for an Open World" (Xu et al., Google, 9 Oct 2026); MCP 2026-07-28 tools spec (tools/list may vary by caller authorization, which supports per-tenant tool lists; tool errors return `isError: true`); LangGraph interrupts doc | ✅ |
 | I-06 | Impact stats for Indian road freight / 3PL (fleet size, share of small operators) with sources | | ⬜ |
 | I-07 | Interviewee's permission to quote anonymised lines in README / video | | ⬜ |
 | I-08 | Hosting for Streamlit + MCP: Hugging Face Spaces vs Streamlit Cloud vs Modal | | ⬜ |

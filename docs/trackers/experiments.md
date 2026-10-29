@@ -226,3 +226,25 @@ Task file: `datasets/tasks/benchmark_v1.jsonl` (held-out = `split: heldout`). Se
   - **Sharing:** naive sharing is unsafe if B-rawA has any emitted leak **or** any unknown/foreign vehicle id assigned. Report B-rawA vs B-pack regional pass and leak runs either way.
   - Also report: control + strategy regressions vs A-cold (≥ 2 runs is a regression), tacit-unsafe runs, cost and mean prompt size per arm.
 - **Budget:** 180 runs, est. $4–6 Baseten.
+- **Result (2026-10-29, `artifacts/dispatch/exp007_20261029_141802.json`, 180 runs, 0 errors, $5.93 Baseten):**
+
+| Arm | Mean | Control | Strategy | Unwritten (A tacit / B regional) | B-private | Spurious | Unsafe | Unwritten unsafe | Emitted leaks | Prompt exposed | Prompt chars | $ |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| A-cold | 78% | 100% | 100% | **1/8** | — | — | 0 | 1 | — | — | 561 | 0.68 |
+| A-raw-top8 | 91% | 100% | 100% | **5/8** | — | — | 0 | 1 | — | — | 1,774 | 0.76 |
+| A-raw-full | 100% | 100% | 100% | **8/8** | — | — | 0 | 0 | — | — | 15,636 | 1.67 |
+| A-lessons | 97% | 100% | 100% | **7/8** | — | — | 0 | 0 | — | — | 1,080 | 0.76 |
+| B-rawA | 65% | 100% | 100% | **3/8** | 0% | 100% | 0 | **4** | 0 | **26/26** | 15,691 | 1.43 |
+| B-pack | 81% | 100% | 100% | **8/8** | 0% | 50% | 1 | 0 | 0 | 0 | 996 | 0.63 |
+
+  - **Raw full history solved every tacit task (8/8).** On this small, clean history, the model finds the aliases and the Jangaon failure by itself. A-lessons got 7/8; its one miss (T1#0) asked a clarifying question, which is safe.
+  - **Simple retrieval is not enough:** top-8 got 5/8. It missed T2 ("nalla lorry") both times, and in T4#1 it sent a 32 ft truck to Jangaon, because the failed trip wasn't retrieved (as the self-test predicted).
+  - **Cost and size:** raw-full used a 14× bigger prompt and cost 2.2× more per run than lessons, with 123 trips. A 90-day, multi-company history would be thousands of rows.
+  - **Naive sharing failed where the pack worked.** Given A's raw history, B used the aliases (Pedda godown 2/2) but **sent a 32/36 ft truck to Jangaon in all 4 runs**, so the single failure in another company's records didn't transfer. B-pack: 8/8 regional, 0 unsafe. B-rawA also put all of A's private vehicles, vendors and nicknames into B's prompt in every run (26/26). B never repeated them in output (0 emitted leaks) and never assigned an A vehicle.
+  - **No regressions** in control or strategy in any arm. B-pack BX1#1 again double-booked B04 (same task as EXP-006). That makes 2/4 BX1 runs with the pack and 0 elsewhere, so it is a real pattern for the pre-assign check (Layer 2.4).
+- **Verdict (rule fixed above):** **raw memory suffices on this data** (A-raw-full tacit 8/8 ≥ 6/8). On clean, small data, lessons do **not** beat full raw history on accuracy, so we will not claim that. What the data does support:
+  1. Lessons reach near-identical accuracy (7/8) with a 14× smaller prompt and 2.2× lower cost. That is a scaling argument, not yet an accuracy one.
+  2. Lessons beat realistic retrieval (top-8: 5/8, one unsafe).
+  3. **Sharing is where gating clearly wins:** the pack gave 8/8 and 0 unsafe; raw sharing gave 3/8, 4 unsafe Jangaon trucks, and exposed all private data in the prompt.
+  - **Sharing rule check:** the pre-registered "unsafe" test (emitted leak or foreign vehicle id) was **not triggered** (0 and 0). The safety failures were the 4 Jangaon assignments plus full prompt exposure, which is a privacy violation by design, not a model leak.
+- **Action for Layer 1:** the data must include stale notes, one-off failures, misleading habits, contradictions and much longer histories, so the main benchmark can test Arm B (raw retrieval + full context where it fits) against Arm C (lessons) under realistic noise. Until then, the honest pitch is governance + shareability + cost at scale, not raw accuracy.

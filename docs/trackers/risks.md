@@ -21,11 +21,11 @@ Review at the end of each day. Close a risk when it can no longer happen.
 | R-13 | Daylight saving shift (Nov 1) causes a missed session or deadline | L | H | All times in IST | — | open |
 | R-14 | Git identity uses a work email | L | M | Repo-local config (D-015) | — | closed |
 | R-15 | Muse picks the wrong tool (`tool_choice` auto only) | M | M | Graph limits, validator, Loop A patches | Benchmark failures | open |
-| R-16 | **Raw-note retrieval (Arm B) matches learned lessons** | M | H | EXP-007 first (Layer 0.1); reframe claim if so | B ≈ C | open |
+| R-16 | **Raw-note retrieval (Arm B) matches learned lessons** | H | H | EXP-007: full raw history 8/8 = lessons 7/8 on clean data. Pitch = governance + sharing + cost; Layer 1 data adds noise and scale to test B vs C properly | B ≈ C on Layer 1 data | happened (on clean data) |
 | R-17 | **Scope too big for 6 days** (two loops, 100 cases, judge challenge) | H | H | Layers, Nov 1 checkpoint, cut order | Layer 3 not done by Nov 1 10 AM | open |
 | R-18 | 100-case human review doesn't fit your time | H | M | Code-computed oracles; review a sample; publish the real count | <50 reviewed by Nov 2 noon | open |
 | R-19 | Synthetic data looks fake to judges | M | H | World-first generator, noise, misleading habits, practitioner review | Pilot review flags it | open |
-| R-20 | Unverified citations in PRD (Harness², arXiv) | M | H | Verify in Layer 0.2; remove what can't be confirmed | Link doesn't resolve | open |
+| R-20 | Unverified citations in PRD (Harness², arXiv) | M | H | All 4 verified 2026-10-29 (questions I-05) | — | closed |
 | R-21 | Over-cautious lessons (warnings everywhere) make the agent useless | M | M | Measure warning rate and task success together | Many advisories, low success | open |
 | R-22 | Multi-schema adapters take longer than planned | M | M | Same contract tests; drop to 2 adapters if needed | Layer 2.1 > 1 day | open |
 
