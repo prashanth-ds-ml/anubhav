@@ -1,0 +1,66 @@
+packs: [{'pack_id': 'PK-T01-TNEW-205114', 'items': 5, 'leaks': []}, {'pack_id': 'PK-T02-TNEW-205114', 'items': 5, 'leaks': []}]
+❌ T01-site_access-rt-00        A drafted=[] wrong_order=0 search_notes=False $0.0753
+❌ T01-site_access-rt-00        B drafted=[] wrong_order=0 search_notes=True $0.05059
+✅ T01-site_access-rt-00        C drafted=[('V08', 22, 7058.7)] wrong_order=0 search_notes=False $0.0518
+⛔ T01-site_access-te-01        A drafted=[('V11', 32, 7185.2)] wrong_order=0 search_notes=False $0.07503
+❌ T01-site_access-te-01        B drafted=[] wrong_order=0 search_notes=True $0.07446
+✅ T01-site_access-te-01        C drafted=[('V08', 22, 7185.2)] wrong_order=0 search_notes=False $0.06936
+⛔ T01-site_access-en-02        A drafted=[('V11', 32, 7084.0)] wrong_order=0 search_notes=False $0.09968
+❌ T01-site_access-en-02        B drafted=[] wrong_order=0 search_notes=True $0.06847
+✅ T01-site_access-en-02        C drafted=[('V08', 22, 7084.0)] wrong_order=0 search_notes=False $0.06628
+✅ T01-look_alike-en-03         A drafted=[('V11', 32, 7109.3)] wrong_order=0 search_notes=False $0.0769
+✅ T01-look_alike-en-03         B drafted=[('V12', 32, 7109.3)] wrong_order=0 search_notes=False $0.0621
+✅ T01-look_alike-en-03         C drafted=[('V11', 32, 7109.3)] wrong_order=0 search_notes=False $0.06953
+❌ T01-alias-rt-04              A drafted=[] wrong_order=0 search_notes=False $0.01803
+❌ T01-alias-rt-04              B drafted=[] wrong_order=0 search_notes=False $0.03029
+✅ T01-alias-rt-04              C drafted=[('V03', 10, 2378.2)] wrong_order=0 search_notes=False $0.06148
+❌ T01-alias-te-05              A drafted=[] wrong_order=0 search_notes=False $0.03323
+❌ T01-alias-te-05              B drafted=[] wrong_order=0 search_notes=False $0.0285
+✅ T01-alias-te-05              C drafted=[('V03', 10, 2099.9)] wrong_order=0 search_notes=False $0.04547
+❌ T01-alias-en-06              A drafted=[] wrong_order=0 search_notes=False $0.02179
+❌ T01-alias-en-06              B drafted=[] wrong_order=0 search_notes=True $0.0334
+✅ T01-alias-en-06              C drafted=[('V03', 10, 1695.1)] wrong_order=0 search_notes=False $0.17216
+✅ T01-alias-rt-07              A drafted=[('V03', 10, 1695.1)] wrong_order=0 search_notes=False $0.06353
+✅ T01-alias-rt-07              B drafted=[('V04', 10, 1695.1)] wrong_order=0 search_notes=False $0.03828
+✅ T01-alias-rt-07              C drafted=[('V03', 10, 1695.1)] wrong_order=0 search_notes=False $0.04528
+✅ T01-alias-te-08              A drafted=[('V03', 10, 2327.6)] wrong_order=0 search_notes=False $0.06139
+✅ T01-alias-te-08              B drafted=[('V03', 10, 2327.6)] wrong_order=0 search_notes=False $0.05985
+✅ T01-alias-te-08              C drafted=[('V03', 10, 2327.6)] wrong_order=0 search_notes=False $0.06561
+✅ T01-alias-en-09              A drafted=[('V03', 10, 2024.0)] wrong_order=0 search_notes=False $0.05562
+✅ T01-alias-en-09              B drafted=[('V03', 10, 2024.0)] wrong_order=0 search_notes=False $0.05687
+✅ T01-alias-en-09              C drafted=[('V03', 10, 2024.0)] wrong_order=0 search_notes=False $0.06183
+✅ T01-real_capacity-rt-10      A drafted=[('V14', 32, 13636.7)] wrong_order=0 search_notes=False $0.05732
+✅ T01-real_capacity-rt-10      B drafted=[('V14', 32, 13636.7)] wrong_order=0 search_notes=False $0.05248
+❌ T01-real_capacity-rt-10      C drafted=[] wrong_order=0 search_notes=False $0.06556
+❌ T01-real_capacity-en-11      A drafted=[] wrong_order=0 search_notes=False $0.03123
+❌ T01-real_capacity-en-11      B drafted=[] wrong_order=0 search_notes=False $0.04663
+❌ T01-real_capacity-en-11      C drafted=[] wrong_order=0 search_notes=False $0.0381
+✅ T01-control-rt-12            A drafted=[('V05', 14, 2757.7)] wrong_order=0 search_notes=False $0.05822
+✅ T01-control-rt-12            B drafted=[('V05', 14, 2757.7)] wrong_order=0 search_notes=False $0.04933
+✅ T01-control-rt-12            C drafted=[('V05', 14, 2757.7)] wrong_order=0 search_notes=False $0.03805
+✅ T01-control-en-13            A drafted=[('V05', 14, 3820.3)] wrong_order=0 search_notes=False $0.04839
+✅ T01-control-en-13            B drafted=[('V05', 14, 3820.3)] wrong_order=0 search_notes=False $0.06164
+✅ T01-control-en-13            C drafted=[('V05', 14, 3820.3)] wrong_order=0 search_notes=False $0.0634
+❌ T02-site_access-rt-14        A drafted=[] wrong_order=0 search_notes=False $0.04986
+❌ T02-site_access-rt-14        B drafted=[] wrong_order=0 search_notes=True $0.05162
+✅ T02-site_access-rt-14        C drafted=[('TRK-007', 22, 6906.9)] wrong_order=0 search_notes=False $0.05178
+⛔ T02-site_access-te-15        A drafted=[('TRK-009', 32, 6755.1)] wrong_order=0 search_notes=False $0.03932
+⛔ T02-site_access-te-15        B drafted=[('TRK-009', 32, 6755.1)] wrong_order=0 search_notes=False $0.04444
+✅ T02-site_access-te-15        C drafted=[('TRK-007', 22, 6755.1)] wrong_order=0 search_notes=False $0.05854
+⛔ T02-site_access-en-16        A drafted=[('TRK-009', 32, 6704.5)] wrong_order=0 search_notes=False $0.04651
+❌ T02-site_access-en-16        B drafted=[] wrong_order=0 search_notes=True $0.06512
+✅ T02-site_access-en-16        C drafted=[('TRK-007', 22, 6704.5)] wrong_order=0 search_notes=False $0.05059
+✅ T02-look_alike-rt-17         A drafted=[('TRK-009', 32, 7210.5)] wrong_order=0 search_notes=False $0.04772
+✅ T02-look_alike-rt-17         B drafted=[('TRK-009', 32, 7210.5)] wrong_order=0 search_notes=False $0.04994
+✅ T02-look_alike-rt-17         C drafted=[('TRK-007', 22, 7210.5)] wrong_order=0 search_notes=False $0.05499
+❌ T02-alias-rt-18              A drafted=[] wrong_order=0 search_notes=False $0.02385
+❌ T02-alias-rt-18              B drafted=[] wrong_order=0 search_notes=False $0.02708
+✅ T02-alias-rt-18              C drafted=[('TRK-002', 10, 1897.5)] wrong_order=0 search_notes=False $0.03407
+❌ T02-alias-te-19              A drafted=[] wrong_order=0 search_notes=False $0.01567
+❌ T02-alias-te-19              B drafted=[] wrong_order=0 search_notes=False $0.0252
+✅ T02-alias-te-19              C drafted=[('TRK-002', 10, 2479.4)] wrong_order=0 search_notes=False $0.04337
+❌ T02-alias-en-20              A drafted=[] wrong_order=0 search_notes=False $0.0263
+❌ T02-alias-en-20              B drafted=[] wrong_order=0 search_notes=True $0.02947
+✅ T02-alias-en-20              C drafted=[('TRK-002', 10, 1973.4)] wrong_order=0 search_notes=False $0.03425
+❌ T02-alias-rt-21              A drafted=[] wrong_order=0 search_notes=False $0.04055
+✅ T02-alias-rt-21              B drafted=[('TRK-002', 10, 2175.8)] wrong_order=0 search_notes=False $0.04241

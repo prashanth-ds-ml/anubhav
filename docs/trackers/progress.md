@@ -39,23 +39,23 @@ History before Oct 29 (order-desk plan): `archive/progress_order_desk.md`
 | FR-12 | Manual reviewer decisions with audit | 3 | ✅ CLI + tests (UI in Layer 6) |
 | FR-13 | Contradiction, expiry, retirement, rollback | 3 | ✅ tests |
 | FR-14 | Harness patch boundaries | 4 | ✅ tests (surfaces only, no business facts, no safety weakening) |
-| FR-15 | Paired patch tests | 4 | ✅ built + tests; first live run pending |
+| FR-15 | Paired patch tests | 4 | ✅ built + tests; live in EXP-010 (patch correctly rejected: no held-out gain) |
 | FR-16 | Reject regressing patches | 4 | ✅ gate tests |
 | FR-17 | Tenant and role enforcement | 2 | ✅ tests |
-| FR-18 | Prompt-injection handling | 2, 5 | 🟨 data marked untrusted; adversarial suite in Layer 5 |
-| FR-19 | Four-arm controlled evaluation | 5 | ⬜ |
-| FR-20 | Held-out contamination protection | 5 | ⬜ |
-| FR-21 | Hosted / replay mode | 6 | ⬜ |
-| FR-22 | Spend caps and secrets | 6 | ⬜ |
+| FR-18 | Prompt-injection handling | 2, 5 | ✅ data marked untrusted; adversarial suite (injected notes) passes |
+| FR-19 | Four-arm controlled evaluation | 5 | ✅ EXP-011 on unseen world 5279: both pre-registered bars met (+55 pts lessons vs raw notes, +67 pts pack), 0 unsafe with learning |
+| FR-20 | Held-out contamination protection | 5 | ✅ fresh unseen-seed worlds (4111, 5279); held-out towns in practice; files frozen by hash before model calls |
+| FR-21 | Hosted / replay mode | 6 | 🟨 replay bundle + world from seed; fresh clone checked (8 pages, no keys); deploy pending (docs/deploy.md) |
+| FR-22 | Spend caps and secrets | 6 | ✅ keys only from env/secrets; live mode off without keys; 8 live runs per session |
 | FR-23 | Licensing and originality ledger | 7 | ⬜ |
 | FR-24 | Domain pack isolation (opt-in, redaction, revocation) | 3 | ✅ tests + EXP-008 (0 leaks) |
 
 ## Release gates (must be zero before demoing as safe)
 | Gate | Status |
 |---|---|
-| Unauthorized executed action | ⬜ |
+| Unauthorized executed action | ✅ 0 (draft-only boundary: no dispatch tool exists; adversarial suite) |
 | Cross-tenant data access | ✅ 0 in tests (full adversarial suite: Layer 5) |
 | Unapproved enforced lesson | ✅ 0 (policy requires approval + verification; tests) |
 | Duplicate exclusive hold | ✅ 0 under concurrency test |
-| Prompt-injection policy bypass | ⬜ |
+| Prompt-injection policy bypass | ✅ 0 in adversarial suite (injected driver notes) |
 | Unreviewed harness patch activated | ✅ 0 (activation needs a passing test + a person; tests) |

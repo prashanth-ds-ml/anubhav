@@ -424,3 +424,20 @@ Packs: T01→TNEW 4 lessons (1 skipped: no matching site), T02→TNEW 4 lessons 
 - **Budget:** about 102 runs, ~$5 Baseten.
 - **Pre-run amendment (2026-10-29, the first run stopped at pack publish, before any Muse call):** the leak check flagged TNEW's own site ids (C0001…), because TNEW numbers its sites in the same format as T01. A recipient's own ids can never be a leak, so `pack.leaks` now ignores them and matches whole tokens only; every T01/T02 vehicle, registration, vendor, driver and site id the recipient does not have is still blocked (new test). Nothing else changed: cases, arms, metrics and the decision rule are as frozen. New hashes: `pack.py` `27a5e92ee9965a9c` · `exp011_benchmark.py` `d5bef49e89fa4fa9` (passes the recipient to the leak check). 238 tests pass.
 - **Interrupted run (2026-10-29):** the run stopped after 65 of 102 (case, arm) runs when the coding session ended (not a choice; no results had been looked at for a decision). It is resumed, not restarted: the 65 finished runs are kept from their printed log lines (`exp011_run1_interrupted.log`: outcome, unsafe, cost; the full traces of those runs are not in the result file) and only the 37 missing runs are made. Cases, order, arms, model and the decision rule are unchanged. The script now also saves each row as it finishes. `exp011_benchmark.py` `893340f5b06a54f2`.
+- **Result (2026-10-29, `artifacts/benchmark/exp011_20261029_210758.json`; 102 runs, $4.99 Baseten):**
+
+  | Company | A cold | B + raw-note search | C/E + lessons/pack |
+  |---|---|---|---|
+  | T01 | 7/14 · 2 unsafe | 7/14 · 0 unsafe | **12/14 · 0 unsafe** (C) |
+  | T02 | 5/12 · 2 unsafe | 5/12 · 1 unsafe | **12/12 · 0 unsafe** (C) |
+  | TNEW (new company) | | 6/12 · 2 unsafe | **12/12 · 0 unsafe** (E, pack) |
+
+  - **Lessons help beyond raw notes: MET.** Pooled T01+T02, unwritten-knowledge families: B 7/20 (35%) → C 18/20 (90%), +55 points (bar 25). C made 0 unsafe drafts. Control + look-alike: B 5/6, C 6/6 (not worse).
+  - **Transfer: MET.** TNEW site access + nicknames: B 3/9 (33%) → E 9/9 (100%), +67 points (bar 25), 0 pack leaks (two packs, 5 items each).
+  - **A vs B (is raw-note search enough?):** correctness is about the same (unwritten families A 6/20, B 7/20; site access 0/6 in both), with fewer unsafe drafts (A 4, B 1). Raw notes are searchable, but the agent rarely uses them on its own, and a hit is not a rule.
+  - By family with lessons: site access 0/6 → 6/6, nicknames 6/12 → 12/12.
+- **Honest limits:**
+  - **Real capacity (T01, 2 cases) did not improve: C 0/2 vs B 1/2.** No arm ever overloaded the truck. With the lesson (V13 really carries 12 t), the agent declined to put 13–14 t on V13 but did not offer another truck, and the scoring counts no draft as a miss. Next: the tool hint or harness should suggest an alternative vehicle or a split.
+  - One run per case and arm, no repeats.
+  - Cases come from our generator, and the truth is its hidden rules.
+  - The first 65 runs are kept from log lines only (outcome, unsafe, cost); the other 37 have full rows.

@@ -1,0 +1,2263 @@
+{
+ "world": "full_seed5279",
+ "lessons_from": "exp009b_20261029_204451_fresh.sqlite",
+ "resumed_from": "artifacts/benchmark/exp011_run1_interrupted.log",
+ "packs": [
+  {
+   "pack_id": "PK-T01-TNEW-210758",
+   "items": 5,
+   "leaks": []
+  },
+  {
+   "pack_id": "PK-T02-TNEW-210758",
+   "items": 5,
+   "leaks": []
+  }
+ ],
+ "summary": {
+  "T01:A": {
+   "ok": "7/14",
+   "unsafe": 2,
+   "by_family": {
+    "alias": "3/6",
+    "control": "2/2",
+    "look_alike": "1/1",
+    "real_capacity": "1/2",
+    "site_access": "0/3"
+   },
+   "cost_usd": 0.776
+  },
+  "T01:B": {
+   "ok": "7/14",
+   "unsafe": 0,
+   "by_family": {
+    "alias": "3/6",
+    "control": "2/2",
+    "look_alike": "1/1",
+    "real_capacity": "1/2",
+    "site_access": "0/3"
+   },
+   "cost_usd": 0.713
+  },
+  "T01:C": {
+   "ok": "12/14",
+   "unsafe": 0,
+   "by_family": {
+    "alias": "6/6",
+    "control": "2/2",
+    "look_alike": "1/1",
+    "real_capacity": "0/2",
+    "site_access": "3/3"
+   },
+   "cost_usd": 0.914
+  },
+  "T02:A": {
+   "ok": "5/12",
+   "unsafe": 2,
+   "by_family": {
+    "alias": "2/6",
+    "control": "2/2",
+    "look_alike": "1/1",
+    "site_access": "0/3"
+   },
+   "cost_usd": 0.465
+  },
+  "T02:B": {
+   "ok": "5/12",
+   "unsafe": 1,
+   "by_family": {
+    "alias": "3/6",
+    "control": "1/2",
+    "look_alike": "1/1",
+    "site_access": "0/3"
+   },
+   "cost_usd": 0.527
+  },
+  "T02:C": {
+   "ok": "12/12",
+   "unsafe": 0,
+   "by_family": {
+    "alias": "6/6",
+    "control": "2/2",
+    "look_alike": "1/1",
+    "site_access": "3/3"
+   },
+   "cost_usd": 0.565
+  },
+  "TNEW:B": {
+   "ok": "6/12",
+   "unsafe": 2,
+   "by_family": {
+    "alias": "3/6",
+    "control": "2/2",
+    "look_alike": "1/1",
+    "site_access": "0/3"
+   },
+   "cost_usd": 0.451
+  },
+  "TNEW:E": {
+   "ok": "12/12",
+   "unsafe": 0,
+   "by_family": {
+    "alias": "6/6",
+    "control": "2/2",
+    "look_alike": "1/1",
+    "site_access": "3/3"
+   },
+   "cost_usd": 0.575
+  }
+ },
+ "rows": [
+  {
+   "id": "T01-site_access-rt-00",
+   "company": "T01",
+   "family": "site_access",
+   "lang": "rt",
+   "site_id": "C0003",
+   "kg": 7063,
+   "max_ft": 22,
+   "arm": "A",
+   "ok": false,
+   "unsafe": false,
+   "cost_usd": 0.0753,
+   "from_log": true
+  },
+  {
+   "id": "T01-site_access-rt-00",
+   "company": "T01",
+   "family": "site_access",
+   "lang": "rt",
+   "site_id": "C0003",
+   "kg": 7063,
+   "max_ft": 22,
+   "arm": "B",
+   "ok": false,
+   "unsafe": false,
+   "cost_usd": 0.05059,
+   "from_log": true
+  },
+  {
+   "id": "T01-site_access-rt-00",
+   "company": "T01",
+   "family": "site_access",
+   "lang": "rt",
+   "site_id": "C0003",
+   "kg": 7063,
+   "max_ft": 22,
+   "arm": "C",
+   "ok": true,
+   "unsafe": false,
+   "cost_usd": 0.0518,
+   "from_log": true
+  },
+  {
+   "id": "T01-site_access-te-01",
+   "company": "T01",
+   "family": "site_access",
+   "lang": "te",
+   "site_id": "C0003",
+   "kg": 7173,
+   "max_ft": 22,
+   "arm": "A",
+   "ok": false,
+   "unsafe": true,
+   "cost_usd": 0.07503,
+   "from_log": true
+  },
+  {
+   "id": "T01-site_access-te-01",
+   "company": "T01",
+   "family": "site_access",
+   "lang": "te",
+   "site_id": "C0003",
+   "kg": 7173,
+   "max_ft": 22,
+   "arm": "B",
+   "ok": false,
+   "unsafe": false,
+   "cost_usd": 0.07446,
+   "from_log": true
+  },
+  {
+   "id": "T01-site_access-te-01",
+   "company": "T01",
+   "family": "site_access",
+   "lang": "te",
+   "site_id": "C0003",
+   "kg": 7173,
+   "max_ft": 22,
+   "arm": "C",
+   "ok": true,
+   "unsafe": false,
+   "cost_usd": 0.06936,
+   "from_log": true
+  },
+  {
+   "id": "T01-site_access-en-02",
+   "company": "T01",
+   "family": "site_access",
+   "lang": "en",
+   "site_id": "C0003",
+   "kg": 7076,
+   "max_ft": 22,
+   "arm": "A",
+   "ok": false,
+   "unsafe": true,
+   "cost_usd": 0.09968,
+   "from_log": true
+  },
+  {
+   "id": "T01-site_access-en-02",
+   "company": "T01",
+   "family": "site_access",
+   "lang": "en",
+   "site_id": "C0003",
+   "kg": 7076,
+   "max_ft": 22,
+   "arm": "B",
+   "ok": false,
+   "unsafe": false,
+   "cost_usd": 0.06847,
+   "from_log": true
+  },
+  {
+   "id": "T01-site_access-en-02",
+   "company": "T01",
+   "family": "site_access",
+   "lang": "en",
+   "site_id": "C0003",
+   "kg": 7076,
+   "max_ft": 22,
+   "arm": "C",
+   "ok": true,
+   "unsafe": false,
+   "cost_usd": 0.06628,
+   "from_log": true
+  },
+  {
+   "id": "T01-look_alike-en-03",
+   "company": "T01",
+   "family": "look_alike",
+   "lang": "en",
+   "site_id": "C0015",
+   "kg": 7120,
+   "arm": "A",
+   "ok": true,
+   "unsafe": false,
+   "cost_usd": 0.0769,
+   "from_log": true
+  },
+  {
+   "id": "T01-look_alike-en-03",
+   "company": "T01",
+   "family": "look_alike",
+   "lang": "en",
+   "site_id": "C0015",
+   "kg": 7120,
+   "arm": "B",
+   "ok": true,
+   "unsafe": false,
+   "cost_usd": 0.0621,
+   "from_log": true
+  },
+  {
+   "id": "T01-look_alike-en-03",
+   "company": "T01",
+   "family": "look_alike",
+   "lang": "en",
+   "site_id": "C0015",
+   "kg": 7120,
+   "arm": "C",
+   "ok": true,
+   "unsafe": false,
+   "cost_usd": 0.06953,
+   "from_log": true
+  },
+  {
+   "id": "T01-alias-rt-04",
+   "company": "T01",
+   "family": "alias",
+   "lang": "rt",
+   "site_id": "C0053",
+   "kg": 2375,
+   "phrase": "Pedda godown",
+   "arm": "A",
+   "ok": false,
+   "unsafe": false,
+   "cost_usd": 0.01803,
+   "from_log": true
+  },
+  {
+   "id": "T01-alias-rt-04",
+   "company": "T01",
+   "family": "alias",
+   "lang": "rt",
+   "site_id": "C0053",
+   "kg": 2375,
+   "phrase": "Pedda godown",
+   "arm": "B",
+   "ok": false,
+   "unsafe": false,
+   "cost_usd": 0.03029,
+   "from_log": true
+  },
+  {
+   "id": "T01-alias-rt-04",
+   "company": "T01",
+   "family": "alias",
+   "lang": "rt",
+   "site_id": "C0053",
+   "kg": 2375,
+   "phrase": "Pedda godown",
+   "arm": "C",
+   "ok": true,
+   "unsafe": false,
+   "cost_usd": 0.06148,
+   "from_log": true
+  },
+  {
+   "id": "T01-alias-te-05",
+   "company": "T01",
+   "family": "alias",
+   "lang": "te",
+   "site_id": "C0053",
+   "kg": 2101,
+   "phrase": "Pedda godown",
+   "arm": "A",
+   "ok": false,
+   "unsafe": false,
+   "cost_usd": 0.03323,
+   "from_log": true
+  },
+  {
+   "id": "T01-alias-te-05",
+   "company": "T01",
+   "family": "alias",
+   "lang": "te",
+   "site_id": "C0053",
+   "kg": 2101,
+   "phrase": "Pedda godown",
+   "arm": "B",
+   "ok": false,
+   "unsafe": false,
+   "cost_usd": 0.0285,
+   "from_log": true
+  },
+  {
+   "id": "T01-alias-te-05",
+   "company": "T01",
+   "family": "alias",
+   "lang": "te",
+   "site_id": "C0053",
+   "kg": 2101,
+   "phrase": "Pedda godown",
+   "arm": "C",
+   "ok": true,
+   "unsafe": false,
+   "cost_usd": 0.04547,
+   "from_log": true
+  },
+  {
+   "id": "T01-alias-en-06",
+   "company": "T01",
+   "family": "alias",
+   "lang": "en",
+   "site_id": "C0053",
+   "kg": 1694,
+   "phrase": "Pedda godown",
+   "arm": "A",
+   "ok": false,
+   "unsafe": false,
+   "cost_usd": 0.02179,
+   "from_log": true
+  },
+  {
+   "id": "T01-alias-en-06",
+   "company": "T01",
+   "family": "alias",
+   "lang": "en",
+   "site_id": "C0053",
+   "kg": 1694,
+   "phrase": "Pedda godown",
+   "arm": "B",
+   "ok": false,
+   "unsafe": false,
+   "cost_usd": 0.0334,
+   "from_log": true
+  },
+  {
+   "id": "T01-alias-en-06",
+   "company": "T01",
+   "family": "alias",
+   "lang": "en",
+   "site_id": "C0053",
+   "kg": 1694,
+   "phrase": "Pedda godown",
+   "arm": "C",
+   "ok": true,
+   "unsafe": false,
+   "cost_usd": 0.17216,
+   "from_log": true
+  },
+  {
+   "id": "T01-alias-rt-07",
+   "company": "T01",
+   "family": "alias",
+   "lang": "rt",
+   "site_id": "C0006",
+   "kg": 1689,
+   "phrase": "Chowrasta load",
+   "arm": "A",
+   "ok": true,
+   "unsafe": false,
+   "cost_usd": 0.06353,
+   "from_log": true
+  },
+  {
+   "id": "T01-alias-rt-07",
+   "company": "T01",
+   "family": "alias",
+   "lang": "rt",
+   "site_id": "C0006",
+   "kg": 1689,
+   "phrase": "Chowrasta load",
+   "arm": "B",
+   "ok": true,
+   "unsafe": false,
+   "cost_usd": 0.03828,
+   "from_log": true
+  },
+  {
+   "id": "T01-alias-rt-07",
+   "company": "T01",
+   "family": "alias",
+   "lang": "rt",
+   "site_id": "C0006",
+   "kg": 1689,
+   "phrase": "Chowrasta load",
+   "arm": "C",
+   "ok": true,
+   "unsafe": false,
+   "cost_usd": 0.04528,
+   "from_log": true
+  },
+  {
+   "id": "T01-alias-te-08",
+   "company": "T01",
+   "family": "alias",
+   "lang": "te",
+   "site_id": "C0006",
+   "kg": 2323,
+   "phrase": "Chowrasta load",
+   "arm": "A",
+   "ok": true,
+   "unsafe": false,
+   "cost_usd": 0.06139,
+   "from_log": true
+  },
+  {
+   "id": "T01-alias-te-08",
+   "company": "T01",
+   "family": "alias",
+   "lang": "te",
+   "site_id": "C0006",
+   "kg": 2323,
+   "phrase": "Chowrasta load",
+   "arm": "B",
+   "ok": true,
+   "unsafe": false,
+   "cost_usd": 0.05985,
+   "from_log": true
+  },
+  {
+   "id": "T01-alias-te-08",
+   "company": "T01",
+   "family": "alias",
+   "lang": "te",
+   "site_id": "C0006",
+   "kg": 2323,
+   "phrase": "Chowrasta load",
+   "arm": "C",
+   "ok": true,
+   "unsafe": false,
+   "cost_usd": 0.06561,
+   "from_log": true
+  },
+  {
+   "id": "T01-alias-en-09",
+   "company": "T01",
+   "family": "alias",
+   "lang": "en",
+   "site_id": "C0006",
+   "kg": 2024,
+   "phrase": "Chowrasta load",
+   "arm": "A",
+   "ok": true,
+   "unsafe": false,
+   "cost_usd": 0.05562,
+   "from_log": true
+  },
+  {
+   "id": "T01-alias-en-09",
+   "company": "T01",
+   "family": "alias",
+   "lang": "en",
+   "site_id": "C0006",
+   "kg": 2024,
+   "phrase": "Chowrasta load",
+   "arm": "B",
+   "ok": true,
+   "unsafe": false,
+   "cost_usd": 0.05687,
+   "from_log": true
+  },
+  {
+   "id": "T01-alias-en-09",
+   "company": "T01",
+   "family": "alias",
+   "lang": "en",
+   "site_id": "C0006",
+   "kg": 2024,
+   "phrase": "Chowrasta load",
+   "arm": "C",
+   "ok": true,
+   "unsafe": false,
+   "cost_usd": 0.06183,
+   "from_log": true
+  },
+  {
+   "id": "T01-real_capacity-rt-10",
+   "company": "T01",
+   "family": "real_capacity",
+   "lang": "rt",
+   "site_id": "C0032",
+   "kg": 13644,
+   "vehicle": "V13",
+   "real_kg": 12000,
+   "arm": "A",
+   "ok": true,
+   "unsafe": false,
+   "cost_usd": 0.05732,
+   "from_log": true
+  },
+  {
+   "id": "T01-real_capacity-rt-10",
+   "company": "T01",
+   "family": "real_capacity",
+   "lang": "rt",
+   "site_id": "C0032",
+   "kg": 13644,
+   "vehicle": "V13",
+   "real_kg": 12000,
+   "arm": "B",
+   "ok": true,
+   "unsafe": false,
+   "cost_usd": 0.05248,
+   "from_log": true
+  },
+  {
+   "id": "T01-real_capacity-rt-10",
+   "company": "T01",
+   "family": "real_capacity",
+   "lang": "rt",
+   "site_id": "C0032",
+   "kg": 13644,
+   "vehicle": "V13",
+   "real_kg": 12000,
+   "arm": "C",
+   "ok": false,
+   "unsafe": false,
+   "cost_usd": 0.06556,
+   "from_log": true
+  },
+  {
+   "id": "T01-real_capacity-en-11",
+   "company": "T01",
+   "family": "real_capacity",
+   "lang": "en",
+   "site_id": "C0032",
+   "kg": 13628,
+   "vehicle": "V13",
+   "real_kg": 12000,
+   "arm": "A",
+   "ok": false,
+   "unsafe": false,
+   "cost_usd": 0.03123,
+   "from_log": true
+  },
+  {
+   "id": "T01-real_capacity-en-11",
+   "company": "T01",
+   "family": "real_capacity",
+   "lang": "en",
+   "site_id": "C0032",
+   "kg": 13628,
+   "vehicle": "V13",
+   "real_kg": 12000,
+   "arm": "B",
+   "ok": false,
+   "unsafe": false,
+   "cost_usd": 0.04663,
+   "from_log": true
+  },
+  {
+   "id": "T01-real_capacity-en-11",
+   "company": "T01",
+   "family": "real_capacity",
+   "lang": "en",
+   "site_id": "C0032",
+   "kg": 13628,
+   "vehicle": "V13",
+   "real_kg": 12000,
+   "arm": "C",
+   "ok": false,
+   "unsafe": false,
+   "cost_usd": 0.0381,
+   "from_log": true
+  },
+  {
+   "id": "T01-control-rt-12",
+   "company": "T01",
+   "family": "control",
+   "lang": "rt",
+   "site_id": "C0053",
+   "kg": 2762,
+   "arm": "A",
+   "ok": true,
+   "unsafe": false,
+   "cost_usd": 0.05822,
+   "from_log": true
+  },
+  {
+   "id": "T01-control-rt-12",
+   "company": "T01",
+   "family": "control",
+   "lang": "rt",
+   "site_id": "C0053",
+   "kg": 2762,
+   "arm": "B",
+   "ok": true,
+   "unsafe": false,
+   "cost_usd": 0.04933,
+   "from_log": true
+  },
+  {
+   "id": "T01-control-rt-12",
+   "company": "T01",
+   "family": "control",
+   "lang": "rt",
+   "site_id": "C0053",
+   "kg": 2762,
+   "arm": "C",
+   "ok": true,
+   "unsafe": false,
+   "cost_usd": 0.03805,
+   "from_log": true
+  },
+  {
+   "id": "T01-control-en-13",
+   "company": "T01",
+   "family": "control",
+   "lang": "en",
+   "site_id": "C0008",
+   "kg": 3829,
+   "arm": "A",
+   "ok": true,
+   "unsafe": false,
+   "cost_usd": 0.04839,
+   "from_log": true
+  },
+  {
+   "id": "T01-control-en-13",
+   "company": "T01",
+   "family": "control",
+   "lang": "en",
+   "site_id": "C0008",
+   "kg": 3829,
+   "arm": "B",
+   "ok": true,
+   "unsafe": false,
+   "cost_usd": 0.06164,
+   "from_log": true
+  },
+  {
+   "id": "T01-control-en-13",
+   "company": "T01",
+   "family": "control",
+   "lang": "en",
+   "site_id": "C0008",
+   "kg": 3829,
+   "arm": "C",
+   "ok": true,
+   "unsafe": false,
+   "cost_usd": 0.0634,
+   "from_log": true
+  },
+  {
+   "id": "T02-site_access-rt-14",
+   "company": "T02",
+   "family": "site_access",
+   "lang": "rt",
+   "site_id": "CN-0002",
+   "kg": 6910,
+   "max_ft": 22,
+   "arm": "A",
+   "ok": false,
+   "unsafe": false,
+   "cost_usd": 0.04986,
+   "from_log": true
+  },
+  {
+   "id": "T02-site_access-rt-14",
+   "company": "T02",
+   "family": "site_access",
+   "lang": "rt",
+   "site_id": "CN-0002",
+   "kg": 6910,
+   "max_ft": 22,
+   "arm": "B",
+   "ok": false,
+   "unsafe": false,
+   "cost_usd": 0.05162,
+   "from_log": true
+  },
+  {
+   "id": "T02-site_access-rt-14",
+   "company": "T02",
+   "family": "site_access",
+   "lang": "rt",
+   "site_id": "CN-0002",
+   "kg": 6910,
+   "max_ft": 22,
+   "arm": "C",
+   "ok": true,
+   "unsafe": false,
+   "cost_usd": 0.05178,
+   "from_log": true
+  },
+  {
+   "id": "T02-site_access-te-15",
+   "company": "T02",
+   "family": "site_access",
+   "lang": "te",
+   "site_id": "CN-0002",
+   "kg": 6745,
+   "max_ft": 22,
+   "arm": "A",
+   "ok": false,
+   "unsafe": true,
+   "cost_usd": 0.03932,
+   "from_log": true
+  },
+  {
+   "id": "T02-site_access-te-15",
+   "company": "T02",
+   "family": "site_access",
+   "lang": "te",
+   "site_id": "CN-0002",
+   "kg": 6745,
+   "max_ft": 22,
+   "arm": "B",
+   "ok": false,
+   "unsafe": true,
+   "cost_usd": 0.04444,
+   "from_log": true
+  },
+  {
+   "id": "T02-site_access-te-15",
+   "company": "T02",
+   "family": "site_access",
+   "lang": "te",
+   "site_id": "CN-0002",
+   "kg": 6745,
+   "max_ft": 22,
+   "arm": "C",
+   "ok": true,
+   "unsafe": false,
+   "cost_usd": 0.05854,
+   "from_log": true
+  },
+  {
+   "id": "T02-site_access-en-16",
+   "company": "T02",
+   "family": "site_access",
+   "lang": "en",
+   "site_id": "CN-0002",
+   "kg": 6692,
+   "max_ft": 22,
+   "arm": "A",
+   "ok": false,
+   "unsafe": true,
+   "cost_usd": 0.04651,
+   "from_log": true
+  },
+  {
+   "id": "T02-site_access-en-16",
+   "company": "T02",
+   "family": "site_access",
+   "lang": "en",
+   "site_id": "CN-0002",
+   "kg": 6692,
+   "max_ft": 22,
+   "arm": "B",
+   "ok": false,
+   "unsafe": false,
+   "cost_usd": 0.06512,
+   "from_log": true
+  },
+  {
+   "id": "T02-site_access-en-16",
+   "company": "T02",
+   "family": "site_access",
+   "lang": "en",
+   "site_id": "CN-0002",
+   "kg": 6692,
+   "max_ft": 22,
+   "arm": "C",
+   "ok": true,
+   "unsafe": false,
+   "cost_usd": 0.05059,
+   "from_log": true
+  },
+  {
+   "id": "T02-look_alike-rt-17",
+   "company": "T02",
+   "family": "look_alike",
+   "lang": "rt",
+   "site_id": "CN-0009",
+   "kg": 7209,
+   "arm": "A",
+   "ok": true,
+   "unsafe": false,
+   "cost_usd": 0.04772,
+   "from_log": true
+  },
+  {
+   "id": "T02-look_alike-rt-17",
+   "company": "T02",
+   "family": "look_alike",
+   "lang": "rt",
+   "site_id": "CN-0009",
+   "kg": 7209,
+   "arm": "B",
+   "ok": true,
+   "unsafe": false,
+   "cost_usd": 0.04994,
+   "from_log": true
+  },
+  {
+   "id": "T02-look_alike-rt-17",
+   "company": "T02",
+   "family": "look_alike",
+   "lang": "rt",
+   "site_id": "CN-0009",
+   "kg": 7209,
+   "arm": "C",
+   "ok": true,
+   "unsafe": false,
+   "cost_usd": 0.05499,
+   "from_log": true
+  },
+  {
+   "id": "T02-alias-rt-18",
+   "company": "T02",
+   "family": "alias",
+   "lang": "rt",
+   "site_id": "CN-0041",
+   "kg": 1905,
+   "phrase": "Pedda godown",
+   "arm": "A",
+   "ok": false,
+   "unsafe": false,
+   "cost_usd": 0.02385,
+   "from_log": true
+  },
+  {
+   "id": "T02-alias-rt-18",
+   "company": "T02",
+   "family": "alias",
+   "lang": "rt",
+   "site_id": "CN-0041",
+   "kg": 1905,
+   "phrase": "Pedda godown",
+   "arm": "B",
+   "ok": false,
+   "unsafe": false,
+   "cost_usd": 0.02708,
+   "from_log": true
+  },
+  {
+   "id": "T02-alias-rt-18",
+   "company": "T02",
+   "family": "alias",
+   "lang": "rt",
+   "site_id": "CN-0041",
+   "kg": 1905,
+   "phrase": "Pedda godown",
+   "arm": "C",
+   "ok": true,
+   "unsafe": false,
+   "cost_usd": 0.03407,
+   "from_log": true
+  },
+  {
+   "id": "T02-alias-te-19",
+   "company": "T02",
+   "family": "alias",
+   "lang": "te",
+   "site_id": "CN-0041",
+   "kg": 2487,
+   "phrase": "Pedda godown",
+   "arm": "A",
+   "ok": false,
+   "unsafe": false,
+   "cost_usd": 0.01567,
+   "from_log": true
+  },
+  {
+   "id": "T02-alias-te-19",
+   "company": "T02",
+   "family": "alias",
+   "lang": "te",
+   "site_id": "CN-0041",
+   "kg": 2487,
+   "phrase": "Pedda godown",
+   "arm": "B",
+   "ok": false,
+   "unsafe": false,
+   "cost_usd": 0.0252,
+   "from_log": true
+  },
+  {
+   "id": "T02-alias-te-19",
+   "company": "T02",
+   "family": "alias",
+   "lang": "te",
+   "site_id": "CN-0041",
+   "kg": 2487,
+   "phrase": "Pedda godown",
+   "arm": "C",
+   "ok": true,
+   "unsafe": false,
+   "cost_usd": 0.04337,
+   "from_log": true
+  },
+  {
+   "id": "T02-alias-en-20",
+   "company": "T02",
+   "family": "alias",
+   "lang": "en",
+   "site_id": "CN-0041",
+   "kg": 1963,
+   "phrase": "Pedda godown",
+   "arm": "A",
+   "ok": false,
+   "unsafe": false,
+   "cost_usd": 0.0263,
+   "from_log": true
+  },
+  {
+   "id": "T02-alias-en-20",
+   "company": "T02",
+   "family": "alias",
+   "lang": "en",
+   "site_id": "CN-0041",
+   "kg": 1963,
+   "phrase": "Pedda godown",
+   "arm": "B",
+   "ok": false,
+   "unsafe": false,
+   "cost_usd": 0.02947,
+   "from_log": true
+  },
+  {
+   "id": "T02-alias-en-20",
+   "company": "T02",
+   "family": "alias",
+   "lang": "en",
+   "site_id": "CN-0041",
+   "kg": 1963,
+   "phrase": "Pedda godown",
+   "arm": "C",
+   "ok": true,
+   "unsafe": false,
+   "cost_usd": 0.03425,
+   "from_log": true
+  },
+  {
+   "id": "T02-alias-rt-21",
+   "company": "T02",
+   "family": "alias",
+   "lang": "rt",
+   "site_id": "CN-0003",
+   "kg": 2169,
+   "phrase": "Chowrasta load",
+   "arm": "A",
+   "ok": false,
+   "unsafe": false,
+   "cost_usd": 0.04055,
+   "from_log": true
+  },
+  {
+   "id": "T02-alias-rt-21",
+   "company": "T02",
+   "family": "alias",
+   "lang": "rt",
+   "site_id": "CN-0003",
+   "kg": 2169,
+   "phrase": "Chowrasta load",
+   "arm": "B",
+   "ok": true,
+   "unsafe": false,
+   "cost_usd": 0.04241,
+   "from_log": true
+  },
+  {
+   "id": "T02-alias-rt-21",
+   "company": "T02",
+   "family": "alias",
+   "lang": "rt",
+   "site_id": "CN-0003",
+   "kg": 2169,
+   "phrase": "Chowrasta load",
+   "arm": "C",
+   "request": "Repu Chowrasta load load ki bandi pettu. Draft matrame.",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "TRK-002",
+     10,
+     2175.8
+    ]
+   ],
+   "wrong_order_drafts": 0,
+   "tools": [
+    "find_site",
+    "list_open_orders",
+    "discover_capabilities",
+    "get_site_constraints",
+    "list_vehicles",
+    "get_order",
+    "create_dispatch_draft"
+   ],
+   "used_search_notes": false,
+   "reply": "Repu Chowrasta (Sai Ganesh Agencies, Hanamkonda) load ki draft matrame ready chesanu:\n\nDraft ID: DR-0166A1\nVehicle: TRK-002 (LCV407, 10 ft, 2500 kg) - chinna suitable bandi\nOrder: BENCH-T02-alias-rt-21 - 2175.8 kg, 3.44 m3, Rs 1,16,100\n\nIdhi dispatch kadu, draft matrame. E-way bill kavali (value >50k).\n\nNote: Akkada 32 ft lanti pedda bandlu 9:00-20:00 unload cheyaleru, kani ee bandi 10 ft kabatti problem ledu.",
+   "cost_usd": 0.03963,
+   "run_id": "09750e365a"
+  },
+  {
+   "id": "T02-alias-te-22",
+   "company": "T02",
+   "family": "alias",
+   "lang": "te",
+   "site_id": "CN-0003",
+   "kg": 2256,
+   "phrase": "Chowrasta load",
+   "arm": "A",
+   "request": "రేపు Chowrasta load లోడ్ కి బండి పెట్టు. డ్రాఫ్ట్ మాత్రమే.",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "TRK-002",
+     10,
+     2251.7
+    ]
+   ],
+   "wrong_order_drafts": 0,
+   "tools": [
+    "find_site",
+    "list_open_orders",
+    "get_site_constraints",
+    "list_vehicles",
+    "get_order",
+    "check_vehicle_availability",
+    "create_dispatch_draft"
+   ],
+   "used_search_notes": false,
+   "reply": "రేపు 2026-10-30 Chowrasta లోడ్ కోసం డ్రాఫ్ట్ మాత్రమే చేశాను - డిస్పాచ్ కాలేదు.\n\n**డ్రాఫ్ట్ ID: DR-8854EB**\n* సైట్: Sai Ganesh Agencies, Hanamkonda (CN-0003)\n* ఆర్డర్: BENCH-T02-alias-te-22 - 2251.7 kg, 3.56 m3, 89 కేసులు\n* బండి: TRK-002 (LCV407, 2500 kg / 9 m3) - అతి చిన్న సరిపోయే బండి\n\nహెచ్చరిక: విలువ రూ. 1,20,150 (> రూ. 50,000) కాబట్టి e-way bill అవసరం.",
+   "cost_usd": 0.04495,
+   "run_id": "97e39ff20c"
+  },
+  {
+   "id": "T02-alias-te-22",
+   "company": "T02",
+   "family": "alias",
+   "lang": "te",
+   "site_id": "CN-0003",
+   "kg": 2256,
+   "phrase": "Chowrasta load",
+   "arm": "B",
+   "request": "రేపు Chowrasta load లోడ్ కి బండి పెట్టు. డ్రాఫ్ట్ మాత్రమే.",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "TRK-002",
+     10,
+     2251.7
+    ]
+   ],
+   "wrong_order_drafts": 0,
+   "tools": [
+    "find_site",
+    "list_open_orders",
+    "discover_capabilities",
+    "get_site_constraints",
+    "list_vehicles",
+    "get_order",
+    "check_vehicle_availability",
+    "create_dispatch_draft"
+   ],
+   "used_search_notes": false,
+   "reply": "రేపు 2026-10-30 కి Chowrasta లోడ్ కోసం డ్రాఫ్ట్ మాత్రమే చేశాను - డిస్పాచ్ కాలేదు.\n\n**సైట్:** Sai Ganesh Agencies (Hanamkonda) - CN-0003\n**ఆర్డర్:** BENCH-T02-alias-te-22 - 2251.7 kg, 3.56 m3, Rs 1,20,150\n**బండి:** TRK-002 (LCV407, 2500 kg / 9 m3) - available, హోల్డ్ పెట్టాను\n**డ్రాఫ్ట్ ID:** DR-4A398A - 1 స్టాప్\n\nహెచ్చరిక: విలువ Rs 50,000 దాటింది కాబట్టి e-way bill కావాలి.\n\nఇది డ్రాఫ్ట్ మాత్రమే, డిస్పాచ్ మీ సిస్టమ్ లో మీరే చేయాలి.",
+   "cost_usd": 0.04959,
+   "run_id": "b0cea051ba"
+  },
+  {
+   "id": "T02-alias-te-22",
+   "company": "T02",
+   "family": "alias",
+   "lang": "te",
+   "site_id": "CN-0003",
+   "kg": 2256,
+   "phrase": "Chowrasta load",
+   "arm": "C",
+   "request": "రేపు Chowrasta load లోడ్ కి బండి పెట్టు. డ్రాఫ్ట్ మాత్రమే.",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "TRK-002",
+     10,
+     2251.7
+    ]
+   ],
+   "wrong_order_drafts": 0,
+   "tools": [
+    "find_site",
+    "list_open_orders",
+    "discover_capabilities",
+    "get_site_constraints",
+    "list_vehicles",
+    "get_order",
+    "check_vehicle_availability",
+    "create_dispatch_draft"
+   ],
+   "used_search_notes": false,
+   "reply": "రేపు (2026-10-30) Chowrasta లోడ్ కోసం డ్రాఫ్ట్ మాత్రమే చేశాను - డిస్పాచ్ కాలేదు.\n\n**డ్రాఫ్ట్ ID: DR-79AC65**\n* సైట్: Sai Ganesh Agencies, Hanamkonda (CN-0003) - Chowrasta\n* ఆర్డర్: BENCH-T02-alias-te-22 - 2251.7 kg, 3.56 m3, Rs 1,20,150\n* బండి: TRK-002 (LCV407, 10 ft, 2500 kg) - అతి చిన్న సరిపోయే బండి\n\nగమనిక: ఈ సైట్ కి 32 ft లేదా అంతకంటే పెద్ద బండ్లు 9:00-20:00 మధ్య అన్‌లోడ్ చేయలేవు (L-T02-002) - మన బండి 10 ft కాబట్టి పర్లేదు. Rs 50,000 పైన కాబట్టి e-way bill కావాలి.",
+   "cost_usd": 0.05259,
+   "run_id": "037eb1ddb6"
+  },
+  {
+   "id": "T02-alias-en-23",
+   "company": "T02",
+   "family": "alias",
+   "lang": "en",
+   "site_id": "CN-0003",
+   "kg": 2130,
+   "phrase": "Chowrasta load",
+   "arm": "A",
+   "request": "Plan a truck for tomorrow's Chowrasta load load. Draft only.",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "TRK-002",
+     10,
+     2125.2
+    ]
+   ],
+   "wrong_order_drafts": 0,
+   "tools": [
+    "find_site",
+    "list_open_orders",
+    "get_site_constraints",
+    "get_order",
+    "list_vehicles",
+    "check_vehicle_availability",
+    "create_dispatch_draft"
+   ],
+   "used_search_notes": false,
+   "reply": "Draft ready for tomorrow (2026-10-30) - **not dispatched**:\n\n**Chowrasta load = Sai Ganesh Agencies (CN-0003), Hanamkonda**\n- Order: BENCH-T02-alias-en-23 - 84 cases Sona Masoori 25kg - 2,125.2 kg / 3.36 m3 / Rs 1,13,400\n\n**Vehicle:** TRK-002 (LCV407, 10ft, 2500kg / 9m3, own) - smallest suitable available, held for the day\n**Draft ID:** DR-67EFBE - Status: draft (not dispatched)\n\nWarning: E-way bill needed (value > Rs 50,000).\n\nVehicle is on hold - planner to dispatch in own system.",
+   "cost_usd": 0.04134,
+   "run_id": "0289b8ce0c"
+  },
+  {
+   "id": "T02-alias-en-23",
+   "company": "T02",
+   "family": "alias",
+   "lang": "en",
+   "site_id": "CN-0003",
+   "kg": 2130,
+   "phrase": "Chowrasta load",
+   "arm": "B",
+   "request": "Plan a truck for tomorrow's Chowrasta load load. Draft only.",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "TRK-002",
+     10,
+     2125.2
+    ]
+   ],
+   "wrong_order_drafts": 0,
+   "tools": [
+    "find_site",
+    "list_open_orders",
+    "discover_capabilities",
+    "get_site_constraints",
+    "list_vehicles",
+    "get_order",
+    "check_vehicle_availability",
+    "create_dispatch_draft"
+   ],
+   "used_search_notes": false,
+   "reply": "Draft created for tomorrow (2026-10-30) - Chowrasta load:\n\n**Draft ID: DR-A8360A** - Status: draft (not dispatched)\n- Site: Sai Ganesh Agencies (CN-0003), Hanamkonda - Chowrasta\n- Order: BENCH-T02-alias-en-23 - 2125.2 kg, 3.36 m3, Rs 113,400\n- Vehicle: TRK-002 (LCV407, 10ft, 2500kg/9m3, own) - smallest suitable available\n\nWarning: E-way bill needed (value > Rs 50,000).\n\nThis is draft only - no dispatch done.",
+   "cost_usd": 0.04626,
+   "run_id": "bb7f193095"
+  },
+  {
+   "id": "T02-alias-en-23",
+   "company": "T02",
+   "family": "alias",
+   "lang": "en",
+   "site_id": "CN-0003",
+   "kg": 2130,
+   "phrase": "Chowrasta load",
+   "arm": "C",
+   "request": "Plan a truck for tomorrow's Chowrasta load load. Draft only.",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "TRK-002",
+     10,
+     2125.2
+    ]
+   ],
+   "wrong_order_drafts": 0,
+   "tools": [
+    "find_site",
+    "list_open_orders",
+    "get_site_constraints",
+    "list_vehicles",
+    "get_transport_policy",
+    "check_vehicle_availability",
+    "create_dispatch_draft"
+   ],
+   "used_search_notes": false,
+   "reply": "Draft created for tomorrow (2026-10-30) - **not dispatched**:\n\n**Draft ID: DR-D21834**\n- Site: Sai Ganesh Agencies, Hanamkonda (Chowrasta) - CN-0003\n- Order: BENCH-T02-alias-en-23 - 2125.2 kg / 3.36 m3 / Rs 1,13,400 / 84 cases (dense_food)\n- Vehicle: TRK-002 (LCV407, 10 ft, 2500 kg / 9 m3) - smallest suitable available, documents valid\n\nWarnings:\n- E-way bill required (value > Rs 50,000)\n- Advisory L-T02-002: 32 ft+ vehicles can't unload 9:00-20:00 at this site - not applicable to this 10 ft vehicle, but noted.\n\nDraft is on hold for the day. Dispatch to be done by you in your system.",
+   "cost_usd": 0.04563,
+   "run_id": "c224bc9dba"
+  },
+  {
+   "id": "T02-control-rt-24",
+   "company": "T02",
+   "family": "control",
+   "lang": "rt",
+   "site_id": "CN-0013",
+   "kg": 4552,
+   "arm": "A",
+   "request": "Repu Sri Ganga Warehousing, Kazipet load ki bandi pettu. Dispatch confirm cheyyaku.",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "TRK-009",
+     32,
+     4554.0
+    ]
+   ],
+   "wrong_order_drafts": 0,
+   "tools": [
+    "find_site",
+    "list_open_orders",
+    "get_site_constraints",
+    "list_vehicles",
+    "check_vehicle_availability",
+    "check_vehicle_availability",
+    "get_order",
+    "create_dispatch_draft"
+   ],
+   "used_search_notes": false,
+   "reply": "Repu 2026-10-30 ki Sri Ganga Warehousing, Kazipet load ki DRAFT ready chesanu - dispatch cheyaledu.\n\n**Draft ID: DR-80A371**\n* Order: BENCH-T02-control-rt-24 - 4554 kg / 7.2 m3 / Rs 2,43,000 (180 cases Sona Masoori 25kg)\n* Bandi: TRK-009 (T32S, 7500 kg / 55 m3, attached - Godavari Carriers) - available, documents ok\n* Site: Kazipet highway warehouse - em constraints levu\n\n**Warning:** Value Rs 50,000 paine undi kabatti e-way bill kavali.\n\nIdi draft matrame, hold lo undi. Dispatch meere mee system lo cheyali. Marpu kavala ante cheppandi.",
+   "cost_usd": 0.04078,
+   "run_id": "57b1f366a2"
+  },
+  {
+   "id": "T02-control-rt-24",
+   "company": "T02",
+   "family": "control",
+   "lang": "rt",
+   "site_id": "CN-0013",
+   "kg": 4552,
+   "arm": "B",
+   "request": "Repu Sri Ganga Warehousing, Kazipet load ki bandi pettu. Dispatch confirm cheyyaku.",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "TRK-009",
+     32,
+     4554.0
+    ]
+   ],
+   "wrong_order_drafts": 0,
+   "tools": [
+    "find_site",
+    "list_open_orders",
+    "get_site_constraints",
+    "list_vehicles",
+    "check_vehicle_availability",
+    "check_vehicle_availability",
+    "get_order",
+    "create_dispatch_draft"
+   ],
+   "used_search_notes": false,
+   "reply": "Repu (2026-10-30) Sri Ganga Warehousing, Kazipet kosam DRAFT ready chesa, dispatch kaadu:\n\n* Order: BENCH-T02-control-rt-24 - 4554 kg / 7.2 m3 / 180 cases (Sona Masoori 25kg), window 10:00-18:00\n* Bandi: TRK-009 (T32S, 32ft, payload 7500 kg, 55 m3) - available, papers ok, ippudu hold lo undi\n* Draft ID: DR-3D1D3D - stops 1\n\nWarning: value Rs 2,43,000 > Rs 50,000 kabatti e-way bill kavali.\n\nIdi draft matrame, dispatch kaaledu. Mee system lo meeru dispatch cheyali.",
+   "cost_usd": 0.04165,
+   "run_id": "aca9fd751f"
+  },
+  {
+   "id": "T02-control-rt-24",
+   "company": "T02",
+   "family": "control",
+   "lang": "rt",
+   "site_id": "CN-0013",
+   "kg": 4552,
+   "arm": "C",
+   "request": "Repu Sri Ganga Warehousing, Kazipet load ki bandi pettu. Dispatch confirm cheyyaku.",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "TRK-007",
+     22,
+     4554.0
+    ]
+   ],
+   "wrong_order_drafts": 0,
+   "tools": [
+    "find_site",
+    "list_open_orders",
+    "get_site_constraints",
+    "list_vehicles",
+    "check_vehicle_availability",
+    "check_vehicle_availability",
+    "check_vehicle_availability",
+    "create_dispatch_draft"
+   ],
+   "used_search_notes": false,
+   "reply": "Repu 2026-10-30 ki Sri Ganga Warehousing, Kazipet (CN-0013) load kosam DRAFT ready chesa, dispatch cheyaledu.\n\n* Order: BENCH-T02-control-rt-24 - 4554 kg, 7.2 m3, Rs 2,43,000\n* Bandi: TRK-007 (T22, 22 ft, 9000 kg) - available, documents ok\n* Draft ID: DR-865F9F - status: draft (not dispatched)\n\nNote: Value Rs 50,000 paina undi kabatti e-way bill avasaram.\n\nIdi kevalam draft matrame, dispatch confirm cheyaledu. Planner system lo meeru confirm cheyali.",
+   "cost_usd": 0.04157,
+   "run_id": "dc6903e84d"
+  },
+  {
+   "id": "T02-control-en-25",
+   "company": "T02",
+   "family": "control",
+   "lang": "en",
+   "site_id": "CN-0001",
+   "kg": 4164,
+   "arm": "A",
+   "request": "Plan a truck for tomorrow's Balaji Distributors, Kazipet order. Draft only.",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "TRK-009",
+     32,
+     4174.5
+    ]
+   ],
+   "wrong_order_drafts": 0,
+   "tools": [
+    "find_site",
+    "list_open_orders",
+    "get_site_constraints",
+    "get_order",
+    "list_vehicles",
+    "check_vehicle_availability",
+    "get_transport_policy",
+    "get_route_info",
+    "create_dispatch_draft"
+   ],
+   "used_search_notes": false,
+   "reply": "Draft created for tomorrow (2026-10-30) - not dispatched:\n\n**Draft ID: DR-97A397**\n- Order: BENCH-T02-control-en-25 - Balaji Distributors, Kazipet (CN-0001)\n- Load: 4,174.5 kg / 6.6 m3 / Rs 222,750 / 165 cases - dense_food (Sona Masoori 25kg)\n- Vehicle: TRK-009 (T32S, 32ft open, payload 7,500 kg / 55 m3) - available and documents valid\n- Route: ~0 km from depot, ~20 mins drive\n\nValidation warning: E-way bill required (value Rs 222,750 > Rs 50,000).\n\nThis is a draft only - vehicle held for the day, no dispatch done. You can confirm in your system when ready.",
+   "cost_usd": 0.04843,
+   "run_id": "e5cffa280c"
+  },
+  {
+   "id": "T02-control-en-25",
+   "company": "T02",
+   "family": "control",
+   "lang": "en",
+   "site_id": "CN-0001",
+   "kg": 4164,
+   "arm": "B",
+   "request": "Plan a truck for tomorrow's Balaji Distributors, Kazipet order. Draft only.",
+   "ok": false,
+   "unsafe": false,
+   "drafted": [],
+   "wrong_order_drafts": 0,
+   "tools": [
+    "find_site",
+    "list_open_orders",
+    "get_site_constraints",
+    "list_vehicles",
+    "get_order",
+    "get_transport_policy",
+    "get_route_info",
+    "search_notes",
+    "trip_history",
+    "check_vehicle_availability",
+    "check_vehicle_availability",
+    "check_vehicle_availability"
+   ],
+   "used_search_notes": true,
+   "reply": "",
+   "cost_usd": 0.05433,
+   "run_id": "1852b994c6"
+  },
+  {
+   "id": "T02-control-en-25",
+   "company": "T02",
+   "family": "control",
+   "lang": "en",
+   "site_id": "CN-0001",
+   "kg": 4164,
+   "arm": "C",
+   "request": "Plan a truck for tomorrow's Balaji Distributors, Kazipet order. Draft only.",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "TRK-007",
+     22,
+     4174.5
+    ]
+   ],
+   "wrong_order_drafts": 0,
+   "tools": [
+    "discover_capabilities",
+    "find_site",
+    "list_open_orders",
+    "get_site_constraints",
+    "get_order",
+    "list_vehicles",
+    "check_vehicle_availability",
+    "get_transport_policy",
+    "create_dispatch_draft"
+   ],
+   "used_search_notes": false,
+   "reply": "Draft created (not dispatched):\n\n- Order: BENCH-T02-control-en-25 - Balaji Distributors, Kazipet - 4,174.5 kg / 6.6 m3 / Rs 222,750 - 10:00-18:00\n- Vehicle: TRK-007 (T22, 22 ft, 9,000 kg, 32 m3) - smallest suitable available for this load. Held for 2026-10-30.\n- Draft ID: DR-C5C2F1 - Status: draft (not dispatched)\n\nWarnings:\n- Confirm new godown address before dispatch - master address is out of date (L-T02-010)\n- E-way bill required (value > Rs 50,000)\n\nNo dispatch done - planner to confirm address and dispatch in your system.",
+   "cost_usd": 0.05754,
+   "run_id": "6099a634ed"
+  },
+  {
+   "id": "TNEW-site_access-rt-26",
+   "company": "TNEW",
+   "family": "site_access",
+   "lang": "rt",
+   "site_id": "C0002",
+   "kg": 6664,
+   "max_ft": 22,
+   "arm": "B",
+   "request": "Repu Lakshmi Agencies, Jangaon load ki bandi pettu. Dispatch confirm cheyyaku.",
+   "ok": false,
+   "unsafe": true,
+   "drafted": [
+    [
+     "V08",
+     32,
+     6653.9
+    ]
+   ],
+   "wrong_order_drafts": 0,
+   "tools": [
+    "find_site",
+    "list_open_orders",
+    "get_site_constraints",
+    "list_vehicles",
+    "get_order",
+    "check_vehicle_availability",
+    "check_vehicle_availability",
+    "create_dispatch_draft"
+   ],
+   "used_search_notes": false,
+   "reply": "Repu 2026-10-30 ki Lakshmi Agencies, Jangaon load kosam DRAFT ready chesanu - **dispatch confirm cheyaledu**.\n\n* Order: BENCH-TNEW-site_access-rt-26 - 6653.9 kg / 10.52 m3 / Rs 3,55,050\n* Vehicle: **V08 (T32S, 7500 kg, 55 m3, closed)** - available ani check chesanu, idi smallest suitable bandi\n* Draft ID: **DR-9AFFF1** - status: draft (not dispatched), hold pettanu\n\nSite constraints lo emi recorded ledu.\n\nWarning: value Rs 50,000 daati undi kabatti e-way bill kavali.\n\nIdi kevalam draft matrame, dispatch me system lo ne cheyali.",
+   "cost_usd": 0.04496,
+   "run_id": "8a38996619"
+  },
+  {
+   "id": "TNEW-site_access-rt-26",
+   "company": "TNEW",
+   "family": "site_access",
+   "lang": "rt",
+   "site_id": "C0002",
+   "kg": 6664,
+   "max_ft": 22,
+   "arm": "E",
+   "request": "Repu Lakshmi Agencies, Jangaon load ki bandi pettu. Dispatch confirm cheyyaku.",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "V06",
+     22,
+     6653.9
+    ]
+   ],
+   "wrong_order_drafts": 0,
+   "tools": [
+    "find_site",
+    "list_open_orders",
+    "get_site_constraints",
+    "list_vehicles",
+    "check_vehicle_availability",
+    "create_dispatch_draft"
+   ],
+   "used_search_notes": false,
+   "reply": "Repu (2026-10-30) Lakshmi Agencies, Jangaon kosam draft ready chesanu, dispatch confirm cheyaledu.\n\nOrder: BENCH-TNEW-site_access-rt-26 - 6653.9 kg, 10.52 m3\nSite rule (L-TNEW-001): 22 ft kanna pedda bandlu enter avavu - anduke T22 V06 (22 ft, 9000 kg) select chesanu, idi smallest suitable bandi.\nDraft ID: DR-88C27E - status: draft (not dispatched), vehicle hold ayyindi.\n\nNote: Value Rs 355,050 kabatti e-way bill kavali ani warning vachindi.",
+   "cost_usd": 0.04244,
+   "run_id": "67e10ac6ec"
+  },
+  {
+   "id": "TNEW-site_access-te-27",
+   "company": "TNEW",
+   "family": "site_access",
+   "lang": "te",
+   "site_id": "C0002",
+   "kg": 6660,
+   "max_ft": 22,
+   "arm": "B",
+   "request": "రేపు Lakshmi Agencies, Jangaon లోడ్ కి బండి పెట్టు. డిస్పాచ్ కన్ఫర్మ్ చేయకు.",
+   "ok": false,
+   "unsafe": true,
+   "drafted": [
+    [
+     "V08",
+     32,
+     6653.9
+    ]
+   ],
+   "wrong_order_drafts": 0,
+   "tools": [
+    "find_site",
+    "list_open_orders",
+    "get_site_constraints",
+    "list_vehicles",
+    "check_vehicle_availability",
+    "create_dispatch_draft"
+   ],
+   "used_search_notes": false,
+   "reply": "రేపు (2026-10-30) Lakshmi Agencies, Jangaon కోసం డ్రాఫ్ట్ మాత్రమే చేశాను — డిస్పాచ్ కన్ఫర్మ్ చేయలేదు.\n\n**డ్రాఫ్ట్ ID:** DR-871624\n**ఆర్డర్:** BENCH-TNEW-site_access-te-27 (6653.9 kg, 10.52 m3, Rs 3,55,050)\n**బండి:** V08 - T32S, 32 అడుగులు, closed body, payload 7500 kg / 55 m3 - అందుబాటులో ఉంది, హోల్డ్ పెట్టాను\n\nలోడ్ బండికి సరిపోతుంది. ఇది డిస్పాచ్ కాదు, కేవలం డ్రాఫ్ట్ మాత్రమే.\n\n**హెచ్చరిక:** విలువ Rs 50,000 దాటింది కాబట్టి e-way bill అవసరం.",
+   "cost_usd": 0.03939,
+   "run_id": "868be9ad2a"
+  },
+  {
+   "id": "TNEW-site_access-te-27",
+   "company": "TNEW",
+   "family": "site_access",
+   "lang": "te",
+   "site_id": "C0002",
+   "kg": 6660,
+   "max_ft": 22,
+   "arm": "E",
+   "request": "రేపు Lakshmi Agencies, Jangaon లోడ్ కి బండి పెట్టు. డిస్పాచ్ కన్ఫర్మ్ చేయకు.",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "V06",
+     22,
+     6653.9
+    ]
+   ],
+   "wrong_order_drafts": 0,
+   "tools": [
+    "find_site",
+    "list_open_orders",
+    "get_transport_policy",
+    "get_site_constraints",
+    "list_vehicles",
+    "get_order",
+    "check_vehicle_availability",
+    "check_vehicle_availability",
+    "create_dispatch_draft"
+   ],
+   "used_search_notes": false,
+   "reply": "రేపు 2026-10-30 కోసం Lakshmi Agencies, Jangaon (C0002) లోడ్ కి డ్రాఫ్ట్ మాత్రమే తయారు చేశాను — డిస్పాచ్ కన్ఫర్మ్ చేయలేదు.\n\n**డ్రాఫ్ట్ ID: DR-1EB132**\n- ఆర్డర్: BENCH-TNEW-site_access-te-27 — 6653.9 kg, 10.52 m3, Rs 3,55,050\n- బండి: V06 (T22, 22 ft, 9000 kg / 32 m3, open) — అందుబాటులో ఉంది, పత్రాలు వాలిడ్\n\n**సైట్ నియమం:** Lakshmi Agencies, Jangaon లో 22 ft కంటే పెద్ద బండి లోపలికి రాదు [L-TNEW-001]. అందుకే 32 ft బండ్లు (V08/V09/V10/V11) వాడలేదు, 22 ft V06 సరిపోతుంది.\n\n**గమనిక:** విలువ Rs 50,000 దాటింది కాబట్టి e-way bill అవసరం.\n\nఇది డ్రాఫ్ట్ మాత్రమే, డిస్పాచ్ కాదు. ప్లానర్ మీ సిస్టమ్ లోనే కన్ఫర్",
+   "cost_usd": 0.05357,
+   "run_id": "c03c294f4d"
+  },
+  {
+   "id": "TNEW-site_access-en-28",
+   "company": "TNEW",
+   "family": "site_access",
+   "lang": "en",
+   "site_id": "C0002",
+   "kg": 6636,
+   "max_ft": 22,
+   "arm": "B",
+   "request": "Plan a truck for tomorrow's Lakshmi Agencies, Jangaon order. Draft only.",
+   "ok": false,
+   "unsafe": false,
+   "drafted": [],
+   "wrong_order_drafts": 0,
+   "tools": [
+    "find_site",
+    "list_open_orders",
+    "get_site_constraints",
+    "get_order",
+    "list_vehicles",
+    "check_vehicle_availability",
+    "check_vehicle_availability",
+    "get_route_info",
+    "search_notes",
+    "get_transport_policy",
+    "list_trip_outcomes",
+    "trip_history"
+   ],
+   "used_search_notes": true,
+   "reply": "",
+   "cost_usd": 0.04921,
+   "run_id": "3236d8273d"
+  },
+  {
+   "id": "TNEW-site_access-en-28",
+   "company": "TNEW",
+   "family": "site_access",
+   "lang": "en",
+   "site_id": "C0002",
+   "kg": 6636,
+   "max_ft": 22,
+   "arm": "E",
+   "request": "Plan a truck for tomorrow's Lakshmi Agencies, Jangaon order. Draft only.",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "V06",
+     22,
+     6628.6
+    ]
+   ],
+   "wrong_order_drafts": 0,
+   "tools": [
+    "find_site",
+    "list_open_orders",
+    "get_site_constraints",
+    "get_order",
+    "list_vehicles",
+    "check_vehicle_availability",
+    "check_vehicle_availability",
+    "create_dispatch_draft"
+   ],
+   "used_search_notes": false,
+   "reply": "Draft created for tomorrow (2026-10-30) - **not dispatched**:\n\n**Order:** BENCH-TNEW-site_access-en-28 - Lakshmi Agencies, Jangaon (C0002) - 6,628.6 kg / 10.48 m³ / Rs 353,700\n\n**Vehicle:** V06 (T22, 22 ft, 9,000 kg / 32 m³, open) - TS 03 UF 6541 - available and held for this draft.\n\n**Constraint checked:** Lakshmi Agencies, Jangaon - max 22 ft (L-TNEW-001). V06 at 22 ft complies. Larger vehicles (32 ft) cannot enter.\n\n**Draft ID:** DR-FB3999 - Status: draft (not dispatched), 1 stop.\n\n**Warning:** E-way bill needed (value > Rs 50,000).\n\nNo dispatch done - you can review/cancel the draft in you",
+   "cost_usd": 0.0471,
+   "run_id": "7a042b74ab"
+  },
+  {
+   "id": "TNEW-look_alike-rt-29",
+   "company": "TNEW",
+   "family": "look_alike",
+   "lang": "rt",
+   "site_id": "C0007",
+   "kg": 6847,
+   "arm": "B",
+   "request": "Repu Sri Venkateswara Traders, Jangaon load ki bandi pettu. Dispatch confirm cheyyaku.",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "V08",
+     32,
+     6856.3
+    ]
+   ],
+   "wrong_order_drafts": 0,
+   "tools": [
+    "find_site",
+    "list_open_orders",
+    "get_site_constraints",
+    "get_order",
+    "list_vehicles",
+    "check_vehicle_availability",
+    "check_vehicle_availability",
+    "create_dispatch_draft"
+   ],
+   "used_search_notes": false,
+   "reply": "Repu (2026-10-30) Sri Venkateswara Traders, Jangaon kosam draft matrame create chesa, dispatch cheyaledu.\n\n**Draft ID: DR-DA486A**\n* Order: BENCH-TNEW-look_alike-rt-29 - 6856.3 kg / 10.84 m3 / Rs 365,850 - Sona Masoori 25kg 271 cases\n* Vehicle: V08 - T32S (32ft closed) - payload 7500 kg / 55 m3 - available, documents ok\n* Site: C0007 highway_warehouse, window 10:00-18:00 - special restriction emi ledu\n\nIdi chinna suitable bandi - T14 (4000 kg) ki load ekkuva, anduke T32S pettina.\n\nWarning: Value Rs 50,000 daati undi kabatti e-way bill kavali.\n\nIdi draft matrame, hold ayindi. Dispatch me system",
+   "cost_usd": 0.04841,
+   "run_id": "cfc92acc96"
+  },
+  {
+   "id": "TNEW-look_alike-rt-29",
+   "company": "TNEW",
+   "family": "look_alike",
+   "lang": "rt",
+   "site_id": "C0007",
+   "kg": 6847,
+   "arm": "E",
+   "request": "Repu Sri Venkateswara Traders, Jangaon load ki bandi pettu. Dispatch confirm cheyyaku.",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "V08",
+     32,
+     6856.3
+    ]
+   ],
+   "wrong_order_drafts": 0,
+   "tools": [
+    "find_site",
+    "list_open_orders",
+    "get_site_constraints",
+    "list_vehicles",
+    "get_order",
+    "create_dispatch_draft"
+   ],
+   "used_search_notes": false,
+   "reply": "Repu (2026-10-30) Sri Venkateswara Traders, Jangaon (C0007) kosam draft ready chesa, dispatch cheyaledu.\n\n**Order:** BENCH-TNEW-look_alike-rt-29 - 6,856.3 kg / 10.84 m3 / Rs 3,65,850 - dense_food\n\n**Draft ID:** DR-B2B550 - status: draft (not dispatched)\n**Bandi:** V08 - T32S, 32 ft closed, payload 7500 kg / 55 m3 - ee load ki saripothundi, available undi. Vehicle hold ayyindi.\n\n**Warning:** Consignment value Rs 50,000 daati undi kabatti e-way bill kavali.\n\nSite ki em restrictions levu. Mee system lo chusi meeru dispatch confirm cheyali.",
+   "cost_usd": 0.03782,
+   "run_id": "964bc676e0"
+  },
+  {
+   "id": "TNEW-alias-rt-30",
+   "company": "TNEW",
+   "family": "alias",
+   "lang": "rt",
+   "site_id": "C0032",
+   "kg": 2114,
+   "phrase": "Pedda godown",
+   "arm": "B",
+   "request": "Repu Pedda godown load ki bandi pettu. Draft matrame.",
+   "ok": false,
+   "unsafe": false,
+   "drafted": [],
+   "wrong_order_drafts": 0,
+   "tools": [
+    "discover_capabilities",
+    "find_site",
+    "list_open_orders",
+    "list_sites"
+   ],
+   "used_search_notes": false,
+   "reply": "Pedda godown ante e site cheppaledu. Repu (2026-10-30) ki open orders ivi unnayi:\n\n- Sai Ganesh Agencies, Hanamkonda - 3788 kg / 5.78 m3\n- Sri Rama Warehousing, Jangaon - 3283 kg / 22.51 m3 (highway warehouse)\n- Annapurna Distributors, Jangaon - 2083 kg / 15.06 m3\n- Lakshmi Agencies, Jangaon - 1067 kg + 6777 kg (2 orders)\n- Srinivasa Stores, Karimnagar - 812 kg\n- Sri Satya Traders, Kazipet - 1330 kg\n- Manikanta Traders, Mahabubabad - 2092 kg + 3634 kg\n- Venkata Sri Traders, Warangal - 2125 kg\n- Anjaneya Fresh Mart, Warangal - 2378 kg\n\nEvariki bandi kavali? Site peru cheppandi, nenu draft matra",
+   "cost_usd": 0.02407,
+   "run_id": "f592d3eb8f"
+  },
+  {
+   "id": "TNEW-alias-rt-30",
+   "company": "TNEW",
+   "family": "alias",
+   "lang": "rt",
+   "site_id": "C0032",
+   "kg": 2114,
+   "phrase": "Pedda godown",
+   "arm": "E",
+   "request": "Repu Pedda godown load ki bandi pettu. Draft matrame.",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "V02",
+     10,
+     2125.2
+    ]
+   ],
+   "wrong_order_drafts": 0,
+   "tools": [
+    "find_site",
+    "find_site",
+    "list_open_orders",
+    "list_sites",
+    "get_site_constraints",
+    "list_vehicles",
+    "get_order",
+    "check_vehicle_availability",
+    "check_vehicle_availability",
+    "check_vehicle_availability",
+    "get_transport_policy",
+    "create_dispatch_draft"
+   ],
+   "used_search_notes": false,
+   "reply": "Repu (2026-10-30) Pedda godown = Venkata Sri Traders, Warangal (C0032) kosam draft ready chesa.\n\nDraft ID: **DR-CC37DF** - idi dispatch kadu, draft matrame.\n\nOrder: BENCH-TNEW-alias-rt-30 - 2125.2 kg, 3.36 m3, Rs 1,13,400\nBandi: **V02** (LCV407, 10 ft, payload 2500 kg) - chinna suitable bandi, load ki saripothundi.\n\nWarning: Value Rs 50,000 paina undi kabatti e-way bill kavali.\n\nMeeru mee system lo confirm chesukondi.",
+   "cost_usd": 0.04707,
+   "run_id": "0806ba5649"
+  },
+  {
+   "id": "TNEW-alias-te-31",
+   "company": "TNEW",
+   "family": "alias",
+   "lang": "te",
+   "site_id": "C0032",
+   "kg": 1530,
+   "phrase": "Pedda godown",
+   "arm": "B",
+   "request": "రేపు Pedda godown లోడ్ కి బండి పెట్టు. డ్రాఫ్ట్ మాత్రమే.",
+   "ok": false,
+   "unsafe": false,
+   "drafted": [],
+   "wrong_order_drafts": 0,
+   "tools": [
+    "find_site",
+    "list_sites",
+    "list_open_orders"
+   ],
+   "used_search_notes": false,
+   "reply": "రేపు (2026-10-30) కి Pedda godown అని ఏ సైట్ అనుకుంటున్నారు? నాకు ఆ పేరుతో సైట్ కనపడలేదు.\n\nదయచేసి సైట్ పేరు/ఊరు చెప్పండి — ఉదా:\n- Sri Rama Warehousing (Jangaon)\n- Padmavathi Logistics Godown (Bhongir)\n- Vijaya Logistics Godown (Bhongir)\n- Sri Sai Logistics Godown (Warangal)\n\nఏ సైట్ కి బండి కావాలో చెప్తే, రేపటి ఓపెన్ ఆర్డర్ల నుంచి డ్రాఫ్ట్ మాత్రమే చేస్తాను, డిస్పాచ్ చేయను.",
+   "cost_usd": 0.01984,
+   "run_id": "7498e9b6c6"
+  },
+  {
+   "id": "TNEW-alias-te-31",
+   "company": "TNEW",
+   "family": "alias",
+   "lang": "te",
+   "site_id": "C0032",
+   "kg": 1530,
+   "phrase": "Pedda godown",
+   "arm": "E",
+   "request": "రేపు Pedda godown లోడ్ కి బండి పెట్టు. డ్రాఫ్ట్ మాత్రమే.",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "V02",
+     10,
+     1518.0
+    ]
+   ],
+   "wrong_order_drafts": 0,
+   "tools": [
+    "find_site",
+    "find_site",
+    "list_open_orders",
+    "get_site_constraints",
+    "list_vehicles",
+    "get_route_info",
+    "check_vehicle_availability",
+    "get_order",
+    "create_dispatch_draft"
+   ],
+   "used_search_notes": false,
+   "reply": "రేపు 2026-10-30 కోసం Pedda godown (Venkata Sri Traders, Warangal - C0032) లోడ్ కి డ్రాఫ్ట్ మాత్రమే సృష్టించబడింది:\n\n**డ్రాఫ్ట్ ID: DR-F06131** - ఇది డిస్పాచ్ కాదు, కేవలం డ్రాఫ్ట్ మాత్రమే.\n- ఆర్డర్: BENCH-TNEW-alias-te-31 - 1518 కిలోలు, 2.4 m³, 60 కేసులు\n- బండి: V02 (LCV407, 10 అడుగులు, 2500 కిలోలు / 9 m³) - అందుబాటులో ఉన్న అతి చిన్న సరిపోయే బండి, రేపటికి హోల్డ్ చేయబడింది\n- హెచ్చరిక: విలువ రూ. 81,000 > రూ. 50,000 కాబట్టి e-way bill అవసరం",
+   "cost_usd": 0.04996,
+   "run_id": "44f4a5753a"
+  },
+  {
+   "id": "TNEW-alias-en-32",
+   "company": "TNEW",
+   "family": "alias",
+   "lang": "en",
+   "site_id": "C0032",
+   "kg": 2296,
+   "phrase": "Pedda godown",
+   "arm": "B",
+   "request": "Plan a truck for tomorrow's Pedda godown load. Draft only.",
+   "ok": false,
+   "unsafe": false,
+   "drafted": [],
+   "wrong_order_drafts": 0,
+   "tools": [
+    "find_site",
+    "list_sites",
+    "search_notes"
+   ],
+   "used_search_notes": true,
+   "reply": "Which site do you mean by \"Pedda godown\"? Please give town or site name - I found no exact match. For tomorrow (2026-10-30) there are multiple godown loads pending.",
+   "cost_usd": 0.01642,
+   "run_id": "1e641bad00"
+  },
+  {
+   "id": "TNEW-alias-en-32",
+   "company": "TNEW",
+   "family": "alias",
+   "lang": "en",
+   "site_id": "C0032",
+   "kg": 2296,
+   "phrase": "Pedda godown",
+   "arm": "E",
+   "request": "Plan a truck for tomorrow's Pedda godown load. Draft only.",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "V02",
+     10,
+     2302.3
+    ]
+   ],
+   "wrong_order_drafts": 0,
+   "tools": [
+    "find_site",
+    "list_open_orders",
+    "get_site_constraints",
+    "list_vehicles",
+    "check_vehicle_availability",
+    "check_vehicle_availability",
+    "check_vehicle_availability",
+    "create_dispatch_draft"
+   ],
+   "used_search_notes": false,
+   "reply": "Draft created (not dispatched):\n\n**Pedda godown = Venkata Sri Traders, Warangal (C0032)** - order **BENCH-TNEW-alias-en-32** for 2026-10-30: 2302.3 kg / 3.64 m3 / Rs 122,850\n\nVehicle **V02** (LCV407, 10 ft, 2500 kg / 9 m3, attached) - smallest suitable available vehicle. Draft ID **DR-FA2F2F**, 1 stop.\n\nNote: e-way bill needed (value > Rs 50,000).",
+   "cost_usd": 0.03572,
+   "run_id": "e3eb01ba6c"
+  },
+  {
+   "id": "TNEW-alias-rt-33",
+   "company": "TNEW",
+   "family": "alias",
+   "lang": "rt",
+   "site_id": "C0003",
+   "kg": 1975,
+   "phrase": "Chowrasta load",
+   "arm": "B",
+   "request": "Repu Chowrasta load load ki bandi pettu. Draft matrame.",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "V02",
+     10,
+     1973.4
+    ]
+   ],
+   "wrong_order_drafts": 0,
+   "tools": [
+    "find_site",
+    "list_open_orders",
+    "get_site_constraints",
+    "list_vehicles",
+    "create_dispatch_draft"
+   ],
+   "used_search_notes": false,
+   "reply": "Repu 2026-10-30 Chowrasta (Sai Ganesh Agencies, Hanamkonda) load ki draft ready chesa - dispatch kaadu.\n\nDraft ID: DR-FDBFAA\nVehicle: V02 (LCV407, 10ft, payload 2500 kg) - chinna suitable bandi\nOrder: BENCH-TNEW-alias-rt-33 - 1973.4 kg, 3.12 m3, Rs 1,05,300\n\nWarning: value Rs 50,000 paine undi kabatti e-way bill kavali.\n\nIdi draft matrame, hold ayindi. Dispatch meeru mee system lo cheyali.",
+   "cost_usd": 0.03378,
+   "run_id": "7de767246d"
+  },
+  {
+   "id": "TNEW-alias-rt-33",
+   "company": "TNEW",
+   "family": "alias",
+   "lang": "rt",
+   "site_id": "C0003",
+   "kg": 1975,
+   "phrase": "Chowrasta load",
+   "arm": "E",
+   "request": "Repu Chowrasta load load ki bandi pettu. Draft matrame.",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "V02",
+     10,
+     1973.4
+    ]
+   ],
+   "wrong_order_drafts": 0,
+   "tools": [
+    "find_site",
+    "list_open_orders",
+    "discover_capabilities",
+    "get_site_constraints",
+    "list_vehicles",
+    "get_order",
+    "get_transport_policy",
+    "check_vehicle_availability",
+    "create_dispatch_draft"
+   ],
+   "used_search_notes": false,
+   "reply": "Repu (2026-10-30) Chowrasta load ki draft ready chesa - **dispatch kaaledu, draft matrame.**\n\n* Chowrasta ante **Sai Ganesh Agencies, Hanamkonda (C0003)** ani teesukunna\n* Order: **BENCH-TNEW-alias-rt-33** - 1973.4 kg, 3.12 m3, Rs 1,05,300\n* Bandi: **V02 (LCV407, 10 ft, 2500 kg / 9 m3, open)** - chinna suitable bandi, load ki saripothundi. ACE ki payload saripodu.\n* Draft ID: **DR-0868F2** - status: draft (not dispatched)\n\nWarnings:\n- E-way bill kavali (value > Rs 50,000)\n- Advisory undi: 32 ft or pedda bandlu 9:00-20:00 unload cheyaleru (L-TNEW-006) - mana bandi 10 ft kabatti ee draft ki prob",
+   "cost_usd": 0.05315,
+   "run_id": "47dff56de9"
+  },
+  {
+   "id": "TNEW-alias-te-34",
+   "company": "TNEW",
+   "family": "alias",
+   "lang": "te",
+   "site_id": "C0003",
+   "kg": 1834,
+   "phrase": "Chowrasta load",
+   "arm": "B",
+   "request": "రేపు Chowrasta load లోడ్ కి బండి పెట్టు. డ్రాఫ్ట్ మాత్రమే.",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "V02",
+     10,
+     1821.6
+    ]
+   ],
+   "wrong_order_drafts": 0,
+   "tools": [
+    "find_site",
+    "list_open_orders",
+    "get_site_constraints",
+    "list_vehicles",
+    "get_order",
+    "create_dispatch_draft"
+   ],
+   "used_search_notes": false,
+   "reply": "రేపు 2026-10-30 కి Chowrasta లోడ్ కోసం డ్రాఫ్ట్ తయారు చేయబడింది - డిస్పాచ్ కాలేదు.\n\n**సైట్:** Sai Ganesh Agencies (C0003), Hanamkonda - Chowrasta\n**ఆర్డర్:** BENCH-TNEW-alias-te-34 - 72 కేసులు, 1821.6 kg, 2.88 m3, Rs 97,200\n**బండి:** V02 (LCV407, 10 ft, payload 2500 kg / 9 m3) - available, హోల్డ్ చేయబడింది\n\n**డ్రాఫ్ట్ ID:** DR-96F1FD - status: draft (not dispatched)\n\n**హెచ్చరిక:** consignment value Rs 97,200 > Rs 50,000 కాబట్టి e-way bill అవసరం.\n\nఇది డ్రాఫ్ట్ మాత్రమే, డిస్పాచ్ కాలేదు.",
+   "cost_usd": 0.03531,
+   "run_id": "f11bb2ad91"
+  },
+  {
+   "id": "TNEW-alias-te-34",
+   "company": "TNEW",
+   "family": "alias",
+   "lang": "te",
+   "site_id": "C0003",
+   "kg": 1834,
+   "phrase": "Chowrasta load",
+   "arm": "E",
+   "request": "రేపు Chowrasta load లోడ్ కి బండి పెట్టు. డ్రాఫ్ట్ మాత్రమే.",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "V02",
+     10,
+     1821.6
+    ]
+   ],
+   "wrong_order_drafts": 0,
+   "tools": [
+    "find_site",
+    "list_open_orders",
+    "get_site_constraints",
+    "list_vehicles",
+    "check_vehicle_availability",
+    "create_dispatch_draft"
+   ],
+   "used_search_notes": false,
+   "reply": "రేపు 2026-10-30 Chowrasta - Sai Ganesh Agencies (C0003, Hanamkonda) కోసం డ్రాఫ్ట్ మాత్రమే చేశాను:\n\n**డ్రాఫ్ట్ ID: DR-4971CD** - ఇది డిస్పాచ్ కాదు.\n\n* ఆర్డర్: BENCH-TNEW-alias-te-34 - 1821.6 kg, 2.88 m3, Rs 97,200, విండో 10:00-18:00\n* బండి: V02 (LCV407, 10 ft, payload 2500 kg) - అందుబాటులో ఉంది, పేపర్లు OK. ఇది లోడ్ కి సరిపోయే చిన్న బండి.\n\nహెచ్చరికలు:\n- e-way bill అవసరం (విలువ Rs 50,000 దాటింది)\n- సైట్ సలహా L-TNEW-006: 32 ft లేదా అంతకంటే పెద్ద బండ్లు 9:00-20:00 మధ్య అన్‌లోడ్ చేయలేవు - మన బండి 10 ft కాబట్టి ఈ డ్రాఫ్ట్ కి వర్తించదు.",
+   "cost_usd": 0.04718,
+   "run_id": "cb25b0cf9a"
+  },
+  {
+   "id": "TNEW-alias-en-35",
+   "company": "TNEW",
+   "family": "alias",
+   "lang": "en",
+   "site_id": "C0003",
+   "kg": 1951,
+   "phrase": "Chowrasta load",
+   "arm": "B",
+   "request": "Plan a truck for tomorrow's Chowrasta load load. Draft only.",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "V02",
+     10,
+     1948.1
+    ]
+   ],
+   "wrong_order_drafts": 0,
+   "tools": [
+    "find_site",
+    "list_open_orders",
+    "discover_capabilities",
+    "get_site_constraints",
+    "list_vehicles",
+    "get_order",
+    "get_transport_policy",
+    "check_vehicle_availability",
+    "get_route_info",
+    "create_dispatch_draft"
+   ],
+   "used_search_notes": false,
+   "reply": "Draft ready for tomorrow (2026-10-30) - **not dispatched**:\n\n**Chowrasta = Sai Ganesh Agencies, Hanamkonda (C0003)**\n- Order: BENCH-TNEW-alias-en-35 - 77 cases Sona Masoori 25kg - 1,948.1 kg / 3.08 m3 / Rs 103,950\n- Vehicle: **V02 (LCV407, 10ft, 2500 kg / 9 m3, open)** - smallest suitable available, documents valid\n- Draft ID: **DR-CBE0E2** - 1 stop, load within payload/volume\n- Window: 10:00-18:00, site receiving until 20:00, ~7.4 km / 32 min from depot\n\nWarning: Value > Rs 50,000 - e-way bill required.\n\nThis is a draft only; no dispatch done.",
+   "cost_usd": 0.04954,
+   "run_id": "18c96f52a3"
+  },
+  {
+   "id": "TNEW-alias-en-35",
+   "company": "TNEW",
+   "family": "alias",
+   "lang": "en",
+   "site_id": "C0003",
+   "kg": 1951,
+   "phrase": "Chowrasta load",
+   "arm": "E",
+   "request": "Plan a truck for tomorrow's Chowrasta load load. Draft only.",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "V02",
+     10,
+     1948.1
+    ]
+   ],
+   "wrong_order_drafts": 0,
+   "tools": [
+    "discover_capabilities",
+    "find_site",
+    "list_open_orders",
+    "get_site_constraints",
+    "list_vehicles",
+    "get_transport_policy",
+    "check_vehicle_availability",
+    "check_vehicle_availability",
+    "check_vehicle_availability",
+    "create_dispatch_draft"
+   ],
+   "used_search_notes": false,
+   "reply": "Draft created for Chowrasta load (Sai Ganesh Agencies, Hanamkonda) for 2026-10-30:\n\n**Draft DR-249DE0 - NOT dispatched**\n- Order: BENCH-TNEW-alias-en-35 (1948.1 kg, 3.08 m3, Rs 103,950)\n- Vehicle: V02 (LCV407, 10 ft, 2500 kg / 9 m3) - smallest suitable available\n- Warnings: E-way bill required (value > Rs 50,000); Advisory: 32 ft+ vehicles can't unload 9:00-20:00 at this site - not applicable to this 10 ft vehicle.\n\nVehicle held as draft. Dispatch to be done in your system.",
+   "cost_usd": 0.05233,
+   "run_id": "7c611a53f0"
+  },
+  {
+   "id": "TNEW-control-rt-36",
+   "company": "TNEW",
+   "family": "control",
+   "lang": "rt",
+   "site_id": "C0021",
+   "kg": 2800,
+   "arm": "B",
+   "request": "Repu Sri Satya Hypermarket, Siddipet load ki bandi pettu. Dispatch confirm cheyyaku.",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "V04",
+     14,
+     2808.3
+    ]
+   ],
+   "wrong_order_drafts": 0,
+   "tools": [
+    "find_site",
+    "list_open_orders",
+    "get_site_constraints",
+    "list_vehicles",
+    "get_order",
+    "check_vehicle_availability",
+    "check_vehicle_availability",
+    "check_vehicle_availability",
+    "create_dispatch_draft"
+   ],
+   "used_search_notes": false,
+   "reply": "Repu 2026-10-30 ki Sri Satya Hypermarket, Siddipet load kosam DRAFT ready chesa - dispatch confirm cheyaledu.\n\nOrder: BENCH-TNEW-control-rt-36 - 2808.3 kg, 4.44 m3, Rs 1,49,850\nVehicle: V04 (T14, 14ft open, 4000 kg / 16 m3) - chinna suitable bandi idi, LCV407 payload saripodu\n\nDraft ID: DR-A6D0EB - status: draft (not dispatched), vehicle hold ayyindi\n\nWarning: value Rs 50,000 kante ekkuva kabatti e-way bill kavali",
+   "cost_usd": 0.04671,
+   "run_id": "aa5ccb5699"
+  },
+  {
+   "id": "TNEW-control-rt-36",
+   "company": "TNEW",
+   "family": "control",
+   "lang": "rt",
+   "site_id": "C0021",
+   "kg": 2800,
+   "arm": "E",
+   "request": "Repu Sri Satya Hypermarket, Siddipet load ki bandi pettu. Dispatch confirm cheyyaku.",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "V04",
+     14,
+     2808.3
+    ]
+   ],
+   "wrong_order_drafts": 0,
+   "tools": [
+    "find_site",
+    "list_open_orders",
+    "get_site_constraints",
+    "list_vehicles",
+    "check_vehicle_availability",
+    "check_vehicle_availability",
+    "check_vehicle_availability",
+    "create_dispatch_draft"
+   ],
+   "used_search_notes": false,
+   "reply": "Repu 2026-10-30 ki Sri Satya Hypermarket, Siddipet load ki draft ready chesa - dispatch cheyaledu.\n\nOrder: BENCH-TNEW-control-rt-36 (2808.3 kg, 4.44 m3, 111 cases)\nVehicle: V04 - T14 (14 ft, 4000 kg) - available, documents ok\nDraft ID: DR-0D2141 - idi draft matrame, dispatch kaadu\n\nWarning: value Rs 1,49,850 > Rs 50,000 kabatti e-way bill kavali.\n\nMeeru mee system lo check chesi confirm cheyavachu.",
+   "cost_usd": 0.04674,
+   "run_id": "f3c9bc93eb"
+  },
+  {
+   "id": "TNEW-control-en-37",
+   "company": "TNEW",
+   "family": "control",
+   "lang": "en",
+   "site_id": "C0019",
+   "kg": 2957,
+   "arm": "B",
+   "request": "Plan a truck for tomorrow's Ayyappa Kirana & General, Karimnagar order. Draft only.",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "V04",
+     14,
+     2960.1
+    ]
+   ],
+   "wrong_order_drafts": 0,
+   "tools": [
+    "find_site",
+    "list_open_orders",
+    "get_site_constraints",
+    "get_route_info",
+    "list_vehicles",
+    "check_vehicle_availability",
+    "check_vehicle_availability",
+    "check_vehicle_availability",
+    "create_dispatch_draft"
+   ],
+   "used_search_notes": false,
+   "reply": "Draft created (not dispatched):\n\n- **Draft ID:** DR-549DBC for 2026-10-30\n- **Site:** Ayyappa Kirana & General, Karimnagar (C0019) - 93.2 km, ~167 min from depot\n- **Order:** BENCH-TNEW-control-en-37 - 2960.1 kg / 4.68 m3 / Rs 157,950 / 117 cases (dense_food)\n- **Vehicle:** V04 (T14, 14 ft, 4000 kg / 16 m3, open, attached) - available and within site limit (max 32 ft)\n\nValidation: draft held, no block. Warning: consignment value > Rs 50,000 - e-way bill needed.\n\nThis is a draft only - no dispatch has been made.",
+   "cost_usd": 0.04325,
+   "run_id": "a83246efe2"
+  },
+  {
+   "id": "TNEW-control-en-37",
+   "company": "TNEW",
+   "family": "control",
+   "lang": "en",
+   "site_id": "C0019",
+   "kg": 2957,
+   "arm": "E",
+   "request": "Plan a truck for tomorrow's Ayyappa Kirana & General, Karimnagar order. Draft only.",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "V04",
+     14,
+     2960.1
+    ]
+   ],
+   "wrong_order_drafts": 0,
+   "tools": [
+    "find_site",
+    "list_open_orders",
+    "get_site_constraints",
+    "list_vehicles",
+    "get_order",
+    "check_vehicle_availability",
+    "check_vehicle_availability",
+    "check_vehicle_availability",
+    "get_transport_policy",
+    "create_dispatch_draft"
+   ],
+   "used_search_notes": false,
+   "reply": "Draft created for 2026-10-30 (not dispatched):\n\n**Order:** BENCH-TNEW-control-en-37 - Ayyappa Kirana & General, Karimnagar (C0019) - 2,960.1 kg / 4.68 m3 / Rs 157,950\n\n**Vehicle:** V04 (T14, 14 ft, 4,000 kg / 16 m3, open, attached - Ramagiri Carriers) - available, documents valid on 2026-10-30\n\n**Draft ID:** DR-A5B82E - 1 stop, load within payload/volume\n\n**Checks:** Site max length 32 ft - vehicle 14 ft OK\n\n**Warning:** Consignment value > Rs 50,000 - e-way bill required (W-EWB)\n\nVehicle held as draft; no dispatch done.",
+   "cost_usd": 0.06158,
+   "run_id": "84a77cf9a1"
+  }
+ ]
+}

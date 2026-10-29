@@ -1,0 +1,133 @@
+packs: [{'pack_id': 'PK-T01-TNEW-210758', 'items': 5, 'leaks': []}, {'pack_id': 'PK-T02-TNEW-210758', 'items': 5, 'leaks': []}]
+resuming: 65 rows from artifacts/benchmark/exp011_run1_interrupted.log
+✅ T02-alias-rt-21              C drafted=[('TRK-002', 10, 2175.8)] wrong_order=0 search_notes=False $0.03963
+✅ T02-alias-te-22              A drafted=[('TRK-002', 10, 2251.7)] wrong_order=0 search_notes=False $0.04495
+✅ T02-alias-te-22              B drafted=[('TRK-002', 10, 2251.7)] wrong_order=0 search_notes=False $0.04959
+✅ T02-alias-te-22              C drafted=[('TRK-002', 10, 2251.7)] wrong_order=0 search_notes=False $0.05259
+✅ T02-alias-en-23              A drafted=[('TRK-002', 10, 2125.2)] wrong_order=0 search_notes=False $0.04134
+✅ T02-alias-en-23              B drafted=[('TRK-002', 10, 2125.2)] wrong_order=0 search_notes=False $0.04626
+✅ T02-alias-en-23              C drafted=[('TRK-002', 10, 2125.2)] wrong_order=0 search_notes=False $0.04563
+✅ T02-control-rt-24            A drafted=[('TRK-009', 32, 4554.0)] wrong_order=0 search_notes=False $0.04078
+✅ T02-control-rt-24            B drafted=[('TRK-009', 32, 4554.0)] wrong_order=0 search_notes=False $0.04165
+✅ T02-control-rt-24            C drafted=[('TRK-007', 22, 4554.0)] wrong_order=0 search_notes=False $0.04157
+✅ T02-control-en-25            A drafted=[('TRK-009', 32, 4174.5)] wrong_order=0 search_notes=False $0.04843
+❌ T02-control-en-25            B drafted=[] wrong_order=0 search_notes=True $0.05433
+✅ T02-control-en-25            C drafted=[('TRK-007', 22, 4174.5)] wrong_order=0 search_notes=False $0.05754
+⛔ TNEW-site_access-rt-26       B drafted=[('V08', 32, 6653.9)] wrong_order=0 search_notes=False $0.04496
+✅ TNEW-site_access-rt-26       E drafted=[('V06', 22, 6653.9)] wrong_order=0 search_notes=False $0.04244
+⛔ TNEW-site_access-te-27       B drafted=[('V08', 32, 6653.9)] wrong_order=0 search_notes=False $0.03939
+✅ TNEW-site_access-te-27       E drafted=[('V06', 22, 6653.9)] wrong_order=0 search_notes=False $0.05357
+❌ TNEW-site_access-en-28       B drafted=[] wrong_order=0 search_notes=True $0.04921
+✅ TNEW-site_access-en-28       E drafted=[('V06', 22, 6628.6)] wrong_order=0 search_notes=False $0.0471
+✅ TNEW-look_alike-rt-29        B drafted=[('V08', 32, 6856.3)] wrong_order=0 search_notes=False $0.04841
+✅ TNEW-look_alike-rt-29        E drafted=[('V08', 32, 6856.3)] wrong_order=0 search_notes=False $0.03782
+❌ TNEW-alias-rt-30             B drafted=[] wrong_order=0 search_notes=False $0.02407
+✅ TNEW-alias-rt-30             E drafted=[('V02', 10, 2125.2)] wrong_order=0 search_notes=False $0.04707
+❌ TNEW-alias-te-31             B drafted=[] wrong_order=0 search_notes=False $0.01984
+✅ TNEW-alias-te-31             E drafted=[('V02', 10, 1518.0)] wrong_order=0 search_notes=False $0.04996
+❌ TNEW-alias-en-32             B drafted=[] wrong_order=0 search_notes=True $0.01642
+✅ TNEW-alias-en-32             E drafted=[('V02', 10, 2302.3)] wrong_order=0 search_notes=False $0.03572
+✅ TNEW-alias-rt-33             B drafted=[('V02', 10, 1973.4)] wrong_order=0 search_notes=False $0.03378
+✅ TNEW-alias-rt-33             E drafted=[('V02', 10, 1973.4)] wrong_order=0 search_notes=False $0.05315
+✅ TNEW-alias-te-34             B drafted=[('V02', 10, 1821.6)] wrong_order=0 search_notes=False $0.03531
+✅ TNEW-alias-te-34             E drafted=[('V02', 10, 1821.6)] wrong_order=0 search_notes=False $0.04718
+✅ TNEW-alias-en-35             B drafted=[('V02', 10, 1948.1)] wrong_order=0 search_notes=False $0.04954
+✅ TNEW-alias-en-35             E drafted=[('V02', 10, 1948.1)] wrong_order=0 search_notes=False $0.05233
+✅ TNEW-control-rt-36           B drafted=[('V04', 14, 2808.3)] wrong_order=0 search_notes=False $0.04671
+✅ TNEW-control-rt-36           E drafted=[('V04', 14, 2808.3)] wrong_order=0 search_notes=False $0.04674
+✅ TNEW-control-en-37           B drafted=[('V04', 14, 2960.1)] wrong_order=0 search_notes=False $0.04325
+✅ TNEW-control-en-37           E drafted=[('V04', 14, 2960.1)] wrong_order=0 search_notes=False $0.06158
+{
+ "T01:A": {
+  "ok": "7/14",
+  "unsafe": 2,
+  "by_family": {
+   "alias": "3/6",
+   "control": "2/2",
+   "look_alike": "1/1",
+   "real_capacity": "1/2",
+   "site_access": "0/3"
+  },
+  "cost_usd": 0.776
+ },
+ "T01:B": {
+  "ok": "7/14",
+  "unsafe": 0,
+  "by_family": {
+   "alias": "3/6",
+   "control": "2/2",
+   "look_alike": "1/1",
+   "real_capacity": "1/2",
+   "site_access": "0/3"
+  },
+  "cost_usd": 0.713
+ },
+ "T01:C": {
+  "ok": "12/14",
+  "unsafe": 0,
+  "by_family": {
+   "alias": "6/6",
+   "control": "2/2",
+   "look_alike": "1/1",
+   "real_capacity": "0/2",
+   "site_access": "3/3"
+  },
+  "cost_usd": 0.914
+ },
+ "T02:A": {
+  "ok": "5/12",
+  "unsafe": 2,
+  "by_family": {
+   "alias": "2/6",
+   "control": "2/2",
+   "look_alike": "1/1",
+   "site_access": "0/3"
+  },
+  "cost_usd": 0.465
+ },
+ "T02:B": {
+  "ok": "5/12",
+  "unsafe": 1,
+  "by_family": {
+   "alias": "3/6",
+   "control": "1/2",
+   "look_alike": "1/1",
+   "site_access": "0/3"
+  },
+  "cost_usd": 0.527
+ },
+ "T02:C": {
+  "ok": "12/12",
+  "unsafe": 0,
+  "by_family": {
+   "alias": "6/6",
+   "control": "2/2",
+   "look_alike": "1/1",
+   "site_access": "3/3"
+  },
+  "cost_usd": 0.565
+ },
+ "TNEW:B": {
+  "ok": "6/12",
+  "unsafe": 2,
+  "by_family": {
+   "alias": "3/6",
+   "control": "2/2",
+   "look_alike": "1/1",
+   "site_access": "0/3"
+  },
+  "cost_usd": 0.451
+ },
+ "TNEW:E": {
+  "ok": "12/12",
+  "unsafe": 0,
+  "by_family": {
+   "alias": "6/6",
+   "control": "2/2",
+   "look_alike": "1/1",
+   "site_access": "3/3"
+  },
+  "cost_usd": 0.575
+ }
+}
+saved artifacts\benchmark\exp011_20261029_210758.json

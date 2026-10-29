@@ -47,3 +47,6 @@ archive/prototype_experiments/data/
 
 # Obsidian state when the repo root is opened as a vault (docs/ is the vault)
 /.obsidian/
+
+# Benchmark per-case runtimes
+/artifacts/benchmark/rt/
