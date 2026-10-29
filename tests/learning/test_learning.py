@@ -264,3 +264,11 @@ def test_same_lesson_from_two_partners_is_merged_and_revocation_respects_the_oth
     assert S.get(a[0])["state"] == "ACTIVE_POLICY"               # still confirmed by the other partner
     pack.revoke(S, p2["pack_id"], "TNEW", "owner")
     assert S.get(a[0])["state"] == "RETIRED"
+
+
+def test_aliases_already_in_master_data_are_not_new_knowledge(C):
+    c = C("T01")
+    F = digest.Facts(c)
+    v = next(v for v in c.vehicles.values() if v["owner"] != "spot")
+    r = gate.check(F, {"kind": "alias", "params": {"phrase": v["reg_no"], "target_kind": "vehicle", "target_id": v["vehicle_id"]}})
+    assert r["verdict"] == "rejected" and "already recorded" in r["reason"]

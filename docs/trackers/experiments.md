@@ -372,3 +372,22 @@ Packs: T01→TNEW 4 lessons (1 skipped: no matching site), T02→TNEW 4 lessons 
   - **Diagnostic only:** EXP-008's rep-0 proposals re-checked by the refined gate on the original world. In-sample: the fixes were designed after seeing these, so this number is **not** evidence.
 - **Decision rule (fixed now):** **precision fixed** if primary pooled precision ≥ 0.85, pooled recall ≥ 0.60, and traps admitted = 0. Otherwise report the gap.
 - **Budget:** 3 mining calls, about $0.25.
+
+- **Result (2026-10-29, `artifacts/learning/exp009_20261029_204113.json`, $0.22 Meta):**
+
+| | Proposed | Passed gate | Precision | Recall | False lessons | Traps admitted |
+|---|---|---|---|---|---|---|
+| Fresh T01 | 12 | 10 | **1.00** | 0.77 | 0 | 0 |
+| Fresh T02 | 12 | 7 | **1.00** | 0.70 | 0 | 0 |
+| Fresh T03 | 15 | 7 | 0.43 | 0.75 | 4 | 0 |
+| **Pooled (primary)** | 39 | 24 | **0.833** | **0.741** | 4 | **0** |
+| Diagnostic: EXP-008 proposals re-gated (in-sample, not evidence) | | 20 | 0.95 | 0.73 | 1 | 0 |
+
+  - **The gate now rejected** wrong-hour closing claims, non-significant vendor claims, and type-name aliases on unseen data: no false lessons of the EXP-008 kinds.
+  - **T03's 4 false lessons were all "registration number = vehicle id" aliases** (e.g. "TS 10 TB 2074" → DFS-T017). They are true but already in the vehicle master, so they are not unwritten knowledge, and the evaluator rightly counts them as false.
+- **Verdict (rule fixed above):** **NOT met.** Pooled precision 0.833 < 0.85 (recall 0.74 ✓, traps admitted 0 ✓). We fix only what we can justify generically, and confirm it on yet another unseen world (EXP-009b).
+
+### EXP-009b: Confirmation on a second unseen world (frozen 2026-10-29 before any Muse call)
+- **Change since EXP-009 (one rule, generic):** an alias is rejected if its phrase is already recorded in the master data for its target (vehicle id, registration number, vendor name). It is "already known", not learned.
+- **Frozen:** `gate.py` `db36b3a4357e0e02` · `scripts/exp009b_gate.py` `fae3d1d844386f01` (identical to EXP-009's script except the world and file names). Fresh world `full_seed5279`, generated now, never inspected: config `d2fdf946d717`, snapshots T01:1a32676c1b16 T02:6d90896d7c0e T03:adb48ad92e9f TNEW:a912f2e75c09. 232 tests pass.
+- **Decision rule (same as EXP-009):** pooled precision ≥ 0.85, recall ≥ 0.60 and traps admitted = 0 on the new world. If not met, we stop tuning the gate and report both results; the reviewer remains the safeguard.

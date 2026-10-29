@@ -147,6 +147,13 @@ def alias(F, p):
         names = {w for w in re.findall(r"[a-z]+", F.C.sites[target]["name"].lower())}
         if set(phrase.split()) <= names:
             return _out("rejected", "the phrase is just the site's own name")
+    norm = lambda s: re.sub(r"[^a-z0-9]", "", str(s).lower())
+    if kind == "vehicle":
+        v = F.C.vehicles[target]
+        if norm(phrase) in {norm(v.get(k, "")) for k in ("vehicle_id", "reg_no", "vendor")}:
+            return _out("rejected", f"'{phrase}' is already recorded in the vehicle master (id, registration or vendor); not new knowledge")
+    if kind == "vendor" and norm(phrase) == norm(target):
+        return _out("rejected", "the phrase is the vendor's own recorded name")
     if kind == "vehicle":
         label = set(re.findall(r"[a-z0-9]+", str(F.C.vehicles[target].get("type_label", "")).lower()))
         if label and set(re.findall(r"[a-z0-9]+", phrase)) - {"bandi", "lorry", "truck"} <= label:
