@@ -190,7 +190,7 @@ class Sim:
             for e in cfg.get("today", {}).get("exposures", []):
                 s = W.site_by_key(cid, e["site"]) if e["company"] == cid else None
                 if s:
-                    picks.append(s | {"_min_kg": e["min_kg"], "_rule": "today"})
+                    picks.append(s | {"_min_kg": e["min_kg"], "_max_kg": e.get("max_kg"), "_rule": "today"})
         out = []
         for s in picks:
             brands = [b for b in c["brands"]]
@@ -205,6 +205,9 @@ class Sim:
             while s.get("_min_kg") and sum(self.prod[k]["case_kg"] * q for k, q in items) < s["_min_kg"]:
                 dense = [p for p in W.products if p["brand"] == b]
                 items.append([r.choice(dense)["sku"], r.randint(80, 200)])
+            while s.get("_max_kg") and sum(self.prod[k]["case_kg"] * q for k, q in items) > s["_max_kg"]:
+                k = max(range(len(items)), key=lambda i: self.prod[items[i][0]]["case_kg"] * items[i][1])
+                items[k][1] = max(1, int(items[k][1] * 0.9))      # trim the biggest line until the load fits the range
             merged = {}
             for sku, q in items:                       # one line per product, as on a real order
                 merged[sku] = merged.get(sku, 0) + q

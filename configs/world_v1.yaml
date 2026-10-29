@@ -9,9 +9,10 @@ pilot: {companies: [T01], start: 2026-09-08, end: 2026-09-14}
 # 'Today' = the day after the history ends: open orders waiting to be planned, nothing dispatched yet.
 today:
   exposures:
-    - {company: T01,  site: LAK-JGN, min_kg: 9500}     # the golden path: heavy load to the Jangaon north gate
-    - {company: T02,  site: LAK-JGN, min_kg: 9500}
-    - {company: TNEW, site: LAK-JGN, min_kg: 9500}     # cold start: does the domain pack help on day 1?
+    # ~7 t: the smallest truck that carries it by weight is the 32 ft SXL (7.5 t); the safe choice is the 22 ft (9 t)
+    - {company: T01,  site: LAK-JGN, min_kg: 6600, max_kg: 7300}     # the golden path at the Jangaon north gate
+    - {company: T02,  site: LAK-JGN, min_kg: 6600, max_kg: 7300}
+    - {company: TNEW, site: LAK-JGN, min_kg: 6600, max_kg: 7300}     # cold start: does the domain pack help on day 1?
     - {company: TNEW, site: VST-WGL, min_kg: 2000}     # 'Pedda godown'
     - {company: T01,  site: SVT-JGN, min_kg: 9500}     # look-alike Jangaon site: long trucks are fine
 
@@ -166,7 +167,7 @@ companies:
     orders_per_day: 6
     sites: [30, 40]
     brands: [Godavari Foods, Deccan Snacks]
-    fleet: {ACE: 1, LCV407: 2, T14: 2, T22: 2, T32M: 2}
+    fleet: {ACE: 1, LCV407: 2, T14: 2, T22: 2, T32S: 2, T32M: 2}
     spot_pool: 2
     vendors: [Bhadrakali Roadways, Ramagiri Carriers]
     personality: new
