@@ -2,7 +2,7 @@
 tags: [spec, data]
 date: 2026-10-29
 ---
-# Data spec v1: the Anubhavam demo world
+# Data spec v1: the Anubhav demo world
 
 What the generator builds, and why. It implements [[Data_Benchmark_Blueprint_v1.0]] at the D-027 scale (3 history companies + 1 new company). Status of each run: [[data_and_benchmark]]. Plan: [[build_plan]] Layer 1.
 
@@ -16,7 +16,7 @@ What the generator builds, and why. It implements [[Data_Benchmark_Blueprint_v1.
 5. **Three layers: neat truth, messy evidence, neat lessons.**
    - *Truth* (hidden) is precise and structured, so every lesson can be checked. Example: "Lakshmi Agencies, Jangaon, north gate: max 22 ft".
    - *Evidence* (notes, trips, messages) is messy, as in real life, and only partly reveals the truth.
-   - *Lessons* (Anubhavam's output) are structured again: scoped, evidenced, approved and expiring, so other planners and other companies can use them.
+   - *Lessons* (Anubhav's output) are structured again: scoped, evidenced, approved and expiring, so other planners and other companies can use them.
 
    Turning messy experience into usable knowledge is the product. It is never done by cleaning the evidence.
 
@@ -141,7 +141,7 @@ To keep it real, the system's site master is not perfectly empty or perfectly ri
 - **~20%** are filled and correct (things someone once typed in).
 - **~10%** are filled but **outdated or wrong** (e.g. "receiving till 20:00" when it is now 18:00).
 
-So the agent can't trust the master data blindly, and it has nothing to learn from on day 1. That is the gap Anubhavam's learning loop closes, and the reason T-new starts with only basic master data.
+So the agent can't trust the master data blindly, and it has nothing to learn from on day 1. That is the gap Anubhav's learning loop closes, and the reason T-new starts with only basic master data.
 
 ---
 
@@ -390,7 +390,7 @@ The generator simulates **day by day**. Each day runs steps 2–8 for every comp
 ## 10. Output layout (git-ignored data, committed code and config)
 ```
 configs/world_v1.yaml                 # all numbers in this spec
-src/anubhavam/data/                   # generator modules (steps 1–11)
+src/anubhav/data/                   # generator modules (steps 1–11)
 data/worlds/<run_id>/
   T01.sqlite  T02.sqlite  T03.sqlite  TNEW.sqlite   # agent-visible, per-company schema
   truth/hidden_rules.json             # NEVER agent-visible, never in MCP outputs

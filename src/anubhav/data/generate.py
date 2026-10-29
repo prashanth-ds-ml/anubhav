@@ -1,7 +1,7 @@
 """Generate a world: build -> simulate -> people -> text -> validate -> export (spec §9).
 
-  uv run python -m anubhavam.data.generate --pilot            # T01, Sep 8-14 (spec §11)
-  uv run python -m anubhavam.data.generate --full             # 90 days, all companies
+  uv run python -m anubhav.data.generate --pilot            # T01, Sep 8-14 (spec §11)
+  uv run python -m anubhav.data.generate --full             # 90 days, all companies
 Writes data/worlds/<run_id>/ and refuses to write anything if a critical check fails."""
 
 import argparse

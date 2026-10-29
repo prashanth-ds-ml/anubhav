@@ -1,12 +1,12 @@
 ---
-tags: [project, overview, anubhavam]
+tags: [project, overview, anubhav]
 date: 2026-10-28
 ---
-# Anubhavam: project overview, walkthrough and hackathon fit
+# Anubhav: project overview, walkthrough and hackathon fit
 
 > **One line:** an agent that learns a business's unwritten rules from the business's own records. The reviewer approves the risky lessons, and the next customer of the same type starts already knowing the regional ones.
 
-Diagram: `docs/diagrams/anubhavam_flow.excalidraw` (open at excalidraw.com → Menu → Open)
+Diagram: `docs/diagrams/anubhav_flow.excalidraw` (open at excalidraw.com → Menu → Open)
 Experiments: [[experiments]] (files in `archive/prototype_experiments/`) · Costs: [[cost_ledger]] · Rubric: [[rubric_scorecard]] · Submission: [[submission_checklist]]
 
 ---

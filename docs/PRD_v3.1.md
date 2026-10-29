@@ -1,4 +1,4 @@
-# ANUBHAVAM
+# ANUBHAV
 
 ## Product Requirements Document — v3.1 (Data & Evaluation Revision)
 
@@ -13,10 +13,10 @@
 **Core stack:** Python · LangGraph · MCP/FastMCP · Pydantic · SQLite · Streamlit · reproducible evaluator
 
 > **North-star product statement**  
-> Anubhavam is an agent runtime that discovers a business's authorized MCP capabilities, completes inspectable draft workflows, learns candidate operational knowledge from records and feedback, and improves its own tool-use guidance through bounded, verified experiments. All changes are evaluated before use; consequential rules require human approval. The Meta model weights remain unchanged.
+> Anubhav is an agent runtime that discovers a business's authorized MCP capabilities, completes inspectable draft workflows, learns candidate operational knowledge from records and feedback, and improves its own tool-use guidance through bounded, verified experiments. All changes are evaluated before use; consequential rules require human approval. The Meta model weights remain unchanged.
 
 > **Pitch for a nontechnical judge**  
-> Your best dispatcher knows which trucks cannot enter which loading bays. Your software often does not. Anubhavam learns those unwritten lessons from operational history, checks the evidence, asks a person to approve risky rules, and uses the approved knowledge the next time work is planned.
+> Your best dispatcher knows which trucks cannot enter which loading bays. Your software often does not. Anubhav learns those unwritten lessons from operational history, checks the evidence, asks a person to approve risky rules, and uses the approved knowledge the next time work is planned.
 
 **Evidence legend:** **Reported** = appears in project materials but was not independently replicated for this PRD; **Required** = must be implemented for the minimum credible submission; **Target** = a proposed benchmark or business goal, not a measured result; **Stretch** = expendable if the core proof is incomplete.
 
@@ -24,7 +24,7 @@
 
 # 1. Executive product decision
 
-Anubhavam will be **one unified user-facing product with three logical Muse-powered specialists and one coherent 3PL proof case**, rather than a general chatbot advertised to understand arbitrary databases. Its initial domain is fictional regional third-party logistics (3PL) order-to-delivery operations across five development tenants in Telangana and Andhra Pradesh. The system must understand English, Telugu, Roman Telugu and code-mixed operational requests; invoke domain MCP tools; return an explainable **draft** plan; and learn useful, reviewable constraints from trip outcomes.
+Anubhav will be **one unified user-facing product with three logical Muse-powered specialists and one coherent 3PL proof case**, rather than a general chatbot advertised to understand arbitrary databases. Its initial domain is fictional regional third-party logistics (3PL) order-to-delivery operations across five development tenants in Telangana and Andhra Pradesh. The system must understand English, Telugu, Roman Telugu and code-mixed operational requests; invoke domain MCP tools; return an explainable **draft** plan; and learn useful, reviewable constraints from trip outcomes.
 
 Two kinds of improvement are intentionally distinct:
 
@@ -37,7 +37,7 @@ The **original contribution to demonstrate** is the trustworthy bridge between t
 
 | Decision | Final v3.0 choice | Why |
 |---|---|---|
-| Project name | Anubhavam | Consistent identity and experience-centered pitch |
+| Project name | Anubhav | Consistent identity and experience-centered pitch |
 | End-user story | 3PL dispatch and vehicle/site constraints | Strongest reported qualitative pain and experimental history |
 | Earlier wholesale quotation flow | Secondary portability example, not primary demo | Avoid two disconnected demos |
 | Universal claim | **Reusable across conforming capability adapters** | Unknown data formats and business semantics still require mapping |
@@ -116,7 +116,7 @@ If H1 or H2 has a null outcome, record the result; do not fabricate uplift or qu
 - No model fine-tuning, guaranteed self-training, or model-weight changes.
 - No promise of zero errors in unrestricted real-world operations.
 - No unconfigured access to arbitrary databases; semantic mappings and units are required.
-- No claim that using Google's Harness² method makes that underlying research original to Anubhavam.
+- No claim that using Google's Harness² method makes that underlying research original to Anubhav.
 - No mandatory full Harness² upstream executor integration, enormous tool registry, or multi-industry production features.
 
 ## 3.3 Feature release matrix
@@ -259,7 +259,7 @@ Text / [optional] voice
 - Permit a second conformant adapter to reuse the same planner/learner code.
 - Handle missing capabilities explicitly rather than fabricating data or success.
 
-**MCP distinction:** MCP exposes actual tools through protocol mechanisms such as `tools/list` and `tools/call`. Anubhavam adds an application-level, tenant-aware *semantic capability manifest and policy broker*. The generic operations below are **logical runtime interfaces**, not a proposed replacement for MCP itself.
+**MCP distinction:** MCP exposes actual tools through protocol mechanisms such as `tools/list` and `tools/call`. Anubhav adds an application-level, tenant-aware *semantic capability manifest and policy broker*. The generic operations below are **logical runtime interfaces**, not a proposed replacement for MCP itself.
 
 ## 6.2 Generic runtime interfaces
 
@@ -354,7 +354,7 @@ Tools return typed errors such as `NOT_FOUND`, `AMBIGUOUS_ENTITY`, `MISSING_UNIT
 
 ## 8.1 Purpose and prior art
 
-Inspired by Google Research Harness²'s **Propose–Probe–Compose** and persistent improvement methodology, Anubhavam tests small changes to the agent's execution environment while keeping Muse model weights fixed. Harness² is credited as research prior art. Its published executor integrations are **not** presumed safe or plug-and-play with Muse + tenant MCP; Anubhavam's P0 loop is a controlled original implementation of the general method.
+Inspired by Google Research Harness²'s **Propose–Probe–Compose** and persistent improvement methodology, Anubhav tests small changes to the agent's execution environment while keeping Muse model weights fixed. Harness² is credited as research prior art. Its published executor integrations are **not** presumed safe or plug-and-play with Muse + tenant MCP; Anubhav's P0 loop is a controlled original implementation of the general method.
 
 ## 8.2 Editable surfaces
 
@@ -521,7 +521,7 @@ Development, generated-probe, regression, and locked final evaluation sets are d
 
 ## 11.5 Unified agent and specialist workflows (v3.1)
 
-One Anubhavam interface and one common Meta Muse model/runtime expose **three logical LangGraph specialists**, not three separately trained models: (1) **Planning**: interpret orders, calculate loads, consolidate/split, select carriers and invoke OR-Tools for feasible draft plans; (2) **Operations**: check availability, produce approved dispatch workflows, monitor exceptions and replan; (3) **Experience**: mine candidate operational lessons and harness patches, attach evidence and propose bounded experiments. All specialists can handle English, Telugu, Roman Telugu and code-mixed inputs. They share the same authorized MCP registry, tenant isolation, deterministic verifier, two learning loops and versioned audit trail. No autonomous safety-policy changes, self-modifying model weights or dispatch without authorized approval. For hackathon feasibility, implement as one runtime with specialist workflows; compare against a one-generalist-agent baseline before claiming multi-agent superiority.
+One Anubhav interface and one common Meta Muse model/runtime expose **three logical LangGraph specialists**, not three separately trained models: (1) **Planning**: interpret orders, calculate loads, consolidate/split, select carriers and invoke OR-Tools for feasible draft plans; (2) **Operations**: check availability, produce approved dispatch workflows, monitor exceptions and replan; (3) **Experience**: mine candidate operational lessons and harness patches, attach evidence and propose bounded experiments. All specialists can handle English, Telugu, Roman Telugu and code-mixed inputs. They share the same authorized MCP registry, tenant isolation, deterministic verifier, two learning loops and versioned audit trail. No autonomous safety-policy changes, self-modifying model weights or dispatch without authorized approval. For hackathon feasibility, implement as one runtime with specialist workflows; compare against a one-generalist-agent baseline before claiming multi-agent superiority.
 
 ## 11.6 Three evaluation modes (v3.1)
 
@@ -748,7 +748,7 @@ The earlier overview reports approximately **$24 experimental spend** as of Octo
 - [ ] Accessible three-minute video showing only newly built functionality.
 - [ ] Clear use of Meta models at runtime, with exact model ID and APIs called.
 - [ ] README: setup, one-command seeded replay, architecture, data policy, experiments, honest limitations and license.
-- [ ] Distinguish original Anubhavam implementation from LangGraph, MCP/FastMCP, Google Harness² ideas or code, and any third-party datasets/assets.
+- [ ] Distinguish original Anubhav implementation from LangGraph, MCP/FastMCP, Google Harness² ideas or code, and any third-party datasets/assets.
 - [ ] Include a benchmark manifest, frozen test results, denominators, adversarial failures, regression history and spend record.
 - [ ] All company/person names and operational data fictional; no real credentials, secret git history or unauthorized assets.
 - [ ] Submission date and website form rechecked; final upload confirmed before November 4, 9 PM ET.
@@ -756,7 +756,7 @@ The earlier overview reports approximately **$24 experimental spend** as of Octo
 
 ## 19.1 Original contribution matrix
 
-| Existing foundation | Attribution | Anubhavam-specific contribution to demonstrate |
+| Existing foundation | Attribution | Anubhav-specific contribution to demonstrate |
 |---|---|---|
 | Meta Muse models | Meta | Business planning, candidate lesson/patch proposal and multilingual execution |
 | MCP | Model Context Protocol ecosystem | Tenant-governed semantic manifests and typed business adapter contracts |
@@ -775,7 +775,7 @@ The earlier overview reports approximately **$24 experimental spend** as of Octo
 
 **Final one-line submission pitch:**
 
-> **Anubhavam uses Meta Muse and MCP to turn messy operational experience into reviewed, scoped business knowledge—and tests improvements to the agent's tool-use harness before trusting them on the next task.**
+> **Anubhav uses Meta Muse and MCP to turn messy operational experience into reviewed, scoped business knowledge—and tests improvements to the agent's tool-use harness before trusting them on the next task.**
 
 ---
 
@@ -783,10 +783,10 @@ The earlier overview reports approximately **$24 experimental spend** as of Octo
 
 **Project source files (supplied by the user):**
 
-1. `Anubhavam_overview.md` (28 Oct 2026): latest 3PL focus; reported interview; EXP-001–006 metrics and limitations.
+1. `Anubhav_overview.md` (28 Oct 2026): latest 3PL focus; reported interview; EXP-001–006 metrics and limitations.
 2. `PRD_v1.1.md` (27 Oct 2026): older FMCG quotation focus; Muse, LangGraph, BigTool, MCP and evaluation infrastructure carried forward selectively.
-3. `Anubhavam_PRD_v2.0_Harness_MCP.md` (28 Oct 2026): predecessor architecture and boundaries; substantially refined in this final baseline.
-4. `Anubhavam_v2_Three_Judge_Report.md` (28 Oct 2026): simulated critique and scoring; not actual Meta judging.
+3. `Anubhav_PRD_v2.0_Harness_MCP.md` (28 Oct 2026): predecessor architecture and boundaries; substantially refined in this final baseline.
+4. `Anubhav_v2_Three_Judge_Report.md` (28 Oct 2026): simulated critique and scoring; not actual Meta judging.
 5. `Details – Meta Global AI Developer Hackathon – Cerebral Valley(1).pdf`: organizer's participant guide, source of rules, dates, rubric and video requirements.
 6. `Meta Global AI Developer Hackathon – Cerebral Valley.pdf`: public event overview and track definitions.
 
@@ -804,7 +804,7 @@ The earlier overview reports approximately **$24 experimental spend** as of Octo
 # Appendix B. Minimal demo artifact structure
 
 ```text
-anubhavam/
+anubhav/
   README.md
   LICENSES_AND_ATTRIBUTION.md
   app.py
@@ -845,7 +845,7 @@ anubhavam/
 
 ---
 
-**End of final design baseline — Anubhavam PRD v3.0**
+**End of final design baseline — Anubhav PRD v3.0**
 
 
 ---

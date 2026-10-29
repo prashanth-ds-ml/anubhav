@@ -1,0 +1,9 @@
+# Adapter C: consignment-note system (used by T03): legacy consignment numbers, weights in tonnes.
+variant: C
+description: Consignment-note system; tonnes for loads and payloads
+tables: {sites: consignees, shipments: consignments, shipment_stops: consignment_stops,
+         shipment_items: consignment_items, vehicles: vehicle_register}
+columns: {shipment_id: consignment_no, vehicle_id: vehicle_no, site_id: consignee_id}
+units:
+  - {table: shipments, column: weight_kg, as: weight_t, factor: 0.001}
+  - {table: vehicles, column: payload_kg, as: payload_t, factor: 0.001}

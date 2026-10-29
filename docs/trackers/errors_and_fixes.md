@@ -19,6 +19,10 @@ Summary table first, details below. Newest at the bottom.
 | E-009 | 2026-10-29 | data | Planned evidence lost: exposure orders hit random credit holds / rollovers | medium | fixed | generator commit |
 | E-010 | 2026-10-29 | data | Unrealistic scale behaviour: 29% rollovers, 528 dairy spoilages, repeated expired-paper picks | high | fixed | generator commit |
 | E-011 | 2026-10-29 | infra | Inline bash heredocs turned `\n` into real newlines inside Python source | low | fixed (use the Edit tool or script files) | — |
+| E-012 | 2026-10-29 | data | Staff edits wrote the Jangaon limit into the T01 site master during history, so the 'unwritten' rule was written | high | fixed (D-033) | layer 2 commit |
+| E-013 | 2026-10-29 | tools | find_site matched 'Pedda godown' to 'Bhavani Logistics Godown' on the generic word 'godown' | high | fixed (generic words ignored) | layer 2 commit |
+| E-014 | 2026-10-29 | tools | A retry after cancel returned the cancelled draft (shared idempotency key), bypassing new policy checks | high | fixed (cancelled drafts never resurrected; test) | layer 2 commit |
+| E-015 | 2026-10-29 | infra | Rename sweep skipped every folder named `data` (incl. src/anubhav/data, tests/data); tests caught the stale import | low | fixed | layer 2 commit |
 
 **Areas:** model API · MCP · tools · agent · retrieval · verifier · voice · UI · infra · data · cost
 

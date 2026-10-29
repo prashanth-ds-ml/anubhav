@@ -131,13 +131,37 @@ class Sim:
         return round(km_ / self.cfg["speed_kmh"]["highway"] * 60 + (20 if a != b else 10)), km_
 
     # ---------- run
-    def run(self):
+    def run(self, with_today=True):
         for cid, c in self.W.companies.items():
             if c.get("history", True) is False:
                 continue
             for d in daterange(self.start, self.end):
                 self.day(cid, c, d)
+        if with_today:
+            self.today(self.end + timedelta(days=1))
         return self.t
+
+    def today(self, d):
+        """Open orders waiting to be planned for day d, and each vehicle's current status. Nothing is dispatched."""
+        for cid, c in self.W.companies.items():
+            rd = rng(self.cfg, "demand", cid, d, "today")
+            orders = self.make_orders(cid, c, d, rd, today=True)
+            orders += [o for o in self.t["_resend"] if o["company"] == cid and o["delivery_date"] == d.isoformat()]
+            for o in orders:
+                self.order_ok(cid, o, d, rd)
+            for v in self.W.vehicles:
+                if v["company"] != cid:
+                    continue
+                key = (cid, v["vehicle_id"])
+                if v["maintenance_day"] and v["maintenance_day"] == d.day:
+                    v["status"] = "maintenance"
+                elif self.blocked.get(key, d) > d:
+                    v["status"] = "papers_pending"
+                elif self.free_at.get(key, datetime.min) > at(d - timedelta(days=1), 21):
+                    v["status"] = "on_trip"
+                else:
+                    v["status"] = "available"       # what the system says (papers may still have lapsed)
+        self.today_date = d
 
     def day(self, cid, c, d):
         rd, rs = rng(self.cfg, "demand", cid, d), rng(self.cfg, "resources", cid, d)
@@ -151,7 +175,7 @@ class Sim:
                 self.dispatch(cid, c, d, load, planner, rs, rx)
 
     # ---------- step 2: demand
-    def make_orders(self, cid, c, d, r):
+    def make_orders(self, cid, c, d, r, today=False):
         W, cfg = self.W, self.cfg
         sites = [s for s in W.sites if s["company"] == cid]
         n = max(0, round(r.gauss(c["orders_per_day"] * self.demand_factor(d), 1.5)))
@@ -162,6 +186,11 @@ class Sim:
                     s = W.site_by_key(cid, e.get("site", rule.get("site")))
                     if s:
                         picks.append(s | {"_min_kg": e.get("min_kg", 0), "_rule": rule["id"]})
+        if today:
+            for e in cfg.get("today", {}).get("exposures", []):
+                s = W.site_by_key(cid, e["site"]) if e["company"] == cid else None
+                if s:
+                    picks.append(s | {"_min_kg": e["min_kg"], "_rule": "today"})
         out = []
         for s in picks:
             brands = [b for b in c["brands"]]

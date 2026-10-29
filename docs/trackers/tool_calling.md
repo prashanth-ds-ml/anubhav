@@ -8,24 +8,31 @@ Old order-desk registry (40 tools): `archive/tool_calling_order_desk.md`
 
 ## 1. Tool registry
 Every tool does real fixture-backed work. No dummy tools to inflate the count.
+**Generic (D-030):** every tool works on the canonical model, so the same 16 tools serve all clients; contract tests run on T01 (schema A), T02 (B), T03 (C, tonnes) and TNEW. Built: `src/anubhav/runtime/broker.py`. Meta-tools `discover_capabilities` and `inspect_contract` expose each tool's manifest.
+Status: ✅ = implemented and contract-tested on all 4 clients.
 
 | # | Tool | Area | R/W | Contract test (A/B/C) | Examples EN/TE/RT/MIX | Status |
 |---|---|---|---|---|---|---|
-| 1 | list_shipments | Shipments | R | ⬜ | ⬜ | ⬜ |
-| 2 | get_shipment | Shipments | R | ⬜ | ⬜ | ⬜ |
-| 3 | list_vehicles | Vehicles | R | ⬜ | ⬜ | ⬜ |
-| 4 | get_vehicle | Vehicles | R | ⬜ | ⬜ | ⬜ |
-| 5 | check_vehicle_availability | Vehicles | R | ⬜ | ⬜ | ⬜ |
-| 6 | get_site_constraints | Destinations | R | ⬜ | ⬜ | ⬜ |
-| 7 | get_route_info | Destinations | R | ⬜ | ⬜ | ⬜ |
-| 8 | create_dispatch_draft | Planning | W (draft) | ⬜ | ⬜ | ⬜ |
-| 9 | get_dispatch_draft | Planning | R | ⬜ | ⬜ | ⬜ |
-| 10 | cancel_dispatch_draft | Planning | W (draft) | ⬜ | ⬜ | ⬜ |
-| 11 | record_driver_note | Outcomes | W (append) | ⬜ | ⬜ | ⬜ |
-| 12 | list_trip_outcomes | Outcomes | R | ⬜ | ⬜ | ⬜ |
-| 13 | get_transport_policy | Policy | R | ⬜ | ⬜ | ⬜ |
+| 0a | discover_capabilities | Meta | R | ✅ | — | ✅ |
+| 0b | inspect_contract | Meta | R | ✅ | — | ✅ |
+| 0c | find_site | Sites | R | ✅ | ⬜ | ✅ |
+| 1 | list_open_orders (was list_shipments) | Orders | R | ✅ | ⬜ | ✅ |
+| 2 | get_order (was get_shipment) | Orders | R | ✅ | ⬜ | ✅ |
+| 3 | list_vehicles | Vehicles | R | ✅ | ⬜ | ✅ |
+| 4 | (get_vehicle merged into list_vehicles / check_vehicle_availability) | Vehicles | R | — | — | ✂️ |
+| 5 | check_vehicle_availability | Vehicles | R | ✅ | ⬜ | ✅ |
+| 6 | get_site_constraints | Destinations | R | ✅ | ⬜ | ✅ |
+| 7 | get_route_info | Destinations | R | ✅ | ⬜ | ✅ |
+| 8 | create_dispatch_draft | Planning | W (draft) | ✅ | ⬜ | ✅ |
+| 9 | get_dispatch_draft | Planning | R | ✅ | ⬜ | ✅ |
+| 10 | cancel_dispatch_draft | Planning | W (draft) | ✅ | ⬜ | ✅ |
+| 11 | record_driver_note | Outcomes | W (append) | ✅ | ⬜ | ✅ |
+| 12 | list_trip_outcomes | Outcomes | R | ✅ | ⬜ | ✅ |
+| 13 | get_transport_policy | Policy | R | ✅ | ⬜ | ✅ |
 
-Add order/demand tools (orders, order items, allocation) only if Layer 1 needs them for planning tasks; log each addition here.
+| 14 | search_notes | Memory | R | ✅ | ⬜ | ✅ |
+
+search_notes is the raw-memory baseline (Arm B): term-overlap search over notes, messages and feedback; results are marked untrusted text.
 
 ## 2. Tool-call observations
 One row per notable call: good, bad or surprising.

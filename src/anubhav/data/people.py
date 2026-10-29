@@ -44,7 +44,7 @@ def run(W, t, start, end):
                 if o["true_cause"] in SITE_FIELD and r.random() < 0.35:
                     field, right, wrong, show = SITE_FIELD[o["true_cause"]]
                     correct = r.random() < 0.7
-                    scope = "master" if r.random() < 0.15 else "this_order"
+                    scope = "this_order"         # fixed for this order only: the rule stays in people's heads
                     when = datetime.fromisoformat(o["arrived_at"]) + timedelta(hours=r.randint(1, 20))
                     e = _edit(t, cid, when, user(), "site", o["site_id"], field, show(wrong if correct else right),
                               show(right if correct else wrong), o["true_cause"], correct, scope)

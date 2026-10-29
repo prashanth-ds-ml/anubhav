@@ -30,12 +30,16 @@ ADR-style: newest at the bottom. Never delete an entry; mark it superseded inste
 | D-021 | 2026-10-27 | Repo and project name: **`meta-hackathon-telugu-agent`** (GitHub repo and Python project). Local folder stays `C:\Users\prash\projects\meta_hackathon`; it does not affect the remote, package or submission. Import package stays `order_agent` | superseded by D-025 |
 | D-022 | 2026-10-27 | Business data lives in CSVs (source of truth) loaded into SQLite; shop slang is kept in `datasets/business/hidden/`, never in the DB; 48-task benchmark v1 with expected answers computed by `pricing.py` | accepted |
 | D-023 | 2026-10-27 | Baseline first: run the baseline on Day 2–3, before building the improvement loop. Arms become A (all tools), B (Muse built-in `tool_search`), C (B + our approved harness patches) | accepted |
-| D-024 | 2026-10-28 | Direction: **Anubhavam**, an agent that learns a business's unwritten rules from its own records (evidence gate + reviewer), with private lessons and a regional domain pack for new customers. Based on EXP-005/006 | accepted |
+| D-024 | 2026-10-28 | Direction: **Anubhav**, an agent that learns a business's unwritten rules from its own records (evidence gate + reviewer), with private lessons and a regional domain pack for new customers. Based on EXP-005/006 | accepted |
 | D-025 | 2026-10-29 | Repo renamed to **`anubhav`** (GitHub repo and Python project). Local folder stays `meta_hackathon` | accepted |
-| D-026 | 2026-10-29 | Prior experiments EXP-001–006 and the `order_agent` package moved to `archive/prototype_experiments/`, layout unchanged so frozen hashes and scripts still work; new code goes in `src/anubhavam/` | accepted |
+| D-026 | 2026-10-29 | Prior experiments EXP-001–006 and the `order_agent` package moved to `archive/prototype_experiments/`, layout unchanged so frozen hashes and scripts still work; new code goes in `src/anubhav/` | accepted |
 | D-027 | 2026-10-29 | Design baseline: [[PRD_v3.1]] + [[Data_Benchmark_Blueprint_v1.0]], scaled to **3 history companies + 1 new test company** (instead of 5 + 1); everything else kept, built in layers with a demo-safe checkpoint on Nov 1 | accepted |
 | D-028 | 2026-10-29 | **Ground rule:** every commit and push is by `prashanth-ds-ml <prashanth01071995@gmail.com>` only; no co-authors, no Claude attribution, no other GitHub account. Repo-local credential helper pins pushes to prashanth-ds-ml | accepted |
 | D-029 | 2026-10-29 | Data defaults ([[Data_Spec_v1]]): 90 days (Aug 1 → Oct 29, 2026), ~2,500–3,000 orders (T01 ≈ 9/day, T02 ≈ 8/day, T03 ≈ 14/day), real towns and PIN codes with fictional businesses, notes ~50% Roman Telugu / 30% Telugu / 20% English or mixed; medium regional 3PL; delivery-window-driven planning; fleet ~30% own / 50% attached / 20% spot; public datasets used for structure only | accepted |
+| D-030 | 2026-10-29 | **Generic tools over a canonical model.** The same 16 tools serve every client; each client's schema is mapped by an adapter file (`configs/adapters/*.yaml`). Onboarding = a mapping file, not code. Lessons are expressed in canonical terms, which is what lets them transfer. No raw SQL tool | accepted |
+| D-031 | 2026-10-29 | Project name changed from Anubhavam to **Anubhav** everywhere (package `anubhav`, docs, configs) | accepted |
+| D-032 | 2026-10-29 | MCP server per authenticated session (MCP SDK 2.x `MCPServer`): `tools/list` shows only what the role may use; company and role never come from tool arguments | accepted |
+| D-033 | 2026-10-29 | Rule-related staff fixes stay local to the order (never written to the site master), matching the interview: constraints live in planners' heads | accepted |
 
 ---
 

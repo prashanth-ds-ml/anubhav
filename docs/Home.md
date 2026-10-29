@@ -1,7 +1,7 @@
 ---
 tags: [home, index]
 ---
-# Anubhavam: Home
+# Anubhav: Home
 
 **Meta Global AI Developer Hackathon** · Indie track · Push the Frontier
 
@@ -14,8 +14,8 @@ tags: [home, index]
 - [[PRD_v3.1]]: product requirements (source of truth), scaled per D-027
 - [[Data_Benchmark_Blueprint_v1.0]]: data generator, 100-case benchmark, review procedure
 - [[Data_Spec_v1]]: the demo world: references, scale, companies, vehicles, schema, **hidden rules (H-01…H-32)**, notes, generator steps
-- [[Anubhavam_overview]]: the idea, an 18-step walkthrough, experiment findings, hackathon fit
-- `diagrams/anubhavam_flow.excalidraw`: flow diagram (open at excalidraw.com)
+- [[Anubhav_overview]]: the idea, an 18-step walkthrough, experiment findings, hackathon fit
+- `diagrams/anubhav_flow.excalidraw`: flow diagram (open at excalidraw.com)
 - `archive/`: superseded docs (PRD v1 and v1.1, old day plan); prior experiment files are in the repo's `archive/prototype_experiments/`
 
 ## Trackers

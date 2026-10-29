@@ -1,4 +1,4 @@
-# Anubhavam demo world, v1. Every number here comes from docs/Data_Spec_v1.md.
+# Anubhav demo world, v1. Every number here comes from docs/Data_Spec_v1.md.
 # Places are real; every business, person, vehicle number and phone number is fictional.
 version: 1
 generator_version: "0.1.0"
@@ -6,6 +6,14 @@ master_seed: 20261104
 
 period: {start: 2026-08-01, end: 2026-10-29}
 pilot: {companies: [T01], start: 2026-09-08, end: 2026-09-14}
+# 'Today' = the day after the history ends: open orders waiting to be planned, nothing dispatched yet.
+today:
+  exposures:
+    - {company: T01,  site: LAK-JGN, min_kg: 9500}     # the golden path: heavy load to the Jangaon north gate
+    - {company: T02,  site: LAK-JGN, min_kg: 9500}
+    - {company: TNEW, site: LAK-JGN, min_kg: 9500}     # cold start: does the domain pack help on day 1?
+    - {company: TNEW, site: VST-WGL, min_kg: 2000}     # 'Pedda godown'
+    - {company: T01,  site: SVT-JGN, min_kg: 9500}     # look-alike Jangaon site: long trucks are fine
 
 calendar:
   sunday_factor: 0.3

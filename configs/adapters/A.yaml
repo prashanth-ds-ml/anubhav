@@ -1,0 +1,7 @@
+# Adapter A: legacy fleet system (used by T01). Maps the client's physical schema to the canonical model.
+# Onboarding a new client = writing one of these files; no code changes.
+variant: A
+description: Fleet-centric legacy system; weights in kg
+tables: {vehicles: fleet_vehicles, driver_notes: trip_notes}
+columns: {}
+units: []

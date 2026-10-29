@@ -9,16 +9,22 @@ from pathlib import Path
 HIDDEN_COLUMNS = {"true_cause", "rule_id", "correct", "real_payload_kg", "site_key", "demand_weight", "credit_hold_days",
                   "true", "known"}
 HIDDEN_TABLES = {"replans"}
-VARIANTS = {
-    "A": {"tables": {"vehicles": "fleet_vehicles", "driver_notes": "trip_notes"}, "columns": {}, "units": {}},
-    "B": {"tables": {"vehicles": "truck_master", "shipments": "loads", "shipment_stops": "load_stops",
-                     "shipment_items": "load_items", "trip_events": "delivery_events", "trip_outcomes": "delivery_results"},
-          "columns": {"shipment_id": "load_id", "vehicle_id": "truck_id", "site_id": "consignee_code"}, "units": {}},
-    "C": {"tables": {"sites": "consignees", "shipments": "consignments", "shipment_stops": "consignment_stops",
-                     "shipment_items": "consignment_items", "vehicles": "vehicle_register"},
-          "columns": {"shipment_id": "consignment_no", "vehicle_id": "vehicle_no", "site_id": "consignee_id"},
-          "units": {("shipments", "weight_kg"): ("weight_t", 0.001), ("vehicles", "payload_kg"): ("payload_t", 0.001)}},
-}
+ADAPTERS_DIR = Path(__file__).resolve().parents[3] / "configs" / "adapters"
+
+
+def load_adapters(directory=ADAPTERS_DIR):
+    """Client schema mappings live in configs/adapters/*.yaml: onboarding a client is a config file, not code."""
+    import yaml
+    out = {}
+    for p in sorted(Path(directory).glob("*.yaml")):
+        m = yaml.safe_load(p.read_text(encoding="utf-8"))
+        out[m["variant"]] = {"tables": m.get("tables") or {}, "columns": m.get("columns") or {},
+                             "units": {(u["table"], u["column"]): (u["as"], u["factor"]) for u in m.get("units") or []},
+                             "description": m.get("description", "")}
+    return out
+
+
+VARIANTS = load_adapters()
 
 
 def visible_tables(W, t):
@@ -26,7 +32,7 @@ def visible_tables(W, t):
     out = {k: v for k, v in t.items() if not k.startswith("_")}
     out["sites"] = [{**{k: v for k, v in s.items() if k not in ("true", "known")}, **s["known"],
                      "entrances": ",".join(s["entrances"])} for s in W.sites]
-    out["vehicles"] = [dict(v, status="available") for v in W.vehicles]
+    out["vehicles"] = [dict(v, status=v.get("status", "available")) for v in W.vehicles]
     out["drivers"] = list(W.drivers)
     out["products"] = [dict(p, company=c) for c in W.companies for p in W.products
                        if p["brand"] in W.companies[c]["brands"]]

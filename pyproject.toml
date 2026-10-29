@@ -1,10 +1,12 @@
 [project]
 name = "anubhav"
 version = "0.1.0"
-description = "Anubhavam: a multilingual agent that learns a business's unwritten rules from its own records, on Meta Muse"
+description = "Anubhav: a multilingual agent that learns a business's unwritten rules from its own records, on Meta Muse"
 requires-python = ">=3.12"
 dependencies = [
     "httpx>=0.28.1",
+    "langgraph>=1.2.18",
+    "mcp>=2.3.0",
     "numpy>=2.5.4",
     "openai>=3.39.0",
     "python-dotenv>=1.2.4",
@@ -25,7 +27,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/anubhavam", "archive/prototype_experiments/src/order_agent"]
+packages = ["src/anubhav", "archive/prototype_experiments/src/order_agent"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests", "archive/prototype_experiments/tests"]

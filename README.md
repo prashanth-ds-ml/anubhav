@@ -1,15 +1,15 @@
-# Anubhavam
+# Anubhav
 
 > Built during the **Meta Global AI Developer Hackathon** (Oct 26 – Nov 4, 2026) · Indie track · *Push the Frontier*
 
-**An agent that learns a business's unwritten rules from the business's own records.** It checks the evidence, asks a person to approve risky lessons, and shares safe regional knowledge with the next customer of the same type. It works in Telugu, English and Roman Telugu, on Meta Muse. *Anubhavam* (అనుభవం) means "experience".
+**An agent that learns a business's unwritten rules from the business's own records.** It checks the evidence, asks a person to approve risky lessons, and shares safe regional knowledge with the next customer of the same type. It works in Telugu, English and Roman Telugu, on Meta Muse. *Anubhav* means "experience".
 
 *Same model. Verified experience. Better decisions.*
 
 ## The problem
 A dispatcher near Warangal knows that a 32 ft truck can't get into one Jangaon godown. That rule isn't in any system; it lives in a driver's note from a failed trip. An AI agent connected to the business data passes every check and still sends the 32 ft truck.
 
-In our prior experiments, Muse handled Telugu, Roman Telugu and tool calls at 88–100%, but scored **0–12% on unwritten local knowledge**. That gap is what Anubhavam closes.
+In our prior experiments, Muse handled Telugu, Roman Telugu and tool calls at 88–100%, but scored **0–12% on unwritten local knowledge**. That gap is what Anubhav closes.
 
 ## How it learns
 1. **Records:** trips, staff corrections and outcomes are stored.
@@ -24,7 +24,7 @@ The agent only ever creates **draft** plans. It never dispatches real goods.
 
 ## Status
 🚧 **In progress.** The new build starts now. What exists today:
-- **Design:** [PRD v3.1](docs/PRD_v3.1.md), [Data & Benchmark Blueprint](docs/Data_Benchmark_Blueprint_v1.0.md) and an [overview](docs/Anubhavam_overview.md). Scope: 3 history companies + 1 new test company.
+- **Design:** [PRD v3.1](docs/PRD_v3.1.md), [Data & Benchmark Blueprint](docs/Data_Benchmark_Blueprint_v1.0.md) and an [overview](docs/Anubhav_overview.md). Scope: 3 history companies + 1 new test company.
 - **Prior experiments** (small synthetic sets, 13–16 tasks): [archive/prototype_experiments](archive/prototype_experiments/). The most relevant is EXP-006: unwritten-rule tasks went from 0% to 100% after learning from 123 trips, and a second company using the domain pack went from 0% to 100% with 0 leaks. These are early signals, not final results.
 
 ## Meta models
@@ -38,7 +38,7 @@ The agent only ever creates **draft** plans. It never dispatches real goods.
 ```
 docs/                          # Obsidian vault: PRD, blueprint, overview, diagrams, trackers, daily notes
 archive/prototype_experiments/ # EXP-001–006: code, data and raw results (unchanged, hashes verified)
-src/anubhavam/                 # the new build (coming)
+src/anubhav/                 # the new build (coming)
 ```
 
 ## Quick start

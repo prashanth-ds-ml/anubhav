@@ -1,4 +1,4 @@
-# ANUBHAVAM — DATA & BENCHMARK ENGINEERING BLUEPRINT
+# ANUBHAV — DATA & BENCHMARK ENGINEERING BLUEPRINT
 
 ## Version 1.0 · 29 October 2026
 **Companion to PRD v3.1 | Status: Implementation plan, not completed data**
@@ -126,7 +126,7 @@ The new tenant can use only approved and eligible regional/site/route packs. Pub
 ## 13. Repository and data access boundaries
 
 ```text
-anubhavam/
+anubhav/
   configs/                     # generator scenarios, versions, source manifest
   scripts/                     # 01..10 generation, checks, review, evaluation
   app/agent/                   # shared Muse runtime and three logical workflows

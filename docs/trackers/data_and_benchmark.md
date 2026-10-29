@@ -34,7 +34,8 @@ Agent-invisible. One row per planted rule, trap or change, so the benchmark can 
 ## 4. Human review log
 | Date | Pass | What was reviewed | Reviewer | Verdict | Issues found → fix |
 |---|---|---|---|---|---|
-| | 1 realism | pilot: 20 trips, 30 orders, rules | me | | |
+| 2026-10-29 | 1 realism | pilot review packet (`reports/review_T01.md`) | owner | approved to proceed ("yes"); no issues raised | — |
+| 2026-10-29 | 1 realism (Claude) | full 90-day dry run: rates, samples | Claude | 6 realism problems fixed (E-010) | generator |
 
 ## 5. Sealed casebook (100)
 | Pack | Category | Target | Generated | Reviewed | Approved | Notes |

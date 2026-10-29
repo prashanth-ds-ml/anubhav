@@ -1,6 +1,6 @@
 # Prior experiments (EXP-001 to EXP-006)
 
-Everything here was built on Oct 27, 2026, before the project settled on Anubhavam. It is kept as evidence: the files are unchanged, and their sha256 hashes match the pre-registrations in [`docs/trackers/experiments.md`](../../docs/trackers/experiments.md).
+Everything here was built on Oct 27, 2026, before the project settled on Anubhav. It is kept as evidence: the files are unchanged, and their sha256 hashes match the pre-registrations in [`docs/trackers/experiments.md`](../../docs/trackers/experiments.md).
 
 | Exp | Question | Result | Files |
 |---|---|---|---|

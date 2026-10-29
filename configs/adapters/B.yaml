@@ -1,0 +1,7 @@
+# Adapter B: load-centric TMS export (used by T02).
+variant: B
+description: Load-centric TMS export; trucks and consignee codes
+tables: {vehicles: truck_master, shipments: loads, shipment_stops: load_stops, shipment_items: load_items,
+         trip_events: delivery_events, trip_outcomes: delivery_results}
+columns: {shipment_id: load_id, vehicle_id: truck_id, site_id: consignee_code}
+units: []

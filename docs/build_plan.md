@@ -2,7 +2,7 @@
 tags: [plan, build]
 date: 2026-10-29
 ---
-# Build plan: Anubhavam (Oct 29 → Nov 4)
+# Build plan: Anubhav (Oct 29 → Nov 4)
 
 Source of truth for *what* to build: [[PRD_v3.1]] and [[Data_Benchmark_Blueprint_v1.0]], scaled by D-027 (**3 history companies + 1 new test company**; everything else kept).
 This file says *in what order* and *when it is done*. Track daily status in [[progress]].
@@ -27,7 +27,7 @@ This file says *in what order* and *when it is done*. Track daily status in [[pr
 
 ## Target layout
 ```
-src/anubhavam/
+src/anubhav/
   muse.py              # Muse client (Spark, Spark Open, Voice Transcribe), cost + trace hooks
   data/                # world generator (blueprint scripts 01–08 as modules), validators
   mcp/                 # FastMCP server, tool manifests, tenant broker, adapters A/B/C
@@ -37,7 +37,7 @@ src/anubhavam/
   harness/             # Loop A: patch proposal, paired probes, versions, rollback
   eval/                # casebook builder, arms A–E runner, scorer, adversarial suite
   ui/                  # Streamlit: Workbench, Learning Lab, Benchmarks & Audit
-tests/                 # mirrors src/anubhavam
+tests/                 # mirrors src/anubhav
 data/ (git-ignored)    # generated SQLite: tenant_*.sqlite, learning.sqlite, evaluation.sqlite
 benchmarks/            # dev/, sealed/, results/  (oracle_private/ is never committed)
 ```
@@ -49,7 +49,7 @@ benchmarks/            # dev/, sealed/, results/  (oracle_private/ is never comm
 |---|---|---|
 | 0.1 | **EXP-007 (Arm B check):** on the EXP-006 data, compare cold vs **raw-note retrieval** vs learned lessons | Pre-registered, run, result logged. If raw retrieval ≈ lessons, reframe the claim before building |
 | 0.2 | Verify the external citations in PRD v3.1 (Harness² repo and arXiv, MCP spec link, LangGraph interrupts) | Each one opened and confirmed, or removed from the docs |
-| 0.3 | Project setup: add dependencies (langgraph, mcp, pydantic, streamlit, ortools, faker), `src/anubhavam/` skeleton, Muse client ported with mock mode | `uv sync` and `pytest` pass on a clean clone |
+| 0.3 | Project setup: add dependencies (langgraph, mcp, pydantic, streamlit, ortools, faker), `src/anubhav/` skeleton, Muse client ported with mock mode | `uv sync` and `pytest` pass on a clean clone |
 
 ## Layer 1: Data world · Thu Oct 29 → Fri Oct 30
 | # | Task | Done when |

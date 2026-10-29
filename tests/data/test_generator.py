@@ -7,7 +7,7 @@ from collections import Counter
 
 import pytest
 
-from anubhavam.data import config, generate, store, validate, world
+from anubhav.data import config, generate, store, validate, world
 
 PILOT = (["T01"], "2026-09-08", "2026-09-14")
 
