@@ -1,0 +1,339 @@
+{
+ "round": "EXP010-20261029_194043",
+ "base_version": "h-000",
+ "agent": "meta-models/muse-spark-open-1026",
+ "proposer": "muse-spark-1.3",
+ "dev_base": {
+  "questions": 19,
+  "answer_ok": 0.947,
+  "right_tool": 1.0,
+  "no_lookup": 0.0,
+  "tool_errors": 0,
+  "cost_usd": 0.2668
+ },
+ "failures_shown_to_proposer": [
+  {
+   "question": "మనం ఏ ఏ ఊర్లకి సరుకు పంపిస్తాం?",
+   "tools_called": [
+    "list_sites"
+   ],
+   "what_went_wrong": "the answer did not match the company's records",
+   "reply_excerpt": "మనం మొత్తం 45 సైట్లకు సరుకు పంపిస్తాం, 12 ఊర్లలో:\n\n* హన్మకొండ - 8 సైట్లు\n* సిద్దిపేట - 6\n* వరంగల్ - 6\n* సూర్యాపేట - 5\n* జనగాం - 4\n* ఖమ్మం - 4\n* కాజీపేట - 3\n* మహబూబాబాద్ - 2\n* నర్సంపేట - 2\n* పరకాల - 2\n* ములుగు - 2\n* తొర్రూర్ - 1"
+  }
+ ],
+ "patch": {
+  "surface": "response_guidelines",
+  "op": "add",
+  "text": "When reporting towns, sites, or counts, use only the exact names and numbers from the latest tool output; never estimate, round, or use memory.",
+  "rationale": "Agent called the correct tool (list_sites) but reply did not match records, indicating hallucination/estimation from memory. Strict grounding to tool output fixes coverage answers without changing tool flow or safety.",
+  "addresses": [
+   "practice_failures: town coverage mismatch"
+  ]
+ },
+ "proposer_cost": 0.011836,
+ "candidate": "h-001",
+ "diff": [
+  "+ response_guidelines: When reporting towns, sites, or counts, use only the exact names and numbers from the latest tool output; never estimate, round, or use memory."
+ ],
+ "held_base": {
+  "questions": 16,
+  "answer_ok": 1.0,
+  "right_tool": 1.0,
+  "no_lookup": 0.0,
+  "tool_errors": 0,
+  "cost_usd": 0.2308
+ },
+ "held_cand": {
+  "questions": 16,
+  "answer_ok": 1.0,
+  "right_tool": 1.0,
+  "no_lookup": 0.0,
+  "tool_errors": 0,
+  "cost_usd": 0.2402
+ },
+ "golden": {
+  "base": [
+   "V11"
+  ],
+  "cand": [
+   "V11"
+  ]
+ },
+ "gate": {
+  "pass": false,
+  "reasons": [
+   "held-out answers did not improve (100% → 100%)"
+  ]
+ },
+ "rows": [
+  {
+   "question": "Thorrur lo mana sites anni list cheyyi.",
+   "type": "sites_in_town",
+   "lang": "rt",
+   "base_tools": [
+    "list_sites"
+   ],
+   "cand_tools": [
+    "list_sites"
+   ],
+   "base_ok": true,
+   "cand_ok": true,
+   "base_reply": "Thorrur lo mana site okate undi:\n\n* **C0037 - Kanaka Durga Logistics Godown** (Thorrur, highway_warehouse)\n\nRepu delivery kosam ee site ki orders chudala?\n",
+   "cand_reply": "Thorrur lo mana sites:\n\nTotal sites: 1\n\n* **Kanaka Durga Logistics Godown** (C0037) - Thorrur, type: highway_warehouse"
+  },
+  {
+   "question": "Mahabubabad లో మన సైట్లు అన్నీ లిస్ట్ చెయ్యి.",
+   "type": "sites_in_town",
+   "lang": "te",
+   "base_tools": [
+    "list_sites"
+   ],
+   "cand_tools": [
+    "list_sites"
+   ],
+   "base_ok": true,
+   "cand_ok": true,
+   "base_reply": "Mahabubabad లో మనకు 2 సైట్లు ఉన్నాయి:\n\n1. **Ganesh Stores** (C0002) - old_town_godown\n2. **Sri Rama Marketing** (C0039) - highway_warehouse",
+   "cand_reply": "Mahabubabad లో మనకు 2 సైట్లు ఉన్నాయి:\n\n1. **Ganesh Stores** (C0002) - old_town_godown\n2. **Sri Rama Marketing** (C0039) - highway_warehouse"
+  },
+  {
+   "question": "List all our sites in Mulugu.",
+   "type": "sites_in_town",
+   "lang": "en",
+   "base_tools": [
+    "list_sites"
+   ],
+   "cand_tools": [
+    "list_sites"
+   ],
+   "base_ok": true,
+   "cand_ok": true,
+   "base_reply": "We have 2 sites in Mulugu:\n\n1. **C0033 - Gayathri Warehousing** (highway_warehouse)\n2. **C0038 - Mahalakshmi Traders** (rural_substockist)",
+   "cand_reply": "We have 2 sites in Mulugu:\n\n1. **C0033 - Gayathri Warehousing** (highway_warehouse) - Mulugu\n2. **C0038 - Mahalakshmi Traders** (rural_substockist) - Mulugu"
+  },
+  {
+   "question": "Khammam lo mana sites anni list cheyyi.",
+   "type": "sites_in_town",
+   "lang": "rt",
+   "base_tools": [
+    "list_sites"
+   ],
+   "cand_tools": [
+    "list_sites"
+   ],
+   "base_ok": true,
+   "cand_ok": true,
+   "base_reply": "Khammam lo mana 4 sites unnayi:\n\n1. **C0020 - Manikanta Stores** (rural_substockist)\n2. **C0036 - Padmavathi Traders** (rural_substockist)\n3. **C0005 - Ravi Enterprises** (highway_warehouse)\n4. **C0028 - Sri Venkateswara Marketing** (highway_warehouse)",
+   "cand_reply": "Khammam lo mana sites 4 unnayi:\n\n1. C0020 - Manikanta Stores (rural_substockist)\n2. C0036 - Padmavathi Traders (rural_substockist)\n3. C0005 - Ravi Enterprises (highway_warehouse)\n4. C0028 - Sri Venkateswara Marketing (highway_warehouse)\n\nRepu delivery kosam orders chudala ante cheppu."
+  },
+  {
+   "question": "సెప్టెంబర్ లో Mahabubabad లో మనం ఎన్ని డెలివరీలు చేశాం?",
+   "type": "trips_in_month",
+   "lang": "te",
+   "base_tools": [
+    "trip_history",
+    "order_history"
+   ],
+   "cand_tools": [
+    "trip_history",
+    "order_history",
+    "list_sites"
+   ],
+   "base_ok": true,
+   "cand_ok": true,
+   "base_reply": "సెప్టెంబర్ 2026 లో Mahabubabad లో:\n\n* **ట్రిప్పులు:** 13 (delivered 8, partial 5)\n* **ఆర్డర్లు:** 11 (delivered 6, partially_delivered 4, cancelled 1)\n* **మొత్తం బరువు:** 1,09,127 kg, **విలువ:** ₹89,36,290\n\nప్రధాన సైట్లు: Sri Rama Marketing (C0039) మరియు Ganesh Stores (C0002).",
+   "cand_reply": "సెప్టెంబర్ 2026 లో Mahabubabad లో:\n\n* **ట్రిప్పులు: 13** — delivered: 8, partial: 5\n* **ఆర్డర్లు: 11** — delivered: 6, partially_delivered: 4, cancelled: 1\n* మొత్తం బరువు: 109127 kg, మొత్తం విలువ: 8936290 Rs\n\nMahabubabad లో 2 సైట్లు ఉన్నాయి: Ganesh Stores (C0002) మరియు Sri Rama Marketing (C0039)."
+  },
+  {
+   "question": "How many delivery stops did we make in Mahabubabad in August?",
+   "type": "trips_in_month",
+   "lang": "en",
+   "base_tools": [
+    "trip_history"
+   ],
+   "cand_tools": [
+    "trip_history"
+   ],
+   "base_ok": true,
+   "cand_ok": true,
+   "base_reply": "We made **19 delivery stops** in Mahabubabad in August 2026 (2026-08-01 to 2026-08-31):\n\n* **delivered:** 14\n* **partial:** 4\n* **returned:** 1",
+   "cand_reply": "In August 2026, we made **19 delivery stops** in **Mahabubabad**.\n\nBreakdown from records:\n- delivered: 14\n- partial: 4\n- returned: 1"
+  },
+  {
+   "question": "September lo Mulugu lo manam enni deliveries chesam?",
+   "type": "trips_in_month",
+   "lang": "rt",
+   "base_tools": [
+    "trip_history"
+   ],
+   "cand_tools": [
+    "trip_history",
+    "order_history",
+    "list_sites"
+   ],
+   "base_ok": true,
+   "cand_ok": true,
+   "base_reply": "September 2026 lo Mulugu lo manam 4 deliveries chesam - anni delivered:\n\n* 2026-09-25 - Gayathri Warehousing (C0033) - V09 (T22)\n* 2026-09-15 - Gayathri Warehousing (C0033) - V12 (T32S)\n* 2026-09-11 - Mahalakshmi Traders (C0038) - V04 (LCV407)\n* 2026-09-09 - Mahalakshmi Traders (C0038) - V02 (ACE)",
+   "cand_reply": "September 2026 lo Mulugu lo manam 4 deliveries chesam - anni delivered:\n\n* Gayathri Warehousing (highway_warehouse) - 2: Sep 15 (4753.2 kg) & Sep 25 (8083.4 kg)\n* Mahalakshmi Traders (rural_substockist) - 2: Sep 09 (158.4 kg) & Sep 11 (765.6 kg)\n\nTotal 4 orders/trips, Mulugu lone."
+  },
+  {
+   "question": "ఆగస్టు లో Mulugu లో మనం ఎన్ని డెలివరీలు చేశాం?",
+   "type": "trips_in_month",
+   "lang": "te",
+   "base_tools": [
+    "trip_history",
+    "order_history"
+   ],
+   "cand_tools": [
+    "trip_history"
+   ],
+   "base_ok": true,
+   "cand_ok": true,
+   "base_reply": "ఆగస్టు 2026 లో Mulugu లో:\n\n**ట్రిప్పులు (డెలివరీ అయినవి): 4**\n- అన్నీ `delivered` స్టేటస్ లో ఉన్నాయి\n\nవివరాలు:\n- 2026-08-28 - Gayathri Warehousing (C0033) - V07 (T14)\n- 2026-08-25 - Gayathri Warehousing (C0033) - V06 (T14)\n- 2026-08-13 - Gayathri Warehousing (C0033) - V12 (T32S)\n- 2026-08-08 - Mahalakshmi Traders (C0038) - V04 (LCV407)\n\n**ఆర్డర్లు మొత్తం: 6**\n- delivered: 4\n- credit_hold: 1 (2026-08-11, Mahalakshmi Traders)\n- cancelled: 1 (2026-08-10, Gayathri Warehousing)\n\nడెలివరీ అయిన 4 ఆర్డర్",
+   "cand_reply": "ఆగస్టు 2026 లో Mulugu లో మనం 4 డెలివరీలు చేశాం — అన్నీ delivered:\n\n* 2026-08-28 - Gayathri Warehousing (C0033) - V07 (T14)\n* 2026-08-25 - Gayathri Warehousing (C0033) - V06 (T14)\n* 2026-08-13 - Gayathri Warehousing (C0033) - V12 (T32S)\n* 2026-08-08 - Mahalakshmi Traders (C0038) - V04 (LCV407)"
+  },
+  {
+   "question": "How many deliveries to Ganesh Stores, Mahabubabad came back (returned) so far?",
+   "type": "returned_at_site",
+   "lang": "en",
+   "base_tools": [
+    "find_site",
+    "trip_history",
+    "trip_history"
+   ],
+   "cand_tools": [
+    "find_site",
+    "trip_history",
+    "list_trip_outcomes"
+   ],
+   "base_ok": true,
+   "cand_ok": true,
+   "base_reply": "Ganesh Stores, Mahabubabad (C0002) - total 11 trips recorded:\n\n- **returned: 1** (on 2026-08-14, vehicle V13 T32M)\n- delivered: 8, partial: 2",
+   "cand_reply": "For Ganesh Stores, Mahabubabad (C0002) — 11 trips recorded so far:\n\n* **returned: 1** — on 2026-08-14 (shipment T01-S00076, 464 cases returned, 0 delivered)\n* delivered: 8\n* partial: 2"
+  },
+  {
+   "question": "Lakshmi Agencies, Jangaon ki ippativaraku enni deliveries venakki vachayi?",
+   "type": "returned_at_site",
+   "lang": "rt",
+   "base_tools": [
+    "find_site",
+    "trip_history"
+   ],
+   "cand_tools": [
+    "find_site",
+    "trip_history",
+    "list_trip_outcomes",
+    "order_history"
+   ],
+   "base_ok": true,
+   "cand_ok": true,
+   "base_reply": "Lakshmi Agencies, Jangaon (C0003) ki ippativaraku total 18 deliveries jarigayi:\n\n* delivered: 14\n* partial: 1\n* **venakki vachinavi (returned): 3**\n\nVenakki vachina 3 deliveries:\n- 2026-08-19 - V13 (T32M) - returned\n- 2026-08-20 - V14 (T32M) - returned\n- 2026-08-21 - V14 (T32M) - returned\n\nTarvata nunchi recent 14 deliveries anni delivered/partial ga vellayi, inkoka return ledu.",
+   "cand_reply": "Lakshmi Agencies, Jangaon ki ippativaraku 18 trips jarigayi - andulo 3 deliveries venakki vachayi (returned), 1 partial, 14 delivered.\n\nVenakki vachina 3:\n- 2026-08-19 - 535 cases - V13 (T32M)\n- 2026-08-20 - 535 cases - V14 (T32M)\n- 2026-08-21 - 535 cases - V14 (T32M)\n\nOrder history lo kuda same 3 orders returned ga unnayi."
+  },
+  {
+   "question": "రేపు Khammam కి ఎన్ని ఆర్డర్లు పెండింగ్ లో ఉన్నాయి?",
+   "type": "open_orders_town",
+   "lang": "te",
+   "base_tools": [
+    "discover_capabilities",
+    "list_open_orders",
+    "list_sites",
+    "order_history"
+   ],
+   "cand_tools": [
+    "list_open_orders",
+    "list_sites"
+   ],
+   "base_ok": true,
+   "cand_ok": true,
+   "base_reply": "రేపు (2026-10-30) Khammam కి 2 ఆర్డర్లు పెండింగ్ లో ఉన్నాయి:\n\n1. **T01-O00873 - Ravi Enterprises** (highway_warehouse) - 3485.7 kg, 36.14 m³, 897 కేసులు, రూ. 5,01,000 - విండో 08:00-13:00 - light_food\n2. **T01-O00877 - Sri Venkateswara Marketing** (highway_warehouse) - 1796.4 kg, 18.96 m³, 499 కేసులు, రూ. 3,04,390 - విండో 08:00-13:00 - light_food\n\nమొత్తం: 5282 kg, రూ. 8,05,390.",
+   "cand_reply": "రేపు (2026-10-30) Khammam కి 2 ఆర్డర్లు పెండింగ్ లో ఉన్నాయి:\n\n1. **T01-O00873 - Ravi Enterprises** - 3485.7 kg, 36.14 m3, 897 కేసులు, విలువ Rs 501000\n2. **T01-O00877 - Sri Venkateswara Marketing** - 1796.4 kg, 18.96 m3, 499 కేసులు, విలువ Rs 304390\n\nరెండూ highway_warehouse సైట్లు, డెలివరీ విండో 08:00-13:00."
+  },
+  {
+   "question": "How many orders are open for tomorrow in Jangaon?",
+   "type": "open_orders_town",
+   "lang": "en",
+   "base_tools": [
+    "list_open_orders",
+    "list_sites"
+   ],
+   "cand_tools": [
+    "list_sites",
+    "list_open_orders",
+    "order_history"
+   ],
+   "base_ok": true,
+   "cand_ok": true,
+   "base_reply": "For tomorrow (2026-10-30) in Jangaon there are **3 open orders**:\n\n1. **T01-O00867** - Sri Rama Warehousing (C0012) - 10,320.6 kg / 15.03 m³ - 501 cases - chemical\n2. **T01-O00879** - Lakshmi Agencies (C0003) - 7,260.4 kg / 11.82 m³ - 395 cases - dense_food\n3. **T01-O00880** - Sri Venkateswara Traders (C0013) - 9,752.6 kg / 15.45 m³ - 506 cases - dense_food",
+   "cand_reply": "For tomorrow (2026-10-30) in Jangaon there are **3 open orders**:\n\n1. **T01-O00867** - Sri Rama Warehousing (Jangaon) - 10320.6 kg, Rs 801600\n2. **T01-O00879** - Lakshmi Agencies (Jangaon) - 7260.4 kg, Rs 364920\n3. **T01-O00880** - Sri Venkateswara Traders (Jangaon) - 9752.6 kg, Rs 577410\n\nTotal: 3 orders, 27334 kg, Rs 1743930."
+  },
+  {
+   "question": "September lo Ganesh Stores, Mahabubabad nunchi enni orders vachayi?",
+   "type": "orders_in_month",
+   "lang": "rt",
+   "base_tools": [
+    "find_site",
+    "order_history"
+   ],
+   "cand_tools": [
+    "find_site",
+    "order_history"
+   ],
+   "base_ok": true,
+   "cand_ok": true,
+   "base_reply": "September lo Ganesh Stores, Mahabubabad nunchi 2 orders vachayi:\n\n1. T01-O00280 - 2026-09-01 - 11,725.5 kg - delivered\n2. T01-O00430 - 2026-09-18 - 9,588.3 kg - partially_delivered\n\nTotal 21,314 kg, value Rs 13,47,320.",
+   "cand_reply": "September lo Ganesh Stores, Mahabubabad (C0002) nunchi 2 orders vachayi:\n\n- T01-O00280 - 2026-09-01 - delivered - 11725.5 kg - Rs 693470\n- T01-O00430 - 2026-09-18 - partially_delivered - 9588.3 kg - Rs 653850\n\nTotal: 21314 kg, Rs 1347320."
+  },
+  {
+   "question": "సెప్టెంబర్ లో Lakshmi Agencies, Jangaon నుండి ఎన్ని ఆర్డర్లు వచ్చాయి?",
+   "type": "orders_in_month",
+   "lang": "te",
+   "base_tools": [
+    "find_site",
+    "order_history"
+   ],
+   "cand_tools": [
+    "find_site",
+    "order_history"
+   ],
+   "base_ok": true,
+   "cand_ok": true,
+   "base_reply": "సెప్టెంబర్ 2026లో Lakshmi Agencies, Jangaon (C0003) నుండి మొత్తం **8 ఆర్డర్లు** వచ్చాయి:\n\n* డెలివరీ అయినవి: 6\n* క్యాన్సిల్ అయినవి: 1\n* పాక్షికంగా డెలివరీ అయినవి: 1\n\nమొత్తం బరువు: 27,813 కిలోలు, మొత్తం విలువ: రూ. 25,22,780",
+   "cand_reply": "సెప్టెంబర్ 2026 లో Lakshmi Agencies, Jangaon నుండి మొత్తం **8 ఆర్డర్లు** వచ్చాయి:\n\n* delivered: 6\n* cancelled: 1\n* partially_delivered: 1\n\nమొత్తం బరువు: 27,813 kg, మొత్తం విలువ: ₹25,22,780"
+  },
+  {
+   "question": "How many orders did Ravi Enterprises, Khammam place for delivery in September?",
+   "type": "orders_in_month",
+   "lang": "en",
+   "base_tools": [
+    "find_site",
+    "order_history"
+   ],
+   "cand_tools": [
+    "find_site",
+    "order_history"
+   ],
+   "base_ok": true,
+   "cand_ok": true,
+   "base_reply": "Ravi Enterprises, Khammam (C0005) placed **4 orders** for delivery in September 2026:\n\n* T01-O00330 - 2026-09-07 - 17,537.4 kg - delivered\n* T01-O00454 - 2026-09-22 - 8,930.9 kg - delivered\n* T01-O00533 - 2026-09-29 - 23,061.7 kg - delivered\n* T01-O00542 - 2026-09-30 - 14,991.0 kg - partially_delivered\n\nTotal: 64,521 kg, Rs 47,21,990 value.",
+   "cand_reply": "Ravi Enterprises, Khammam (C0005) placed **4 orders** for delivery in September 2026:\n\n* 2026-09-30 - T01-O00542 - 14991.0 kg - partially_delivered\n* 2026-09-29 - T01-O00533 - 23061.7 kg - delivered\n* 2026-09-22 - T01-O00454 - 8930.9 kg - delivered\n* 2026-09-07 - T01-O00330 - 17537.4 kg - delivered\n\nTotal: 4 orders, 64521 kg, Rs 4721990."
+  },
+  {
+   "question": "September lo Sri Rama Warehousing, Jangaon nunchi enni orders vachayi?",
+   "type": "orders_in_month",
+   "lang": "rt",
+   "base_tools": [
+    "find_site",
+    "order_history"
+   ],
+   "cand_tools": [
+    "find_site",
+    "order_history"
+   ],
+   "base_ok": true,
+   "cand_ok": true,
+   "base_reply": "September lo Sri Rama Warehousing, Jangaon nunchi total **7 orders** vachayi - anni delivered ayyayi.\n\n* Total weight: 55,211 kg\n* Total value: Rs 51,67,680\n\nDetails:\n1. T01-O00318 - Sep 05 - 1,443 kg\n2. T01-O00354 - Sep 09 - 2,037 kg\n3. T01-O00368 - Sep 11 - 15,868 kg\n4. T01-O00416 - Sep 17 - 18,547 kg\n5. T01-O00435 - Sep 19 - 10,859 kg\n6. T01-O00527 - Sep 28 - 3,709 kg\n7. T01-O00536 - Sep 29 - 2,746 kg",
+   "cand_reply": "September lo Sri Rama Warehousing, Jangaon nunchi 7 orders vachayi, anni delivered ayyayi."
+  }
+ ]
+}

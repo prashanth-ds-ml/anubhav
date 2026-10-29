@@ -340,3 +340,21 @@ Packs: T01→TNEW 4 lessons (1 skipped: no matching site), T02→TNEW 4 lessons 
   - The question types are written by us (a curriculum). Answers come from data, and the agent never sees the expected tools.
   - Number checks can still match by chance; both arms share that noise.
 - **Budget:** about 55 agent runs + 1 proposer call, about $1.2.
+- **Result (2026-10-29, `artifacts/harness/exp010_20261029_194043.json`, about $0.85 Baseten + $0.02 Meta):**
+
+| Set | Answers right | Fitting tool | No lookup | Tool errors | Cost |
+|---|---|---|---|---|---|
+| Dev practice (19), h-000 | 95% (18/19) | 100% | 0% | 0 | $0.27 |
+| Held-out (16), h-000 | **100%** | 100% | 0% | 0 | $0.23 |
+| Held-out (16), candidate h-001 | **100%** | 100% | 0% | 0 | $0.24 |
+| Golden path | V11 draft (both) | | | | |
+
+  - **The only dev miss:** the Telugu "which towns do we deliver to?" question. The agent called `list_sites` but listed too few towns.
+  - **Muse's patch (h-001):** response guideline "use only the exact names and numbers from the latest tool output; never estimate, round, or use memory". It was refused nothing by the patch rules.
+  - **Side effect:** on held-out it added some unnecessary calls (e.g. `order_history`, `list_sites` on trip questions).
+- **Verdict (rule fixed above):** **ceiling.** Baseline held-out was already 100% (≥ 90%), so there was nothing to learn. The gate rejected h-001 ("held-out answers did not improve"), and it was not activated.
+- **What this tells us:**
+  1. Given fitting generic tools, Muse Spark Open picks and uses them correctly on all six question types in RT/TE/EN.
+  2. The failures the owner saw while testing (0-tool answers to history questions; "only tomorrow" answers) were a **missing-tool** problem, not a tool-skill problem. Tester feedback found the gap; adding generic tools closed it.
+  3. These question types are too easy to demonstrate tool learning. A real test needs harder practice: multi-step and comparative questions, subtle tool semantics, and efficiency (calls and cost per correct answer). The candidate's extra calls show efficiency is the more realistic thing to improve.
+- **Not claimed:** "the agent learned to pick tools". We do not have that evidence yet.
