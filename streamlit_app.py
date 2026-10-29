@@ -1,10 +1,17 @@
 """Anubhav demo app.  Run:  uv run streamlit run streamlit_app.py"""
 
-import streamlit as st
+import sys
+from pathlib import Path
 
-from anubhav.ui import core
+sys.path.insert(0, str(Path(__file__).parent / "src"))     # hosted runs don't install the package
+
+import streamlit as st  # noqa: E402
+
+from anubhav.ui import core  # noqa: E402
 
 st.set_page_config(page_title="Anubhav", page_icon=":material/local_shipping:", layout="wide")
+with st.spinner("First start: generating the demo world from its seed (about a minute)…"):
+    core.ensure_world()
 
 if "company" not in st.session_state:
     st.session_state.update(company="T01", model="Replay (free)", use_lessons=False, chat={})
@@ -32,7 +39,8 @@ with st.sidebar:
             st.session_state.chat = {}
             st.toast("Drafts and vehicle holds cleared.")
     if st.session_state.model != "Replay (free)":
-        st.caption(":orange[:material/payments:] Live mode calls Muse (about $0.05 per request).")
+        st.caption(f":orange[:material/payments:] Live mode calls Muse (about $0.05 per request), "
+                   f"{core.LIVE_RUNS_PER_SESSION - st.session_state.get('live_runs', 0)} left this session.")
 
 pages = {
     "Work": [st.Page("app_pages/workbench.py", title="Workbench", icon=":material/forum:", default=True)],

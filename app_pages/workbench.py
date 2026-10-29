@@ -72,7 +72,9 @@ with left:
     with st.container(border=True):
         audio = st.audio_input(":material/mic: Speak in Telugu, Roman Telugu or English", sample_rate=16000,
                                key=f"mic:{key}:{len(history)}")
-        if audio is not None:
+        if audio is not None and (blocked := core.live_ready("spark")):
+            st.warning(blocked.replace("Use Replay", "Voice needs Muse Voice Transcribe"), icon=":material/mic_off:")
+        elif audio is not None:
             sig = hash(audio.getvalue())
             if st.session_state.get("voice_sig") != sig:          # a new recording: transcribe it once
                 with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as f:
@@ -98,6 +100,9 @@ with left:
             else:
                 st.warning("No saved run for this request and setting. Switch Model to a live option.",
                            icon=":material/history:")
+        elif blocked := core.live_ready(core.MODELS[mode]):
+            r = None
+            st.warning(blocked, icon=":material/block:")
         else:
             with st.spinner("Muse is planning…"):
                 r = core.run_live(cid, prompt, core.MODELS[mode], use, history)

@@ -3,6 +3,7 @@ runs the agent (live or replay), and turns a trace into something a person can r
 
 import json
 import shutil
+import sqlite3
 from pathlib import Path
 
 import streamlit as st
@@ -17,6 +18,8 @@ from ..runtime.company import CompanyData
 
 WORLD = ROOT / "data" / "worlds" / "full_seed20261104"
 EXP008 = sorted((ROOT / "artifacts" / "learning").glob("exp008_*_rep0.sqlite"))
+DEMO = ROOT / "demo"            # git-tracked bundle for a fresh (hosted) checkout: saved real runs, EXP-008 lessons, practice
+LIVE_RUNS_PER_SESSION = 8       # spend cap for live model calls on a public deployment
 COMPANIES = {"T01": "Sri Kakatiya Logistics", "T02": "Ramappa Carriers", "T03": "Deccan Freight Services",
              "TNEW": "Bhadrakali Transport Co (new)"}
 MODELS = {"Replay (free)": None, "Muse Spark Open": "open", "Muse Spark 1.3": "spark"}
@@ -28,6 +31,15 @@ SUGGESTIONS = {
     "Nickname": "Pedda godown load ki bandi pettu.",
     "Ambiguous": "Warangal load ki bandi pettu.",
 }
+
+
+@st.cache_resource
+def ensure_world():
+    """A fresh checkout has no data/ (git-ignored): generate the demo world from its seed. Deterministic, ~1 minute."""
+    if not (WORLD / "manifest.json").exists():
+        from ..data import generate
+        generate.main(["--full"])
+    return WORLD
 
 
 @st.cache_resource(max_entries=8)
@@ -42,10 +54,25 @@ def store() -> LessonStore:
 
 def load_exp008_lessons():
     """Copy the EXP-008 lesson store (mined by Muse, approved by the fixed review rule) into the demo store."""
-    if not EXP008:
+    dst = WORLD / "learning" / "demo.sqlite"
+    if EXP008:
+        st.cache_resource.clear()
+        shutil.copy(EXP008[-1], dst)
+        return True
+    bundle = DEMO / "exp008_lessons.json"
+    if not bundle.exists():
         return False
     st.cache_resource.clear()
-    shutil.copy(EXP008[-1], WORLD / "learning" / "demo.sqlite")
+    if dst.exists():
+        dst.unlink()
+    LessonStore(dst)                             # creates the schema
+    data = json.loads(bundle.read_text(encoding="utf-8"))
+    con = sqlite3.connect(dst)
+    with con:
+        for table, rows in data.items():
+            for r in rows:
+                con.execute(f"insert into {table} ({','.join(r)}) values ({','.join('?' * len(r))})", list(r.values()))
+    con.close()
     return True
 
 
@@ -59,7 +86,14 @@ def clear_lessons():
 @st.cache_resource
 def harness_store() -> HarnessStore:
     """One harness for every client: how the agent works is shared; what it knows stays per company."""
-    return HarnessStore(ROOT / "data" / "harness" / "harness.sqlite")
+    H = HarnessStore(ROOT / "data" / "harness" / "harness.sqlite")
+    bundle = DEMO / "practice.json"
+    if not H.practice() and bundle.exists():     # fresh checkout: show the saved EXP-010 practice results
+        rows = json.loads(bundle.read_text(encoding="utf-8"))
+        with sqlite3.connect(H.path) as con:
+            for r in rows:
+                con.execute(f"insert into practice ({','.join(r)}) values ({','.join('?' * len(r))})", list(r.values()))
+    return H
 
 
 def active_harness():
@@ -72,8 +106,8 @@ def knowledge_for(cid):
 
 def recent_runs(limit=60):
     rows = []
-    for p in sorted(trace.TRACE_DIR.glob("*.jsonl"), reverse=True):
-        rows += [json.loads(x) for x in reversed(p.read_text(encoding="utf-8").splitlines())]
+    for p in _trace_files():
+        rows += [json.loads(x) for x in reversed(p.read_text(encoding="utf-8").splitlines()) if x.strip()]
         if len(rows) >= limit:
             break
     return rows[:limit]
@@ -85,7 +119,19 @@ def broker(cid: str, use_lessons: bool, role="dispatcher", user="demo"):
     return Broker(C, Session(cid, role, user), policies, advisories), knowledge
 
 
+def live_ready(model_key):
+    """Live mode needs the model's key (a .env locally, or the host's secrets) and the session's run budget."""
+    import os
+    key = {"open": "baseten_api_key", "spark": "meta_api"}[model_key]
+    if not os.environ.get(key):
+        return f"Live mode is off here (no `{key}` set). Use Replay."
+    if st.session_state.get("live_runs", 0) >= LIVE_RUNS_PER_SESSION:
+        return f"This session used its {LIVE_RUNS_PER_SESSION} live runs. Use Replay, or run it locally."
+    return None
+
+
 def run_live(cid, request, model_key, use_lessons, history=()):
+    st.session_state["live_runs"] = st.session_state.get("live_runs", 0) + 1
     b, knowledge = broker(cid, use_lessons)
     turns = []
     for h in list(history)[-6:]:                 # the last few exchanges, so follow-ups make sense
@@ -95,9 +141,13 @@ def run_live(cid, request, model_key, use_lessons, history=()):
     return r
 
 
+def _trace_files():
+    return sorted(trace.TRACE_DIR.glob("*.jsonl"), reverse=True) + ([DEMO / "replay_runs.jsonl"] if (DEMO / "replay_runs.jsonl").exists() else [])
+
+
 def find_replay(cid, request, use_lessons):
-    """The newest saved real run with the same company, request and knowledge setting."""
-    for p in sorted(trace.TRACE_DIR.glob("*.jsonl"), reverse=True):
+    """The newest saved real run with the same company, request and knowledge setting (local traces, then the demo bundle)."""
+    for p in _trace_files():
         for line in reversed(p.read_text(encoding="utf-8").splitlines()):
             r = json.loads(line)
             if r["company"] == cid and r["request"].strip() == request.strip() and bool(r.get("knowledge")) == use_lessons:
