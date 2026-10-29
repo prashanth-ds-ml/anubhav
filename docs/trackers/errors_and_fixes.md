@@ -23,6 +23,7 @@ Summary table first, details below. Newest at the bottom.
 | E-013 | 2026-10-29 | tools | find_site matched 'Pedda godown' to 'Bhavani Logistics Godown' on the generic word 'godown' | high | fixed (generic words ignored) | layer 2 commit |
 | E-014 | 2026-10-29 | tools | A retry after cancel returned the cancelled draft (shared idempotency key), bypassing new policy checks | high | fixed (cancelled drafts never resurrected; test) | layer 2 commit |
 | E-015 | 2026-10-29 | infra | Rename sweep skipped every folder named `data` (incl. src/anubhav/data, tests/data); tests caught the stale import | low | fixed | layer 2 commit |
+| E-016 | 2026-10-29 | agent | Telugu-script request answered in Roman Telugu; reply offered to dispatch on confirmation (no such capability) | medium | fixed (system prompt: same script; 'you cannot dispatch') | layer 2 commit |
 
 **Areas:** model API · MCP · tools · agent · retrieval · verifier · voice · UI · infra · data · cost
 

@@ -29,7 +29,6 @@ Status: ✅ = implemented and contract-tested on all 4 clients.
 | 11 | record_driver_note | Outcomes | W (append) | ✅ | ⬜ | ✅ |
 | 12 | list_trip_outcomes | Outcomes | R | ✅ | ⬜ | ✅ |
 | 13 | get_transport_policy | Policy | R | ✅ | ⬜ | ✅ |
-
 | 14 | search_notes | Memory | R | ✅ | ⬜ | ✅ |
 
 search_notes is the raw-memory baseline (Arm B): term-overlap search over notes, messages and feedback; results are marked untrusted text.
@@ -39,7 +38,9 @@ One row per notable call: good, bad or surprising.
 
 | Date | run_id | Lang | Request snippet | Expected tool(s) | Actually called | Args OK? | Failure class | Notes |
 |---|---|---|---|---|---|---|---|---|
-| | | | | | | | | |
+| 10-29 | golden_path:rt/te/en/mix | all | "Jangaon Lakshmi load ki bandi pettu, confirm cheyyaku" | find_site, list_open_orders, get_site_constraints, list_vehicles, create_dispatch_draft | 8–9 calls incl. get_route_info, check_vehicle_availability ×2, get_transport_policy | ✅ | — | Day-1 mistake as designed: site constraints 'nothing recorded' → picks 32 ft T32M (V13/V14). Draft only; e-way bill warning surfaced |
+| 10-29 | golden_path:te (1st) | TE | Telugu-script request | — | same | ✅ | multilingual-misread | Replied in Roman Telugu, and offered to 'dispatch on confirm' (it can't). Fixed in the system prompt (E-016); rerun replied in Telugu script, no offer |
+| 10-29 | golden_path:ambiguous | RT | "Warangal load ki bandi pettu" | find_site / list_open_orders, then ask | find_site, list_open_orders | ✅ | — | Listed the 3 Warangal orders and asked which one; no guess |
 
 **Failure classes:** retrieval-miss · wrong-tool · bad-args · multilingual-misread · sequencing · data-issue · policy-attempt · hallucinated-tool
 

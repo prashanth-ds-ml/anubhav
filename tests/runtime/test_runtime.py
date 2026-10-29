@@ -281,3 +281,22 @@ def test_cancelled_draft_is_not_resurrected_by_a_retry(broker_for):
     b.call("cancel_dispatch_draft", {"draft_id": first["draft_id"]})
     again = b.call("create_dispatch_draft", args)["result"]
     assert again["created"] and again["draft_id"] != first["draft_id"]
+
+
+def test_voice_path_feeds_the_transcript_to_the_agent(world, tmp_path, monkeypatch):
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("voice_request", "scripts/voice_request.py")
+    vr = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(vr)
+    seen = {}
+    monkeypatch.setattr(vr.muse, "transcribe", lambda wav, keywords=(): {"transcript": "Jangaon Lakshmi load ki bandi pettu",
+                        "audio_ms": 4000, "latency_s": 1.0, "cost_usd": 0.0002})
+    def fake_client(name):
+        def step(msgs, tools):
+            seen["request"] = msgs[-1]["content"]
+            return mock_final("draft chesta")
+        return MockClient([step])
+    monkeypatch.setattr(vr.muse, "client", fake_client)
+    monkeypatch.setattr(vr.trace, "save", lambda r, label: tmp_path)
+    vr.main(["--wav", "x.wav", "--world", str(world), "--yes"])
+    assert seen["request"] == "Jangaon Lakshmi load ki bandi pettu"

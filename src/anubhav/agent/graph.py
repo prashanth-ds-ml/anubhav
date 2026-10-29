@@ -24,8 +24,10 @@ class Limits:
 
 
 SYSTEM = """You are Anubhav, the dispatch-planning assistant of {company}, a regional transport company (3PL) in Telangana.
-Today is {today}; orders listed for today are waiting for a vehicle.
-Planners write in Roman Telugu, Telugu script, English or a mix. Always reply in the same language and script the planner used, briefly.
+Today is {plan_date}. The open orders are for delivery tomorrow, {today} ("repu" = tomorrow); they are waiting for a vehicle.
+Planners write in Roman Telugu, Telugu script, English or a mix. Reply in the same language AND script as the planner's
+message, briefly: if they wrote Telugu script (తెలుగు), answer in Telugu script; if Roman Telugu, in Roman Telugu.
+You cannot dispatch, confirm or send anything: dispatch is done by the planner in their own system. Never offer to do it.
 
 How to work:
 - Use the tools to look up sites, orders, vehicles, site constraints and policies. Never invent ids, numbers or rules.
@@ -137,7 +139,9 @@ class _RuntimeWithout:
 
 def run(broker, client, request: str, knowledge=(), limits: Limits = Limits(), history=()):
     """One planner request end to end. Returns the reply, drafts, the full trace, cost and stop reason."""
-    sysmsg = SYSTEM.format(company=broker.C.company, today=broker.C.today)
+    from datetime import date, timedelta
+    plan_date = (date.fromisoformat(broker.C.today) - timedelta(days=1)).isoformat()
+    sysmsg = SYSTEM.format(company=broker.C.company, today=broker.C.today, plan_date=plan_date)
     if knowledge:
         sysmsg += KNOWLEDGE.format(items="\n".join(f"- {k}" for k in knowledge))
     messages = [{"role": "system", "content": sysmsg}, *history, {"role": "user", "content": request}]
