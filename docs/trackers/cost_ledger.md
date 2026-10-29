@@ -38,6 +38,7 @@ tags: [tracker, cost]
 | 2026-10-27 | Benchmark | EXP-006 history mining, Spark 1.3 (2 runs) | | | | 0.09 | ~15.26 | ⬜ |
 | 2026-10-29 | Voice | Muse Voice Transcribe pipeline check (20 s, Day-1 recording) | | | | 0.001 | ~15.26 | ⬜ |
 | 2026-10-29 | Benchmark | EXP-008 mining, Spark 1.3 (6 calls, ~45k-char digests) | | | | 0.42 | ~15.7 | ⬜ |
+| 2026-10-29 | Benchmark | EXP-009 + EXP-009b mining on fresh worlds 4111 and 5279, Spark 1.3 (3 companies each) | | | | 0.42 | ~16.1 | ⬜ |
 
 ### Prices (verified 2026-10-27)
 | Model | Input /1M | Output /1M | Cached /1M |
