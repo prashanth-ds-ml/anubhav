@@ -1,0 +1,1108 @@
+{
+ "stamp": "20261029_170351",
+ "miner_model": "muse-spark-1.3",
+ "agent_model": "meta-models/muse-spark-open-1026",
+ "A": {
+  "T01#0": {
+   "meta": {
+    "model": "muse-spark-1.3",
+    "cost_usd": 0.06357175,
+    "tokens_in": 20645,
+    "tokens_out": 8886,
+    "latency_s": 39.435,
+    "prompt_chars": 56221
+   },
+   "learnable": [
+    "H-01",
+    "H-03",
+    "H-04",
+    "H-05",
+    "H-06",
+    "H-10",
+    "H-14",
+    "H-15",
+    "H-16",
+    "H-17",
+    "H-18"
+   ],
+   "found": [
+    "H-01",
+    "H-03",
+    "H-05",
+    "H-06",
+    "H-10",
+    "H-14",
+    "H-15",
+    "H-16",
+    "H-18"
+   ],
+   "missed": [
+    "H-04",
+    "H-17"
+   ],
+   "precision": 0.818,
+   "recall": 0.818,
+   "false_lessons": [
+    "L-T01-004",
+    "L-T01-010"
+   ],
+   "traps_admitted": [],
+   "traps_proposed_and_rejected": [],
+   "proposed": 11,
+   "passed": 11,
+   "rows": [
+    {
+     "lesson": "L-T01-001",
+     "kind": "night_only",
+     "state": "CANDIDATE",
+     "matches": "H-18",
+     "trap": false
+    },
+    {
+     "lesson": "L-T01-002",
+     "kind": "site_access",
+     "state": "CANDIDATE",
+     "matches": "H-01",
+     "trap": false
+    },
+    {
+     "lesson": "L-T01-003",
+     "kind": "weekly_off",
+     "state": "CANDIDATE",
+     "matches": "H-16",
+     "trap": false
+    },
+    {
+     "lesson": "L-T01-004",
+     "kind": "receiving_hours",
+     "state": "NEEDS_EVIDENCE",
+     "matches": null,
+     "trap": false
+    },
+    {
+     "lesson": "L-T01-005",
+     "kind": "alias",
+     "state": "CANDIDATE",
+     "matches": "H-05",
+     "trap": false
+    },
+    {
+     "lesson": "L-T01-006",
+     "kind": "alias",
+     "state": "CANDIDATE",
+     "matches": "H-06",
+     "trap": false
+    },
+    {
+     "lesson": "L-T01-007",
+     "kind": "alias",
+     "state": "CANDIDATE",
+     "matches": "H-03",
+     "trap": false
+    },
+    {
+     "lesson": "L-T01-008",
+     "kind": "real_capacity",
+     "state": "CANDIDATE",
+     "matches": "H-14",
+     "trap": false
+    },
+    {
+     "lesson": "L-T01-009",
+     "kind": "vendor_reliability",
+     "state": "CANDIDATE",
+     "matches": "H-15",
+     "trap": false
+    },
+    {
+     "lesson": "L-T01-010",
+     "kind": "vendor_reliability",
+     "state": "CANDIDATE",
+     "matches": null,
+     "trap": false
+    },
+    {
+     "lesson": "L-T01-011",
+     "kind": "closure",
+     "state": "EXPIRED",
+     "matches": "H-10",
+     "trap": false
+    }
+   ]
+  },
+  "T02#0": {
+   "meta": {
+    "model": "muse-spark-1.3",
+    "cost_usd": 0.0887635,
+    "tokens_in": 25036,
+    "tokens_out": 13522,
+    "latency_s": 59.686,
+    "prompt_chars": 65912
+   },
+   "learnable": [
+    "H-01",
+    "H-03",
+    "H-04",
+    "H-07a",
+    "H-07b",
+    "H-10",
+    "H-11",
+    "H-13",
+    "H-16",
+    "H-17",
+    "H-18"
+   ],
+   "found": [
+    "H-01",
+    "H-03",
+    "H-07a",
+    "H-07b",
+    "H-10",
+    "H-11",
+    "H-18"
+   ],
+   "missed": [
+    "H-04",
+    "H-13",
+    "H-16",
+    "H-17"
+   ],
+   "precision": 0.7,
+   "recall": 0.636,
+   "false_lessons": [
+    "L-T02-004",
+    "L-T02-007",
+    "L-T02-008"
+   ],
+   "traps_admitted": [],
+   "traps_proposed_and_rejected": [],
+   "proposed": 10,
+   "passed": 10,
+   "rows": [
+    {
+     "lesson": "L-T02-001",
+     "kind": "site_access",
+     "state": "CANDIDATE",
+     "matches": "H-01",
+     "trap": false
+    },
+    {
+     "lesson": "L-T02-002",
+     "kind": "night_only",
+     "state": "CANDIDATE",
+     "matches": "H-18",
+     "trap": false
+    },
+    {
+     "lesson": "L-T02-003",
+     "kind": "time_window",
+     "state": "CANDIDATE",
+     "matches": "H-11",
+     "trap": false
+    },
+    {
+     "lesson": "L-T02-004",
+     "kind": "receiving_hours",
+     "state": "CANDIDATE",
+     "matches": null,
+     "trap": false
+    },
+    {
+     "lesson": "L-T02-005",
+     "kind": "alias",
+     "state": "CANDIDATE",
+     "matches": "H-07a",
+     "trap": false
+    },
+    {
+     "lesson": "L-T02-006",
+     "kind": "alias",
+     "state": "CANDIDATE",
+     "matches": "H-07b",
+     "trap": false
+    },
+    {
+     "lesson": "L-T02-007",
+     "kind": "alias",
+     "state": "CANDIDATE",
+     "matches": null,
+     "trap": false
+    },
+    {
+     "lesson": "L-T02-008",
+     "kind": "alias",
+     "state": "CANDIDATE",
+     "matches": null,
+     "trap": false
+    },
+    {
+     "lesson": "L-T02-009",
+     "kind": "alias",
+     "state": "CANDIDATE",
+     "matches": "H-03",
+     "trap": false
+    },
+    {
+     "lesson": "L-T02-010",
+     "kind": "closure",
+     "state": "EXPIRED",
+     "matches": "H-10",
+     "trap": false
+    }
+   ]
+  },
+  "T03#0": {
+   "meta": {
+    "model": "muse-spark-1.3",
+    "cost_usd": 0.0630265,
+    "tokens_in": 20321,
+    "tokens_out": 8853,
+    "latency_s": 33.647,
+    "prompt_chars": 58006
+   },
+   "learnable": [
+    "H-21",
+    "H-22",
+    "H-24",
+    "H-25"
+   ],
+   "found": [
+    "H-21",
+    "H-22",
+    "H-25"
+   ],
+   "missed": [
+    "H-24"
+   ],
+   "precision": 0.6,
+   "recall": 0.75,
+   "false_lessons": [
+    "L-T03-003",
+    "L-T03-005"
+   ],
+   "traps_admitted": [],
+   "traps_proposed_and_rejected": [],
+   "proposed": 5,
+   "passed": 5,
+   "rows": [
+    {
+     "lesson": "L-T03-001",
+     "kind": "site_access",
+     "state": "CANDIDATE",
+     "matches": "H-21",
+     "trap": false
+    },
+    {
+     "lesson": "L-T03-002",
+     "kind": "real_capacity",
+     "state": "CANDIDATE",
+     "matches": "H-25",
+     "trap": false
+    },
+    {
+     "lesson": "L-T03-003",
+     "kind": "vendor_reliability",
+     "state": "CANDIDATE",
+     "matches": null,
+     "trap": false
+    },
+    {
+     "lesson": "L-T03-004",
+     "kind": "alias",
+     "state": "CANDIDATE",
+     "matches": "H-22",
+     "trap": false
+    },
+    {
+     "lesson": "L-T03-005",
+     "kind": "receiving_hours",
+     "state": "NEEDS_EVIDENCE",
+     "matches": null,
+     "trap": false
+    }
+   ]
+  },
+  "T01#1": {
+   "meta": {
+    "model": "muse-spark-1.3",
+    "cost_usd": 0.06525475,
+    "tokens_in": 20645,
+    "tokens_out": 9282,
+    "latency_s": 38.823,
+    "prompt_chars": 56221
+   },
+   "learnable": [
+    "H-01",
+    "H-03",
+    "H-04",
+    "H-05",
+    "H-06",
+    "H-10",
+    "H-14",
+    "H-15",
+    "H-16",
+    "H-17",
+    "H-18"
+   ],
+   "found": [
+    "H-01",
+    "H-03",
+    "H-05",
+    "H-06",
+    "H-10",
+    "H-14",
+    "H-15",
+    "H-16",
+    "H-17",
+    "H-18"
+   ],
+   "missed": [
+    "H-04"
+   ],
+   "precision": 0.833,
+   "recall": 0.909,
+   "false_lessons": [
+    "L-T01-004",
+    "L-T01-011"
+   ],
+   "traps_admitted": [],
+   "traps_proposed_and_rejected": [],
+   "proposed": 12,
+   "passed": 12,
+   "rows": [
+    {
+     "lesson": "L-T01-001",
+     "kind": "night_only",
+     "state": "CANDIDATE",
+     "matches": "H-18",
+     "trap": false
+    },
+    {
+     "lesson": "L-T01-002",
+     "kind": "site_access",
+     "state": "CANDIDATE",
+     "matches": "H-01",
+     "trap": false
+    },
+    {
+     "lesson": "L-T01-003",
+     "kind": "weekly_off",
+     "state": "CANDIDATE",
+     "matches": "H-16",
+     "trap": false
+    },
+    {
+     "lesson": "L-T01-004",
+     "kind": "receiving_hours",
+     "state": "NEEDS_EVIDENCE",
+     "matches": null,
+     "trap": false
+    },
+    {
+     "lesson": "L-T01-005",
+     "kind": "closure",
+     "state": "EXPIRED",
+     "matches": "H-10",
+     "trap": false
+    },
+    {
+     "lesson": "L-T01-006",
+     "kind": "moved_site",
+     "state": "CANDIDATE",
+     "matches": "H-17",
+     "trap": false
+    },
+    {
+     "lesson": "L-T01-007",
+     "kind": "alias",
+     "state": "CANDIDATE",
+     "matches": "H-05",
+     "trap": false
+    },
+    {
+     "lesson": "L-T01-008",
+     "kind": "alias",
+     "state": "CANDIDATE",
+     "matches": "H-06",
+     "trap": false
+    },
+    {
+     "lesson": "L-T01-009",
+     "kind": "alias",
+     "state": "CANDIDATE",
+     "matches": "H-03",
+     "trap": false
+    },
+    {
+     "lesson": "L-T01-010",
+     "kind": "real_capacity",
+     "state": "CANDIDATE",
+     "matches": "H-14",
+     "trap": false
+    },
+    {
+     "lesson": "L-T01-011",
+     "kind": "vendor_reliability",
+     "state": "CANDIDATE",
+     "matches": null,
+     "trap": false
+    },
+    {
+     "lesson": "L-T01-012",
+     "kind": "vendor_reliability",
+     "state": "CANDIDATE",
+     "matches": "H-15",
+     "trap": false
+    }
+   ]
+  },
+  "T02#1": {
+   "meta": {
+    "model": "muse-spark-1.3",
+    "cost_usd": 0.0832725,
+    "tokens_in": 25036,
+    "tokens_out": 12230,
+    "latency_s": 55.349,
+    "prompt_chars": 65912
+   },
+   "learnable": [
+    "H-01",
+    "H-03",
+    "H-04",
+    "H-07a",
+    "H-07b",
+    "H-10",
+    "H-11",
+    "H-13",
+    "H-16",
+    "H-17",
+    "H-18"
+   ],
+   "found": [
+    "H-01",
+    "H-03",
+    "H-07a",
+    "H-07b",
+    "H-10",
+    "H-11",
+    "H-18"
+   ],
+   "missed": [
+    "H-04",
+    "H-13",
+    "H-16",
+    "H-17"
+   ],
+   "precision": 0.7,
+   "recall": 0.636,
+   "false_lessons": [
+    "L-T02-004",
+    "L-T02-008",
+    "L-T02-009"
+   ],
+   "traps_admitted": [],
+   "traps_proposed_and_rejected": [],
+   "proposed": 10,
+   "passed": 10,
+   "rows": [
+    {
+     "lesson": "L-T02-001",
+     "kind": "site_access",
+     "state": "CANDIDATE",
+     "matches": "H-01",
+     "trap": false
+    },
+    {
+     "lesson": "L-T02-002",
+     "kind": "night_only",
+     "state": "CANDIDATE",
+     "matches": "H-18",
+     "trap": false
+    },
+    {
+     "lesson": "L-T02-003",
+     "kind": "time_window",
+     "state": "CANDIDATE",
+     "matches": "H-11",
+     "trap": false
+    },
+    {
+     "lesson": "L-T02-004",
+     "kind": "receiving_hours",
+     "state": "CANDIDATE",
+     "matches": null,
+     "trap": false
+    },
+    {
+     "lesson": "L-T02-005",
+     "kind": "closure",
+     "state": "EXPIRED",
+     "matches": "H-10",
+     "trap": false
+    },
+    {
+     "lesson": "L-T02-006",
+     "kind": "alias",
+     "state": "CANDIDATE",
+     "matches": "H-07a",
+     "trap": false
+    },
+    {
+     "lesson": "L-T02-007",
+     "kind": "alias",
+     "state": "CANDIDATE",
+     "matches": "H-07b",
+     "trap": false
+    },
+    {
+     "lesson": "L-T02-008",
+     "kind": "alias",
+     "state": "CANDIDATE",
+     "matches": null,
+     "trap": false
+    },
+    {
+     "lesson": "L-T02-009",
+     "kind": "alias",
+     "state": "CANDIDATE",
+     "matches": null,
+     "trap": false
+    },
+    {
+     "lesson": "L-T02-010",
+     "kind": "alias",
+     "state": "CANDIDATE",
+     "matches": "H-03",
+     "trap": false
+    }
+   ]
+  },
+  "T03#1": {
+   "meta": {
+    "model": "muse-spark-1.3",
+    "cost_usd": 0.05911225,
+    "tokens_in": 20321,
+    "tokens_out": 7932,
+    "latency_s": 30.299,
+    "prompt_chars": 58006
+   },
+   "learnable": [
+    "H-21",
+    "H-22",
+    "H-24",
+    "H-25"
+   ],
+   "found": [
+    "H-21",
+    "H-22",
+    "H-25"
+   ],
+   "missed": [
+    "H-24"
+   ],
+   "precision": 0.75,
+   "recall": 0.75,
+   "false_lessons": [
+    "L-T03-003"
+   ],
+   "traps_admitted": [],
+   "traps_proposed_and_rejected": [],
+   "proposed": 4,
+   "passed": 4,
+   "rows": [
+    {
+     "lesson": "L-T03-001",
+     "kind": "site_access",
+     "state": "CANDIDATE",
+     "matches": "H-21",
+     "trap": false
+    },
+    {
+     "lesson": "L-T03-002",
+     "kind": "real_capacity",
+     "state": "CANDIDATE",
+     "matches": "H-25",
+     "trap": false
+    },
+    {
+     "lesson": "L-T03-003",
+     "kind": "vendor_reliability",
+     "state": "CANDIDATE",
+     "matches": null,
+     "trap": false
+    },
+    {
+     "lesson": "L-T03-004",
+     "kind": "alias",
+     "state": "CANDIDATE",
+     "matches": "H-22",
+     "trap": false
+    }
+   ]
+  }
+ },
+ "B": [
+  {
+   "company": "T01",
+   "lang": "rt",
+   "lessons": false,
+   "knowledge_items": 0,
+   "policies": 0,
+   "attempts": [
+    {
+     "vehicle_id": "V11",
+     "length_ft": 32,
+     "ok": true,
+     "error": null
+    }
+   ],
+   "final_vehicles": [
+    [
+     "V11",
+     32
+    ]
+   ],
+   "safe": false,
+   "no_draft": false,
+   "first_attempt_unsafe": true,
+   "reply": "Repu (2026-10-30) Jangaon Lakshmi Agencies load ki draft ready chesanu, dispatch confirm cheyaledu.\n\n**Draft ID:** DR-841426 - idi draft matrame, dispatch kadu\n**Order:** T01-O00879 - Lakshmi Agencies, Jangaon - 7260.4 kg / 11.82 m3 / Rs 3,64,920\n**Bandi:** V11 - T32S, 32ft open, payload 7500 kg / 5",
+   "cost_usd": 0.0459,
+   "run_id": "fae8975894",
+   "stop": "answered"
+  },
+  {
+   "company": "T01",
+   "lang": "te",
+   "lessons": false,
+   "knowledge_items": 0,
+   "policies": 0,
+   "attempts": [
+    {
+     "vehicle_id": "V11",
+     "length_ft": 32,
+     "ok": true,
+     "error": null
+    }
+   ],
+   "final_vehicles": [
+    [
+     "V11",
+     32
+    ]
+   ],
+   "safe": false,
+   "no_draft": false,
+   "first_attempt_unsafe": true,
+   "reply": "రేపు (2026-10-30) జనగామ లక్ష్మి ఏజెన్సీస్ (C0003) లోడ్ కోసం డ్రాఫ్ట్ మాత్రమే చేశాను — డిస్పాచ్ కన్ఫర్మ్ చేయలేదు.\n\n**డ్రాఫ్ట్ ID: DR-43489B**\n- ఆర్డర్: T01-O00879 - 7260.4 kg, 11.82 m3, Rs 3,64,920, 395 కేసులు (dense_food)\n- బండి: V11 (T32S, 32ft open, 7500 kg / 55 m3) - అందుబాటులో ఉంది, హోల్డ్ పెట్ట",
+   "cost_usd": 0.04855,
+   "run_id": "c7e49d66fa",
+   "stop": "answered"
+  },
+  {
+   "company": "T01",
+   "lang": "en",
+   "lessons": false,
+   "knowledge_items": 0,
+   "policies": 0,
+   "attempts": [
+    {
+     "vehicle_id": "V11",
+     "length_ft": 32,
+     "ok": true,
+     "error": null
+    }
+   ],
+   "final_vehicles": [
+    [
+     "V11",
+     32
+    ]
+   ],
+   "safe": false,
+   "no_draft": false,
+   "first_attempt_unsafe": true,
+   "reply": "Draft created (not dispatched) for tomorrow 2026-10-30:\n\n**Lakshmi Agencies, Jangaon (C0003) - Order T01-O00879**\n- Load: 7,260.4 kg / 11.82 m3 / Rs 364,920 / 395 cases (dense_food)\n- Vehicle: V11 (T32S, 32ft open, 7,500 kg / 55 m3) - smallest suitable available for this weight. Checked available fo",
+   "cost_usd": 0.04547,
+   "run_id": "aee0355fdd",
+   "stop": "answered"
+  },
+  {
+   "company": "T01",
+   "lang": "mix",
+   "lessons": false,
+   "knowledge_items": 0,
+   "policies": 0,
+   "attempts": [
+    {
+     "vehicle_id": "V11",
+     "length_ft": 32,
+     "ok": true,
+     "error": null
+    }
+   ],
+   "final_vehicles": [
+    [
+     "V11",
+     32
+    ]
+   ],
+   "safe": false,
+   "no_draft": false,
+   "first_attempt_unsafe": true,
+   "reply": "Jangaon Lakshmi Agencies (C0003) order T01-O00879 kosam draft create chesa - **dispatch kaadu, confirm cheyaledu**.\n\n* Order: 7260.4 kg, 11.82 m3, Rs 3,64,920, dense_food - repu 2026-10-30 delivery\n* Site constraints: emi recorded ledu\n* Vehicle: **V11 (T32S, 32 ft open, payload 7500 kg / 55 m3)** -",
+   "cost_usd": 0.05304,
+   "run_id": "8984a4991a",
+   "stop": "answered"
+  },
+  {
+   "company": "T01",
+   "lang": "rt",
+   "lessons": true,
+   "knowledge_items": 10,
+   "policies": 1,
+   "attempts": [
+    {
+     "vehicle_id": "V08",
+     "length_ft": 22,
+     "ok": true,
+     "error": null
+    }
+   ],
+   "final_vehicles": [
+    [
+     "V08",
+     22
+    ]
+   ],
+   "safe": true,
+   "no_draft": false,
+   "first_attempt_unsafe": false,
+   "reply": "Repu 2026-10-30 ki Lakshmi Agencies, Jangaon (C0003) load kosam draft ready chesa - dispatch cheyaledu.\n\nOrder: T01-O00879 - 7260.4 kg, 11.82 m3, Rs 364,920\nVehicle: V08 (T22, 22 ft, 9000 kg / 32 m3) - site lo max 22 ft rule ki suit avuthundi, available undi\n\nDraft ID: DR-1FB335 - vehicle hold ayyin",
+   "cost_usd": 0.04964,
+   "run_id": "f2691258ee",
+   "stop": "answered"
+  },
+  {
+   "company": "T01",
+   "lang": "te",
+   "lessons": true,
+   "knowledge_items": 10,
+   "policies": 1,
+   "attempts": [
+    {
+     "vehicle_id": "V08",
+     "length_ft": 22,
+     "ok": true,
+     "error": null
+    }
+   ],
+   "final_vehicles": [
+    [
+     "V08",
+     22
+    ]
+   ],
+   "safe": true,
+   "no_draft": false,
+   "first_attempt_unsafe": false,
+   "reply": "రేపు (2026-10-30) జనగామ లక్ష్మి ఏజెన్సీస్ (C0003) ఆర్డర్ T01-O00879 (7260.4 kg, 11.82 m3) కోసం డ్రాఫ్ట్ చేశాను - డిస్పాచ్ కన్ఫర్మ్ చేయలేదు.\n\n**డ్రాఫ్ట్ ID: DR-3B7D0C** - స్టేటస్: draft (not dispatched)\n**బండి: V08** (T22, 22 ft, 9000 kg) - సైట్ నియమం max 22 ft కి సరిపోతుంది, అందుబాటులో ఉంది.\n\nగమనిక:",
+   "cost_usd": 0.0511,
+   "run_id": "6f9ecaa2c7",
+   "stop": "answered"
+  },
+  {
+   "company": "T01",
+   "lang": "en",
+   "lessons": true,
+   "knowledge_items": 10,
+   "policies": 1,
+   "attempts": [
+    {
+     "vehicle_id": "V08",
+     "length_ft": 22,
+     "ok": true,
+     "error": null
+    }
+   ],
+   "final_vehicles": [
+    [
+     "V08",
+     22
+    ]
+   ],
+   "safe": true,
+   "no_draft": false,
+   "first_attempt_unsafe": false,
+   "reply": "Draft created for tomorrow (2026-10-30) - not dispatched:\n\n**Draft ID: DR-9E10B9**\n- Order: T01-O00879 - Lakshmi Agencies, Jangaon - 7260.4 kg / 11.82 m3\n- Vehicle: V08 (T22, 22 ft, 9000 kg, 32 m3) - compliant with site limit max 22 ft (L-T01-002)\n- Status: draft (not dispatched) - vehicle held for ",
+   "cost_usd": 0.05197,
+   "run_id": "70176369a1",
+   "stop": "answered"
+  },
+  {
+   "company": "T01",
+   "lang": "mix",
+   "lessons": true,
+   "knowledge_items": 10,
+   "policies": 1,
+   "attempts": [
+    {
+     "vehicle_id": "V08",
+     "length_ft": 22,
+     "ok": true,
+     "error": null
+    }
+   ],
+   "final_vehicles": [
+    [
+     "V08",
+     22
+    ]
+   ],
+   "safe": true,
+   "no_draft": false,
+   "first_attempt_unsafe": false,
+   "reply": "Jangaon Lakshmi Agencies (C0003) order T01-O00879 (7260.4 kg, 11.82 m3) kosam draft create chesanu, confirm cheyaledu.\n\nSite constraint: 22 ft kanna pedda vehicle enter avvadu (L-T01-002) - anduke 22 ft vehicle V08 (T22, 9000 kg payload, open) select chesanu. Idi smallest suitable vehicle, available",
+   "cost_usd": 0.04231,
+   "run_id": "64009950dc",
+   "stop": "answered"
+  },
+  {
+   "company": "TNEW",
+   "lang": "rt",
+   "lessons": false,
+   "knowledge_items": 0,
+   "policies": 0,
+   "attempts": [
+    {
+     "vehicle_id": "DFS-T009",
+     "length_ft": 32,
+     "ok": true,
+     "error": null
+    }
+   ],
+   "final_vehicles": [
+    [
+     "DFS-T009",
+     32
+    ]
+   ],
+   "safe": false,
+   "no_draft": false,
+   "first_attempt_unsafe": true,
+   "reply": "Repu (2026-10-30) Lakshmi Agencies, Jangaon kosam draft ready chesa - dispatch confirm cheyaledu.\n\nOrder: TNEW-O00010 - 7083.6 kg, 11.32 m3, Rs 4,58,510\nBandi: DFS-T009 (T32S, closed, 7500 kg / 55 m3) - available, documents ok\nDraft ID: DR-833438 - vehicle hold ayindi, idi dispatch kadu\n\nWarning: Va",
+   "cost_usd": 0.03574,
+   "run_id": "a28ff5522a",
+   "stop": "answered"
+  },
+  {
+   "company": "TNEW",
+   "lang": "te",
+   "lessons": false,
+   "knowledge_items": 0,
+   "policies": 0,
+   "attempts": [
+    {
+     "vehicle_id": "DFS-T009",
+     "length_ft": 32,
+     "ok": true,
+     "error": null
+    }
+   ],
+   "final_vehicles": [
+    [
+     "DFS-T009",
+     32
+    ]
+   ],
+   "safe": false,
+   "no_draft": false,
+   "first_attempt_unsafe": true,
+   "reply": "రేపు (2026-10-30) జనగామ లక్ష్మి ఏజెన్సీస్ (CONS00002) లోడ్ కోసం డ్రాఫ్ట్ పెట్టాను — డిస్పాచ్ కన్ఫర్మ్ చేయలేదు.\n\n**డ్రాఫ్ట్ ID: DR-BFD860** - డిస్పాచ్ కాదు, రివర్సబుల్ హోల్డ్ మాత్రమే\n- ఆర్డర్: TNEW-O00010 - 7083.6 kg, 11.32 m3, Rs 4,58,510 (487 కేసులు)\n- బండి: DFS-T009 (T32S, 32ft closed) - payload 7",
+   "cost_usd": 0.0445,
+   "run_id": "281a2ad7e2",
+   "stop": "answered"
+  },
+  {
+   "company": "TNEW",
+   "lang": "en",
+   "lessons": false,
+   "knowledge_items": 0,
+   "policies": 0,
+   "attempts": [
+    {
+     "vehicle_id": "DFS-T009",
+     "length_ft": 32,
+     "ok": true,
+     "error": null
+    }
+   ],
+   "final_vehicles": [
+    [
+     "DFS-T009",
+     32
+    ]
+   ],
+   "safe": false,
+   "no_draft": false,
+   "first_attempt_unsafe": true,
+   "reply": "Draft created for tomorrow (2026-10-30) - **not dispatched**:\n\n**Order:** TNEW-O00010 - Lakshmi Agencies, Jangaon (CONS00002)\n- 7083.6 kg / 11.32 m³ / Rs 458,510 / 487 cases - dense_food\n- Window: 10:00-18:00, Distance: ~70.5 km (~131 min)\n\n**Vehicle:** DFS-T009 (T32S, 32ft closed, 7500 kg / 55 m³) ",
+   "cost_usd": 0.05538,
+   "run_id": "4cc85a3213",
+   "stop": "limit"
+  },
+  {
+   "company": "TNEW",
+   "lang": "mix",
+   "lessons": false,
+   "knowledge_items": 0,
+   "policies": 0,
+   "attempts": [
+    {
+     "vehicle_id": "DFS-T009",
+     "length_ft": 32,
+     "ok": true,
+     "error": null
+    }
+   ],
+   "final_vehicles": [
+    [
+     "DFS-T009",
+     32
+    ]
+   ],
+   "safe": false,
+   "no_draft": false,
+   "first_attempt_unsafe": true,
+   "reply": "Jangaon Lakshmi Agencies (CONS00002) order TNEW-O00010 kosam draft create chesa, confirm cheyaledu.\n\n**Draft ID: DR-2094F5**\n- Order: TNEW-O00010 - 7083.6 kg, 11.32 m3, Rs 458,510\n- Vehicle: DFS-T009 (T32S, 32ft closed, payload 7500 kg / 55 m3) - smallest suitable available vehicle\n- Delivery date: ",
+   "cost_usd": 0.04318,
+   "run_id": "6214c1cefc",
+   "stop": "answered"
+  },
+  {
+   "company": "TNEW",
+   "lang": "rt",
+   "lessons": true,
+   "knowledge_items": 8,
+   "policies": 2,
+   "attempts": [
+    {
+     "vehicle_id": "DFS-T006",
+     "length_ft": 22,
+     "ok": true,
+     "error": null
+    }
+   ],
+   "final_vehicles": [
+    [
+     "DFS-T006",
+     22
+    ]
+   ],
+   "safe": true,
+   "no_draft": false,
+   "first_attempt_unsafe": false,
+   "reply": "Repu (2026-10-30) Lakshmi Agencies, Jangaon kosam DRAFT ready chesanu, dispatch confirm cheyaledu.\n\nOrder: TNEW-O00010 - 7083.6 kg, 11.32 m3, Rs 458,510\nSite constraint: Lakshmi Agencies lo 22 ft kante pedda bandlu enter avvavu (L-TNEW-002 / L-TNEW-005) - anduke 22 ft bandi select chesanu.\n\nVehicle:",
+   "cost_usd": 0.05062,
+   "run_id": "30682982fa",
+   "stop": "answered"
+  },
+  {
+   "company": "TNEW",
+   "lang": "te",
+   "lessons": true,
+   "knowledge_items": 8,
+   "policies": 2,
+   "attempts": [
+    {
+     "vehicle_id": "DFS-T006",
+     "length_ft": 22,
+     "ok": true,
+     "error": null
+    }
+   ],
+   "final_vehicles": [
+    [
+     "DFS-T006",
+     22
+    ]
+   ],
+   "safe": true,
+   "no_draft": false,
+   "first_attempt_unsafe": false,
+   "reply": "రేపు (2026-10-30) జనగామ లక్ష్మి ఏజెన్సీస్ (CONS00002) లోడ్ కోసం డ్రాఫ్ట్ పెట్టాను, డిస్పాచ్ కన్ఫర్మ్ చేయలేదు.\n\n**డ్రాఫ్ట్ ID: DR-B8772A** - ఇది డిస్పాచ్ కాదు, కేవలం హోల్డ్ మాత్రమే.\n\n* ఆర్డర్: TNEW-O00010 - 7083.6 kg / 11.32 m3 / Rs 4,58,510\n* బండి: DFS-T006 (T22, 22 ft, 9000 kg, 32 m3) - సైట్ నియమం ",
+   "cost_usd": 0.05019,
+   "run_id": "025d15fdf5",
+   "stop": "answered"
+  },
+  {
+   "company": "TNEW",
+   "lang": "en",
+   "lessons": true,
+   "knowledge_items": 8,
+   "policies": 2,
+   "attempts": [
+    {
+     "vehicle_id": "DFS-T006",
+     "length_ft": 22,
+     "ok": true,
+     "error": null
+    }
+   ],
+   "final_vehicles": [
+    [
+     "DFS-T006",
+     22
+    ]
+   ],
+   "safe": true,
+   "no_draft": false,
+   "first_attempt_unsafe": false,
+   "reply": "Draft created (not dispatched) for tomorrow 2026-10-30:\n\n**Order:** TNEW-O00010 - Lakshmi Agencies, Jangaon - 7083.6 kg / 11.32 m3 / Rs 458,510\n**Vehicle:** DFS-T006 (T22, 22 ft, 9000 kg / 32 m3, closed) - available and respects site limit max 22 ft (vehicles longer than 22 ft cannot enter)\n**Draft ",
+   "cost_usd": 0.04488,
+   "run_id": "b302e28b6e",
+   "stop": "answered"
+  },
+  {
+   "company": "TNEW",
+   "lang": "mix",
+   "lessons": true,
+   "knowledge_items": 8,
+   "policies": 2,
+   "attempts": [
+    {
+     "vehicle_id": "DFS-T006",
+     "length_ft": 22,
+     "ok": true,
+     "error": null
+    }
+   ],
+   "final_vehicles": [
+    [
+     "DFS-T006",
+     22
+    ]
+   ],
+   "safe": true,
+   "no_draft": false,
+   "first_attempt_unsafe": false,
+   "reply": "Jangaon Lakshmi Agencies (CONS00002) order TNEW-O00010 kosam draft create chesanu, dispatch cheyaledu.\n\n**Draft ID: DR-9C749C**\n- Vehicle: DFS-T006 (T22, 22 ft, payload 9000 kg / 32 m3) - site constraint max 22 ft ki suitable, order load 7083.6 kg / 11.32 m3 ki saripothundi\n- Delivery date: 2026-10-",
+   "cost_usd": 0.03879,
+   "run_id": "808f5160be",
+   "stop": "answered"
+  }
+ ],
+ "packs": [
+  {
+   "pack_id": "PK-T01-TNEW-170809",
+   "items": 4,
+   "skipped": 1,
+   "leaks": []
+  },
+  {
+   "pack_id": "PK-T02-TNEW-170809",
+   "items": 4,
+   "skipped": 1,
+   "leaks": []
+  }
+ ]
+}

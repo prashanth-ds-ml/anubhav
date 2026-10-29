@@ -10,7 +10,8 @@ Review at the end of each day. Close a risk when it can no longer happen.
 |---|---|---|---|---|---|---|
 | R-01 | Muse tool calling or Telugu handling not good enough | L | H | EXP-001–006: 88–100% on language and tools | Regressions on new data | watching |
 | R-02 | Muse Voice Transcribe weak on Telugu | L | M | T6 passed; voice is cut before core features | Layer 2.6 fails | watching |
-| R-04 | No real improvement on sealed cases | M | H | Honest reporting; narrow the claim if needed | Arm C ≈ Arm A | open |
+| R-04 | No real improvement on sealed cases | M | H | EXP-008: 0/4 → 4/4 for T01 and the new company on the golden path; sealed benchmark still to come | Arm C ≈ Arm A | watching |
+| R-23 | Mining precision below bar (0.73): plausible-but-wrong lessons pass the gate | M | M | EXP-009: sharper statistical gates (no hard-coding); reviewer stays in the loop | Precision < 0.85 after EXP-009 | open |
 | R-05 | Benchmark leakage / overfitting | M | H | Hidden rules separate; split by family and time; leakage scan | Proposer sees oracle | open |
 | R-07 | Credits run out | L | H | [[cost_ledger]], mock mode, budget in [[build_plan]] | >$20 in a day | open |
 | R-08 | Hosted demo abused or overspends | M | M | Spend cap, rate limit, replay default | Unusual spend | open |

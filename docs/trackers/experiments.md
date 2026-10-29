@@ -279,3 +279,42 @@ Task file: `datasets/tasks/benchmark_v1.jsonl` (held-out = `split: heldout`). Se
   - Part A: high precision (the gate is strict); recall below 100% because Muse won't propose everything in one pass.
   - Part B: cold runs choose the 32 ft SXL; with lessons, the agent chooses a 22 ft truck in most runs, sometimes only after the validator blocks a 32 ft attempt.
 - **Budget:** about 6 mining calls (~$0.3, Meta) and 16 agent runs (~$0.7, Baseten).
+
+- **Result (2026-10-29, `artifacts/learning/exp008_20261029_170351.json`; mining $0.42 Meta, agent runs $0.75 Baseten):**
+
+**Part A: mining** (gate-passed lessons scored against the hidden truth)
+| Company | Repeat | Proposed | Passed gate | Precision | Recall | Found | Missed | False lessons | Traps admitted |
+|---|---|---|---|---|---|---|---|---|---|
+| T01 | 0 | 11 | 11 | 0.82 | 0.82 (9/11) | H-01,03,05,06,10,14,15,16,18 | H-04, H-17 | 2 | 0 |
+| T02 | 0 | 10 | 10 | 0.70 | 0.64 (7/11) | H-01,03,07a,07b,10,11,18 | H-04, H-13, H-16, H-17 | 3 | 0 |
+| T03 | 0 | 5 | 5 | 0.60 | 0.75 (3/4) | H-21, H-22, H-25 | H-24 | 2 | 0 |
+| **Pooled rep 0** | | 26 | 26 | **0.73** (19/26) | **0.73** (19/26) | | | 7 | **0** |
+| T01 / T02 / T03 | 1 | 12 / 10 / 4 | 12 / 10 / 4 | 0.83 / 0.70 / 0.75 | 0.91 / 0.64 / 0.75 | (T01 also found H-17) | | 2 / 3 / 1 | 0 |
+
+**Part B: behaviour** (Jangaon ~7 t; safe = every draft ≤ 22 ft)
+| Arm | RT | TE | EN | MIX | Safe | First attempt unsafe |
+|---|---|---|---|---|---|---|
+| T01 cold | V11 32 ft | V11 32 ft | V11 32 ft | V11 32 ft | **0/4** | 4/4 |
+| T01 + own lessons | V08 22 ft | V08 22 ft | V08 22 ft | V08 22 ft | **4/4** | **0/4** |
+| TNEW cold | 32 ft SXL | 32 ft SXL | 32 ft SXL | 32 ft SXL | **0/4** | 4/4 |
+| TNEW + domain pack (from T01, T02) | 22 ft | 22 ft | 22 ft | 22 ft | **4/4** | **0/4** |
+
+Packs: T01→TNEW 4 lessons (1 skipped: no matching site), T02→TNEW 4 lessons (1 skipped). **Leaks: 0.**
+
+- **Verdict (rule fixed above):**
+  - **Mining works at scale: NOT met.** Pooled precision 0.73 < 0.85. Recall 0.73 ≥ 0.6 and traps admitted = 0 both pass. Caveat on the traps: as in EXP-006, Muse never *proposed* a trap, so the gate's trap rejection was not exercised by live proposals; it is covered by the calibration tests.
+  - **Learning changes behaviour: met.** T01 0/4 → 4/4, and every safe run was safe on the first attempt: the approved knowledge changed the choice, the validator didn't have to block anything.
+  - **Cold-start transfer: met.** TNEW 0/4 → 4/4, first attempt safe, leaks 0.
+- **What the 7 false lessons (rep 0) are** (post-hoc analysis, not part of the claim):
+  - 3 × `receiving_hours` "not after 18:00" at ordinary sites that really close at 20:00. **Gate weakness:** 1–3 late arrivals can't distinguish 18:00 from 20:00, and a single observation still passes as NEEDS_EVIDENCE.
+  - 1 × `vendor_reliability` for spot/"market" trucks (9/46 vs 5/65). **Noise** passing a crude 2× ratio test.
+  - 1 × `vendor_reliability` for Charminar Roadways (6/37 vs 1/58). **Actually true in the world** (all contracted vendors are worse in rush weeks by design), but not in the H-rule list. An evaluator gap.
+  - 2 × `alias` "sxl"/"ace" → T02's only SXL and only Ace truck. **True for that fleet**, but class names, not nicknames. They appeared after hand-written trade-term lists were removed (D-034).
+  - Counting only the genuinely wrong ones (4 of 26), precision would be 0.85. That is post-hoc and is **not** claimed.
+- **Misses:**
+  - H-04 "Chowrasta load" is also the site's street in the master data, so the agent can resolve it without a lesson; arguably not unwritten.
+  - H-13/H-16/H-17 at T02 and H-24 at T03 were not proposed.
+- **Next (EXP-009, to be pre-registered):** sharpen the gate without hard-coding:
+  - receiving hours: the claimed hour must match the earliest held arrival, with ≥ 2 observations;
+  - vendor reliability: a proper significance test instead of a 2× ratio;
+  - aliases: reject a phrase that equally fits every vehicle of a class.

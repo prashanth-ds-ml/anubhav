@@ -5,8 +5,8 @@ tags: [tracker, cost]
 
 | Credit | Total $ | Spent $ | Left $ | Used for |
 |---|---|---|---|---|
-| Meta Model API | 150.00 | ~14.42 | ~135.58 | Muse Spark + Voice Transcribe runtime, evals |
-| Baseten | 100.00 (+2M TPM) | ~15.6 | ~84.4 | Open-weights arm (FR-15) |
+| Meta Model API | 150.00 | ~15.7 | ~134.3 | Muse Spark + Voice Transcribe runtime, evals |
+| Baseten | 100.00 (+2M TPM) | ~16.4 | ~83.6 | Open-weights arm (FR-15) |
 
 ## Meta Model API ($150)
 
@@ -37,6 +37,7 @@ tags: [tracker, cost]
 | 2026-10-27 | Benchmark | EXP-005 dispatch probe, Spark 1.3 (16 tasks × 2) | | | | 0.71 | ~15.17 | ⬜ |
 | 2026-10-27 | Benchmark | EXP-006 history mining, Spark 1.3 (2 runs) | | | | 0.09 | ~15.26 | ⬜ |
 | 2026-10-29 | Voice | Muse Voice Transcribe pipeline check (20 s, Day-1 recording) | | | | 0.001 | ~15.26 | ⬜ |
+| 2026-10-29 | Benchmark | EXP-008 mining, Spark 1.3 (6 calls, ~45k-char digests) | | | | 0.42 | ~15.7 | ⬜ |
 
 ### Prices (verified 2026-10-27)
 | Model | Input /1M | Output /1M | Cached /1M |
@@ -60,6 +61,7 @@ tags: [tracker, cost]
 | 2026-10-27 | muse-spark-open-1026 (Model API) | EXP-006 four arms (116 runs) | | | | 2.72 | ~9.4 | ⬜ |
 | 2026-10-29 | muse-spark-open-1026 (Model API) | EXP-007 six arms (180 runs; raw-history arms have ~15k-char prompts) | | | | 5.93 | ~15.3 | ⬜ |
 | 2026-10-29 | muse-spark-open-1026 (Model API) | Layer 2 live golden path: 5 requests (RT/TE/EN/MIX/ambiguous) + TE/RT rerun after prompt fix | | | | 0.29 | ~15.6 | ⬜ |
+| 2026-10-29 | muse-spark-open-1026 (Model API) | EXP-008 part B: 16 agent runs | | | | 0.75 | ~16.4 | ⬜ |
 
 ### Prices
 Model: always `meta-models/muse-spark-open-1026` (the hackathon override of `meta-models/muse-spark-open` in Baseten's docs), via the per-token Model API at `https://inference.baseten.co/v1`. Fill in per-token prices from Baseten.
