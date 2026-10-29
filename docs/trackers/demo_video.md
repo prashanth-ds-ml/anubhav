@@ -3,35 +3,38 @@ tags: [tracker, demo]
 ---
 # Demo video (≤ 3:00) and hosted demo
 
-The video is the primary artifact: Stage 3 judges watch it **live**. Script drafted by Day 6; recorded on Day 8 (Nov 3).
+The video is the primary artifact. Final-round judges also try the hosted demo, following the same flow, so it must reproduce the video reliably. Script drafted by Nov 1; recorded Nov 3. Storyboard from PRD v3.1 §16.
 
 ## Storyboard
 | Time | Beat | On screen | Narration (draft) | Asset ready? |
 |---|---|---|---|---|
-| 0:00–0:15 | Hook | Telugu voice note plays with subtitles | "Millions of orders sound like this. No business software understands them." | ⬜ |
-| 0:15–0:50 | Live run | Voice → transcript → tools → verified draft; shortfall flagged; "cheyyaku" honored | | ⬜ |
-| 0:50–1:25 | Real failure | A harder request fails; the trace shows why | | ⬜ |
-| 1:25–2:05 | Fix | Muse diagnoses → patch → own paraphrase tests → sandbox/regression → human approves | | ⬜ |
-| 2:05–2:35 | Proof | Held-out before/after with spread, cost, latency. "Same frozen model. Smarter harness." | | ⬜ |
-| 2:35–3:00 | Impact | Measured time saved, 0 unsafe actions, other languages, Meta stack, hosted link | | ⬜ |
+| 0:00–0:18 | Problem | A 32 ft truck that passes every check but can't enter one Jangaon entrance | "Your best dispatcher knows this. Your software doesn't." | ⬜ |
+| 0:18–0:45 | Baseline | Roman-Telugu request (voice) → MCP calls → wrong draft, with trace | | ⬜ |
+| 0:45–1:20 | Learn | Driver note mined → narrow candidate lesson → evidence and counter-evidence | | ⬜ |
+| 1:20–1:45 | Review and reuse | Reviewer approves the scoped lesson → new task gets the safe draft | | ⬜ |
+| 1:45–2:05 | Safety | Misleading habit rejected; double-booking blocked | | ⬜ |
+| 2:05–2:25 | Tool-use patch | Loop A diff tested against baseline; gate decision | | ⬜ |
+| 2:25–2:48 | Proof | Arms A/B/C/D (+E new company) with counts; limits stated | | ⬜ |
+| 2:48–3:00 | Close | One-line contribution, Meta model roles, repo and demo link | "Same model. Verified experience. Better decisions." | ⬜ |
 
 ## Shot list and assets
-- [ ] Voice notes recorded (self)
+- [ ] Telugu / Roman-Telugu voice request recorded (self)
 - [ ] Golden-path replay artifact saved (safety net)
-- [ ] A real failure trace, chosen because it is genuine
-- [ ] Improvement Lab screen capture
+- [ ] A real failure trace (genuine, not staged)
+- [ ] Learning Lab review capture
+- [ ] Loop A diff + paired probe capture
 - [ ] Benchmark chart (final numbers)
-- [ ] Architecture diagram (5 s)
-- [ ] Subtitles (English) for every Telugu line
-- [ ] Label any replayed segment "replay"
+- [ ] Architecture diagram (from `diagrams/`)
+- [ ] English subtitles for every Telugu line
+- [ ] Any replayed segment labelled "replay"
 
 ## Recording checklist
 - [ ] Screen at 1080p, browser zoom fixed, notifications off
 - [ ] Clean DB reset before each take
 - [ ] Spoken script timed under 2:55
-- [ ] Upload as unlisted/public; link works in incognito
+- [ ] Uploaded; link works in incognito
 
 ## Hosted demo
 - **URL:** 
-- **Modes:** replay (default) · live (spend-capped)
+- **Modes:** replay (default) · live (spend-capped) · judge seed challenge
 - [ ] Spend cap enforced · [ ] Rate limit · [ ] Works in incognito

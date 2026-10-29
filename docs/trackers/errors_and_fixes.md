@@ -11,6 +11,8 @@ Summary table first, details below. Newest at the bottom.
 | E-001 | 2026-10-27 | voice | Realtime ASR closed with "Ingress audio slower than real-time"; script hung until Ctrl-C | high | fixed | see below |
 | E-002 | 2026-10-27 | voice | Live voice test saved 20 s of digital silence; empty transcript | high | fixed (use `--device 0`) | no code change |
 | E-003 | 2026-10-27 | infra | Baseten returned 403 "please check the api-key you provided" | medium | fixed | no code change |
+| E-004 | 2026-10-29 | infra | `scripts/data/build_db.py` was never committed; README told users to run it | medium | fixed | 331e6e9 |
+| E-005 | 2026-10-29 | infra | `gh repo rename` returned HTTP 404 | low | fixed | no code change |
 
 **Areas:** model API · MCP · tools · agent · retrieval · verifier · voice · UI · infra · data · cost
 
@@ -60,3 +62,20 @@ Summary table first, details below. Newest at the bottom.
   - Replies can contain emoji, so scripts must call `sys.stdout.reconfigure(encoding="utf-8")` on Windows or printing crashes.
 - **Prevention:** After pasting a key, check it with a 1-call smoke test right away.
 
+---
+
+### E-004: build_db.py silently ignored by git
+- **Date:** 2026-10-29 · **Severity:** medium · **Status:** fixed
+- **Area:** infra (`.gitignore`)
+- **Symptom:** A fresh clone had no `scripts/data/build_db.py`, although the README said to run it.
+- **Root cause:** The `.gitignore` line `data/` matches *any* folder named `data`, including `scripts/data/`.
+- **Fix:** Anchor the pattern: `/data/` (plus `archive/prototype_experiments/data/`).
+- **Prevention:** Anchor ignore patterns with a leading `/` when they mean the repo root. Check `git status --ignored` before pushing.
+
+### E-005: gh repo rename returns 404
+- **Date:** 2026-10-29 · **Severity:** low · **Status:** fixed
+- **Area:** infra (GitHub CLI)
+- **Symptom:** `gh repo rename` failed with HTTP 404 on `prashanth-ds-ml/meta-hackathon-telugu-agent`.
+- **Root cause:** The active `gh` account is `kprashanth-ai`, which has only pull access to the repo.
+- **Fix:** Run admin commands with the owner's token, without switching accounts: `GH_TOKEN=$(gh auth token --user prashanth-ds-ml) gh ...`
+- **Prevention:** Check `gh auth status` when a GitHub API call returns 404 on a repo you know exists.

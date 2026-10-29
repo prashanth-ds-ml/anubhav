@@ -8,7 +8,7 @@ tags: [daily]
 **Gate for today:** 
 **Gate result:** ⬜ pending / ✅ passed / ❌ failed
 
-## Plan (from [[day_plan]])
+## Plan (from [[build_plan]])
 - [ ] 
 
 ## Done

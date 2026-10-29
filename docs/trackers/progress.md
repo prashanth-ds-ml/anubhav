@@ -3,55 +3,59 @@ tags: [tracker, progress]
 ---
 # Progress tracker
 
-**Overall:** 12% (Day 1 done; benchmark data and tasks ready)
-Status key: ⬜ pending · 🟨 in progress · ✅ done · ❌ blocked
+**Overall:** 10% (design and experiments done; build starts Oct 29)
+Plan: [[build_plan]] · Status key: ⬜ pending · 🟨 in progress · ✅ done · ❌ blocked · ✂️ cut
+History before Oct 29 (order-desk plan): `archive/progress_order_desk.md`
 
-| Day | Date (IST) | Focus | Gate | Status | Evidence |
+## Layers
+| Layer | Dates (IST) | Focus | Gate | Status | Evidence |
 |---|---|---|---|---|---|
-| 0 | Oct 26–27 | Docs review, PRD v1.1, day plan, Obsidian vault | Plan agreed | ✅ | [[PRD_v1.1]], [[day_plan]] |
-| 1 | Tue Oct 27 | Muse smoke tests, repo, SQLite seed, mock adapter | Roman-Telugu tool call works; voice decision made | ✅ gate passed; voice ✅; DB v2 (84 SKUs, CSV) ✅; 48-task benchmark ✅; pricing engine ✅ | [[smoke_tests]], repo: github.com/prashanth-ds-ml/meta-hackathon-telugu-agent |
-| 2 | Wed Oct 28 | MCP server + 12 core tools + contract tests | Golden quote correct without the LLM | ⬜ | |
-| 3 | Thu Oct 29 | LangGraph agent, trace, verifier, safety guard | **HARD CHECKPOINT:** golden path runs live | ⬜ | |
-| 4 | Fri Oct 30 | 40 tools, BigTool, voice path, first X post | Arms A and B run on the same scenario | ⬜ | |
-| 5 | Sat Oct 31 | 48-task benchmark, baseline, failure catalog | Baseline logged | ⬜ | |
-| 6 | Sun Nov 1 | Improvement loop | One real candidate probed and decided | ⬜ | |
-| 7 | Mon Nov 2 | UI, held-out ×3, hosted demo, README, **freeze** | Fresh install and hosted link both work | ⬜ | |
-| 8 | Tue Nov 3 | Video and submission dry run | Video ≤ 3:00; links work in incognito | ⬜ | |
-| 9 | Wed Nov 4 | Buffer, then **submit** | Submitted | ⬜ | |
+| — | Oct 26–28 | Experiments EXP-001–006, interview, direction | Anubhavam chosen (D-024) | ✅ | [[experiments]], [[Anubhavam_overview]] |
+| — | Oct 29 | Repo cleanup, rename, PRD v3.1 + blueprint, build plan | Repo `anubhav` pushed | ✅ | D-025–D-027 |
+| 0 | Oct 29 | EXP-007 Arm B check, citations, project setup | Claim survives raw-note baseline; clean `uv sync` + `pytest` | ⬜ | |
+| 1 | Oct 29–30 | Data world: 3 companies + T-new, 90 days | Pilot then full, 0 integrity violations | ⬜ | [[data_and_benchmark]] |
+| 2 | Oct 30–31 | MCP, tenant broker, LangGraph, safety, traces, voice | Golden path live in EN/TE/RT/MIX | ⬜ | |
+| 3 | Oct 31 | Loop B lessons + domain pack | Jangaon story end to end; habit rejected; 0 leaks | ⬜ | [[lessons]] |
+| ✅ | **Nov 1, 10 AM** | **Demo-safe checkpoint** | Layers 0–3 done | ⬜ | |
+| 4 | Nov 1 | Loop A harness patch, OR-Tools, specialists | One real patch decided | ⬜ | [[harness_versions]] |
+| 5 | Nov 1–2 | 100 sealed cases, review, adversarial, arms A–E | Paired results with counts | ⬜ | [[data_and_benchmark]] |
+| 6 | Nov 2 | Streamlit 3 views, judge challenge, hosting | Works in incognito | ⬜ | |
+| 7 | Nov 3–4 | README, video, submit | Submitted | ⬜ | [[submission_checklist]] |
 
-## Feature status (PRD §6)
-| FR | Feature | Priority | Status |
+## Functional requirements (PRD v3.1 §14)
+| FR | Requirement | Layer | Status |
 |---|---|---|---|
-| FR-01 | 4 input language styles | P0 | ⬜ |
-| FR-02 | LangGraph agent, bounded | P0 | ⬜ |
-| FR-03 | MCP server + SQLite simulator | P0 | 🟨 simulator ✅, MCP ⬜ |
-| FR-04 | Draft quote with approval boundary | P0 | ⬜ |
-| FR-05 | Trace and replay | P0 | ⬜ |
-| FR-06 | Deterministic verifier | P0 | 🟨 pricing engine + task answer key ✅ |
-| FR-07 | Human-approved improvement workflow | P0 | ⬜ |
-| FR-08 | BigTool switch | P0 | ⬜ |
-| FR-09 | 40 tools, all tested | P0 (fallback 25) | ⬜ |
-| FR-10 | 3-view UI | P0 | ⬜ |
-| FR-11 | Voice input | P0 (gated) | 🟨 gate passed (T6) |
-| FR-12 | Muse diagnostician/proposer | P0 | ⬜ |
-| FR-13 | Paraphrase self-verification | P1 | ⬜ |
-| FR-14 | Hosted demo | P0 | ⬜ |
-| FR-15 | Open-weights arm | P1 (conditional) | 🟨 Baseten key works |
-| FR-16 | Manual-vs-agent timing study | P0 | ⬜ |
+| FR-01 | EN / TE / RT / mixed input | 2 | ⬜ |
+| FR-02 | Muse is the real planner and lesson proposer | 2–3 | ⬜ |
+| FR-03 | MCP discovery and invocation | 2 | ⬜ |
+| FR-04 | Adapter normalization (A/B/C schemas) | 2 | ⬜ |
+| FR-05 | Ambiguous entity → clarification | 2 | ⬜ |
+| FR-06 | Draft-only side effects | 2 | ⬜ |
+| FR-07 | Deterministic capacity / dimension / unit checks | 2 | ⬜ |
+| FR-08 | Atomic exclusive holds, idempotency | 2 | ⬜ |
+| FR-09 | Event trace and replay | 2 | ⬜ |
+| FR-10 | Evidence-backed lesson proposal | 3 | ⬜ |
+| FR-11 | Conservative promotion (one failure ≠ regional ban) | 3 | ⬜ |
+| FR-12 | Manual reviewer decisions with audit | 3 | ⬜ |
+| FR-13 | Contradiction, expiry, retirement, rollback | 3 | ⬜ |
+| FR-14 | Harness patch boundaries | 4 | ⬜ |
+| FR-15 | Paired patch tests | 4 | ⬜ |
+| FR-16 | Reject regressing patches | 4 | ⬜ |
+| FR-17 | Tenant and role enforcement | 2 | ⬜ |
+| FR-18 | Prompt-injection handling | 2, 5 | ⬜ |
+| FR-19 | Four-arm controlled evaluation | 5 | ⬜ |
+| FR-20 | Held-out contamination protection | 5 | ⬜ |
+| FR-21 | Hosted / replay mode | 6 | ⬜ |
+| FR-22 | Spend caps and secrets | 6 | ⬜ |
+| FR-23 | Licensing and originality ledger | 7 | ⬜ |
+| FR-24 | Domain pack isolation (opt-in, redaction, revocation) | 3 | ⬜ |
 
-## Acceptance tests (PRD §16)
-| AT | Description | Status | Run id |
-|---|---|---|---|
-| AT-01 | Roman Telugu + English → correct draft | ⬜ | |
-| AT-02 | Telugu script → ≥2 tools | ⬜ | |
-| AT-03 | Ambiguous product → clarification | ⬜ | |
-| AT-04 | "cheyyaku" → no committed order | ⬜ | |
-| AT-05 | Retrieval miss logged | ⬜ | |
-| AT-06 | Correction is a versioned diff; no self-promotion | ⬜ | |
-| AT-07 | Sandbox probe on identical snapshots | ⬜ | |
-| AT-08 | Regression rejects; rollback works | ⬜ | |
-| AT-09 | Same frozen model before and after | ⬜ | |
-| AT-10 | Fresh install, no secrets, replay works | ⬜ | |
-| AT-11 | Voice drives golden path | ⬜ | |
-| AT-12 | Paraphrase probes never leak into held-out | ⬜ | |
-| AT-13 | Hosted demo works in incognito; spend cap enforced | ⬜ | |
+## Release gates (must be zero before demoing as safe)
+| Gate | Status |
+|---|---|
+| Unauthorized executed action | ⬜ |
+| Cross-tenant data access | ⬜ |
+| Unapproved enforced lesson | ⬜ |
+| Duplicate exclusive hold | ⬜ |
+| Prompt-injection policy bypass | ⬜ |
+| Unreviewed harness patch activated | ⬜ |

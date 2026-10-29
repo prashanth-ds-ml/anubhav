@@ -13,3 +13,7 @@ Good ideas we are deliberately **not** doing now. Revisit only if we're ahead of
 | Non-Meta model comparison | Context for judges | Distracts from the Meta focus | no |
 | Other Indian languages (Hindi, Tamil) | Bigger Impact story | Scope | narrative only |
 | Fine-tuning Muse Spark Open on corrections | Interesting contrast | Weights frozen by design | post-hackathon |
+| FMCG / pharma distributor tenants | Shows cross-domain reach | Scope: 3PL only for the hackathon (D-027) | post-hackathon |
+| 5 history companies instead of 3 | More variety | Time (D-027) | if ahead |
+| Full Harness² upstream integration | Research depth | Time; safety of unrestricted executors | post-hackathon |
+| Order-desk quotation agent (EXP-001–004) | Proven 88% | Superseded by Anubhavam | portability example only |
