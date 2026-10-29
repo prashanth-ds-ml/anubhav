@@ -259,8 +259,26 @@ One canonical model; each company's database exposes it under its **own physical
 | Planning | `shipments`, `shipment_items`, `shipment_stops` |
 | Resources | `vendors`, `vehicles`, `drivers`, `rate_cards`, `availability` |
 | Execution | `trips`, `trip_events`, `trip_outcomes`, `proof_of_delivery`, `eway_bills` |
+| Documents | `invoices` (invoice no., value, GSTIN of consignee), `lorry_receipts` (LR no. per consignment), `eway_bills` (EWB no., valid until) |
+| Truck supply | `vehicle_placements` (vendor confirmed → placed on time / late / no-show, reported time) |
+| Staff corrections | `staff_edits` (who, when, what changed, old → new, free-text reason) |
+| Feedback | `feedback` (from distributor / driver / staff; complaint type; raw text; linked trip or site) |
+| Costs (light) | `trip_charges` (detention charges, spot-hire premium over the contract rate) |
 | Knowledge as written | `written_policies`, `site_access_rules` (**incomplete on purpose**) |
 | Messy text | `planner_messages`, `driver_notes` (language, raw text, timestamp, linked trip) |
+
+**Documents follow real practice:** every shipment has an invoice; every consignment has an LR; an e-way bill when the value exceeds ₹50,000. Planners and drivers quote these numbers in chats ("LR 4512 Jangaon load return ayyindi" / "the Jangaon load on LR 4512 came back").
+
+**Staff edits are daily and small.** Each company records a few edits per working day (about 2–6), never big batch clean-ups. Examples:
+- reassigning a truck with a reason ("V10 → V05, gate chinnadi" / "gate is narrow"),
+- correcting a site field ("receiving till 6 PM, not 8"),
+- marking a vendor unreliable after a no-show.
+
+Some edits are right, some are wrong or later reversed, as in real life. Edits are one of the strongest learning sources, and the learning loop runs **daily on that day's edits, notes and outcomes**, so memory stays fresh rather than being rebuilt in bulk.
+
+**Feedback** is messy and partial: late-delivery and damage complaints from distributors, wait-time and gate complaints from drivers. Some complaints point at hidden rules (H-01, H-11, H-13); others are noise.
+
+**Costs are kept light on purpose:** only detention charges and spot-hire premiums, enough to put a rupee value on bad planning (Impact score), without fuel/toll accounting.
 
 **Physical schemas:**
 | Company | Variant | Example names |
