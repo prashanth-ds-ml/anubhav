@@ -363,37 +363,59 @@ This tests both failure modes: trusting too fast (one note → a rule) and trust
 ---
 
 ## 9. Generator pipeline
+The generator simulates **day by day**. Each day runs steps 2–8 for every company, so the history builds up the way a real company's records do.
+
 | Step | Module | Output | Checks |
 |---|---|---|---|
-| 1 | `world` | Geography, companies, sites, entrances, products, vendors, vehicles, drivers, **hidden truth** | Unique IDs, valid scopes and dates |
-| 2 | `demand` | Shippers' orders and items by calendar | Units, plausible weights, references |
-| 3 | `shipments` | Allocation, consolidation, splits | Quantities reconcile; compatible products |
-| 4 | `dispatch` | Vehicle and driver choice by a *planner model* (sometimes habitual, sometimes wrong) | Capacity, availability, no overlaps |
-| 5 | `outcomes` | Events and outcomes from truth + noise | Chronology; failures explained by truth or noise |
-| 6 | `notes` | Planner messages and driver notes | Language mix, no oracle leaks |
-| 7 | `export` | Per-company SQLite in its physical schema + manifest | Adapter round-trip equals canonical |
-| 8 | `validate` | Integrity report | **0 critical violations** or generation fails |
+| 1 | `world` | Geography, companies, sites + entrances (true profile and the sparse/partly-wrong known profile), products, vendors, vehicles (with documents and real capacity), drivers, **hidden truth** | Unique IDs, valid scopes and dates |
+| 2 | `demand` | Shippers' orders and items with **delivery date and time window**; month-end and festival rushes; cancellations, late orders, credit holds | Units, plausible weights, references |
+| 3 | `shipments` | Allocation, consolidation, splits; **weight vs volume** limits; **food vs chemical** segregation; FEFO picking | Quantities reconcile; compatible products |
+| 4 | `dispatch` | A **simulated planner** works backwards from delivery windows and picks trucks: own vs attached vs spot, with habits (H-08), occasional mistakes and only partial knowledge of the hidden rules | Capacity, availability, valid documents, no overlaps |
+| 5 | `supply` | Vendor confirmations and **placements**: on time / late / no-show (H-15) → re-plans | Every no-show triggers a re-plan or a missed delivery |
+| 6 | `outcomes` | Loading, weighbridge, road events, delivery outcomes, unloading waits, returns, from truth + noise | Chronology; every failure has a cause (truth or noise) |
+| 7 | `paperwork` | Invoices, LRs, e-way bills (with validity), proof of delivery, detention and spot-hire charges | Numbers unique; e-way bill when value > ₹50,000 |
+| 8 | `people` | Daily **staff edits** (2–6/day; some wrong or reversed), **feedback** and complaints | Edits reference real records |
+| 9 | `notes` | Planner messages, driver notes, voice-note transcripts, wrong/vague notes; optional fact-locked Muse rewrites | Language mix, fact lock, no oracle leaks |
+| 10 | `export` | Per-company SQLite in its physical schema (A/B/C) + manifest | Adapter round-trip equals canonical |
+| 11 | `validate` | Integrity report + **evidence report** | **0 critical violations**, or generation fails |
 
-The **planner model** in step 4 matters: it imitates a human planner with habits (H-08), occasional mistakes and partial knowledge. That's how failures enter the history naturally.
+**The simulated planner (step 4)** is what makes the history realistic. It knows the written rules, some of the hidden rules (as an experienced planner would) and none of the others; it has habits; it occasionally makes mistakes. Failures then arise naturally when its choice meets the hidden truth.
 
-**Seeds:** `master_seed` → substreams `geography`, `demand`, `resources`, `disruptions`, `notes`, `benchmark`. Changing the notes doesn't change the trips.
+**Evidence report (step 11):** for every H-rule, count the planted evidence (failures, notes, edits, feedback) and check it matches the planned strength (single / repeated / conflicting / misleading, §7). A rule without its evidence fails the run.
+
+**Seeds:** `master_seed` → substreams `geography`, `demand`, `resources`, `disruptions`, `people`, `notes`, `benchmark`. Changing the notes doesn't change the trips.
 
 ---
 
 ## 10. Output layout (git-ignored data, committed code and config)
 ```
 configs/world_v1.yaml                 # all numbers in this spec
-src/anubhavam/data/                   # generator modules (steps 1–8)
+src/anubhavam/data/                   # generator modules (steps 1–11)
 data/worlds/<run_id>/
   T01.sqlite  T02.sqlite  T03.sqlite  TNEW.sqlite   # agent-visible, per-company schema
   truth/hidden_rules.json             # NEVER agent-visible, never in MCP outputs
   truth/canonical.sqlite              # full canonical world for validators and the oracle
+  reports/integrity.json  reports/evidence.json  reports/summary.md
   manifest.json                       # seed, config hash, generator version, snapshot hashes
 ```
 
 ---
 
 ## 11. Done criteria
-- **Pilot** (T01, Sep 8–14, ~60 orders, includes the Sep 12 Jangaon failure): 0 violations; you review 20 trips + 30 orders + the notes for realism.
-- **Full run:** 90 days × T01/T02/T03 + T-new; 0 violations; same seed → same hashes; summary stats reviewed (orders/day, trips, failure rate by cause, language mix, nickname rates).
-- Every H-rule has its planted evidence verifiably present (validator check).
+
+### Pilot (decided): T01, Tue Sep 8 → Mon Sep 14, 2026
+- Includes the **Sep 12 Jangaon failure** (H-01, second exposure), a **Tuesday off day** (H-16, Sep 8), the **moved Kazipet godown** about to start (H-17 from Sep 20, so only the old address appears), mid-month normal volume, and monsoon-season road risk.
+- About 60 orders. 0 integrity violations. The evidence report shows H-01 and H-16 evidence present.
+
+**Your review checklist for the pilot (~1 hour):**
+1. **Orders (30):** do the quantities, products, delivery windows and customers look like a real regional 3PL's day?
+2. **Trips (20):** right truck for the load? sensible stops along a corridor? believable timings?
+3. **Failures and re-plans:** do the causes and their frequency feel real? enough re-plans?
+4. **Notes and messages (a sample of ~40):** does the Roman Telugu / Telugu / English read like real WhatsApp chats? Are the nicknames natural? Anything robotic?
+5. **Site master data:** right amount blank, correct and wrong?
+6. Write what feels off in [[data_and_benchmark]] §4. Fixes go into the generator, never into the data by hand.
+
+### Full run
+- 90 days × T01/T02/T03 + T-new; 0 violations; same seed → same hashes.
+- Evidence report: every H-rule present at its planned strength.
+- `summary.md` reviewed: orders/day, trips, failure rate by cause, re-plans per day (normal vs festival), language mix, nickname rates, detention and spot-hire cost.
