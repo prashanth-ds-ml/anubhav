@@ -25,7 +25,7 @@ def tool_map_dot(rows, title=""):
             e = t["edges"].setdefault(tool, {"n": 0, "ok": 0})
             e["n"] += 1
             e["ok"] += int(r["answer_ok"])
-    L = ['digraph tools {', 'rankdir=LR; bgcolor="transparent"; nodesep=0.25; ranksep=1.4;',
+    L = ['digraph tools {', 'rankdir=TB; bgcolor="transparent"; nodesep=0.3; ranksep=1.2;',
          'node [fontname="Inter", fontsize=11, style="rounded,filled", shape=box];',
          f'labelloc=t; label="{_q(title, 80)}"; fontname="Inter"; fontsize=13;']
     tools = sorted({tool for t in by.values() for tool in t["edges"]})
