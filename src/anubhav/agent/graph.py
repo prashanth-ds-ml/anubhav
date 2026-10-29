@@ -53,8 +53,8 @@ class State(TypedDict):
     stop: str
 
 
-def build(broker, client, knowledge=(), limits: Limits = Limits()):
-    tools = broker.openai_tools()
+def build(broker, client, knowledge=(), limits: Limits = Limits(), hints=None):
+    tools = broker.openai_tools(hints)
 
     def model(s: State):
         r = client.chat(s["messages"], tools, temperature=0)
@@ -137,20 +137,24 @@ class _RuntimeWithout:
         return None if h == self.d else h
 
 
-def run(broker, client, request: str, knowledge=(), limits: Limits = Limits(), history=()):
+def run(broker, client, request: str, knowledge=(), limits: Limits = Limits(), history=(), harness=None):
     """One planner request end to end. Returns the reply, drafts, the full trace, cost and stop reason."""
     from datetime import date, timedelta
     plan_date = (date.fromisoformat(broker.C.today) - timedelta(days=1)).isoformat()
     sysmsg = SYSTEM.format(company=broker.C.company, today=broker.C.today, plan_date=plan_date)
     if knowledge:
         sysmsg += KNOWLEDGE.format(items="\n".join(f"- {k}" for k in knowledge))
+    if harness:
+        from ..harness.store import render
+        sysmsg += render(harness)
     messages = [{"role": "system", "content": sysmsg}, *history, {"role": "user", "content": request}]
     t0 = time.perf_counter()
-    out = build(broker, client, knowledge, limits).invoke(
+    out = build(broker, client, knowledge, limits, (harness or {}).get("tool_hints")).invoke(
         {"messages": messages, "turns": 0, "tool_calls": 0, "cost": 0.0, "trace": [], "drafts": [], "stop": ""},
         {"recursion_limit": 4 * limits.max_turns + 4})
     reply = next((m.get("content") for m in reversed(out["messages"]) if m["role"] == "assistant" and m.get("content")), "")
     return {"run_id": uuid.uuid4().hex[:10], "company": broker.C.company, "role": broker.s.role, "user": broker.s.user,
             "model": getattr(client, "model", "?"), "request": request, "knowledge": list(knowledge), "reply": reply,
+            "harness": harness or {},
             "drafts": out["drafts"], "stop": out["stop"], "turns": out["turns"], "tool_calls": out["tool_calls"],
             "cost_usd": round(out["cost"], 5), "latency_s": round(time.perf_counter() - t0, 2), "trace": out["trace"]}

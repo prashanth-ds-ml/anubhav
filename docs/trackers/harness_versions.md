@@ -7,6 +7,8 @@ Loop A: the agent improves *how it uses its tools*. Each row is one candidate, f
 **Allowed surfaces:** tool descriptions/examples · retrieval tags · Telugu/Roman-Telugu aliases · workflow sequencing hints · clarification templates · memory-selection guidance · response format.
 **Forbidden:** auth, authorization, tenant selectors, the validator, the benchmark, hidden answers, data rows, secrets, executable code, new MCP permissions, model weights.
 
+**Built 2026-10-29:** `src/anubhav/harness/` (store, loop) and the app's Tuning page. Versions live in `data/harness/harness.sqlite`; this page records the notable ones for the README and demo.
+
 ## Active version
 - **Current:** `h-000` (baseline)
 - **Model (frozen):** `<muse model id>` · temperature `__`

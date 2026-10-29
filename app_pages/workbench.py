@@ -4,6 +4,7 @@ from pathlib import Path
 import streamlit as st
 
 from anubhav import muse
+from anubhav.harness.store import CATEGORIES as CATS
 from anubhav.ui import core
 
 cid, use = st.session_state.company, st.session_state.use_lessons
@@ -19,6 +20,27 @@ st.caption(f"{cid} · {core.COMPANIES[cid]} · planning {C.today} deliveries · 
 left, right = st.columns([3, 2], gap="large")
 
 
+def feedback_box(r):
+    """Thumbs plus, on thumbs-down, what was wrong. Stored as tester feedback for Loop A (never as a rule)."""
+    done = st.session_state.setdefault("fb_done", set())
+    if r["run_id"] in done:
+        st.caption(":material/check: Feedback saved, thank you")
+        return
+    rating = st.feedback("thumbs", key=f"fb:{r['run_id']}")
+    if rating == 1:
+        core.harness_store().add_feedback(cid, r, 1, "good", "")
+        done.add(r["run_id"])
+    elif rating == 0:
+        with st.form(f"fbf:{r['run_id']}", border=True):
+            cat = st.segmented_control("What was wrong?", list(CATS), format_func=CATS.get, default="not_from_data")
+            note = st.text_area("How should it have answered or worked?", height=70,
+                                placeholder="e.g. we don't need these kinds of answers here; stick to the data")
+            if st.form_submit_button("Save feedback", icon=":material/rate_review:"):
+                core.harness_store().add_feedback(cid, r, 0, cat or "other", note)
+                done.add(r["run_id"])
+                st.rerun()
+
+
 def render_run(r):
     with st.chat_message("assistant", avatar=":material/local_shipping:"):
         steps = core.tool_steps(r)
@@ -30,6 +52,7 @@ def render_run(r):
         st.markdown(r["reply"] or "_(no reply)_")
         for k in core.lessons_used(r):
             st.badge(k.rsplit(" [", 1)[0][:90], icon=":material/school:", color="green")
+        feedback_box(r)
 
 
 with left:

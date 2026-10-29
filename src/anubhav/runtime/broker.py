@@ -148,8 +148,15 @@ class Broker:
     def list_tools(self):
         return [t for t in REGISTRY if self.allowed(t)]
 
-    def openai_tools(self):
-        return [t.schema() for t in self.list_tools()]
+    def openai_tools(self, hints=None):
+        """Tool schemas for the model; a harness version may append a learned hint to a tool's description."""
+        out = []
+        for t in self.list_tools():
+            s = t.schema()
+            if hints and hints.get(t.name):
+                s["function"]["description"] += f" Hint: {hints[t.name]}"
+            out.append(s)
+        return out
 
     # ---------- the single entry point
     def call(self, name, args: dict | str | None):

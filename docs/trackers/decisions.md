@@ -41,6 +41,8 @@ ADR-style: newest at the bottom. Never delete an entry; mark it superseded inste
 | D-032 | 2026-10-29 | MCP server per authenticated session (MCP SDK 2.x `MCPServer`): `tools/list` shows only what the role may use; company and role never come from tool arguments | accepted |
 | D-033 | 2026-10-29 | Rule-related staff fixes stay local to the order (never written to the site master), matching the interview: constraints live in planners' heads | accepted |
 | D-034 | 2026-10-29 | **No hard-coded knowledge.** Nothing the agent, miner, gate or tools use may contain facts, word lists or spellings written from knowledge of the generated world; use statistics computed from each company's own data, or let the agent learn it. Truth lives only in `learning/evaluate.py` (evaluation) and the generator | accepted |
+| D-035 | 2026-10-29 | **Loop A built with tester feedback.** The owner tests as a native speaker; feedback (👍/👎 + category + note) is tagged `source: tester`. Language/behaviour feedback → bounded harness patches (response guidelines, per-tool hints, glossary), shared by every client, tested old-vs-new before activation. Plan feedback is evidence only, never a rule. Tester feedback is excluded from experiments; final benchmarks use a fresh seed | accepted |
+| D-036 | 2026-10-29 | The agent learns to use the tools we provide: signals from its own traces (tool errors, repeats, limit hits) plus feedback drive Loop A. The paired-test gate is code (no lost drafts, no new tool errors, cost ≤ +30%, problem improved); a Muse judge of 'feedback addressed' is diagnostic; a person activates | accepted |
 
 ---
 

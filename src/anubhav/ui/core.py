@@ -10,6 +10,7 @@ import streamlit as st
 from .. import muse, trace
 from ..agent import graph
 from ..data.config import ROOT
+from ..harness.store import HarnessStore
 from ..learning.store import LessonStore
 from ..runtime.broker import Broker, Session
 from ..runtime.company import CompanyData
@@ -55,6 +56,29 @@ def clear_lessons():
         p.unlink()
 
 
+@st.cache_resource
+def harness_store() -> HarnessStore:
+    """One harness for every client: how the agent works is shared; what it knows stays per company."""
+    return HarnessStore(ROOT / "data" / "harness" / "harness.sqlite")
+
+
+def active_harness():
+    return harness_store().active()["surfaces"]
+
+
+def knowledge_for(cid):
+    return store().active_for(cid, company(cid))
+
+
+def recent_runs(limit=60):
+    rows = []
+    for p in sorted(trace.TRACE_DIR.glob("*.jsonl"), reverse=True):
+        rows += [json.loads(x) for x in reversed(p.read_text(encoding="utf-8").splitlines())]
+        if len(rows) >= limit:
+            break
+    return rows[:limit]
+
+
 def broker(cid: str, use_lessons: bool, role="dispatcher", user="demo"):
     C = company(cid)
     knowledge, policies, advisories = store().active_for(cid, C) if use_lessons else ([], [], [])
@@ -63,7 +87,7 @@ def broker(cid: str, use_lessons: bool, role="dispatcher", user="demo"):
 
 def run_live(cid, request, model_key, use_lessons):
     b, knowledge = broker(cid, use_lessons)
-    r = graph.run(b, muse.client(model_key), request, knowledge=knowledge)
+    r = graph.run(b, muse.client(model_key), request, knowledge=knowledge, harness=active_harness())
     trace.save(r, label=f"ui:{cid}:{'lessons' if use_lessons else 'cold'}")
     return r
 

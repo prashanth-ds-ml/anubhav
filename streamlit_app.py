@@ -37,6 +37,7 @@ with st.sidebar:
 pages = [
     st.Page("app_pages/workbench.py", title="Workbench", icon=":material/forum:", default=True),
     st.Page("app_pages/learning_lab.py", title="Learning Lab", icon=":material/school:"),
+    st.Page("app_pages/tuning.py", title="Tuning", icon=":material/tune:"),
     st.Page("app_pages/share.py", title="Share", icon=":material/share:"),
     st.Page("app_pages/proof.py", title="Proof & audit", icon=":material/fact_check:"),
     st.Page("app_pages/report.py", title="Weekly report", icon=":material/mail:"),
