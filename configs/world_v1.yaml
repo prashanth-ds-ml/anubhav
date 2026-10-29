@@ -1,0 +1,255 @@
+# Anubhavam demo world, v1. Every number here comes from docs/Data_Spec_v1.md.
+# Places are real; every business, person, vehicle number and phone number is fictional.
+version: 1
+generator_version: "0.1.0"
+master_seed: 20261104
+
+period: {start: 2026-08-01, end: 2026-10-29}
+pilot: {companies: [T01], start: 2026-09-08, end: 2026-09-14}
+
+calendar:
+  sunday_factor: 0.3
+  month_end_days: 8            # last N days of a month
+  month_end_factor: 1.4
+  festival: {start: 2026-10-10, end: 2026-10-19, factor: 1.6, closed_days: [2026-10-20]}   # Bathukamma/Dasara rush (dates assumed)
+  monsoon: {start: 2026-08-01, end: 2026-09-15}
+  order_cutoff_hour: 12
+
+languages: {rt: 0.5, te: 0.3, en: 0.2}     # staff preference order: Roman Telugu, Telugu, English/mixed
+driver_languages: {rt: 0.55, te: 0.38, en: 0.07}   # drivers rarely write English (confirmed by the owner)
+voice_note_share: 0.18
+wrong_or_vague_note_share: 0.10
+
+# Real towns. PIN codes and coordinates are approximate and must be checked against the
+# India Post All India Pincode Directory before publishing (pin_verified: false).
+towns:
+  - {name: Warangal,     district: Warangal,           pin: "506002", lat: 17.969, lon: 79.594, tier: 1, region: WGL}
+  - {name: Hanamkonda,   district: Hanamkonda,         pin: "506001", lat: 18.007, lon: 79.558, tier: 1, region: WGL}
+  - {name: Karimnagar,   district: Karimnagar,         pin: "505001", lat: 18.439, lon: 79.129, tier: 1, region: WGL}
+  - {name: Khammam,      district: Khammam,            pin: "507001", lat: 17.247, lon: 80.151, tier: 1, region: WGL}
+  - {name: Kazipet,      district: Hanamkonda,         pin: "506003", lat: 17.978, lon: 79.530, tier: 2, region: WGL}
+  - {name: Jangaon,      district: Jangaon,            pin: "506167", lat: 17.723, lon: 79.152, tier: 2, region: WGL}
+  - {name: Mahabubabad,  district: Mahabubabad,        pin: "506101", lat: 17.598, lon: 80.001, tier: 2, region: WGL}
+  - {name: Siddipet,     district: Siddipet,           pin: "502103", lat: 18.102, lon: 78.852, tier: 2, region: WGL}
+  - {name: Suryapet,     district: Suryapet,           pin: "508213", lat: 17.141, lon: 79.624, tier: 2, region: WGL}
+  - {name: Jagtial,      district: Jagtial,            pin: "505327", lat: 18.795, lon: 78.916, tier: 2, region: WGL}
+  - {name: Narsampet,    district: Warangal,           pin: "506132", lat: 17.928, lon: 79.895, tier: 3, region: WGL}
+  - {name: Parkal,       district: Hanamkonda,         pin: "506164", lat: 18.200, lon: 79.700, tier: 3, region: WGL}
+  - {name: Bhupalpally,  district: Jayashankar,        pin: "506169", lat: 18.430, lon: 79.860, tier: 3, region: WGL}
+  - {name: Huzurabad,    district: Karimnagar,         pin: "505468", lat: 18.200, lon: 79.400, tier: 3, region: WGL}
+  - {name: Thorrur,      district: Mahabubabad,        pin: "506163", lat: 17.580, lon: 79.700, tier: 3, region: WGL}
+  - {name: Mulugu,       district: Mulugu,             pin: "506343", lat: 18.190, lon: 79.940, tier: 3, region: WGL}
+  - {name: Bhongir,      district: Yadadri,            pin: "508116", lat: 17.510, lon: 78.890, tier: 3, region: WGL}
+  - {name: Bhadrachalam, district: Bhadradri,          pin: "507111", lat: 17.669, lon: 80.894, tier: 3, region: WGL}
+  - {name: Kukatpally,   district: Medchal-Malkajgiri, pin: "500072", lat: 17.485, lon: 78.414, tier: 1, region: HYD}
+  - {name: Secunderabad, district: Hyderabad,          pin: "500003", lat: 17.440, lon: 78.498, tier: 1, region: HYD}
+  - {name: Uppal,        district: Medchal-Malkajgiri, pin: "500039", lat: 17.406, lon: 78.559, tier: 1, region: HYD}
+  - {name: LB Nagar,     district: Rangareddy,         pin: "500074", lat: 17.346, lon: 78.552, tier: 1, region: HYD}
+  - {name: Medchal,      district: Medchal-Malkajgiri, pin: "501401", lat: 17.629, lon: 78.481, tier: 2, region: HYD}
+  - {name: Patancheru,   district: Sangareddy,         pin: "502319", lat: 17.533, lon: 78.264, tier: 2, region: HYD}
+  - {name: Shamshabad,   district: Rangareddy,         pin: "501218", lat: 17.259, lon: 78.386, tier: 2, region: HYD}
+  - {name: Gachibowli,   district: Rangareddy,         pin: "500032", lat: 17.440, lon: 78.349, tier: 2, region: HYD}
+  - {name: Sangareddy,   district: Sangareddy,         pin: "502001", lat: 17.614, lon: 78.081, tier: 2, region: HYD}
+  - {name: Ghatkesar,    district: Medchal-Malkajgiri, pin: "501301", lat: 17.450, lon: 78.685, tier: 3, region: HYD}
+  - {name: Shadnagar,    district: Rangareddy,         pin: "509216", lat: 17.070, lon: 78.205, tier: 3, region: HYD}
+tier_weight: {1: 5, 2: 3, 3: 1}
+road_factor: 1.3                    # road km = straight-line km x this
+speed_kmh: {highway: 38, town: 18}
+
+corridors:
+  WGL:
+    - [Hanamkonda, Warangal, Kazipet]
+    - [Warangal, Jangaon, Bhongir]
+    - [Warangal, Mahabubabad, Khammam]
+    - [Hanamkonda, Parkal, Bhupalpally]
+    - [Warangal, Huzurabad, Karimnagar, Jagtial]
+    - [Warangal, Narsampet, Mulugu]
+    - [Warangal, Thorrur, Suryapet]
+    - [Kazipet, Siddipet]
+    - [Khammam, Bhadrachalam]
+  HYD:
+    - [Medchal, Kukatpally, Gachibowli]
+    - [Medchal, Secunderabad, Uppal, LB Nagar]
+    - [Medchal, Patancheru, Sangareddy]
+    - [Medchal, Shamshabad, Shadnagar]
+    - [Medchal, Ghatkesar, Bhongir]
+
+vehicle_classes:      # assumed, approximate public specs
+  ACE:      {label: Ace,       payload_kg: 750,   length_ft: 7,  volume_m3: 3,  rate_per_km: 14}
+  LCV407:   {label: "407",     payload_kg: 2500,  length_ft: 10, volume_m3: 9,  rate_per_km: 20}
+  T14:      {label: 14 feet,   payload_kg: 4000,  length_ft: 14, volume_m3: 16, rate_per_km: 26}
+  T22:      {label: 22 feet,   payload_kg: 9000,  length_ft: 22, volume_m3: 32, rate_per_km: 34}
+  T32S:     {label: 32 SXL,    payload_kg: 7500,  length_ft: 32, volume_m3: 55, rate_per_km: 40}
+  T32M:     {label: 32 MXL,    payload_kg: 15000, length_ft: 32, volume_m3: 55, rate_per_km: 48}
+  REEFER14: {label: reefer,    payload_kg: 3500,  length_ft: 14, volume_m3: 14, rate_per_km: 38}
+spot_premium: 0.25                  # spot trucks cost 25% over the contract rate
+detention: {free_hours: 4, rate_per_hour: 250}
+
+# Products: fictional brands, realistic pack weights (Open Food Facts-style). Case volume in m3.
+brands:
+  Godavari Foods:      {class: dense_food, skus: [[Sunflower Oil 1L x12, 11.6, 0.016, 1450], [Chakki Atta 10kg, 10.2, 0.018, 420], [Sona Masoori 25kg, 25.3, 0.040, 1350]]}
+  Kakatiya Biscuits:   {class: light_food, skus: [[Glucose Biscuits x48, 4.1, 0.042, 520], [Cream Biscuits x36, 3.6, 0.038, 610]]}
+  Deccan Snacks:       {class: light_food, skus: [[Namkeen 200g x40, 8.3, 0.060, 1100], [Noodles 70g x96, 7.0, 0.048, 980]]}
+  Shine Home Care:     {class: chemical,   skus: [[Detergent 1kg x20, 20.6, 0.030, 1600], [Toilet Cleaner 500ml x24, 13.2, 0.026, 1750]]}
+  Telangana Beverages: {class: liquid,     skus: [[Soft Drink 250ml x24, 7.4, 0.014, 430], [Mango Drink 1.2L x12, 15.1, 0.022, 690]]}
+  Krishna Dairy:       {class: chilled,    skus: [[Curd 400g x30, 12.6, 0.030, 900], [Milk 500ml x40, 20.8, 0.032, 1100]]}
+
+site_types:
+  old_town_godown:    {cases: [60, 400],  share: 0.40}
+  highway_warehouse:  {cases: [250, 900], share: 0.20}
+  modern_trade:       {cases: [40, 220],  share: 0.20}
+  rural_substockist:  {cases: [15, 90],   share: 0.20}
+known_profile: {blank: 0.70, correct: 0.20, wrong: 0.10}
+
+companies:
+  T01:
+    name: Sri Kakatiya Logistics
+    region: WGL
+    depot: Hanamkonda
+    variant: A
+    orders_per_day: 9
+    sites: [45, 55]
+    brands: [Godavari Foods, Kakatiya Biscuits, Shine Home Care]
+    fleet: {ACE: 2, LCV407: 2, T14: 3, T22: 3, T32S: 2, T32M: 2}
+    spot_pool: 4
+    vendors: [SVR Transport, Kakatiya Logistics, Sri Durga Roadlines]
+    personality: experienced
+    planners:
+      - {name: Ramesh, lang: rt, share: 0.55, knows: [H-11, H-13], learns_after: 2}
+      - {name: Swathi, lang: te, share: 0.30, knows: [H-13], learns_after: 3}
+      - {name: Kiran,  lang: en, share: 0.15, knows: [], learns_after: 3}
+  T02:
+    name: Ramappa Carriers
+    region: WGL
+    depot: Kazipet
+    variant: B
+    orders_per_day: 8
+    sites: [40, 50]
+    brands: [Godavari Foods, Deccan Snacks, Telangana Beverages]
+    fleet: {ACE: 1, LCV407: 2, T14: 3, T22: 2, T32S: 1, T32M: 2}
+    spot_pool: 3
+    vendors: [Bhavani Roadways, Ramappa Transport, Godavari Carriers]
+    personality: formal
+    planners:
+      - {name: Naresh, lang: rt, share: 0.50, knows: [H-13], learns_after: 2}
+      - {name: Pavani, lang: te, share: 0.25, knows: [], learns_after: 3}
+      - {name: Divya, lang: en, share: 0.25, knows: [], learns_after: 3}
+  T03:
+    name: Deccan Freight Services
+    region: HYD
+    depot: Medchal
+    variant: C
+    orders_per_day: 14
+    sites: [80, 95]
+    brands: [Godavari Foods, Kakatiya Biscuits, Telangana Beverages, Krishna Dairy]
+    fleet: {ACE: 3, LCV407: 4, T14: 5, T22: 4, T32S: 2, T32M: 2, REEFER14: 4}
+    spot_pool: 5
+    vendors: [Deccan Movers, Charminar Roadways, Musi Logistics, Golconda Transport]
+    personality: systematic
+    planners:
+      - {name: Srinivas, lang: rt, share: 0.45, knows: [H-20], learns_after: 3}
+      - {name: Lavanya, lang: te, share: 0.30, knows: [H-20], learns_after: 2}
+      - {name: Farhan, lang: en, share: 0.25, knows: [H-20], learns_after: 2}
+  TNEW:
+    name: Bhadrakali Transport Co
+    region: WGL
+    depot: Warangal
+    variant: random
+    orders_per_day: 6
+    sites: [30, 40]
+    brands: [Godavari Foods, Deccan Snacks]
+    fleet: {ACE: 1, LCV407: 2, T14: 2, T22: 2, T32M: 2}
+    spot_pool: 2
+    vendors: [Bhadrakali Roadways, Ramagiri Carriers]
+    personality: new
+    history: false
+    planners:
+      - {name: Mahesh, lang: rt, share: 1.0, knows: [], learns_after: 99}
+shared_site_share: 0.25         # share of a Warangal company's sites shared with the other one
+
+fleet_mix: {own: 0.30, attached: 0.50, spot: 0.20}
+
+# Base rates for everyday problems (per trip unless noted), raised in rush weeks and rain.
+rates:
+  late_order: 0.06            # per order: arrives after the cut-off
+  qty_change: 0.04
+  cancel: 0.02
+  urgent: 0.05
+  credit_hold: 0.015
+  short_stock: 0.03
+  vendor_no_show: 0.05
+  spot_no_show: 0.12
+  late_report: 0.12
+  wrong_vehicle_type: 0.02
+  breakdown: 0.02
+  driver_absent: 0.02
+  rejected_at_loading: 0.015
+  loading_delay: 0.10
+  missing_eway_bill: 0.02
+  planner_overload_mistake: 0.02
+  rain_delay: 0.25            # in monsoon, on rural legs
+  godown_full: 0.03
+  partial_acceptance: 0.03
+  damage: 0.02
+  unloading_wait_long: 0.12
+  bandh_days_per_90: 1
+  rush_multiplier: 1.8        # applied to supply/no-show/late rates in month-end and festival weeks
+
+# Hidden truth (agent-invisible). Structured on purpose: precise enough to check every lesson.
+anchor_sites:
+  - {id: LAK-JGN, name: Lakshmi Agencies,             town: Jangaon,    type: old_town_godown,   entrances: [north], companies: [T01, T02, TNEW]}
+  - {id: SVT-JGN, name: Sri Venkateswara Traders,     town: Jangaon,    type: highway_warehouse, entrances: [main],  companies: [T01, T02, TNEW]}
+  - {id: VST-WGL, name: Venkata Sri Traders,          town: Warangal,   type: old_town_godown,   entrances: [main],  companies: [T01, T02, TNEW], street: Mulugu Road}
+  - {id: SGA-HNK, name: Sai Ganesh Agencies,          town: Hanamkonda, type: old_town_godown,   entrances: [main],  companies: [T01, T02, TNEW], street: Chowrasta}
+  - {id: GNS-MBD, name: Ganesh Stores,                town: Mahabubabad, type: old_town_godown,  entrances: [main],  companies: [T01]}
+  - {id: BAL-KZP, name: Balaji Distributors,          town: Kazipet,    type: old_town_godown,   entrances: [main],  companies: [T01, T02, TNEW]}
+  - {id: SRW-PMB, name: Sri Rama Warehousing,         town: Jangaon,    type: highway_warehouse, entrances: [main],  companies: [T01, T02, TNEW], street: Pembarthi highway}
+  - {id: SLN-PKL, name: Sri Lakshmi Narasimha Traders, town: Parkal,    type: old_town_godown,   entrances: [main],  companies: [T01, T02, TNEW]}
+  - {id: RVE-KMM, name: Ravi Enterprises,             town: Khammam,    type: highway_warehouse, entrances: [main],  companies: [T01]}
+  - {id: NAR-NSP, name: Narsampet Traders,            town: Narsampet,  type: rural_substockist, entrances: [main],  companies: [T01]}
+  - {id: FRM-KKP, name: FreshMart Kukatpally,         town: Kukatpally, type: modern_trade,      entrances: [basement], companies: [T03]}
+  - {id: DMM-MDL, name: Deccan Mega Mart Warehouse,   town: Medchal,    type: highway_warehouse, entrances: [main],  companies: [T03]}
+
+hidden_rules:
+  - {id: H-01, kind: site_access, site: LAK-JGN, entrance: north, max_length_ft: 22, shareable: true, strength: repeated,
+     exposures: [{company: T01, date: 2026-08-19, min_kg: 9500}, {company: T01, date: 2026-09-12, min_kg: 9500}, {company: T02, date: 2026-10-06, min_kg: 9500}]}
+  - {id: H-02, kind: look_alike, site: SVT-JGN, of: H-01, shareable: false, strength: repeated,
+     exposures: [{company: T01, date: 2026-08-25, min_kg: 9500}, {company: T01, date: 2026-09-10, min_kg: 9500}, {company: T02, date: 2026-09-22, min_kg: 9500}]}
+  - {id: H-03, kind: alias, phrase: Pedda godown, target: {site: VST-WGL}, companies: [T01, T02, TNEW], rate: 0.45, shareable: true, strength: repeated}
+  - {id: H-04, kind: alias, phrase: Chowrasta load, target: {site: SGA-HNK}, companies: [T01, T02, TNEW], rate: 0.40, shareable: true, strength: repeated}
+  - {id: H-05, kind: alias, phrase: nalla lorry, target: {vehicle: {company: T01, class: T32S, index: 0}}, companies: [T01], rate: 0.60, shareable: false, strength: repeated}
+  - {id: H-06, kind: alias, phrase: Anna vallu, target: {vendor: {company: T01, name: SVR Transport}}, companies: [T01], rate: 0.35, shareable: false, strength: repeated}
+  - {id: H-07a, kind: alias, phrase: pacha lorry, target: {vehicle: {company: T02, class: T22, index: 0}}, companies: [T02], rate: 0.55, shareable: false, strength: repeated}
+  - {id: H-07b, kind: alias, phrase: Mama vallu, target: {vendor: {company: T02, name: Bhavani Roadways}}, companies: [T02], rate: 0.35, shareable: false, strength: repeated}
+  - {id: H-08, kind: habit, company: T01, town: Khammam, vehicle_class: T32M, shareable: false, strength: misleading}
+  - {id: H-09, kind: one_off, date: 2026-09-03, town: Narsampet, event: rain_waterlogging, shareable: false, strength: misleading,
+     exposures: [{company: T01, date: 2026-09-03, site: NAR-NSP}, {company: T01, date: 2026-09-03, site: NAR-NSP}]}
+  - {id: H-10, kind: closure, town: Kazipet, what: Kazipet rail overbridge, valid_from: 2026-08-01, valid_to: 2026-09-30, delay_min: 40, shareable: true, strength: repeated}
+  - {id: H-11, kind: time_window, site: SGA-HNK, min_length_ft: 22, from_hour: 9, to_hour: 20, shareable: true, strength: repeated}
+  - {id: H-12, kind: contradiction, site: GNS-MBD, false_note_date: 2026-08-14, shareable: false, strength: conflicting,
+     exposures: [{company: T01, date: 2026-08-14, min_kg: 9500}, {company: T01, date: 2026-09-01, min_kg: 9500}, {company: T01, date: 2026-09-18, min_kg: 9500}, {company: T01, date: 2026-10-02, min_kg: 9500}, {company: T01, date: 2026-10-21, min_kg: 9500}]}
+  - {id: H-13, kind: receiving_hours, site: VST-WGL, until_hour: 18, shareable: true, strength: repeated}
+  - {id: H-14, kind: real_capacity, vehicle: {company: T01, class: T32M, index: 0}, real_payload_kg: 12000, shareable: false, strength: repeated}
+  - {id: H-15, kind: vendor_reliability, company: T01, vendor: Sri Durga Roadlines, rush_no_show: 0.35, normal_no_show: 0.05, shareable: false, strength: repeated}
+  - {id: H-16, kind: weekly_off, town: Parkal, weekday: 1, shareable: true, strength: repeated,     # weekday 1 = Tuesday
+     exposures: [{company: T01, date: 2026-09-08, site: SLN-PKL}, {company: T01, date: 2026-09-22, site: SLN-PKL}, {company: T02, date: 2026-10-13, site: SLN-PKL}]}
+  - {id: H-17, kind: moved_godown, site: BAL-KZP, from_date: 2026-09-20, delay_min: 50, shareable: true, strength: conflicting}
+  - {id: H-18, kind: night_only, site: SRW-PMB, from_hour: 22, to_hour: 6, shareable: true, strength: repeated}
+  - {id: H-20, kind: written_rule, company: T03, rule: city_heavy_vehicle_hours, min_length_ft: 22, from_hour: 8, to_hour: 22, shareable: false, strength: written}
+  - {id: H-21, kind: site_access, site: FRM-KKP, entrance: basement, max_length_ft: 14, shareable: false, strength: repeated,
+     exposures: [{company: T03, date: 2026-08-21, min_kg: 5000}, {company: T03, date: 2026-09-15, min_kg: 5000}]}
+  - {id: H-22, kind: alias, phrase: Pedda godown, target: {site: DMM-MDL}, companies: [T03], rate: 0.45, shareable: false, strength: repeated}
+  - {id: H-23, kind: cold_chain, company: T03, false_note: ice boxes saripotayi, shortcut_share: 0.3, spoil_prob: 0.5, shareable: false, strength: misleading}
+  - {id: H-24, kind: alias, phrase: Musi bandi, target: {vendor: {company: T03, name: Musi Logistics}}, companies: [T03], rate: 0.35, shareable: false, strength: repeated}
+  - {id: H-25, kind: real_capacity, vehicle: {company: T03, class: T22, index: 0}, real_payload_kg: 7500, shareable: false, strength: repeated}
+
+written_policies:
+  - {id: W-EWB, text: "E-way bill required when consignment value exceeds Rs 50,000; validity about 1 day per 200 km."}
+  - {id: W-OVERLOAD, text: "Never load beyond the vehicle's permitted payload; weighbridge checks apply."}
+  - {id: W-DOCS, text: "Do not dispatch a vehicle whose fitness, permit, insurance or pollution certificate has expired."}
+  - {id: W-SEGREGATE, text: "Food and chemical/home-care products must not be loaded in the same vehicle."}
+  - {id: W-COVER, text: "Open-body trucks must carry a tarpaulin; biscuits and snacks go in closed bodies during rain."}
+  - {id: W-LIFO, text: "On multi-drop trips, load the last drop first."}
+  - {id: W-CREDIT, text: "Do not dispatch to a distributor on credit hold."}
+  - {id: W-REST, text: "No driver may exceed 10 hours of duty in a day."}
+  - {id: W-REEFER, text: "Chilled dairy travels only in reefer vehicles at 2-8 C."}

@@ -13,6 +13,12 @@ Summary table first, details below. Newest at the bottom.
 | E-003 | 2026-10-27 | infra | Baseten returned 403 "please check the api-key you provided" | medium | fixed | no code change |
 | E-004 | 2026-10-29 | infra | `scripts/data/build_db.py` was never committed; README told users to run it | medium | fixed | 331e6e9 |
 | E-005 | 2026-10-29 | infra | `gh repo rename` returned HTTP 404 | low | fixed | no code change |
+| E-006 | 2026-10-29 | data | Allocation mismatch: an order listed the same product twice | medium | fixed | generator commit |
+| E-007 | 2026-10-29 | data | Overlap validator missed two trips starting at the same minute (caught by a mutation test) | medium | fixed | generator commit |
+| E-008 | 2026-10-29 | data | Negative delivered quantity after a full weighbridge offload | medium | fixed | generator commit |
+| E-009 | 2026-10-29 | data | Planned evidence lost: exposure orders hit random credit holds / rollovers | medium | fixed | generator commit |
+| E-010 | 2026-10-29 | data | Unrealistic scale behaviour: 29% rollovers, 528 dairy spoilages, repeated expired-paper picks | high | fixed | generator commit |
+| E-011 | 2026-10-29 | infra | Inline bash heredocs turned `\n` into real newlines inside Python source | low | fixed (use the Edit tool or script files) | — |
 
 **Areas:** model API · MCP · tools · agent · retrieval · verifier · voice · UI · infra · data · cost
 
@@ -79,3 +85,18 @@ Summary table first, details below. Newest at the bottom.
 - **Root cause:** The active `gh` account is `kprashanth-ai`, which has only pull access to the repo.
 - **Fix:** Run admin commands with the owner's token, without switching accounts: `GH_TOKEN=$(gh auth token --user prashanth-ds-ml) gh ...`
 - **Prevention:** Check `gh auth status` when a GitHub API call returns 404 on a repo you know exists.
+
+### E-006 to E-010: found by the generator's tests and the realism loop (2026-10-29)
+- **E-006 duplicate SKU lines:** test orders for planted evidence added extra lines of a product already on the order, so shipment allocation didn't reconcile. **Fix:** one line per product (as on a real order). **Prevention:** the integrity validator reconciles allocation per (order, SKU).
+- **E-007 same-minute overlap:** the vehicle-overlap check used a strict `<`, so two trips starting at the same minute passed. A mutation test caught it. **Fix:** also flag equal start times. **Prevention:** every validator has a mutation test.
+- **E-008 negative quantity:** after a weighbridge offload took all cases of a product, "partial acceptance" still subtracted one. **Fix:** only when cases remain.
+- **E-009 lost evidence:** a planned Jangaon exposure order was randomly put on credit hold, so the rule left no trace in the pilot. **Fix:** planned-evidence orders skip random cancellations/holds; false notes fire on the first delivery on/after their date. **Prevention:** a test asserts every planned exposure happens.
+- **E-010 scale realism:** the full run passed every check but wasn't realistic. Fixes:
+  - load splitting across two trucks;
+  - vehicles blocked until their papers are renewed;
+  - one client brand per order;
+  - chilled loads wait for a reefer (the ice-box shortcut is occasional, and spoils only half the time);
+  - the bridge closure only affects legs that cross it.
+
+  **Prevention:** rate tests on the full world (rollovers < 6%, returns < 3%, Roman Telugu > Telugu > English).
+- **Lesson:** "0 critical problems" is necessary, not sufficient. Always read samples and look at rates at full scale.

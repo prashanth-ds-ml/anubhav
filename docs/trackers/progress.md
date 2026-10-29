@@ -12,8 +12,8 @@ History before Oct 29 (order-desk plan): `archive/progress_order_desk.md`
 |---|---|---|---|---|---|
 | — | Oct 26–28 | Experiments EXP-001–006, interview, direction | Anubhavam chosen (D-024) | ✅ | [[experiments]], [[Anubhavam_overview]] |
 | — | Oct 29 | Repo cleanup, rename, PRD v3.1 + blueprint, build plan | Repo `anubhav` pushed | ✅ | D-025–D-027 |
-| 0 | Oct 29 | EXP-007 Arm B check, citations, project setup | Claim survives raw-note baseline; clean `uv sync` + `pytest` | ⬜ | |
-| 1 | Oct 29–30 | Data world: 3 companies + T-new, 90 days | Pilot then full, 0 integrity violations | ⬜ | [[data_and_benchmark]] |
+| 0 | Oct 29 | EXP-007 Arm B check, citations, project setup | Claim survives raw-note baseline; clean `uv sync` + `pytest` | ✅ (raw memory suffices on clean data → pitch reframed; citations verified; 159 tests pass) | [[experiments]] |
+| 1 | Oct 29–30 | Data world: 3 companies + T-new, 90 days | Pilot then full, 0 integrity violations | 🟨 generator + 31 tests done; pilot ✅ awaiting your review; full dry run ✅ | [[data_and_benchmark]], [[Data_Spec_v1]] |
 | 2 | Oct 30–31 | MCP, tenant broker, LangGraph, safety, traces, voice | Golden path live in EN/TE/RT/MIX | ⬜ | |
 | 3 | Oct 31 | Loop B lessons + domain pack | Jangaon story end to end; habit rejected; 0 leaks | ⬜ | [[lessons]] |
 | ✅ | **Nov 1, 10 AM** | **Demo-safe checkpoint** | Layers 0–3 done | ⬜ | |

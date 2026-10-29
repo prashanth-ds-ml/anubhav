@@ -10,7 +10,8 @@ Every generated world gets a row. Never edit generated data by hand; fix the gen
 
 | Date | Run | Companies | Days | Orders | Trips | master_seed | generator ver | config hash | snapshot hash | Validation | Notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| | pilot | T01 | 7 | ~100 | | | | | | ⬜ | |
+| 2026-10-29 | pilot | T01 | 7 (Sep 8–14) | 66 | 54 | 20261104 | 0.1.0 | `428941c30233` | T01 `db39cae926c6` | ✅ 0 critical | Awaiting your review (`reports/review_T01.md`) |
+| 2026-10-29 | full (dry run) | T01, T02, T03, TNEW | 90 | 2,884 | 1,894 | 20261104 | 0.1.0 | `428941c30233` | T01 `266f596ddf94` · T02 `0f5b5d31f779` · T03 `d75970210e29` · TNEW `6d5ce019660d` | ✅ 0 critical | Generated to stress-test; final full run only after pilot review |
 
 ## 2. Hidden rules (world truth)
 Agent-invisible. One row per planted rule, trap or change, so the benchmark can be checked against it.
@@ -22,13 +23,13 @@ Agent-invisible. One row per planted rule, trap or change, so the benchmark can 
 ## 3. Validation gates (blueprint §7)
 | Check | Pilot | Full |
 |---|---|---|
-| Structural (keys, uniqueness, tenant ownership) | ⬜ | ⬜ |
-| Temporal (order ≤ pickup ≤ delivery, notes after events) | ⬜ | ⬜ |
-| Physical (mass, volume, dimensions, site/vehicle) | ⬜ | ⬜ |
-| Operational (overlaps, capacity, at least one feasible plan) | ⬜ | ⬜ |
-| Statistical summaries reviewed | ⬜ | ⬜ |
-| Privacy (no oracle in agent-visible data) | ⬜ | ⬜ |
-| Reproducibility (same seed → same hash) | ⬜ | ⬜ |
+| Structural (keys, uniqueness, tenant ownership) | ✅ | ✅ |
+| Temporal (order ≤ pickup ≤ delivery, notes after events) | ✅ | ✅ |
+| Physical (mass, volume, dimensions, site/vehicle) | ✅ | ✅ |
+| Operational (overlaps, capacity, at least one feasible plan) | ✅ | ✅ |
+| Statistical summaries reviewed | 🟨 by Claude; awaiting you | 🟨 by Claude |
+| Privacy (no oracle in agent-visible data) | ✅ | ✅ |
+| Reproducibility (same seed → same hash) | ✅ | ✅ |
 
 ## 4. Human review log
 | Date | Pass | What was reviewed | Reviewer | Verdict | Issues found → fix |
