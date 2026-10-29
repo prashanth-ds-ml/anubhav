@@ -49,7 +49,7 @@ def tool_map_dot(rows, title=""):
 
 def run_dot(r, C=None):
     """DOT source for one run. Green tool = ok, red = error; teal notes = approved lessons the reply cites."""
-    L = ['digraph run {', 'rankdir=LR; bgcolor="transparent"; node [fontname="Inter", fontsize=11, style="rounded,filled"];',
+    L = ['digraph run {', 'rankdir=TB; nodesep=0.35; ranksep=0.35; bgcolor="transparent"; node [fontname="Inter", fontsize=11, style="rounded,filled"];',
          'edge [color="#8A939E", arrowsize=0.7];',
          f'q [label="{_q(r["request"], 48)}", shape=box, fillcolor="#15181D", fontcolor="white"];']
     prev = "q"
