@@ -43,14 +43,24 @@ with left:
         pick = st.pills("Try", list(core.SUGGESTIONS), label_visibility="collapsed", key=f"pick:{key}")
         if pick:
             prompt = core.SUGGESTIONS[pick]
-    audio = st.audio_input("Or speak (Muse Voice Transcribe)", sample_rate=16000, key=f"mic:{key}")
-    if audio is not None and st.button("Use this voice note", icon=":material/mic:"):
-        with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as f:
-            f.write(audio.getvalue())
-        with st.spinner("Transcribing…"):
-            t = muse.transcribe(Path(f.name), keywords=sorted({s["town"] for s in C.sites.values()}))
-        st.info(t["transcript"] or "(empty)", icon=":material/mic:", title=f"Transcript · ${t['cost_usd']:.4f}")
-        prompt = t["transcript"] or None
+    with st.container(border=True):
+        audio = st.audio_input(":material/mic: Speak in Telugu, Roman Telugu or English", sample_rate=16000,
+                               key=f"mic:{key}:{len(history)}")
+        if audio is not None:
+            sig = hash(audio.getvalue())
+            if st.session_state.get("voice_sig") != sig:          # a new recording: transcribe it once
+                with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as f:
+                    f.write(audio.getvalue())
+                with st.spinner("Muse Voice Transcribe…"):
+                    t = muse.transcribe(Path(f.name), keywords=sorted({s["town"] for s in C.sites.values()}))
+                st.session_state.update(voice_sig=sig, voice_text=t["transcript"],
+                                        voice_meta=f"{t['audio_ms'] / 1000:.1f} s audio · ${t['cost_usd']:.4f}")
+            with st.form(f"voice:{key}", border=False):
+                text = st.text_area("Transcript (fix anything misheard, then send)", value=st.session_state.voice_text,
+                                    height=80)
+                st.caption(st.session_state.voice_meta)
+                if st.form_submit_button("Send", icon=":material/send:", type="primary") and text.strip():
+                    prompt = text.strip()
 
     if prompt:
         with st.chat_message("user"):
