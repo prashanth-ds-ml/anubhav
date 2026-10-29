@@ -23,7 +23,7 @@ import websockets
 from dotenv import load_dotenv
 
 ROOT = Path(__file__).resolve().parents[2]
-load_dotenv(ROOT / ".env")
+load_dotenv(ROOT.parents[1] / ".env")  # repo-root .env
 
 MODEL = "muse-voice-transcribe-1.0"
 PRICE_PER_HOUR = 0.18

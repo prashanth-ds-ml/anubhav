@@ -3,6 +3,8 @@ tags: [tracker, experiments]
 ---
 # Experiments and benchmark
 
+> **Moved 2026-10-29 (D-026):** all files for EXP-001–006 now live in `archive/prototype_experiments/`. Paths below are relative to that folder. Contents and sha256 hashes are unchanged.
+
 **Rule:** write the hypothesis *before* running. Report null results as null. Never fabricate uplift. Template: `templates/experiment`.
 
 ## Benchmark composition (target: 48)

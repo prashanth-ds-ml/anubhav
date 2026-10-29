@@ -15,7 +15,7 @@ from dotenv import load_dotenv
 from openai import OpenAI
 
 ROOT = Path(__file__).resolve().parents[2]
-load_dotenv(ROOT / ".env")
+load_dotenv(ROOT.parents[1] / ".env")  # repo-root .env
 
 PRICE_IN = {"muse-spark-1.3": 1.25, "muse-spark-1.3-contributor": 0.10}
 PRICE_OUT = {"muse-spark-1.3": 4.25, "muse-spark-1.3-contributor": 0.20}

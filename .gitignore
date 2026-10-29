@@ -18,7 +18,7 @@ venv/
 *.db
 *.sqlite
 *.sqlite3
-artifacts/raw/
+**/artifacts/raw/
 *.wav
 *.m4a
 *.ogg
@@ -39,7 +39,8 @@ Thumbs.db
 voice/
 
 # Generated business database
-data/
+/data/
+archive/prototype_experiments/data/
 
 # Personal voice transcripts log
-artifacts/smoke/voice_log.jsonl
+**/voice_log.jsonl

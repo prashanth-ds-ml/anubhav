@@ -1,60 +1,57 @@
-# Telugu-First Self-Improving Order Agent
+# Anubhavam
 
 > Built during the **Meta Global AI Developer Hackathon** (Oct 26 – Nov 4, 2026) · Indie track · *Push the Frontier*
 
-**A Meta Muse-powered, Telugu-first agent that gets measurably better at discovering and using business tools through verified experience, without retraining the model.**
+**An agent that learns a business's unwritten rules from the business's own records.** It checks the evidence, asks a person to approve risky lessons, and shares safe regional knowledge with the next customer of the same type. It works in Telugu, English and Roman Telugu, on Meta Muse. *Anubhavam* (అనుభవం) means "experience".
 
-**Proof case:** the order desk of a Telugu-speaking wholesale distributor. Retailers' voice notes and messages mix Telugu script, Roman Telugu and English, and the agent turns them into **verified draft quotations**. When it fails, Muse diagnoses the failure and proposes a bounded fix to its own operating harness, never its weights. The fix is tested on unseen tasks, and a human approves it before it goes live.
+*Same model. Verified experience. Better decisions.*
 
-*"Same frozen model. Smarter harness."*
+## The problem
+A dispatcher near Warangal knows that a 32 ft truck can't get into one Jangaon godown. That rule isn't in any system; it lives in a driver's note from a failed trip. An AI agent connected to the business data passes every check and still sends the 32 ft truck.
 
-**Where it can go next:**
-- pharma distribution
-- agri-input dealers
-- dairy cooperatives
-- spare-parts counters
-- other Indian languages
+In our prior experiments, Muse handled Telugu, Roman Telugu and tool calls at 88–100%, but scored **0–12% on unwritten local knowledge**. That gap is what Anubhavam closes.
 
-Only the tool registry and the language guidance change. The improvement loop stays the same.
+## How it learns
+1. **Records:** trips, staff corrections and outcomes are stored.
+2. **Mine:** Muse proposes candidate lessons, such as "32 ft trucks can't use the north entrance of the Jangaon godown".
+3. **Check:** code decides, not the model. Lessons need supporting evidence and no contradictions, and habits that look like rules are rejected.
+4. **Review:** a person approves risky lessons. A lesson stays a warning until it is approved as a rule.
+5. **Use:** approved lessons guide the next plan; a deterministic safety check enforces hard rules.
+6. **Refresh:** contradicting outcomes challenge a lesson; lessons expire and can be rolled back.
+7. **Share:** lessons are private by default. Approved regional lessons form a domain pack that helps a new customer from day 1.
 
-**Status:** 🚧 work in progress (Day 1). See [`docs/PRD_v1.1.md`](docs/PRD_v1.1.md).
+The agent only ever creates **draft** plans. It never dispatches real goods.
 
-## Meta models used
+## Status
+🚧 **In progress.** The new build starts now. What exists today:
+- **Design:** [PRD v3.1](docs/PRD_v3.1.md), [Data & Benchmark Blueprint](docs/Data_Benchmark_Blueprint_v1.0.md) and an [overview](docs/Anubhavam_overview.md). Scope: 3 history companies + 1 new test company.
+- **Prior experiments** (small synthetic sets, 13–16 tasks): [archive/prototype_experiments](archive/prototype_experiments/). The most relevant is EXP-006: unwritten-rule tasks went from 0% to 100% after learning from 123 trips, and a second company using the domain pack went from 0% to 100% with 0 leaks. These are early signals, not final results.
+
+## Meta models
 | Role | Model |
 |---|---|
-| Order agent (tool calling) | `muse-spark-1.3` |
-| Voice-note transcription (Telugu) | `muse-voice-transcribe-1.0` |
-| Failure diagnostician and patch proposer | `muse-spark-1.3` |
-
-**Repo:** https://github.com/prashanth-ds-ml/meta-hackathon-telugu-agent
-
-## Quick start (so far)
-```bash
-git clone https://github.com/prashanth-ds-ml/meta-hackathon-telugu-agent.git
-cd meta-hackathon-telugu-agent
-uv sync
-echo "meta_api=<your Meta Model API key>" > .env
-uv run python scripts/smoke/smoke_text.py           # T1–T5, T8 capability checks
-uv run python scripts/smoke/smoke_negation_loop.py  # "order confirm cheyyaku" safety loop
-uv run python scripts/smoke/smoke_voice.py voice/*  # Telugu voice-note transcription (files)
-uv run python scripts/smoke/live_voice.py --seconds 20 --agent  # live mic → transcript → Muse tool calls
-uv run pytest -q                                    # unit tests (mock mode, no credits)
-```
+| Agent (planning, tool calls) | Muse Spark / Muse Spark Open |
+| Lesson miner | Muse Spark |
+| Voice input (Telugu) | Muse Voice Transcribe |
 
 ## Repository layout
 ```
-src/order_agent/      # Python package: db/ (SQLite simulator), pricing.py (reference quote engine), llm.py (Muse + mock adapter)
-datasets/business/    # fictional distributor ERP as CSV (source of truth); hidden/ = shop slang the agent must learn
-datasets/tasks/       # 48-task benchmark (32 dev / 16 held-out)
-scripts/data/         # build_db.py: CSV -> data/business.db
-scripts/smoke/        # Day-1 capability tests against the Meta Model API
-tests/                # pytest (mock mode, no API credits)
-artifacts/smoke/      # raw smoke-test results (evidence)
-docs/                 # Obsidian vault: PRD, day plan, trackers, daily notes
+docs/                          # Obsidian vault: PRD, blueprint, overview, diagrams, trackers, daily notes
+archive/prototype_experiments/ # EXP-001–006: code, data and raw results (unchanged, hashes verified)
+src/anubhavam/                 # the new build (coming)
+```
+
+## Quick start
+```bash
+git clone https://github.com/prashanth-ds-ml/anubhav.git
+cd anubhav
+uv sync
+echo "meta_api=<your Meta Model API key>" > .env
+uv run pytest -q    # prior-experiment tests, mock mode, no credits
 ```
 
 ## Built during the hackathon vs. third-party
-Everything in this repository was written during the hackathon, starting Oct 27, 2026. Third-party libraries are used as dependencies only: OpenAI Python SDK (pointed at the Meta Model API), httpx, python-dotenv. Later additions will be LangGraph, langgraph-bigtool, MCP SDK and Streamlit. All business data (customers, brands, prices) is **fictional**.
+Everything in this repository was written during the hackathon, starting Oct 27, 2026. Third-party libraries are used as dependencies only (OpenAI Python SDK pointed at the Meta Model API, httpx, python-dotenv, and more as listed in `pyproject.toml`). All companies, people, operating rules and data are **fictional**.
 
 ## License
 MIT

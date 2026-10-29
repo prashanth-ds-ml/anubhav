@@ -17,7 +17,7 @@ import httpx
 from dotenv import load_dotenv
 
 ROOT = Path(__file__).resolve().parents[2]
-load_dotenv(ROOT / ".env")
+load_dotenv(ROOT.parents[1] / ".env")  # repo-root .env
 URL = "https://api.meta.ai/v1/asr/transcribe"
 
 

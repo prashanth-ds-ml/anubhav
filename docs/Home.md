@@ -1,18 +1,20 @@
 ---
 tags: [home, index]
 ---
-# Telugu-First Self-Improving Agent: Home
+# Anubhavam: Home
 
 **Meta Global AI Developer Hackathon** · Indie track · Push the Frontier
 
-> A Meta Muse-powered, Telugu-first agent that gets measurably better at discovering and using business tools through verified experience, without retraining the model.
-**Repo:** https://github.com/prashanth-ds-ml/meta-hackathon-telugu-agent · **Local:** `C:\Users\prash\projects\meta-hackathon-telugu-agent`
+> An agent that learns a business's unwritten rules from its own records, checks the evidence, asks a person to approve risky lessons, and shares safe regional knowledge with the next customer. Telugu, English and Roman Telugu, on Meta Muse.
+**Repo:** https://github.com/prashanth-ds-ml/anubhav · **Local:** `C:\Users\prash\projects\meta_hackathon`
 **Deadline:** Wed Nov 4, 9:00 PM ET = **Thu Nov 5, 7:30 AM IST** (target: submit Nov 4 IST)
 
 ## Plan
-- [[PRD_v1.1]]: the product requirements (source of truth)
-- [[day_plan]]: day-by-day checklists and the event schedule in IST
-- `Telugu_First_Self_Evolving_Agent_PRD_v1.docx`: superseded v1 (history only)
+- [[PRD_v3.1]]: product requirements (source of truth), scaled per D-027
+- [[Data_Benchmark_Blueprint_v1.0]]: data generator, 100-case benchmark, review procedure
+- [[Anubhavam_overview]]: the idea, an 18-step walkthrough, experiment findings, hackathon fit
+- `diagrams/anubhavam_flow.excalidraw`: flow diagram (open at excalidraw.com)
+- `archive/`: superseded docs (PRD v1 and v1.1, old day plan); prior experiment files are in the repo's `archive/prototype_experiments/`
 
 ## Trackers
 | Tracker | Use it for |
