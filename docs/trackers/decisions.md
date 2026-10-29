@@ -34,6 +34,7 @@ ADR-style: newest at the bottom. Never delete an entry; mark it superseded inste
 | D-025 | 2026-10-29 | Repo renamed to **`anubhav`** (GitHub repo and Python project). Local folder stays `meta_hackathon` | accepted |
 | D-026 | 2026-10-29 | Prior experiments EXP-001–006 and the `order_agent` package moved to `archive/prototype_experiments/`, layout unchanged so frozen hashes and scripts still work; new code goes in `src/anubhavam/` | accepted |
 | D-027 | 2026-10-29 | Design baseline: [[PRD_v3.1]] + [[Data_Benchmark_Blueprint_v1.0]], scaled to **3 history companies + 1 new test company** (instead of 5 + 1); everything else kept, built in layers with a demo-safe checkpoint on Nov 1 | accepted |
+| D-028 | 2026-10-29 | **Ground rule:** every commit and push is by `prashanth-ds-ml <prashanth01071995@gmail.com>` only; no co-authors, no Claude attribution, no other GitHub account. Repo-local credential helper pins pushes to prashanth-ds-ml | accepted |
 
 ---
 

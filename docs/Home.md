@@ -51,7 +51,7 @@ tags: [home, index]
 
 ## Rules
 1. Commit daily. Never commit `.env`, keys, `Hackathon_info/`, or real data.
-2. No Claude co-author trailers or collaborator on pushes to `prashanth-ds-ml`.
+2. **Ground rule:** every commit and push is by `prashanth-ds-ml <prashanth01071995@gmail.com>` only. No co-author trailers, no Claude attribution, no other account (D-028).
 3. Never fabricate results, uplift or testimonials. Label any replay as a replay.
 4. All companies, people, operating rules and data are fictional.
 5. The model proposes, code enforces, people approve. No safety check is done by the LLM.
