@@ -35,7 +35,7 @@ ADR-style: newest at the bottom. Never delete an entry; mark it superseded inste
 | D-026 | 2026-10-29 | Prior experiments EXP-001–006 and the `order_agent` package moved to `archive/prototype_experiments/`, layout unchanged so frozen hashes and scripts still work; new code goes in `src/anubhavam/` | accepted |
 | D-027 | 2026-10-29 | Design baseline: [[PRD_v3.1]] + [[Data_Benchmark_Blueprint_v1.0]], scaled to **3 history companies + 1 new test company** (instead of 5 + 1); everything else kept, built in layers with a demo-safe checkpoint on Nov 1 | accepted |
 | D-028 | 2026-10-29 | **Ground rule:** every commit and push is by `prashanth-ds-ml <prashanth01071995@gmail.com>` only; no co-authors, no Claude attribution, no other GitHub account. Repo-local credential helper pins pushes to prashanth-ds-ml | accepted |
-| D-029 | 2026-10-29 | Data defaults ([[Data_Spec_v1]]): 90 days (Aug 1 → Oct 29, 2026), ~2,500–3,000 orders (T01 ≈ 9/day, T02 ≈ 8/day, T03 ≈ 14/day), real towns and PIN codes with fictional businesses, notes ~50% Roman Telugu / 25% Telugu / 25% English or mixed; public datasets used for structure only | accepted |
+| D-029 | 2026-10-29 | Data defaults ([[Data_Spec_v1]]): 90 days (Aug 1 → Oct 29, 2026), ~2,500–3,000 orders (T01 ≈ 9/day, T02 ≈ 8/day, T03 ≈ 14/day), real towns and PIN codes with fictional businesses, notes ~50% Roman Telugu / 30% Telugu / 20% English or mixed; medium regional 3PL; delivery-window-driven planning; fleet ~30% own / 50% attached / 20% spot; public datasets used for structure only | accepted |
 
 ---
 

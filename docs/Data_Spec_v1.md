@@ -6,6 +6,8 @@ date: 2026-10-29
 
 What the generator builds, and why. It implements [[Data_Benchmark_Blueprint_v1.0]] at the D-027 scale (3 history companies + 1 new company). Status of each run: [[data_and_benchmark]]. Plan: [[build_plan]] Layer 1.
 
+**Who we are modelling:** a **medium-sized regional 3PL** (third-party logistics company) in Telangana. It moves FMCG goods from brands' CFA depots (Carrying & Forwarding Agent warehouses) to distributors and stores. Its staff work in **Roman Telugu first, then Telugu script, then English**. It is not a national giant: no fancy TMS, plans live in a basic system plus people's heads and WhatsApp.
+
 **Principles**
 1. **World first.** Write the hidden truth (rules, nicknames, habits, events) *before* generating anything. Every trip, failure and note follows from it. Nothing is hand-placed.
 2. **Real places, fictional businesses.** Towns, PIN codes and distances are real. Every company, person, vehicle number and phone number is invented.
@@ -27,6 +29,13 @@ What the generator builds, and why. It implements [[Data_Benchmark_Blueprint_v1.
 
 Attribution for PIN codes, OSM and Open Food Facts goes in `LICENSES_AND_ATTRIBUTION.md`. Indian truck capacities, rates, site rules and outcomes are **our assumptions**, labelled as such.
 
+**Practitioner input (most important reference).** An interview on 2026-10-27 with a former logistics manager at a large FMCG company (anonymised; no names or quotes are published without permission):
+- Orders reach the system from a sales app; allocation is already digital.
+- **Truck/transporter planning is the pain:** about 1–1.5 hours per plan, up to ~10 re-plans a day in festival season.
+- The real constraints (which truck fits where, which vendor is reliable) live in the planner's head.
+
+The generator's daily rhythm, re-plan reasons and failure mix (§2) are built to reproduce this pain.
+
 ---
 
 ## 2. Scale and calendar
@@ -36,29 +45,107 @@ Attribution for PIN codes, OSM and Open Food Facts goes in `LICENSES_AND_ATTRIBU
 | Orders per day (weekday average) | T01 ≈ 9 · T02 ≈ 8 · T03 ≈ 14 |
 | Total orders | ≈ **2,500–3,000** (trips emerge from consolidation; not fixed) |
 | Sundays | ~30% of weekday volume |
-| Festival rush (Bathukamma/Dasara, Oct) | ~1.6× volume for the 10 days before; more re-plans, late trucks |
+| **Month-end rush** | Last 7–10 days of each month: ~1.4× orders (distributors push to meet sales targets) |
+| Festival rush (Bathukamma/Dasara, Oct) | ~1.6× volume for the 10 days before; more re-plans, late trucks; some distributors closed on festival days |
 | Monsoon weeks (Aug–mid Sep) | Higher delay and failure probability on rural roads |
 | T-new | No history. Current state only (fleet, sites, today's orders) |
 
 Volumes are config values. The pilot uses 7 days of T01 only.
 
+### 2.1 Planning is driven by the delivery date and time
+Every order carries a **requested delivery date and time window** (e.g. "Oct 14, 08:00–13:00" or "before 18:00"). The planner works **backwards** from it:
+
+`latest dispatch time = window start − travel time − loading time − buffer`
+
+| Order type | Typical window | When it is planned |
+|---|---|---|
+| Regular (most orders) | Next day, morning or by evening | Afternoon of the day before (D-1), after the noon order cut-off |
+| Long-distance (Khammam, Karimnagar) | Next day | D-1 midday, dispatched in the evening |
+| Urgent / top-up | Same day | Same morning, if a truck is free |
+| Scheduled (modern trade, slot booking) | Fixed slot, e.g. 06:00–09:00 | D-1, with a hard slot |
+
+**Daily rhythm:** orders arrive from 08:00 → noon cut-off → planning 12:00–16:00 → trucks report and load 16:00–21:00 → trips run overnight or next morning → deliveries and proof of delivery. Late orders after the cut-off, and anything that breaks the plan, trigger a **re-plan**.
+
+### 2.2 Fleet mix
+A mix that gives variety, as in real regional 3PLs:
+| Type | Share | Behaviour |
+|---|---|---|
+| **Own trucks** | ~30% | Reliable, fixed drivers, maintenance days |
+| **Attached vendor trucks** (regular transporters on contract) | ~50% | Usually reliable; each vendor has its own reliability and nicknames |
+| **Market / spot trucks** (hired for the day) | ~20% | Used in rushes; higher rate; more no-shows and late reporting |
+
+### 2.3 Why plans change (all realistic re-plan and failure reasons)
+Each has a base rate in config, raised by rush periods, rain or a specific vendor/site. Some are pure noise; some come from hidden rules (§7).
+
+| Group | Reasons |
+|---|---|
+| **Demand changes** | Late orders after cut-off · order quantity changed · order cancelled · urgent top-up order · distributor on **credit hold** (overdue payment) |
+| **Stock** | Short stock at the depot → partial load or split · wrong SKU picked → return |
+| **Truck supply** | Vendor **no-show** (truck promised, never placed) · truck **reports late** · wrong vehicle type sent · breakdown before or during trip · driver absent / driver change · truck rejected at loading (bad body, tarpaulin missing, dirty for food) |
+| **Loading** | Loading delay at depot · overload caught at weighbridge → reload · documents missing (invoice, **e-way bill**) |
+| **On the road** | Rain / waterlogging · road or bridge closure · traffic / city entry time restrictions · checkpost detention · accident · bandh / strike day |
+| **At delivery** | Site access problem (truck too long for the gate/lane) · distributor godown full · distributor closed (holiday, festival) · receiving hours over → unload next morning · long unloading wait · partial acceptance · damage / short delivery claim · return of goods |
+| **Cold chain (T03)** | Reefer not available · temperature breach → spoilage return |
+
+**Re-plan count per day** is reported, so the demo can show the interview's pain (normal days: a few; festival days: up to ~10).
+
 ---
 
 ## 3. Geography (real places)
-**Warangal region (T01, T02, T-new):** Warangal, Hanamkonda, Kazipet, Jangaon, Mahabubabad, Narsampet, Parkal, Bhupalpally, Khammam, Karimnagar, Siddipet, Bhongir.
-**Hyderabad region (T03):** Kukatpally, Secunderabad, Uppal, LB Nagar, Medchal, Patancheru, Shamshabad, Gachibowli, plus outbound to Sangareddy and Bhongir.
 
-Each consignee **site** has an address (fictional street + real town/PIN) and one or more **entrances** (north/south/main/back), because rules live at the entrance level (PRD §9.3).
+### 3.1 Towns, picked by business size
+Towns come from a candidate list. The number of customer sites in each town is drawn at random, **weighted by the town's size and trade activity** (a tier, set from public population figures such as Census 2011, and whether it is a district headquarters or market town).
+
+| Tier | Meaning | Site weight | Warangal-region candidates | Hyderabad-region candidates |
+|---|---|---|---|---|
+| 1 | Big city / trade hub | high | Warangal, Hanamkonda, Karimnagar, Khammam | Kukatpally, Secunderabad, Uppal, LB Nagar |
+| 2 | District HQ / large town | medium | Kazipet, Jangaon, Mahabubabad, Siddipet, Suryapet, Jagtial | Medchal, Patancheru, Shamshabad, Gachibowli, Sangareddy |
+| 3 | Small town / mandal market | low | Narsampet, Parkal, Bhupalpally, Huzurabad, Thorrur, Mulugu, Bhongir, Bhadrachalam | Bhongir, Ghatkesar, Shadnagar |
+
+Some tier-3 towns get no site in a given company: that randomness is intended.
+
+### 3.2 Corridors
+Trucks run along real road corridors and can drop at several stops per trip:
+Warangal → Jangaon → Bhongir · Warangal → Mahabubabad → Khammam · Hanamkonda → Parkal → Bhupalpally · Warangal → Huzurabad → Karimnagar · Warangal → Narsampet · Warangal → Thorrur → Suryapet. Hyderabad: city loops plus outbound to Sangareddy, Bhongir and Shadnagar.
+Travel time = road distance at ~30–40 km/h on state roads, slower inside towns, plus gate waiting.
+
+### 3.3 Sites
+| Company | Customer sites | Shared with the other Warangal company |
+|---|---|---|
+| T01 | ~40–60 | ~25% of its sites (the big distributors) |
+| T02 | ~40–60 | ~25% |
+| T03 | ~80–100 | none (different region) |
+| T-new | ~30–40 | ~25% with T01/T02's region |
+
+Overlap is kept modest on purpose: enough that regional lessons matter, not so much that the companies look like copies.
+
+**Site types:** old-town distributor godown (narrow lane) · highway-side warehouse (big yard) · modern-trade store (slots, dock height) · rural sub-stockist (small orders, bad roads in rain). Each site has one or more **entrances**, because rules live at the entrance level (PRD §9.3).
+
+### 3.4 What is true vs what the company knows
+This is the core of the world.
+
+| | **True site profile** (hidden, `truth/`) | **What the company's system knows** (agent-visible) |
+|---|---|---|
+| Content | Gate/lane limits, dock height, receiving hours, weekly off, market day, parking, typical unloading wait | Name, address, town, PIN, phone, GSTIN-like ID, site type. Profile fields are mostly **empty** |
+| How it is used | Decides trip outcomes in the simulation | What tools return |
+| How the company learns more | — | Only through **driver notes, failed trips, staff edits and feedback** over time |
+
+To keep it real, the system's site master is not perfectly empty or perfectly right:
+- **~70%** of profile fields are blank at the start.
+- **~20%** are filled and correct (things someone once typed in).
+- **~10%** are filled but **outdated or wrong** (e.g. "receiving till 20:00" when it is now 18:00).
+
+So the agent can't trust the master data blindly, and it has nothing to learn from on day 1. That is the gap Anubhavam's learning loop closes, and the reason T-new starts with only basic master data.
 
 ---
 
 ## 4. Businesses (fictional)
 | ID | Company | Depot | Clients (shippers, fictional brands) | Fleet | Own nicknames |
 |---|---|---|---|---|---|
-| T01 | Warangal A (3PL) | Hanamkonda | 3 FMCG brands (oil, atta, biscuits, detergent) | ~14 vehicles, 3 vendors | yes |
-| T02 | Warangal B (3PL) | Kazipet | 2 FMCG brands + 1 beverages | ~11 vehicles, 3 vendors | yes |
-| T03 | Hyderabad (3PL) | Medchal | 4 brands incl. chilled dairy (needs reefer) | ~22 vehicles, 4 vendors | yes |
-| T-new | New 3PL | Warangal area | 2 FMCG brands | ~9 vehicles, 2 vendors | yes |
+| T01 | Warangal A (3PL) | Hanamkonda | 3 FMCG brands (oil, atta, biscuits, detergent) | ~14 vehicles (own + 3 attached vendors + spot) | yes |
+| T02 | Warangal B (3PL) | Kazipet | 2 FMCG brands + 1 beverages | ~11 vehicles (own + 3 attached vendors + spot) | yes |
+| T03 | Hyderabad (3PL) | Medchal | 4 brands incl. chilled dairy (needs reefer) | ~22 vehicles (own + 4 attached vendors + spot) | yes |
+| T-new | New 3PL | Warangal area | 2 FMCG brands | ~9 vehicles (own + 2 attached vendors + spot) | yes |
 
 Consignees are distributors, wholesalers and modern-trade stores. Some (e.g. the big Warangal and Jangaon distributors) are served by **both** T01 and T02. That overlap is what makes regional sharing meaningful.
 
@@ -148,7 +235,7 @@ Agent-invisible (`truth/hidden_rules.json`). Each rule lists the evidence the ge
 ## 8. Messy text
 - **Planner messages:** each trip has a planner message ("Pedda godown load ki nalla lorry pettu"). Nicknames appear at a realistic rate (30–60%), never 100%.
 - **Driver notes:** on failures, delays and some normal trips. Example: "Jangaon godown north gate lo 32 adugula lorry tiragaledu, load venakki vachindi."
-- **Language mix:** ~50% Roman Telugu, ~25% Telugu script, ~25% English or mixed.
+- **Language mix (staff preference order):** ~50% Roman Telugu, ~30% Telugu script, ~20% English or mixed.
 - **Realism:** typos, missing details, wrong guesses by drivers (H-12), different spellings (Hanamkonda / Hanumakonda, Jangaon / Janagama).
 - **Generation:** template families per event type, filled from truth and events. Muse may later paraphrase templates for variety, but **facts and labels always come from code**.
 - **No oracle leaks:** a note may describe what happened, never the hidden rule ID, the "correct" answer or a test case.
