@@ -8,6 +8,45 @@ def _q(s, n=60):
     return s if len(s) <= n else s[: n - 1] + "…"
 
 
+TYPE_LABEL = {"sites_in_town": "Sites in a town", "towns_served": "Towns we serve", "trips_in_month": "Past deliveries in a month",
+              "returned_at_site": "Returns at a site", "open_orders_town": "Open orders tomorrow",
+              "orders_in_month": "Orders from a site in a month"}
+
+
+def tool_map_dot(rows, title=""):
+    """Question types (left) -> tools used (right). Line width = how often; green = answers right, orange = wrong."""
+    by = {}
+    for r in rows:
+        tools = json.loads(r["tools"]) if isinstance(r["tools"], str) else r["tools"]
+        t = by.setdefault(r["qtype"], {"n": 0, "ok": 0, "edges": {}})
+        t["n"] += 1
+        t["ok"] += int(r["answer_ok"])
+        for tool in dict.fromkeys(tools) or ["(no tool: answered from memory)"]:
+            e = t["edges"].setdefault(tool, {"n": 0, "ok": 0})
+            e["n"] += 1
+            e["ok"] += int(r["answer_ok"])
+    L = ['digraph tools {', 'rankdir=LR; bgcolor="transparent"; nodesep=0.25; ranksep=1.4;',
+         'node [fontname="Inter", fontsize=11, style="rounded,filled", shape=box];',
+         f'labelloc=t; label="{_q(title, 80)}"; fontname="Inter"; fontsize=13;']
+    tools = sorted({tool for t in by.values() for tool in t["edges"]})
+    L.append('subgraph cluster_q { label="Kind of question"; color="#E2E5EA"; fontname="Inter";')
+    for q, t in by.items():
+        L.append(f'"q:{q}" [label="{TYPE_LABEL.get(q, q)}\\n{t["ok"]}/{t["n"]} right", fillcolor="#15181D", fontcolor="white"];')
+    L.append('}')
+    L.append('subgraph cluster_t { label="Tool it used"; color="#E2E5EA"; fontname="Inter";')
+    for tool in tools:
+        none = tool.startswith("(no tool")
+        L.append(f'"t:{tool}" [label="{tool}", fillcolor="{"#FBE3E0" if none else "#E8F2F1"}", color="{"#A1281B" if none else "#0F7A74"}"];')
+    L.append('}')
+    for q, t in by.items():
+        for tool, e in t["edges"].items():
+            good = e["ok"] / e["n"] >= 0.8
+            L.append(f'"q:{q}" -> "t:{tool}" [penwidth={1 + 2.5 * e["n"] / max(1, t["n"]):.1f}, '
+                     f'color="{"#1E7B4F" if good else "#B4570B"}", label="{e["n"]}", fontsize=9];')
+    L.append("}")
+    return "\n".join(L)
+
+
 def run_dot(r, C=None):
     """DOT source for one run. Green tool = ok, red = error; teal notes = approved lessons the reply cites."""
     L = ['digraph run {', 'rankdir=LR; bgcolor="transparent"; node [fontname="Inter", fontsize=11, style="rounded,filled"];',

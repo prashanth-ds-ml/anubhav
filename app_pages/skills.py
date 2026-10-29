@@ -4,7 +4,7 @@ import streamlit as st
 
 from anubhav import muse
 from anubhav.harness import practice
-from anubhav.ui import core
+from anubhav.ui import core, graphs
 
 H = core.harness_store()
 cid = st.session_state.company
@@ -40,6 +40,22 @@ for (rnd, ver, split), rs in groups.items():
                   "answers right": sum(r["answer_ok"] for r in rs) / n, "fitting tool": sum(r["right_tool"] for r in rs) / n,
                   "answered without lookup": sum(not r["used_tool"] for r in rs) / n,
                   "tool errors": sum(r["tool_errors"] for r in rs), "cost $": round(sum(r["cost_usd"] for r in rs), 3)})
+st.subheader("Which tool it used for which kind of question")
+st.caption("Lines go from each kind of question to the tools the agent called. Thicker = used more often. "
+           "Green = answers matched the records, orange = they didn't. Red tool box = it answered without looking anything up.")
+labels = {k: f"{k[0]} · {k[1]} · {k[2]} ({len(v)} questions)" for k, v in groups.items()}
+keys = list(groups)
+c1, c2 = st.columns(2)
+left_k = c1.selectbox("Before", keys, index=0, format_func=labels.get, key="tm_left")
+right_k = c2.selectbox("After", keys, index=len(keys) - 1, format_func=labels.get, key="tm_right")
+g1, g2 = st.columns(2)
+with g1:
+    st.graphviz_chart(graphs.tool_map_dot(groups[left_k], f"{left_k[1]} · {left_k[2]}"), width="stretch",
+                      alt="Question types linked to the tools the agent used, before")
+with g2:
+    st.graphviz_chart(graphs.tool_map_dot(groups[right_k], f"{right_k[1]} · {right_k[2]}"), width="stretch",
+                      alt="Question types linked to the tools the agent used, after")
+
 st.subheader("Results by version")
 st.dataframe(table, hide_index=True, alt="Practice results by harness version", column_config={
     "answers right": st.column_config.ProgressColumn(format="percent", min_value=0, max_value=1),
