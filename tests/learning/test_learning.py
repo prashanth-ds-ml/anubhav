@@ -272,3 +272,12 @@ def test_aliases_already_in_master_data_are_not_new_knowledge(C):
     v = next(v for v in c.vehicles.values() if v["owner"] != "spot")
     r = gate.check(F, {"kind": "alias", "params": {"phrase": v["reg_no"], "target_kind": "vehicle", "target_id": v["vehicle_id"]}})
     assert r["verdict"] == "rejected" and "already recorded" in r["reason"]
+
+
+def test_leak_check_ignores_the_recipients_own_ids_but_not_the_sources(C, S):
+    src, dst = C("T01"), C("TNEW")
+    fake = {"items": [{"kind": "site_access", "params": {"site_id": next(iter(dst.sites))}}]}
+    assert next(iter(dst.sites)) not in pack.leaks(fake, src, dst)
+    v = next(v for v in src.vehicles.values() if v["owner"] != "own")
+    bad = {"items": [{"kind": "alias", "params": {"phrase": v["reg_no"]}}]}
+    assert v["reg_no"] in pack.leaks(bad, src, dst)

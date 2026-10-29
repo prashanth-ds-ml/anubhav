@@ -71,7 +71,7 @@ def publish(store, src, dst, approved_by, lesson_ids=None):
                       "evidence": f"another company in the region: {g.get('support', 0)} supporting observation(s), "
                                   f"{g.get('counter', 0)} against; approved by its reviewer"})
     pack_id = f"PK-{src.company}-{dst.company}-{datetime.now():%H%M%S}"
-    found = leaks({"items": items}, src)
+    found = leaks({"items": items}, src, dst)
     if found:
         raise PermissionError(f"pack would leak private information: {found}")
     with store._con() as con:
@@ -82,10 +82,15 @@ def publish(store, src, dst, approved_by, lesson_ids=None):
     return {"pack_id": pack_id, "items": items, "skipped": skipped}
 
 
-def leaks(pack, src):
+def leaks(pack, src, dst=None):
+    """Source-private tokens found in the pack. The recipient's own ids are never a leak (two companies can share an
+    id format, e.g. both number their sites C0001…). Matching is on whole tokens, not substrings."""
+    import re
     toks = private_tokens(src)
+    if dst is not None:
+        toks -= set(dst.sites) | set(dst.vehicles)
     text = json.dumps(pack["items"], ensure_ascii=False)
-    return sorted(t for t in toks if t in text)
+    return sorted(t for t in toks if re.search(rf"(?<![A-Za-z0-9]){re.escape(t)}(?![A-Za-z0-9])", text))
 
 
 def _key(kind, params):

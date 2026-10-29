@@ -22,7 +22,7 @@ if st.button("Publish and accept pack", icon=":material/share:", type="primary")
         ids = pack.import_pack(S, p, dst, accepted_by=f"owner-{target}", accept_policies=accept_rules)
         st.session_state.setdefault("packs", []).append(
             {"pack": p["pack_id"], "items": len(p["items"]), "skipped": len(p["skipped"]),
-             "leaks": pack.leaks(p, core.company(src)), "imported": ids})
+             "leaks": pack.leaks(p, core.company(src), dst), "imported": ids})
     st.rerun()
 
 for p in st.session_state.get("packs", []):

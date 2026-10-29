@@ -48,7 +48,7 @@ def main():
     for src in ("T01", "T02"):
         p = pack.publish(S, view[src], view["TNEW"], approved_by=f"owner-{src}")
         pack.import_pack(S, p, view["TNEW"], accepted_by="owner-TNEW", accept_policies=True)
-        packs.append({"pack_id": p["pack_id"], "items": len(p["items"]), "leaks": pack.leaks(p, view[src])})
+        packs.append({"pack_id": p["pack_id"], "items": len(p["items"]), "leaks": pack.leaks(p, view[src], view["TNEW"])})
     print("packs:", packs, flush=True)
 
     cases = bench.build(WORLD)

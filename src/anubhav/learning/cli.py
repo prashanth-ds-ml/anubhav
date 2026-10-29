@@ -76,7 +76,7 @@ def main(argv=None):
         src, dst = data(a.world, a.source), data(a.world, a.to)
         p = pack.publish(S, src, dst, a.approver)
         ids = pack.import_pack(S, p, dst, a.approver, a.accept_policies)
-        print(f"{p['pack_id']}: {len(p['items'])} lessons shared, {len(p['skipped'])} skipped; leaks: {pack.leaks(p, src)}")
+        print(f"{p['pack_id']}: {len(p['items'])} lessons shared, {len(p['skipped'])} skipped; leaks: {pack.leaks(p, src, dst)}")
         show([S.get(i) for i in ids])
     elif a.cmd == "report":
         print(report.weekly(S, a.company, data(a.world, a.company)))
