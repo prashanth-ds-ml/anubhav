@@ -94,14 +94,71 @@ def uses_in(runs, company, sb):
     return out
 
 
+def _signature(params):
+    return tuple(sorted({(p["name"], p["kind"], p["column"]) for p in params}))
+
+
+def _result(sb, tpl, values):
+    from ..runtime.query import QueryError
+    try:
+        return sb.run(tpl, params=values)
+    except QueryError:
+        return None
+
+
+def equivalent(a, b):
+    """Two results answer the same thing when they have the same number of rows and share a numeric column with the
+    same values (a count, a percentage…), whatever the labels, extra columns or column order. Results with no
+    numbers must be identical."""
+    if a is None or b is None or a["row_count"] != b["row_count"]:
+        return False
+    def numeric(r):
+        cols = list(zip(*r["rows"])) if r["rows"] else []
+        return {tuple(sorted(c)) for c in cols if c and all(isinstance(v, (int, float)) and not isinstance(v, bool) for v in c)
+                and len(set(c)) > 1 or (len(c) == 1 and isinstance(c[0], (int, float)))}
+    na, nb = numeric(a), numeric(b)
+    if na or nb:
+        return bool(na & nb)
+    return sorted(map(tuple, a["rows"]), key=repr) == sorted(map(tuple, b["rows"]), key=repr)
+
+
+def same_tool(a, b, sb):
+    """Two queries are the same tool when they take the same parameters and give equivalent answers for the same
+    inputs: the values each was used with, plus held-out values. The model rarely writes the same SQL text twice."""
+    if _signature(a["uses"][0]["params"]) != _signature(b["uses"][0]["params"]):
+        return False
+    probes = [{p["name"]: p["value"] for p in u["params"]} for u in (a["uses"][0], b["uses"][0])]
+    probes += held_out_values(a, sb, 3)
+    found = False
+    for v in probes:
+        x, y = _result(sb, a["template"], v), _result(sb, b["template"], v)
+        if not equivalent(x, y):
+            return False
+        found = found or bool(x["row_count"])
+    return found
+
+
 def candidates(runs, company, sb, marked=()):
-    """Templates used for >= MIN_USES different requests, or marked by a person (by key)."""
+    """Queries needed for >= MIN_USES different requests, or marked by a person (by key). Queries that give the same
+    answers for the same inputs count as one, whatever their SQL text."""
     groups = {}
     for u in uses_in(runs, company, sb):
         g = groups.setdefault(u["key"], {"key": u["key"], "template": u["template"], "uses": []})
         g["uses"].append(u)
+    merged = []
+    for g in sorted(groups.values(), key=lambda g: -len(g["uses"])):
+        home = next((m for m in merged if same_tool(m, g, sb)), None)
+        if home:
+            home["uses"] += g["uses"]
+            home.setdefault("variants", []).append(g["template"])
+        else:
+            merged.append(g)
     out = []
-    for g in groups.values():
+    for g in merged:
+        if g.get("variants"):        # the tool keeps the plainest wording: ASCII labels first, then the most used
+            pool = [g["template"], *g["variants"]]
+            count = {tp: sum(u["template"] == tp for u in g["uses"]) for tp in pool}
+            g["template"] = min(pool, key=lambda tp: (not tp.isascii(), -count[tp]))
         g["requests"] = sorted({u["request"] for u in g["uses"]})
         if len(g["requests"]) >= MIN_USES or g["key"] in marked:
             out.append(g)
@@ -165,13 +222,13 @@ def check(g, sb):
         try:
             orig = sb.run(u["sql"])
             new = sb.run(g["template"], params={p["name"]: p["value"] for p in u["params"]})
-            ok = orig["rows"] == new["rows"]
+            ok = orig["rows"] == new["rows"] or equivalent(orig, new)
         except QueryError as e:
             ok, orig = False, {"row_count": 0}
             reasons.append(f"original values: {e.message}")
         same.append({"request": u["request"], "rows": orig.get("row_count", 0), "same": ok})
     if not all(x["same"] for x in same):
-        reasons.append("with the original values it does not return the original rows")
+        reasons.append("with the original values it does not give the original answers")
     held = []
     for s in held_out_values(g, sb):
         try:

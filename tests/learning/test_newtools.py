@@ -70,7 +70,7 @@ def test_checks_pass_for_a_general_query_and_fail_for_a_one_off(C):
     g2 = nt.candidates([run_with(one_off, "a"), run_with(one_off, "b")], "T01", sb)[0]
     assert "finds nothing for most held-out values: it only fits the original case" in nt.check(g2, sb)["reasons"]
     bad = dict(g, template=g["template"].replace("'returned'", "'delivered'"))
-    assert "with the original values it does not return the original rows" in nt.check(bad, sb)["reasons"]
+    assert "with the original values it does not give the original answers" in nt.check(bad, sb)["reasons"]
 
 
 def test_only_a_person_activates_a_tool_and_only_if_its_checks_passed(C, tmp_path):
@@ -103,3 +103,20 @@ def test_the_broker_offers_an_approved_tool_and_it_gives_the_original_answer(C, 
     assert b.call("returned_in_town", {"town": "x"})["error"]["code"] == "BAD_ARGS"            # missing parameters
     plain = Broker(C, Session("T01"))
     assert "returned_in_town" not in {t.name for t in plain.list_tools()}                        # only when given
+
+
+def test_differently_written_queries_with_the_same_answers_are_one_tool(C):
+    sb = Sandbox(C)
+    town = sorted({s["town"] for s in C.sites.values()})
+    a = ("SELECT strftime('%w', sh.delivery_date) AS w, COUNT(*) AS stops FROM trip_outcomes t JOIN shipments sh USING (shipment_id) "
+         "JOIN sites s ON s.site_id = t.site_id WHERE s.town = '{}' GROUP BY 1 ORDER BY 2 DESC")
+    b = ("SELECT CASE strftime('%w', sh.delivery_date) WHEN '6' THEN 'శనివారం' ELSE 'other' END AS రోజు, COUNT(*) AS n, "
+         "strftime('%w', sh.delivery_date) AS wn FROM sites s JOIN trip_outcomes t ON t.site_id = s.site_id "
+         "JOIN shipments sh ON sh.shipment_id = t.shipment_id WHERE s.town = '{}' GROUP BY wn")
+    orders = ("SELECT strftime('%w', o.delivery_date) AS w, COUNT(*) AS n FROM orders o JOIN sites s ON s.site_id = o.site_id "
+              "WHERE s.town = '{}' GROUP BY 1")
+    runs = [run_with(a.format(town[0]), "busiest day A?", run_id="1"), run_with(b.format(town[1]), "రద్దీ రోజు B?", run_id="2")]
+    (g,) = nt.candidates(runs, "T01", sb)
+    assert len(g["uses"]) == 2 and g["template"].isascii() and nt.check(g, sb)["pass"]
+    runs.append(run_with(orders.format(town[2]), "orders by day C?", run_id="3"))           # counts orders, not stops
+    assert [len(x["uses"]) for x in nt.candidates(runs, "T01", sb)] == [2]

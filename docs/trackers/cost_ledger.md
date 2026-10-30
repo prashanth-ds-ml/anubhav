@@ -5,8 +5,11 @@ tags: [tracker, cost]
 
 | Credit | Total $ | Spent $ | Left $ | Used for |
 |---|---|---|---|---|
-| Meta Model API | 150.00 | ~15.7 | ~134.3 | Muse Spark + Voice Transcribe runtime, evals |
-| Baseten | 100.00 (+2M TPM) | ~17.4 | ~82.6 | Open-weights arm (FR-15) |
+| Meta Model API | 150.00 | ~16.1 | ~133.9 | Muse Spark + Voice Transcribe runtime, evals |
+| Baseten | 100.00 (+2M TPM) | ~23.2 | ~76.8 | The agent (Muse Spark Open): all benchmarks and live checks |
+| **Total** | **250.00** | **~39.3** | **~210.7** | Totals are summed from our per-run costs at list prices; the billing pages have not been checked yet |
+
+**Forecast to submission (Oct 31):** EXP-011R 3 repeats ~$15 · EXP-012 ~$3 · recorded demo runs ~$2 · nightly review (Spark 1.3) ~$1 · remaining live checks ~$3 · video takes ~$2 → **~$26 more, ~$65 total**, about $185 left. Hosted demo: $0 (no keys).
 
 ## Meta Model API ($150)
 
@@ -67,6 +70,8 @@ tags: [tracker, cost]
 | 2026-10-29 | muse-spark-open-1026 (Model API) | EXP-011 final benchmark (102 runs: 65 + 37 after resume) | | | | 4.99 | ~22.4 | ⬜ |
 | 2026-10-30 | muse-spark-open-1026 (Model API) | Live check of the new tools: 6 user questions (plan the day ×2, drivers, documents, performance, lessons) | | | | 0.31 | ~22.7 | ⬜ |
 | 2026-10-31 | muse-spark-open-1026 (Model API) | run_query live check (D-040, C2): the same gap question twice, before and after the richer schema (12-call limit → answered in 5 calls) | | | | 0.16 | ~22.9 | ⬜ |
+| 2026-10-31 | muse-spark-open-1026 (Model API) | Dev probe (not EXP-012): 6 T01 dev gap questions with run_query; 5/6 right; 0 tool candidates (SQL text never repeats) | | | | 0.28 | ~23.2 | ⬜ |
+| 2026-10-31 | muse-spark-open-1026 (Model API) | C5 live check: approved learned tool `busiest_weekday_in_town`, asked about a new town (Hanamkonda): 1 call, right answer | | | | 0.02 | ~23.2 | ⬜ |
 
 ### Prices
 Model: always `meta-models/muse-spark-open-1026` (the hackathon override of `meta-models/muse-spark-open` in Baseten's docs), via the per-token Model API at `https://inference.baseten.co/v1`. Fill in per-token prices from Baseten.
