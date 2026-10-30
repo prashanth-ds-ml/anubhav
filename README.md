@@ -70,6 +70,11 @@ flowchart TB
   R --> P[Domain pack: regional facts only,<br/>recipient's ids, counts-only evidence, leak check, opt-in, revocable]
   P -->|day-1 knowledge| N[New company]
   F[Tester feedback + traces] --> H[Harness loop: tool hints and guidelines,<br/>paired test gate, versions, rollback] --> A
+  A -->|no tool fits| Q[Read-only SQL query<br/>sandbox: SELECT only, own records]
+  Q -->|reused for other requests| NT{{Tool checks · code<br/>same answers, held-out inputs}} --> R2[Person approves] -->|new tool| A
+  NR[Nightly review of its own runs] --> H
+  NR --> M
+  NR --> NT
 ```
 
 1. **Records:** trips, staff corrections, driver notes and outcomes, in each client's own format. Adapters map them to one canonical view.
@@ -79,6 +84,9 @@ flowchart TB
 5. **Review:** a person approves each lesson as advice or as an enforced rule. Lessons expire, can be challenged by new outcomes and can be rolled back. Every step is audited.
 6. **Use:** approved lessons appear exactly where the agent looks (site constraints, tool hints). Enforced rules are checked again by code before a draft is saved.
 7. **Share:** only approved regional facts travel, rewritten in the recipient's ids, with counts instead of evidence text, and a leak check. The recipient opts in and can revoke.
+8. **Make new tools:** when no tool fits, the agent writes one read-only SQL query over its own company's records (SELECT only, in a sandbox with time and row limits). A query it needed for other requests too becomes a candidate tool: code turns its values into parameters, checks that it gives the same answers and works on inputs it never saw, and a person approves it. Then the agent calls it in one step.
+9. **Review its own runs:** a nightly review reads the agent's runs and feedback, and code sends each problem to its fix: tool use to the harness loop, reused queries to new tools, facts people stated to the miner and the evidence gate. Nothing becomes active without a person.
+10. **Know the business:** a business profile counted from the records (sites, fleet, volumes, goods, languages), plus what the owner adds, is given to the agent as information.
 
 Before the planner reads a reply, code checks it: every draft, vehicle and order id in it must come from that run, and it must never claim a dispatch. A refusal for a load that doesn't fit names free vehicles that would.
 
@@ -114,16 +122,20 @@ Things to try in the app:
 - **What it learned:** each lesson, its evidence, and how it was learned day by day.
 - **Share:** publish a pack to the new company and see what arrives.
 - **Business profile:** what the agent knows about the company, counted from its records, plus what the owner adds.
-- **Logs:** every run as plan → act → observe → code checks, and every lesson, patch and piece of feedback on one timeline.
+- **Logs:** every run as plan → act → observe → code checks, and every lesson, patch, new tool, nightly review and piece of feedback on one timeline. Press "Run the nightly review".
+- **New tools:** on the Workbench pick "New tool" (5 calls), then approve the reused query on this page and ask again (1 call).
 - **Proof & audit:** the benchmark and every traced run.
 
 **Other commands**
 ```bash
-uv run pytest -q                                              # 295 tests (167 Anubhav + 128 archived prototype), no model calls
+uv run pytest -q                                              # 335 tests (207 Anubhav + 128 archived prototype), no model calls
 uv run python -m anubhav.data.generate --full --seed 4242     # a new world with your own seed
 uv run python -m anubhav.learning.cli mine --company T01      # mine lessons (Muse Spark 1.3)
 uv run python -m anubhav.mcp_server --company T01 --role dispatcher   # the tools over MCP (stdio)
 uv run python scripts/exp011_benchmark.py                     # the final benchmark (~$5)
+uv run python scripts/exp011r_benchmark.py                    # EXP-011 x3 on the current version (~$15)
+uv run python scripts/exp012_new_tools.py                     # query tools and learned tools (~$3)
+uv run python -m anubhav.review --company T01                 # the nightly review (code-only; --live adds one Muse call)
 ```
 Deploying: [docs/deploy.md](docs/deploy.md).
 
