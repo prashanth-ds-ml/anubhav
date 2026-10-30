@@ -138,31 +138,33 @@ def same_tool(a, b, sb):
     return found
 
 
-def candidates(runs, company, sb, marked=()):
-    """Queries needed for >= MIN_USES different requests, or marked by a person (by key). Queries that give the same
-    answers for the same inputs count as one, whatever their SQL text."""
-    groups = {}
+def groups(runs, company, sb):
+    """Every query the agent wrote, grouped: queries that give equivalent answers for the same inputs are one group,
+    whatever their SQL text. Each group keeps the plainest wording (ASCII labels first, then the most used)."""
+    exact = {}
     for u in uses_in(runs, company, sb):
-        g = groups.setdefault(u["key"], {"key": u["key"], "template": u["template"], "uses": []})
+        g = exact.setdefault(u["key"], {"key": u["key"], "template": u["template"], "uses": []})
         g["uses"].append(u)
     merged = []
-    for g in sorted(groups.values(), key=lambda g: -len(g["uses"])):
+    for g in sorted(exact.values(), key=lambda g: -len(g["uses"])):
         home = next((m for m in merged if same_tool(m, g, sb)), None)
         if home:
             home["uses"] += g["uses"]
             home.setdefault("variants", []).append(g["template"])
         else:
             merged.append(g)
-    out = []
     for g in merged:
-        if g.get("variants"):        # the tool keeps the plainest wording: ASCII labels first, then the most used
+        if g.get("variants"):
             pool = [g["template"], *g["variants"]]
             count = {tp: sum(u["template"] == tp for u in g["uses"]) for tp in pool}
             g["template"] = min(pool, key=lambda tp: (not tp.isascii(), -count[tp]))
         g["requests"] = sorted({u["request"] for u in g["uses"]})
-        if len(g["requests"]) >= MIN_USES or g["key"] in marked:
-            out.append(g)
-    return sorted(out, key=lambda g: -len(g["uses"]))
+    return sorted(merged, key=lambda g: (-len(g["requests"]), -len(g["uses"])))
+
+
+def candidates(runs, company, sb, marked=()):
+    """Groups needed for >= MIN_USES different requests, or marked by a person (by key)."""
+    return [g for g in groups(runs, company, sb) if len(g["requests"]) >= MIN_USES or g["key"] in marked]
 
 
 def suggest_name(g):

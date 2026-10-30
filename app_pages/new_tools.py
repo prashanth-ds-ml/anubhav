@@ -18,15 +18,8 @@ st.caption("When no tool fits, the agent may write one read-only query over the 
 mine = nt.tools(S, cid)
 active = [t for t in mine if t["status"] == "active"]
 waiting = [t for t in mine if t["status"] == "candidate"]
-groups = {}
-for u in nt.uses_in(core.recent_runs(500), cid, sb):
-    g = groups.setdefault(u["key"], {"key": u["key"], "template": u["template"], "uses": []})
-    g["uses"].append(u)
 known = {t["tool_id"].rsplit("-", 1)[-1] for t in mine}
-fresh = [g for g in groups.values() if g["key"][:8] not in known]
-for g in fresh:
-    g["requests"] = sorted({u["request"] for u in g["uses"]})
-fresh.sort(key=lambda g: (-len(g["requests"]), -len(g["uses"])))
+fresh = [g for g in nt.groups(core.recent_runs(500), cid, sb) if g["key"][:8] not in known]
 
 with st.container(horizontal=True):
     st.metric("Tools in use", len(active), border=True)

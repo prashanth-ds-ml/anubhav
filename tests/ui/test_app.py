@@ -128,3 +128,24 @@ def test_the_nightly_review_runs_free_without_keys(visitor):
     at.switch_page("app_pages/logs.py"); at.run()
     next(b for b in at.button if b.label == "Run the nightly review now").click(); at.run()
     assert not at.exception and any(m.label == "Reused queries → New tools" for m in at.metric)
+
+
+def test_hosted_new_tool_story_before_and_after_approval(visitor):
+    """The demo bundle alone (no keys): the replay uses no learned tool until this visitor approves one."""
+    at = visitor()
+    at.pills[0].set_value("New tool"); at.run()
+    first = at.session_state["chat"]["T01:False"][-1]["run"]
+    assert not first.get("learned_tools") and first["tool_calls"] > 1
+    at.switch_page("app_pages/new_tools.py"); at.run()
+    reused = [b for b in at.button if b.label == "Check it as a tool"]
+    assert reused, "the bundle's reused queries should be offered"
+    reused[0].click(); at.run()
+    ok = [b for b in at.button if b.label == "Approve as a tool" and not b.disabled]
+    assert ok
+    ok[0].click(); at.run()
+    assert next(m for m in at.metric if m.label == "Tools in use").value == "1"
+    at.switch_page("app_pages/workbench.py"); at.run()
+    at.sidebar.button[[b.label for b in at.sidebar.button].index("Reset today's drafts")].click(); at.run()
+    at.pills[0].set_value("New tool"); at.run()
+    after = at.session_state["chat"]["T01:False"][-1]["run"]
+    assert after.get("learned_tools") and after["tool_calls"] == 1

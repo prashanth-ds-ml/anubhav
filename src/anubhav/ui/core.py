@@ -39,6 +39,7 @@ SUGGESTIONS = {
     "Mixed": "Jangaon Lakshmi order ki suitable vehicle choose chesi draft create cheyyi, confirm cheyyaku.",
     "Nickname": "Pedda godown load ki bandi pettu.",
     "Ambiguous": "Warangal load ki bandi pettu.",
+    "New tool": "Hanamkonda lo ae weekday lo manam ekkuva deliveries chestham?",
 }
 
 
@@ -207,6 +208,7 @@ def run_live(cid, request, model_key, use_lessons, history=()):
     for h in list(history)[-6:]:                 # the last few exchanges, so follow-ups make sense
         turns += [{"role": "user", "content": h["request"]}, {"role": "assistant", "content": h["run"]["reply"]}]
     r = graph.run(b, client, request, knowledge=knowledge, harness=active_harness(), history=turns, about=about(cid))
+    r["learned_tools"] = [t.name for t in b.list_tools() if t.category == "learned_tools"]
     trace.save(r, label=f"ui:{cid}:{'lessons' if use_lessons else 'cold'}")
     return r
 
@@ -220,18 +222,28 @@ def _trace_files():
     return sorted(trace.TRACE_DIR.glob("*.jsonl"), reverse=True) + ([DEMO / "replay_runs.jsonl"] if (DEMO / "replay_runs.jsonl").exists() else [])
 
 
-def find_replay(cid, request, use_lessons):
-    """The newest saved real run with the same company, request and knowledge setting (local traces, then the demo bundle)."""
+def has_learned_tools(cid):
+    return bool(newtools.tools(store(), cid, "active"))
+
+
+def find_replay(cid, request, use_lessons, learned=None):
+    """The newest saved real run with the same company, request and knowledge setting (local traces, then the demo
+    bundle). If the visitor has approved learned tools (or not), a run made the same way is preferred."""
+    learned = has_learned_tools(cid) if learned is None else learned
+    fallback = None
     for p in _trace_files():
         for line in reversed(p.read_text(encoding="utf-8").splitlines()):
             r = json.loads(line)
             if r["company"] == cid and r["request"].strip() == request.strip() and bool(r.get("knowledge")) == use_lessons:
-                return r
-    return None
+                if bool(r.get("learned_tools")) == learned:
+                    return r
+                fallback = fallback or r
+    return fallback
 
 
 def replayable(cid, use_lessons):
-    return [label for label, req in SUGGESTIONS.items() if find_replay(cid, req, use_lessons)]
+    return [label for label, req in SUGGESTIONS.items() if find_replay(cid, req, use_lessons, learned=False)
+            or find_replay(cid, req, use_lessons, learned=True)]
 
 
 def tool_steps(r):

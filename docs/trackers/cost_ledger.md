@@ -72,6 +72,7 @@ tags: [tracker, cost]
 | 2026-10-30 | muse-spark-open-1026 (Model API) | run_query live check (D-040, C2): the same gap question twice, before and after the richer schema (12-call limit → answered in 5 calls) | | | | 0.16 | ~22.9 | ⬜ |
 | 2026-10-30 | muse-spark-open-1026 (Model API) | Dev probe (not EXP-012): 6 T01 dev gap questions with run_query; 5/6 right; 0 tool candidates (SQL text never repeats) | | | | 0.28 | ~23.2 | ⬜ |
 | 2026-10-30 | muse-spark-open-1026 (Model API) | C5 live check: approved learned tool `busiest_weekday_in_town`, asked about a new town (Hanamkonda): 1 call, right answer | | | | 0.02 | ~23.2 | ⬜ |
+| 2026-10-30 | muse-spark-open-1026 (Model API) | E2 demo recording: the same Hanamkonda question with no learned tool (5 calls) | | | | 0.07 | ~23.3 | ⬜ |
 
 ### Prices
 Model: always `meta-models/muse-spark-open-1026` (the hackathon override of `meta-models/muse-spark-open` in Baseten's docs), via the per-token Model API at `https://inference.baseten.co/v1`. Fill in per-token prices from Baseten.
