@@ -92,7 +92,7 @@ Nothing in the runtime is hand-coded world knowledge: no word lists, no site rul
 **Open weights end to end:** every agent run, the live demo and the whole EXP-011 benchmark run on **Muse Spark Open**, the open-weights model, served by Baseten. Muse Spark 1.3 (Meta Model API) only proposes lessons and patches, offline, and code checks everything it proposes; Muse Voice Transcribe turns speech into text.
 
 ## Try it
-**Hosted demo:** *(link after deploy)*. Replay mode is free and needs no keys.
+**Hosted demo:** **[anubhav-metahackathon.streamlit.app](https://anubhav-metahackathon.streamlit.app/)**. Replay mode, no keys, free; each visitor gets their own drafts and lessons. The first open after a quiet spell can take about a minute while it wakes up.
 
 **Locally:**
 ```bash

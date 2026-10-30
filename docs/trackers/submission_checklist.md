@@ -26,7 +26,7 @@ tags: [tracker, submission]
 ## Security
 - [x] No `.env`, keys or tokens anywhere in the history (scan before going public)
 - [x] `Hackathon_info/` not committed
-- [ ] Hosted demo spend cap active through judging (Nov 5–9) — 8 live runs per session built; deploy without keys = $0
+- [x] Hosted demo spend cap active through judging (Nov 5–9): deployed without keys = $0 (https://anubhav-metahackathon.streamlit.app/)
 
 ## README contents
 - [ ] One-line pitch, plus a GIF or screenshot
