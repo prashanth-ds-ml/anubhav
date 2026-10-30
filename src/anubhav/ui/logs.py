@@ -5,7 +5,7 @@ no Streamlit."""
 import json
 
 STREAMS = {"run": "Agent runs", "lesson": "Business facts (Loop B)", "harness": "Tool use (Loop A)",
-           "feedback": "Feedback"}
+           "tool": "New tools", "feedback": "Feedback"}
 
 
 def _args(a):
@@ -71,7 +71,7 @@ def run_issues(r):
     return ", ".join(out)
 
 
-def events(company, runs=(), lesson_events=(), lessons=None, versions=(), feedback=()):
+def events(company, runs=(), lesson_events=(), lessons=None, versions=(), feedback=(), new_tools=()):
     """Every recorded event for one company, newest first: {ts, stream, what, who, detail, ref, raw}."""
     lessons = lessons or {}
     out = []
@@ -113,6 +113,18 @@ def events(company, runs=(), lesson_events=(), lessons=None, versions=(), feedba
         out.append({"ts": f["ts"], "stream": "feedback", "what": ("👍 " if f["rating"] == 1 else "👎 ") + _short(f.get("request", ""), 80),
                     "who": f.get("source", "tester"), "detail": f"{f.get('category')}: {_short(f.get('note') or '', 120)} · {f.get('status')}",
                     "ref": f.get("run_id"), "raw": f})
+    for nt in new_tools:
+        if nt.get("company") != company:
+            continue
+        c = nt.get("checks") or {}
+        out.append({"ts": nt["created"], "stream": "tool", "what": f"query checked as a tool: {nt['name']}",
+                    "who": "code (promotion checks)", "ref": nt["tool_id"], "raw": nt,
+                    "detail": ("passed" if c.get("pass") else "failed: " + "; ".join(c.get("reasons", [])))[:160]
+                              + f" · from {len(nt.get('source') or [])} queries"})
+        if nt.get("decided"):
+            out.append({"ts": nt["decided"], "stream": "tool", "what": f"tool {nt['name']} {nt['status']}",
+                        "who": nt.get("decided_by") or "", "detail": nt.get("note") or nt.get("description", "")[:140],
+                        "ref": nt["tool_id"], "raw": nt})
     order = {id(x): i for i, x in enumerate(out)}       # same time: the later step (e.g. tested after proposed) first
     return sorted(out, key=lambda x: (x["ts"] or "", order[id(x)]), reverse=True)
 

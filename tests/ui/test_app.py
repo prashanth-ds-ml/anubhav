@@ -12,7 +12,7 @@ from streamlit.testing.v1 import AppTest
 from anubhav import muse
 from anubhav.ui import core
 
-PAGES = ["app_pages/workbench.py", "app_pages/profile.py", "app_pages/learned.py", "app_pages/share.py", "app_pages/proof.py", "app_pages/logs.py",
+PAGES = ["app_pages/workbench.py", "app_pages/profile.py", "app_pages/new_tools.py", "app_pages/learned.py", "app_pages/share.py", "app_pages/proof.py", "app_pages/logs.py",
          "app_pages/report.py", "app_pages/learning_lab.py", "app_pages/skills.py", "app_pages/tuning.py"]
 LIVE_BUTTONS = {"app_pages/learned.py": "Learn from my records", "app_pages/learning_lab.py": "Mine my records now",
                 "app_pages/skills.py": "Practice now (active version)", "app_pages/tuning.py": "Ask Muse for a patch"}
@@ -95,3 +95,29 @@ def test_a_visitor_saves_a_business_profile_and_only_they_see_it(visitor):
     assert not a.exception and any("3PL for FMCG brands" in c.value for c in a.code)
     b.switch_page("app_pages/profile.py"); b.run()
     assert not b.code and any("Nothing yet" in i.value for i in b.info)
+
+
+def test_a_reused_query_is_checked_approved_and_offered_to_the_agent(visitor, monkeypatch):
+    import json
+    C = core._company("T01")
+    towns = sorted({s["town"] for s in C.sites.values()})
+    q = ("SELECT COUNT(*) FROM trip_outcomes t JOIN sites s ON s.site_id = t.site_id WHERE s.town = '{}' "
+         "AND t.status = 'returned' AND t.arrived_at BETWEEN '{}' AND '{}'")
+    runs = [{"run_id": f"r{i}", "company": "T01", "request": req, "trace": [{"type": "tool", "name": "run_query", "ok": True,
+             "arguments": json.dumps({"sql": q.format(town, a, b), "purpose": "returned stops in a town"}), "result": {"row_count": 1}}]}
+            for i, (req, town, a, b) in enumerate([("returns in town A?", towns[0], "2026-09-01", "2026-09-30"),
+                                                   ("returns in town B?", towns[1], "2026-08-01", "2026-08-31")])]
+    monkeypatch.setattr(core, "recent_runs", lambda limit=60: runs)
+    at = visitor()
+    at.switch_page("app_pages/new_tools.py"); at.run()
+    assert next(m for m in at.metric if m.label == "Reused queries").value == "1"
+    next(b for b in at.button if b.label == "Check it as a tool").click(); at.run()
+    assert not at.exception and next(m for m in at.metric if m.label == "Waiting for approval").value == "1"
+    next(b for b in at.button if b.label == "Approve as a tool").click(); at.run()
+    assert next(m for m in at.metric if m.label == "Tools in use").value == "1"
+    from anubhav.learning import newtools
+    from anubhav.learning.store import LessonStore
+    from anubhav.runtime.broker import Broker, Session
+    mine = newtools.tools(LessonStore(core.WORLD / "learning" / "sessions" / f"{at.session_state['sid']}.sqlite"), "T01", "active")
+    b = Broker(C, Session("T01"), learned_tools=mine)
+    assert [t.name for t in b.list_tools() if t.category == "learned_tools"] == [mine[0]["name"]]

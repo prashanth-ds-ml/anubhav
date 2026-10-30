@@ -2,6 +2,7 @@ import json
 
 import streamlit as st
 
+from anubhav.learning import newtools
 from anubhav.ui import core, logs
 
 cid = st.session_state.company
@@ -14,7 +15,7 @@ S = core.store()
 H = core.harness_store()
 lessons = {l["lesson_id"]: l for l in S.list(cid)}
 rows = logs.events(cid, runs=core.recent_runs(200), lesson_events=S.events(company=cid), lessons=lessons,
-                   versions=H.versions(), feedback=H.feedback())
+                   versions=H.versions(), feedback=H.feedback(), new_tools=newtools.tools(S, cid))
 
 st.markdown("**Meta models at work**")
 with st.container(horizontal=True):
@@ -36,7 +37,7 @@ if not shown:
             icon=":material/history:")
     st.stop()
 
-ICON = {"run": "🤖", "lesson": "📘", "harness": "🔧", "feedback": "💬"}
+ICON = {"run": "🤖", "lesson": "📘", "harness": "🔧", "tool": "🧰", "feedback": "💬"}
 sel = st.dataframe([{"when": r["ts"].replace("T", " ")[:16], "": ICON[r["stream"]], "stream": logs.STREAMS[r["stream"]],
                      "what": r["what"], "who": r["who"], "detail": r["detail"]} for r in shown],
                    hide_index=True, on_select="rerun", selection_mode="single-row", key="log_table",

@@ -48,6 +48,16 @@ def _free_text(values):
     return statistics.median(len(v) for v in vs) >= 25 and sum(" " in v for v in vs) >= 0.6 * len(vs)
 
 
+def _one_shape(values):
+    """Names or ids of one kind look alike ("Jangaon", "C0001"); a change log of mixed values ("22:00", "Tuesday",
+    "night_only") does not. Shape = letters → a, digits → 9, runs collapsed."""
+    shape = lambda v: re.sub(r"(a)a+|(9)9+", r"", re.sub(r"[^\W\d_]", "a", re.sub(r"\d", "9", v)))
+    counts = {}
+    for v in values:
+        counts[shape(v)] = counts.get(shape(v), 0) + 1
+    return max(counts.values()) >= 0.7 * len(values)
+
+
 class Sandbox:
     """One company's records in memory. Build once per CompanyData; every query gets a fresh read-only cursor."""
 
@@ -55,6 +65,8 @@ class Sandbox:
         self.company = C.company
         self.con = sqlite3.connect(":memory:", check_same_thread=False)
         self.tables, self.untrusted = {}, set()
+        self.date_range = None
+        self.entities, rank = {}, {}        # value -> "table.column" for columns of many distinct names/ids (towns, sites, vehicles…)
         for name, rows in sorted(C.t.items()):
             if not isinstance(rows, list) or not rows or not isinstance(rows[0], dict) or not re.fullmatch(r"\w+", name):
                 continue
@@ -70,6 +82,15 @@ class Sandbox:
                 if types[c] != "TEXT" or (name, c) in self.untrusted:
                     continue
                 seen = {r[c] for r in rows if isinstance(r.get(c), str)}
+                dated = bool(seen) and all(re.match(r"\d{4}-\d{2}-\d{2}", v) for v in seen)
+                days = [v[:10] for v in seen if dated and v[:10] <= C.today]   # expiry dates in the future don't count
+                if days:                                   # the period the records cover (for held-out dates)
+                    lo, hi = min(days), max(days)
+                    self.date_range = (min(lo, self.date_range[0]), max(hi, self.date_range[1])) if self.date_range else (lo, hi)
+                if len(seen) > 8 and not dated and _one_shape(seen):
+                    for v in seen:                 # a value in several tables belongs to the smallest (master) one
+                        if len(v) <= 40 and (v not in rank or len(rows) < rank[v]):
+                            rank[v], self.entities[v] = len(rows), f"{name}.{c}"
                 if 1 < len(seen) <= 8 and len(rows) > 8:
                     hint[c] = f"in {sorted(seen)}"                          # a short list: show all its values
                 elif (ex := next(iter(seen), None)) and len(ex) <= 24:
@@ -97,11 +118,19 @@ class Sandbox:
                     where.setdefault(c, []).append(t)
         return [f"{c}: {', '.join(ts)}" for c, ts in sorted(where.items()) if len(ts) > 1]
 
-    def run(self, sql, max_rows=MAX_ROWS, timeout_s=TIMEOUT_S):
+    def values(self, column_ref, limit=50):
+        """Distinct values of one "table.column", for drawing held-out parameter values."""
+        tbl, col = column_ref.split(".", 1)
+        if tbl not in self.tables or col not in self.tables[tbl]["columns"]:
+            return []
         with self.lock:
-            return self._run(sql, max_rows, timeout_s)
+            return [v for (v,) in self.con.execute(f'select distinct "{col}" from "{tbl}" where "{col}" is not null limit {int(limit)}')]
 
-    def _run(self, sql, max_rows, timeout_s):
+    def run(self, sql, max_rows=MAX_ROWS, timeout_s=TIMEOUT_S, params=None):
+        with self.lock:
+            return self._run(sql, max_rows, timeout_s, params or {})
+
+    def _run(self, sql, max_rows, timeout_s, params):
         sql = (sql or "").strip().rstrip(";").strip()
         if not sql:
             raise QueryError("BAD_ARGS", "empty query")
@@ -124,7 +153,7 @@ class Sandbox:
         self.con.set_authorizer(authorize)
         self.con.set_progress_handler(lambda: 1 if time.perf_counter() > deadline else 0, 10_000)
         try:
-            cur = self.con.execute(sql)
+            cur = self.con.execute(sql, params)
             cols = [d[0] for d in cur.description or []]
             rows = cur.fetchmany(max_rows + 1)
         except sqlite3.OperationalError as e:

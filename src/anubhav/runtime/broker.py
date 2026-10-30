@@ -144,7 +144,8 @@ class Session:
 
 
 class Broker:
-    def __init__(self, data: CompanyData, session: Session, policies=(), advisories=(), lessons=(), analysis=False):
+    def __init__(self, data: CompanyData, session: Session, policies=(), advisories=(), lessons=(), analysis=False,
+                 learned_tools=()):
         if session.company != data.company:
             raise PermissionError("session company does not match the data it was given")
         self.C, self.s = data, session
@@ -152,6 +153,9 @@ class Broker:
         self.lessons = list(lessons)                                         # what list_lessons may show
         # analysis (D-040): the read-only query tools are offered only when switched on (off in frozen experiments)
         self.tools = {t.name: t for t in REGISTRY + (ANALYSIS if analysis else [])}
+        for spec in learned_tools:              # approved tools this company learned from its own queries (D-040)
+            if spec["name"] not in self.tools:
+                self.tools[spec["name"]] = learned_tool(spec)
 
     # ---------- registry
     def allowed(self, tool):
@@ -854,6 +858,7 @@ CATEGORIES = {
     "knowledge": "written policies, raw notes, and what the agent has learned",
     "system": "what this session can do and each tool's contract",
     "analysis": "questions no other tool answers: one read-only SQL query over the company's records",
+    "learned_tools": "tools this company's agent made from its own queries; each was checked and approved by a person",
 }
 
 REGISTRY = [
@@ -920,3 +925,24 @@ ANALYSIS = [
          "(call describe_tables first). Prefer the other tools: they check rules and drafts; this only reads. "
          "Max 200 rows, 2 s.", Query, "read", run_query, "analysis"),
 ]
+
+
+def learned_tool(spec):
+    """An approved learned tool: its stored query with typed parameters, run in the read-only sandbox."""
+    from pydantic import create_model
+    fields = {p["name"]: (str, Field(description=(f"a date YYYY-MM-DD" if p["kind"] == "date" else f"a value of {p['column']}")
+                                    + f", e.g. {p['example']}")) for p in spec["params"]}
+    model = create_model(f"Args_{spec['name']}", __base__=Args, **fields)
+
+    def fn(b, a):
+        from .query import QueryError, sandbox
+        args = a.model_dump()
+        for p in spec["params"]:
+            if p["kind"] == "date":
+                b._date(args[p["name"]])
+        try:
+            return sandbox(b.C).run(spec["template"], params=args) | {"tool": spec["name"], "learned": spec["tool_id"]}
+        except QueryError as e:
+            raise ToolError(e.code, e.message)
+    desc = f"{spec['description']} (learned from this company's own queries; approved by {spec.get('decided_by') or 'a reviewer'})"
+    return Tool(spec["name"], desc[:400], model, "read", fn, "learned_tools")

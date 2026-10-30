@@ -45,7 +45,8 @@ with st.sidebar:
 pages = {
     "Work": [st.Page("app_pages/workbench.py", title="Workbench", icon=":material/forum:", default=True)],
     "Learning": [st.Page("app_pages/profile.py", title="Business profile", icon=":material/storefront:"),
-                 st.Page("app_pages/learned.py", title="What it learned", icon=":material/school:")],
+                 st.Page("app_pages/learned.py", title="What it learned", icon=":material/school:"),
+                 st.Page("app_pages/new_tools.py", title="New tools", icon=":material/construction:")],
     "Share & proof": [
         st.Page("app_pages/share.py", title="Share", icon=":material/share:"),
         st.Page("app_pages/proof.py", title="Proof & audit", icon=":material/fact_check:"),

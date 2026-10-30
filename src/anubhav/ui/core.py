@@ -18,7 +18,7 @@ from .. import muse, trace
 from ..agent import graph
 from ..data.config import ROOT
 from ..harness.store import HarnessStore
-from ..learning import profile
+from ..learning import newtools, profile
 from ..learning.store import LessonStore
 from ..runtime.broker import Broker, Session
 from ..runtime.company import CompanyData
@@ -152,7 +152,8 @@ def broker(cid: str, use_lessons: bool, role="dispatcher", user="demo"):
     C = company(cid)
     knowledge, policies, advisories = store().active_for(cid, C) if use_lessons else ([], [], [])
     lessons = store().for_agent(cid, C) if use_lessons else []
-    return Broker(C, Session(cid, role, user), policies, advisories, lessons, analysis=True), knowledge
+    learned = newtools.tools(store(), cid, "active")
+    return Broker(C, Session(cid, role, user), policies, advisories, lessons, analysis=True, learned_tools=learned), knowledge
 
 
 _SPEND_LOCK = threading.Lock()
