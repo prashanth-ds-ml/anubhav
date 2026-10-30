@@ -5,7 +5,7 @@ no Streamlit."""
 import json
 
 STREAMS = {"run": "Agent runs", "lesson": "Business facts (Loop B)", "harness": "Tool use (Loop A)",
-           "tool": "New tools", "feedback": "Feedback"}
+           "tool": "New tools", "review": "Nightly reviews", "feedback": "Feedback"}
 
 
 def _args(a):
@@ -71,7 +71,7 @@ def run_issues(r):
     return ", ".join(out)
 
 
-def events(company, runs=(), lesson_events=(), lessons=None, versions=(), feedback=(), new_tools=()):
+def events(company, runs=(), lesson_events=(), lessons=None, versions=(), feedback=(), new_tools=(), reviews=()):
     """Every recorded event for one company, newest first: {ts, stream, what, who, detail, ref, raw}."""
     lessons = lessons or {}
     out = []
@@ -125,6 +125,12 @@ def events(company, runs=(), lesson_events=(), lessons=None, versions=(), feedba
             out.append({"ts": nt["decided"], "stream": "tool", "what": f"tool {nt['name']} {nt['status']}",
                         "who": nt.get("decided_by") or "", "detail": nt.get("note") or nt.get("description", "")[:140],
                         "ref": nt["tool_id"], "raw": nt})
+    for rv in reviews:
+        rep = rv["report"]
+        out.append({"ts": rv["ts"], "stream": "review", "what": f"reviewed {rep['runs']} runs and {rep['feedback']} feedback",
+                    "who": rv.get("actor", ""), "ref": None, "raw": rep,
+                    "detail": f"tool use: {len(rep['tool_use']['issues'])} issues · new tools: {len(rep['new_tools']['candidates'])} "
+                              f"candidates · facts: {len(rep['facts'].get('proposed', []))} lessons proposed"})
     order = {id(x): i for i, x in enumerate(out)}       # same time: the later step (e.g. tested after proposed) first
     return sorted(out, key=lambda x: (x["ts"] or "", order[id(x)]), reverse=True)
 

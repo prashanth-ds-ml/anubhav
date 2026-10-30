@@ -2,6 +2,7 @@ import json
 
 import streamlit as st
 
+from anubhav import review
 from anubhav.learning import newtools
 from anubhav.ui import core, logs
 
@@ -15,7 +16,8 @@ S = core.store()
 H = core.harness_store()
 lessons = {l["lesson_id"]: l for l in S.list(cid)}
 rows = logs.events(cid, runs=core.recent_runs(200), lesson_events=S.events(company=cid), lessons=lessons,
-                   versions=H.versions(), feedback=H.feedback(), new_tools=newtools.tools(S, cid))
+                   versions=H.versions(), feedback=H.feedback(), new_tools=newtools.tools(S, cid),
+                   reviews=review.reviews(S, cid))
 
 st.markdown("**Meta models at work**")
 with st.container(horizontal=True):
@@ -24,6 +26,30 @@ with st.container(horizontal=True):
             st.markdown(f"**{m['model']}** · :gray[{m['access']}]")
             st.caption(m["role"])
             st.markdown(f":blue-badge[{m['count']}]")
+
+with st.container(border=True):
+    st.markdown("**🌙 Nightly review** · the agent reads its own runs since the last review, and code sends each problem "
+                "to its fix: tool use → Tuning, reused queries → New tools, facts people stated → lesson proposals "
+                "through the evidence gate. Nothing becomes active without a person.")
+    last = review.last_review(S, cid)
+    with st.container(horizontal=True, vertical_alignment="center"):
+        off = core.live_ready("spark")
+        if st.button("Run the nightly review now", icon=":material/bedtime:", type="primary"):
+            client = core.live_client("spark")[0] if not off else None
+            rep = review.review(core.company(cid), S, core.recent_runs(500), H.feedback(), client)
+            st.toast(f"Reviewed {rep['runs']} runs: {len(rep['new_tools']['candidates'])} tool candidates, "
+                     f"{len(rep['facts'].get('proposed', []))} lessons proposed.")
+            st.rerun()
+        st.caption((f"Last review {last['ts'].replace('T', ' ')[:16]}. " if last else "No review yet. ")
+                   + ("Lesson proposals need a live model; the rest runs free." if off else "Lesson proposals use Muse Spark 1.3 (~$0.05)."))
+    if last:
+        rep = last["report"]
+        a, b, c = st.columns(3)
+        a.metric("Tool use → Tuning", len(rep["tool_use"]["issues"]) + rep["tool_use"]["feedback"], border=True,
+                 help=rep["tool_use"]["route"])
+        b.metric("Reused queries → New tools", len(rep["new_tools"]["candidates"]), border=True, help=rep["new_tools"]["route"])
+        c.metric("Stated facts → lessons", len(rep["facts"].get("proposed", [])), f"{rep['facts']['signals']} notes read",
+                 delta_color="off", border=True, help=rep["facts"]["route"])
 
 with st.container(horizontal=True):
     for key, label in logs.STREAMS.items():
@@ -37,7 +63,7 @@ if not shown:
             icon=":material/history:")
     st.stop()
 
-ICON = {"run": "🤖", "lesson": "📘", "harness": "🔧", "tool": "🧰", "feedback": "💬"}
+ICON = {"run": "🤖", "lesson": "📘", "harness": "🔧", "tool": "🧰", "review": "🌙", "feedback": "💬"}
 sel = st.dataframe([{"when": r["ts"].replace("T", " ")[:16], "": ICON[r["stream"]], "stream": logs.STREAMS[r["stream"]],
                      "what": r["what"], "who": r["who"], "detail": r["detail"]} for r in shown],
                    hide_index=True, on_select="rerun", selection_mode="single-row", key="log_table",

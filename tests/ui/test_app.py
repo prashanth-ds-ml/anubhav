@@ -121,3 +121,10 @@ def test_a_reused_query_is_checked_approved_and_offered_to_the_agent(visitor, mo
     mine = newtools.tools(LessonStore(core.WORLD / "learning" / "sessions" / f"{at.session_state['sid']}.sqlite"), "T01", "active")
     b = Broker(C, Session("T01"), learned_tools=mine)
     assert [t.name for t in b.list_tools() if t.category == "learned_tools"] == [mine[0]["name"]]
+
+
+def test_the_nightly_review_runs_free_without_keys(visitor):
+    at = visitor()
+    at.switch_page("app_pages/logs.py"); at.run()
+    next(b for b in at.button if b.label == "Run the nightly review now").click(); at.run()
+    assert not at.exception and any(m.label == "Reused queries → New tools" for m in at.metric)

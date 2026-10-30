@@ -166,7 +166,7 @@ class Sandbox:
         except (sqlite3.Warning, sqlite3.ProgrammingError) as e:
             raise QueryError("BAD_ARGS", f"SQL error: {e}")
         except sqlite3.DatabaseError as e:
-            raise QueryError("FORBIDDEN" if "authoriz" in str(e) else "BAD_ARGS", f"SQL error: {e}")
+            raise QueryError("FORBIDDEN" if "authoriz" in str(e) or "prohibited" in str(e) else "BAD_ARGS", f"SQL error: {e}")
         finally:
             self.con.set_authorizer(None)
             self.con.set_progress_handler(None, 0)
