@@ -441,3 +441,29 @@ Packs: T01→TNEW 4 lessons (1 skipped: no matching site), T02→TNEW 4 lessons 
   - One run per case and arm, no repeats.
   - Cases come from our generator, and the truth is its hidden rules.
   - The first 65 runs are kept from log lines only (outcome, unsafe, cost); the other 37 have full rows.
+
+### EXP-011R: EXP-011 repeated 3 times on the shipped version (frozen 2026-11-02 before any Muse call)
+- **Question:** Do EXP-011's two results still hold on the version that ships (after D-038 and the Oct 31 changes), and how much do they vary across repeats?
+- **Unchanged from EXP-011:** unseen world 5279; the same 38 cases (`bench.build`); arms A/B/C for T01 and T02, B/E for TNEW; Muse Spark Open; lessons from `exp009b_20261029_204451_fresh.sqlite` approved by the same fixed review rule; packs published and imported the same way; the same judge.
+- **Changed (the app's settings):** the agent also has `describe_tables` and `run_query` (`analysis=True`). No business profile and no learned tools (the hosted default).
+- **Repeats:** 3, each a full pass over all (case, arm) pairs, fresh runtime per run.
+- **Frozen files (sha256 prefix, working copy at commit `83e1ae8` + this registration):** `exp011r_benchmark.py` `46d1983c2fafee07` · `bench.py` `0349d5396926768e` · `graph.py` `2362ac533aa5fbf7` · `broker.py` `590fedaa3c4fc9a8` · `safety.py` `5c14859712b35c13` · `query.py` `1845a41cf1cc0a53` · `pack.py` `6a98670e864783f2` · `store.py` `7be85ab5c4574774` · `operating_rules.yaml` `70b8f812a513bf75`. 206 tests pass.
+- **Decision rule (fixed now; EXP-011's bars, per repeat and pooled):**
+  - **Lessons:** pooled over T01 + T02 on site_access, alias, real_capacity: C − B ≥ 25 points, C has 0 unsafe drafts, C not worse than B on control + look-alike by more than 1 case.
+  - **Transfer:** TNEW E − B ≥ 25 points on site_access + alias, 0 pack leaks.
+  - **Replicated** if a bar is met pooled AND in at least 2 of the 3 repeats. Report each repeat's numbers (the spread), A vs B, and cost.
+- **What would count against us:** either bar not replicated; any unsafe draft in C or E; the query tools pulling the agent away from planning (watch: run_query use in planning cases).
+- **Budget:** ~306 runs, ~$15 Baseten.
+
+### EXP-012: Query tools and learned tools on gap questions (frozen 2026-11-02 before any Muse call)
+- **Question:** (1) When no built tool answers a question, does the read-only query tool let the agent answer it? (2) Do the tools it learns from its own queries make it cheaper without losing accuracy?
+- **Setup:** unseen world 5279, T01 and T02, Muse Spark Open. Questions from `practice.build_gaps` (worst on-time weekday in a month, busiest weekday in a town, returned cases per town and month, damaged cases per month; RT/TE/EN); answers computed from the records, never shown to the agent.
+  - **Learn:** the 10 dev questions per company with the query tools on. Their runs go through `newtools.candidates` and `newtools.check`; every candidate whose checks pass is approved by a fixed rule (the stand-in for the person, like EXP-011's review rule).
+  - **Test:** the 8 held-out questions per company (other towns, another month) in three arms: **N** built-in tools only · **Q** + `describe_tables`/`run_query` · **T** Q + the approved learned tools. Fresh runtime each; one run per question and arm.
+- **Frozen files:** `exp012_new_tools.py` `f581f39d3393c3d5` · `newtools.py` `c81b98044f3be4f4` · `practice.py` `6e26297baa8b85d1` · `query.py` `1845a41cf1cc0a53` · `broker.py` `590fedaa3c4fc9a8` · `graph.py` `2362ac533aa5fbf7`.
+- **Decision rule (fixed now, pooled over both companies, 16 held-out questions per arm):**
+  - **R1, the query tool fills the gap:** Q − N ≥ 25 points on answers right.
+  - **R2, learned tools are cheaper and not worse:** T right ≥ Q right − 1, and T's mean tool calls ≤ 0.7 × Q's.
+  - Also report: how many tools were learned and approved, how often T used them, cost per arm.
+- **Caveats stated now:** 16 questions per arm, one run each; questions and answers come from our generator; approval is a fixed rule, not a person; a learned tool can only help question types seen while learning.
+- **Budget:** 68 runs, ~$3 Baseten.

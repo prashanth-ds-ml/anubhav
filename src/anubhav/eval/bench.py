@@ -110,13 +110,12 @@ def judge(case, C, oid, r):
             "wrong_order_drafts": len(other)}
 
 
-def run_case(world, case, client, arm, knowledge=(), policies=(), advisories=(), runtime_dir=None):
+def run_case(world, case, client, arm, knowledge=(), policies=(), advisories=(), runtime_dir=None, analysis=False):
+    """analysis=True gives the agent the read-only query tools, as the app does (EXP-011R); EXP-011 ran without."""
     C, oid = prepare(world, case, runtime_dir or Path(world) / "runtime" / "bench")
-    b = Broker(C, Session(case["company"], "dispatcher", f"bench:{arm}"), policies, advisories)
-    if arm == "A":                                   # cold: no raw-note search either
+    b = Broker(C, Session(case["company"], "dispatcher", f"bench:{arm}"), policies, advisories, analysis=analysis)
+    if arm == "A":                                   # cold: no raw-note search either (the broker lists what it holds)
         b.tools.pop("search_notes", None)
-        import anubhav.runtime.broker as _b
-        b.list_tools = lambda: [t for t in _b.REGISTRY if b.allowed(t) and t.name != "search_notes"]
     req = request(case, C)
     r = graph.run(b, client, req, knowledge=knowledge)
     return {**case, "arm": arm, "request": req, **judge(case, C, oid, r), "tools": [s["name"] for s in r["trace"] if s["type"] == "tool"],
