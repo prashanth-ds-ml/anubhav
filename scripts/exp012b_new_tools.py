@@ -45,14 +45,29 @@ def stats(rows):
 
 
 def main():
+    import argparse
     sys.stdout.reconfigure(encoding="utf-8")
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--companies", default="T01,T02")
+    ap.add_argument("--keep", help="rows.jsonl of an interrupted run whose test rows are kept (amendment, logged)")
+    ap.add_argument("--keep-tools", help="tools sqlite of the kept company, for the learned-tool list")
+    a = ap.parse_args()
     stamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     out = ROOT / "artifacts" / "benchmark"
     out.mkdir(parents=True, exist_ok=True)
     live = out / f"exp012b_{stamp}_rows.jsonl"
     client, tmp = muse.client("open"), Path(tempfile.mkdtemp())
     rows, learned_all = [], {}
-    for cid in ("T01", "T02"):
+    if a.keep:
+        kept = [json.loads(x) for x in Path(a.keep).read_text(encoding="utf-8").splitlines() if x.strip()]
+        rows += [dict(x, phase="test", kept_from=Path(a.keep).name) for x in kept]
+        kc = sorted({x["company"] for x in kept})
+        if a.keep_tools:
+            for c in kc:
+                learned_all[c] = [{"name": t["name"], "params": [p["name"] for p in t["params"]], "from_requests": len(t["source"])}
+                                  for t in nt.tools(LessonStore(a.keep_tools), c, "active")]
+        print(f"kept {len(kept)} test rows of {kc} from {a.keep}", flush=True)
+    for cid in a.companies.split(","):
         C = CompanyData(WORLD, cid, tmp / cid)
         sb, S = sandbox(C), LessonStore(out / f"exp012b_{stamp}_{cid}_tools.sqlite")
         learn_runs = []
@@ -63,7 +78,11 @@ def main():
             print(f"learn {cid} {'✅' if row['answer_ok'] else '❌'} {q['type']:26} {q['lang']} calls={row['tool_calls']} ${row['cost_usd']}", flush=True)
         for g in nt.candidates(learn_runs, cid, sb):
             c = nt.check(g, sb)
-            tid = nt.propose(S, cid, g, c, nt.free_name(S, cid, nt.suggest_name(g)), nt.describe(g))
+            try:      # amendment (logged): a name that still carries a source value is not a general tool: skip it
+                tid = nt.propose(S, cid, g, c, nt.free_name(S, cid, nt.suggest_name(g)), nt.describe(g))
+            except ValueError as e:
+                print(f"{cid}: candidate skipped ({e})", flush=True)
+                continue
             if c["pass"]:
                 nt.decide(S, tid, "fixed-rule", True)
         learned = nt.tools(S, cid, "active")
