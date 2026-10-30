@@ -9,10 +9,10 @@ Re-score honestly at the end of Day 3, Day 6 and Day 7. Aim for top 5 in the Ind
 | Criterion (weight) | What judges ask | Our evidence | Day 3 | Day 6 | Day 7 | Gap to close |
 |---|---|---|---|---|---|---|
 | Impact (30%) | Real-world potential? Who benefits? Could people use it? Fits the problem statement? | Real interview (1–1.5 h plans, 10 re-plans), cited freight stats (Redseer, DPIIT–NCAER), new company 33→100% on day 1, hosted link, business profile | – | 6.5 | /10 | No real user has checked the lessons yet: run the dispatcher review kit |
-| Meta AI tooling (25%) | Beyond basic integration? Surprising capabilities? | Spark Open agent end to end (open weights), Spark 1.3 mines lessons, Voice Transcribe; three ways of learning; the agent writes read-only queries and they become approved tools (live: 1 call on a new town) | – | 7.5 | /10 | EXP-012 result; show each model's role in the video |
-| Technical depth (20%) | Sound, refined, thought through? | Evidence gate (Fisher test), pre-registered experiments frozen by hash, tenant broker, SQL sandbox with attack tests, 207 + 128 tests; EXP-011 on an unseen world (38 cases, not 100) | – | 8 | /10 | EXP-011R spread on the shipped version; arm D not run; Loop A has no win yet |
+| Meta AI tooling (25%) | Beyond basic integration? Surprising capabilities? | Spark Open agent end to end (open weights), Spark 1.3 mines lessons, Voice Transcribe; three ways of learning; the agent writes read-only queries and they become approved tools (EXP-012b: used 14/16, −24% cost; −30% call bar not met) | – | 7.5 | /10 | Show each model's role and the new-tool moment in the video |
+| Technical depth (20%) | Sound, refined, thought through? | Evidence gate (Fisher test), pre-registered experiments frozen by hash, tenant broker, SQL sandbox with attack tests, 207 + 128 tests; EXP-011 on an unseen world (38 cases, not 100); EXP-011R replicated it 3/3 on the shipped version | – | 8.5 | /10 | Arm D not run; Loop A has no win yet; real capacity not improved |
 | Demo (25%) | Working? Impressive? Holds up live? Cool video? | Hosted demo works in incognito (no keys): Jangaon replay, Logs page, new-tool story before/after, EXP-011 chart. No video yet | – | 5 | /10 | The 3-minute video (Nov 3) |
-| **Weighted** | | | | – | **6.7** | | Day 6 = 2026-10-30 night (self-score; the audit said 5.8 before the deploy and fixes) |
+| **Weighted** | | | | – | **6.8** | | Day 6 = 2026-10-31 (self-score after EXP-011R; the audit said 5.8 before the deploy and fixes) |
 
 **Indie-track lens:** creativity · technical ambition · whether it works.
 
