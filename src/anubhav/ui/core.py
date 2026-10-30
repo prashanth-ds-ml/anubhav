@@ -18,6 +18,7 @@ from .. import muse, trace
 from ..agent import graph
 from ..data.config import ROOT
 from ..harness.store import HarnessStore
+from ..learning import profile
 from ..learning.store import LessonStore
 from ..runtime.broker import Broker, Session
 from ..runtime.company import CompanyData
@@ -204,9 +205,14 @@ def run_live(cid, request, model_key, use_lessons, history=()):
     turns = []
     for h in list(history)[-6:]:                 # the last few exchanges, so follow-ups make sense
         turns += [{"role": "user", "content": h["request"]}, {"role": "assistant", "content": h["run"]["reply"]}]
-    r = graph.run(b, client, request, knowledge=knowledge, harness=active_harness(), history=turns)
+    r = graph.run(b, client, request, knowledge=knowledge, harness=active_harness(), history=turns, about=about(cid))
     trace.save(r, label=f"ui:{cid}:{'lessons' if use_lessons else 'cold'}")
     return r
+
+
+def about(cid):
+    """The saved business profile, as the agent reads it ("" until the owner saves one on the Business profile page)."""
+    return profile.render(profile.latest(store(), cid))
 
 
 def _trace_files():

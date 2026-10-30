@@ -11,7 +11,7 @@ from streamlit.testing.v1 import AppTest
 from anubhav import muse
 from anubhav.ui import core
 
-PAGES = ["app_pages/workbench.py", "app_pages/learned.py", "app_pages/share.py", "app_pages/proof.py", "app_pages/logs.py",
+PAGES = ["app_pages/workbench.py", "app_pages/profile.py", "app_pages/learned.py", "app_pages/share.py", "app_pages/proof.py", "app_pages/logs.py",
          "app_pages/report.py", "app_pages/learning_lab.py", "app_pages/skills.py", "app_pages/tuning.py"]
 LIVE_BUTTONS = {"app_pages/learned.py": "Learn from my records", "app_pages/learning_lab.py": "Mine my records now",
                 "app_pages/skills.py": "Practice now (active version)", "app_pages/tuning.py": "Ask Muse for a patch"}
@@ -84,3 +84,13 @@ def test_logs_page_shows_a_run_as_plan_act_observe(visitor):
     assert any("Agent runs" in m.label for m in at.metric)
     assert any(m.value.startswith("**Request:**") for m in at.markdown)      # the newest saved run is opened
     assert any(e.label.startswith(("list_", "find_", "plan_board", "create_", "get_")) for e in at.expander)
+
+
+def test_a_visitor_saves_a_business_profile_and_only_they_see_it(visitor):
+    a, b = visitor(), visitor()
+    a.switch_page("app_pages/profile.py"); a.run()
+    a.text_input[0].input("3PL for FMCG brands")
+    a.button[0].click(); a.run()
+    assert not a.exception and any("3PL for FMCG brands" in c.value for c in a.code)
+    b.switch_page("app_pages/profile.py"); b.run()
+    assert not b.code and any("Nothing yet" in i.value for i in b.info)

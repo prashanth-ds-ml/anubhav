@@ -52,7 +52,7 @@ Items 1, 2, 6 and 7 from the workshop review fold straight into this commit. 147
 |---|---|---|---|
 | B | Logs page: runs, lessons, patches, new tools and reviews on one timeline; raw JSON per row | Oct 31 | ✅ `app_pages/logs.py` + `ui/logs.py` (runs as plan → act → observe → code checks, refusals red; lesson events, patches with their paired test, feedback); 3 tests; new tools and reviews plug in when C/D land |
 | E1 | Deploy without keys (owner clicks deploy; I push and prepare the steps) — moved up by D-042 | Oct 31 | ⬜ |
-| H | Onboarding, **slim** (D-041 → D-042): profile computed from the records, editable, in the agent's prompt; Muse questions and answer checks cut | Oct 31 | ⬜ |
+| H | Onboarding, **slim** (D-041 → D-042): profile computed from the records, editable, in the agent's prompt; Muse questions and answer checks cut | Oct 31 | ✅ `learning/profile.py` + Business profile page: facts counted from 8 record tables (each cites its table), owner fields cleaned and capped, versions per company, ≤600-char block given to live runs only (`graph.run(about=…)`; frozen experiments unchanged); 5 tests |
 | C1 | Query sandbox: in-memory copy of the company's own records, SELECT only, time/row/length caps, untrusted text marked | Nov 1 | ⬜ |
 | C2 | `run_query` tool (read class, "use other tools first"), off in frozen experiment configs | Nov 1 | ⬜ |
 | C3 | Save successful queries; turn literals into parameters; candidate when used in ≥ 2 requests | Nov 1 | ⬜ |
