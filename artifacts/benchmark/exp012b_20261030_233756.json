@@ -1,0 +1,1206 @@
+{
+ "world": "full_seed5279",
+ "learned": {
+  "T01": [
+   {
+    "name": "total_returned_cases_stops_by_site_id_an",
+    "params": [
+     "site_id",
+     "date_from",
+     "date_to"
+    ],
+    "from_requests": 5
+   },
+   {
+    "name": "rows_by_site_id_and_dates",
+    "params": [
+     "site_id",
+     "date_from",
+     "date_to"
+    ],
+    "from_requests": 3
+   },
+   {
+    "name": "total_damaged_cases_stops_with_record_by",
+    "params": [
+     "date_from",
+     "date_to"
+    ],
+    "from_requests": 3
+   },
+   {
+    "name": "rows_by_town",
+    "params": [
+     "town"
+    ],
+    "from_requests": 2
+   },
+   {
+    "name": "rows_by_dates",
+    "params": [
+     "date_from",
+     "date_to"
+    ],
+    "from_requests": 2
+   }
+  ],
+  "T02": [
+   {
+    "name": "total_returned_cases_stops_by_town_and_d",
+    "params": [
+     "town",
+     "date_from",
+     "date_to"
+    ],
+    "from_requests": 3
+   },
+   {
+    "name": "returned_cases_order_items_by_town_and_d",
+    "params": [
+     "town",
+     "date_from",
+     "date_to"
+    ],
+    "from_requests": 3
+   },
+   {
+    "name": "returned_cases_stops_by_town_and_dates",
+    "params": [
+     "town",
+     "date_from",
+     "date_to"
+    ],
+    "from_requests": 3
+   },
+   {
+    "name": "wday_num_weekday_by_town",
+    "params": [
+     "town"
+    ],
+    "from_requests": 2
+   },
+   {
+    "name": "wnum_weekday_by_town",
+    "params": [
+     "town"
+    ],
+    "from_requests": 2
+   },
+   {
+    "name": "total_damaged_cases_stops_with_record_by",
+    "params": [
+     "date_from",
+     "date_to"
+    ],
+    "from_requests": 2
+   }
+  ]
+ },
+ "learn": {
+  "n": 10,
+  "answer_ok": 1.0,
+  "right": 10,
+  "mean_tool_calls": 5.5,
+  "mean_cost": 0.0598,
+  "cost_usd": 0.598
+ },
+ "arms": {
+  "Q": {
+   "n": 16,
+   "answer_ok": 0.875,
+   "right": 14,
+   "mean_tool_calls": 4.5,
+   "mean_cost": 0.0494,
+   "cost_usd": 0.791
+  },
+  "T": {
+   "n": 16,
+   "answer_ok": 0.938,
+   "right": 15,
+   "mean_tool_calls": 3.62,
+   "mean_cost": 0.0375,
+   "cost_usd": 0.6
+  }
+ },
+ "by_company": {
+  "T01:Q": {
+   "n": 8,
+   "answer_ok": 0.75,
+   "right": 6,
+   "mean_tool_calls": 4.75,
+   "mean_cost": 0.0589,
+   "cost_usd": 0.471
+  },
+  "T01:T": {
+   "n": 8,
+   "answer_ok": 1.0,
+   "right": 8,
+   "mean_tool_calls": 4.62,
+   "mean_cost": 0.0463,
+   "cost_usd": 0.371
+  },
+  "T02:Q": {
+   "n": 8,
+   "answer_ok": 1.0,
+   "right": 8,
+   "mean_tool_calls": 4.25,
+   "mean_cost": 0.04,
+   "cost_usd": 0.32
+  },
+  "T02:T": {
+   "n": 8,
+   "answer_ok": 0.875,
+   "right": 7,
+   "mean_tool_calls": 2.62,
+   "mean_cost": 0.0287,
+   "cost_usd": 0.229
+  }
+ },
+ "decision": {
+  "R2_learned_tools_cheaper_not_worse": false,
+  "R2b_learned_tools_used": true,
+  "learned_tool_used_in": "14/16"
+ },
+ "cost_usd": 1.989,
+ "rows": [
+  {
+   "id": "T01-gap-held_out-01",
+   "company": "T01",
+   "type": "worst_ontime_weekday",
+   "lang": "rt",
+   "question": "October lo ae weekday lo on-time deliveries worst ga unnayi?",
+   "answer_ok": true,
+   "right_tool": true,
+   "tools": [
+    "describe_tables",
+    "performance",
+    "run_query",
+    "run_query",
+    "run_query"
+   ],
+   "cost_usd": 0.07287,
+   "tool_calls": 5,
+   "stop": "answered",
+   "reply": "October 2026 (Oct 1-31) lo on-time deliveries worst ga unna weekday **Tuesday**:\n\n* **Tuesday - 79.5% on-time** (39 stops lo 31 on-time, 8 late)\n* Wednesday - 83.3% (42 stops lo 35 on-time)\n* Sunday - 84.6% (26 stops lo 22 on-time)\n* Thursday - 88.3% (60 stops lo 53 on-time)\n* Friday - 92.9% (42 stops lo 39 on-time)\n* Saturday - 93.5% (46 stops lo 43 on-time)\n* Monday - 93.8% (48 stops lo 45 on-ti",
+   "run_id": "ffa458b175",
+   "phase": "test",
+   "arm": "Q",
+   "used_learned": [],
+   "kept_from": "exp012b_20261030_232911_rows.jsonl"
+  },
+  {
+   "id": "T01-gap-held_out-01",
+   "company": "T01",
+   "type": "worst_ontime_weekday",
+   "lang": "rt",
+   "question": "October lo ae weekday lo on-time deliveries worst ga unnayi?",
+   "answer_ok": true,
+   "right_tool": true,
+   "tools": [
+    "describe_tables",
+    "run_query",
+    "run_query",
+    "run_query",
+    "run_query",
+    "run_query"
+   ],
+   "cost_usd": 0.11968,
+   "tool_calls": 6,
+   "stop": "limit",
+   "reply": "In October 2026 (2026-10-01 to 2026-10-31), **Tuesday is worst for on-time deliveries**.\n\nBased on `trip_outcomes.arrived_at` vs `orders.window_end` (on-time = `time(arrived_at) <= window_end`):\n\nCorrected count - distinct stops (shipment_id + site_id + arrived_at grouped, to avoid double-counting multi-order stops):\n* **Tuesday: 38 stops, 30 on-time, 8 late - 78.9% on-time (21.1% late) - WORST**\n",
+   "run_id": "b4b2f340ac",
+   "phase": "test",
+   "arm": "T",
+   "used_learned": [],
+   "kept_from": "exp012b_20261030_232911_rows.jsonl"
+  },
+  {
+   "id": "T01-gap-held_out-02",
+   "company": "T01",
+   "type": "busiest_weekday_town",
+   "lang": "te",
+   "question": "Jangaon లో ఏ వారం రోజున మనం ఎక్కువ డెలివరీలు చేస్తాం?",
+   "answer_ok": false,
+   "right_tool": true,
+   "tools": [
+    "describe_tables",
+    "list_sites",
+    "run_query"
+   ],
+   "cost_usd": 0.03316,
+   "tool_calls": 3,
+   "stop": "answered",
+   "reply": "Jangaon లో మన రికార్డుల ప్రకారం **శుక్రవారం (Friday)** రోజున అత్యధిక డెలివరీలు జరిగాయి.\n\nవారం వారీగా మొత్తం ఆర్డర్లు (డెలివరీ అయినవి):\n* శుక్రవారం - 20 (17 డెలివరీ)\n* శనివారం - 18 (17)\n* సోమవారం - 16 (15)\n* మంగళవారం - 15 (13)\n* గురువారం - 13 (13)\n* బుధవారం - 13 (11)\n* ఆదివారం - 6 (5)\n\nఅంటే Jangaon లో శుక్రవారం తర్వాత శనివారం, సోమవారం ఎక్కువగా ఉంటాయి, ఆదివారం అతి తక్కువ.",
+   "run_id": "d22f8f6b6f",
+   "phase": "test",
+   "arm": "Q",
+   "used_learned": [],
+   "kept_from": "exp012b_20261030_232911_rows.jsonl"
+  },
+  {
+   "id": "T01-gap-held_out-02",
+   "company": "T01",
+   "type": "busiest_weekday_town",
+   "lang": "te",
+   "question": "Jangaon లో ఏ వారం రోజున మనం ఎక్కువ డెలివరీలు చేస్తాం?",
+   "answer_ok": true,
+   "right_tool": true,
+   "tools": [
+    "rows_by_town",
+    "describe_tables",
+    "run_query"
+   ],
+   "cost_usd": 0.04543,
+   "tool_calls": 3,
+   "stop": "answered",
+   "reply": "Jangaon లో మన డెలివరీలు ఎక్కువగా **శనివారం** జరుగుతున్నాయి:\n\n* **శనివారం - 22 స్టాప్స్** (11 వేర్వేరు తేదీల్లో)\n* శుక్రవారం - 19 స్టాప్స్\n* మంగళవారం - 19 స్టాప్స్\n* గురువారం - 16, సోమవారం - 16\n* బుధవారం - 13\n* ఆదివారం - 7\n\nఅంటే Jangaon లోని 6 సైట్లకు (Lakshmi Agencies, Sri Rama Warehousing మొదలైనవి) శనివారం రోజున అత్యధిక డెలివరీ స్టాప్స్ నమోదయ్యాయి.",
+   "run_id": "fc221c2082",
+   "phase": "test",
+   "arm": "T",
+   "used_learned": [
+    "rows_by_town"
+   ],
+   "kept_from": "exp012b_20261030_232911_rows.jsonl"
+  },
+  {
+   "id": "T01-gap-held_out-03",
+   "company": "T01",
+   "type": "busiest_weekday_town",
+   "lang": "en",
+   "question": "On which weekday do we make the most delivery stops in Warangal?",
+   "answer_ok": true,
+   "right_tool": true,
+   "tools": [
+    "describe_tables",
+    "run_query",
+    "run_query",
+    "run_query",
+    "run_query"
+   ],
+   "cost_usd": 0.06518,
+   "tool_calls": 5,
+   "stop": "answered",
+   "reply": "In Warangal (7 sites) we make the most delivery stops on **Thursday**:\n\nBy planned delivery date (shipment_stops + shipments):\n* Thursday - 29 stops\n* Wednesday - 22\n* Monday - 21\n* Friday - 19\n* Saturday - 13\n* Tuesday - 13\n* Sunday - 8\nTotal 125 stops.\n\nBy actual arrival (trip_outcomes.arrived_at) it's the same: Thursday 31, Monday 21, Wednesday 20, Friday 19, Saturday 13, Tuesday 13, Sunday 8.",
+   "run_id": "28412020a7",
+   "phase": "test",
+   "arm": "Q",
+   "used_learned": [],
+   "kept_from": "exp012b_20261030_232911_rows.jsonl"
+  },
+  {
+   "id": "T01-gap-held_out-03",
+   "company": "T01",
+   "type": "busiest_weekday_town",
+   "lang": "en",
+   "question": "On which weekday do we make the most delivery stops in Warangal?",
+   "answer_ok": true,
+   "right_tool": true,
+   "tools": [
+    "rows_by_town",
+    "describe_tables",
+    "run_query"
+   ],
+   "cost_usd": 0.04401,
+   "tool_calls": 3,
+   "stop": "answered",
+   "reply": "In Warangal, we make the most delivery stops on **Thursday** — 29 stops in the records.\n\nBreakdown by weekday:\n- Thursday: 29\n- Wednesday: 22\n- Monday: 21\n- Friday: 19\n- Saturday: 13\n- Tuesday: 13\n- Sunday: 8",
+   "run_id": "bf98208dc8",
+   "phase": "test",
+   "arm": "T",
+   "used_learned": [
+    "rows_by_town"
+   ],
+   "kept_from": "exp012b_20261030_232911_rows.jsonl"
+  },
+  {
+   "id": "T01-gap-held_out-04",
+   "company": "T01",
+   "type": "busiest_weekday_town",
+   "lang": "rt",
+   "question": "Jagtial lo ae weekday lo manam ekkuva deliveries chestham?",
+   "answer_ok": false,
+   "right_tool": true,
+   "tools": [
+    "describe_tables",
+    "run_query",
+    "run_query"
+   ],
+   "cost_usd": 0.04405,
+   "tool_calls": 3,
+   "stop": "answered",
+   "reply": "Jagtial lo **Wednesday** roju manam ekkuva deliveries chestham.\n\nOrders table lo chuste:\n\n* **Wednesday - 267 deliveries** (56 delivered + 211 partially_delivered) / total 269 orders\n* Tuesday - total orders 277 ekkuva unnai kani 257 rolled_over, deliveries 17 matrame\n* Monday - total 272 orders, deliveries 14 matrame (258 rolled_over)\n* Sunday - total 267 orders, deliveries 11 matrame (256 rolled",
+   "run_id": "39433d2fd2",
+   "phase": "test",
+   "arm": "Q",
+   "used_learned": [],
+   "kept_from": "exp012b_20261030_232911_rows.jsonl"
+  },
+  {
+   "id": "T01-gap-held_out-04",
+   "company": "T01",
+   "type": "busiest_weekday_town",
+   "lang": "rt",
+   "question": "Jagtial lo ae weekday lo manam ekkuva deliveries chestham?",
+   "answer_ok": true,
+   "right_tool": true,
+   "tools": [
+    "rows_by_town",
+    "describe_tables",
+    "run_query"
+   ],
+   "cost_usd": 0.04355,
+   "tool_calls": 3,
+   "stop": "answered",
+   "reply": "Jagtial lo manam ekkuva deliveries **Monday** roju chestham.\n\nTrip outcomes data prakaram:\n\n* **Monday - 17 stops** (14 delivered)\n* Saturday - 15 stops (13 delivered)\n* Wednesday - 12 stops (8 delivered)\n* Friday - 11 stops (11 delivered)\n* Tuesday - 10 stops\n* Sunday - 10 stops\n* Thursday - 4 stops\n\nAnduke Monday top lo undi, tarvata Saturday.",
+   "run_id": "ea06794989",
+   "phase": "test",
+   "arm": "T",
+   "used_learned": [
+    "rows_by_town"
+   ],
+   "kept_from": "exp012b_20261030_232911_rows.jsonl"
+  },
+  {
+   "id": "T01-gap-held_out-05",
+   "company": "T01",
+   "type": "returned_cases_town_month",
+   "lang": "te",
+   "question": "సెప్టెంబర్ లో Jangaon నుండి ఎన్ని కేసులు వెనక్కి వచ్చాయి?",
+   "answer_ok": true,
+   "right_tool": true,
+   "tools": [
+    "describe_tables",
+    "run_query",
+    "run_query",
+    "run_query",
+    "run_query"
+   ],
+   "cost_usd": 0.0649,
+   "tool_calls": 5,
+   "stop": "answered",
+   "reply": "సెప్టెంబర్ 2026 లో Jangaon నుండి మొత్తం **126 కేసులు** వెనక్కి వచ్చాయి.\n\n* మొత్తం స్టాప్‌లు: 35, డెలివరీ అయిన కేసులు: 13,595\n* వెనక్కి వచ్చినవి 3 ట్రిప్‌లలోనే:\n  - 2026-09-08, C0022 (T01-S00378) - 29 కేసులు వెనక్కి, 226 డెలివరీ (partial)\n  - 2026-09-12, C0003 (T01-S00409) - 17 కేసులు వెనక్కి, 69 డెలివరీ (partial)\n  - 2026-09-21, C0014 (T01-S00462) - 80 కేసులు వెనక్కి, 322 డెలివరీ (partial)\n\nమిగిలి",
+   "run_id": "37b9e8114f",
+   "phase": "test",
+   "arm": "Q",
+   "used_learned": [],
+   "kept_from": "exp012b_20261030_232911_rows.jsonl"
+  },
+  {
+   "id": "T01-gap-held_out-05",
+   "company": "T01",
+   "type": "returned_cases_town_month",
+   "lang": "te",
+   "question": "సెప్టెంబర్ లో Jangaon నుండి ఎన్ని కేసులు వెనక్కి వచ్చాయి?",
+   "answer_ok": true,
+   "right_tool": true,
+   "tools": [
+    "list_sites",
+    "total_returned_cases_stops_by_site_id_an",
+    "total_returned_cases_stops_by_site_id_an",
+    "total_returned_cases_stops_by_site_id_an",
+    "total_returned_cases_stops_by_site_id_an",
+    "total_returned_cases_stops_by_site_id_an",
+    "total_returned_cases_stops_by_site_id_an"
+   ],
+   "cost_usd": 0.03325,
+   "tool_calls": 7,
+   "stop": "answered",
+   "reply": "సెప్టెంబర్ 2026 (2026-09-01 నుండి 2026-09-30) లో Jangaon నుండి మొత్తం **126 కేసులు** వెనక్కి వచ్చాయి.\n\nవివరాలు సైట్ వారీగా:\n\n* **Sri Rama Warehousing (C0014):** 80 కేసులు - 8 స్టాప్స్\n* **Balaji Supermarket (C0022):** 29 కేసులు - 3 స్టాప్స్\n* **Lakshmi Agencies (C0003):** 17 కేసులు - 8 స్టాప్స్\n* **Mahalakshmi Distributors (C0016):** 0 కేసులు - 3 స్టాప్స్\n* **Sri Venkateswara Traders (C0015):** 0 ",
+   "run_id": "e2f91e2f93",
+   "phase": "test",
+   "arm": "T",
+   "used_learned": [
+    "total_returned_cases_stops_by_site_id_an",
+    "total_returned_cases_stops_by_site_id_an",
+    "total_returned_cases_stops_by_site_id_an",
+    "total_returned_cases_stops_by_site_id_an",
+    "total_returned_cases_stops_by_site_id_an",
+    "total_returned_cases_stops_by_site_id_an"
+   ],
+   "kept_from": "exp012b_20261030_232911_rows.jsonl"
+  },
+  {
+   "id": "T01-gap-held_out-06",
+   "company": "T01",
+   "type": "returned_cases_town_month",
+   "lang": "en",
+   "question": "How many cases came back (returned cases) from Jangaon in August?",
+   "answer_ok": true,
+   "right_tool": true,
+   "tools": [
+    "describe_tables",
+    "run_query",
+    "run_query",
+    "run_query",
+    "run_query",
+    "run_query",
+    "run_query",
+    "run_query"
+   ],
+   "cost_usd": 0.07369,
+   "tool_calls": 8,
+   "stop": "answered",
+   "reply": "In August 2026 (2026-08-01 to 2026-08-31), **Jangaon = 1,040 returned cases** in total.\n\nBoth `trip_outcomes` and `order_items` sum to 1,040:\n\n**By site (trip_outcomes joined to shipments):**\n* **C0003 Lakshmi Agencies - 1,013 cases** (10 stops in August)\n  * 2026-08-15 T01-S00096 - 330 cases - status returned\n  * 2026-08-16 T01-S00103 - 330 cases - status returned  \n  * 2026-08-19 T01-S00122 - 35",
+   "run_id": "942b1ca4af",
+   "phase": "test",
+   "arm": "Q",
+   "used_learned": [],
+   "kept_from": "exp012b_20261030_232911_rows.jsonl"
+  },
+  {
+   "id": "T01-gap-held_out-06",
+   "company": "T01",
+   "type": "returned_cases_town_month",
+   "lang": "en",
+   "question": "How many cases came back (returned cases) from Jangaon in August?",
+   "answer_ok": true,
+   "right_tool": true,
+   "tools": [
+    "list_sites",
+    "total_returned_cases_stops_by_site_id_an",
+    "total_returned_cases_stops_by_site_id_an",
+    "total_returned_cases_stops_by_site_id_an",
+    "total_returned_cases_stops_by_site_id_an",
+    "total_returned_cases_stops_by_site_id_an",
+    "total_returned_cases_stops_by_site_id_an"
+   ],
+   "cost_usd": 0.03199,
+   "tool_calls": 7,
+   "stop": "answered",
+   "reply": "In August 2026 (2026-08-01 to 2026-08-31), **1,040 cases** came back (returned) from **Jangaon** across 41 stops / 41 shipments:\n\n* **C0003 Lakshmi Agencies (old_town_godown): 1,013 cases** - 10 stops\n* **C0015 Sri Venkateswara Traders (highway_warehouse): 27 cases** - 14 stops\n* C0022 Balaji Supermarket: 0 cases - 2 stops\n* C0016 Mahalakshmi Distributors: 0 cases - 3 stops\n* C0025 Mahalakshmi Tra",
+   "run_id": "7597158095",
+   "phase": "test",
+   "arm": "T",
+   "used_learned": [
+    "total_returned_cases_stops_by_site_id_an",
+    "total_returned_cases_stops_by_site_id_an",
+    "total_returned_cases_stops_by_site_id_an",
+    "total_returned_cases_stops_by_site_id_an",
+    "total_returned_cases_stops_by_site_id_an",
+    "total_returned_cases_stops_by_site_id_an"
+   ],
+   "kept_from": "exp012b_20261030_232911_rows.jsonl"
+  },
+  {
+   "id": "T01-gap-held_out-07",
+   "company": "T01",
+   "type": "returned_cases_town_month",
+   "lang": "rt",
+   "question": "October lo Jangaon nunchi enni cases venakki vachayi?",
+   "answer_ok": true,
+   "right_tool": true,
+   "tools": [
+    "describe_tables",
+    "run_query",
+    "run_query",
+    "run_query",
+    "run_query",
+    "run_query"
+   ],
+   "cost_usd": 0.07562,
+   "tool_calls": 6,
+   "stop": "answered",
+   "reply": "October lo Jangaon nunchi motham **213 cases venakki vachayi**.\n\nDetails:\n* 4 orders lo returns vachayi (andaru `partially_delivered` status):\n  - 2026-10-09 - Mahalakshmi Distributors (C0016) - 27 cases venakki - T01-O09288 / T01-S00599\n  - 2026-10-14 - Lakshmi Agencies (C0003) - 34 cases venakki - T01-O09353 / T01-S00658\n  - 2026-10-23 - Lakshmi Agencies (C0003) - 33 cases venakki - T01-O09846 /",
+   "run_id": "b5e80164ca",
+   "phase": "test",
+   "arm": "Q",
+   "used_learned": [],
+   "kept_from": "exp012b_20261030_232911_rows.jsonl"
+  },
+  {
+   "id": "T01-gap-held_out-07",
+   "company": "T01",
+   "type": "returned_cases_town_month",
+   "lang": "rt",
+   "question": "October lo Jangaon nunchi enni cases venakki vachayi?",
+   "answer_ok": true,
+   "right_tool": true,
+   "tools": [
+    "list_sites",
+    "total_returned_cases_stops_by_site_id_an",
+    "total_returned_cases_stops_by_site_id_an",
+    "total_returned_cases_stops_by_site_id_an",
+    "total_returned_cases_stops_by_site_id_an",
+    "total_returned_cases_stops_by_site_id_an",
+    "total_returned_cases_stops_by_site_id_an"
+   ],
+   "cost_usd": 0.0336,
+   "tool_calls": 7,
+   "stop": "answered",
+   "reply": "October 2026 (2026-10-01 nunchi 2026-10-31 varaku) lo Jangaon nunchi total **213 cases** venakki vachayi - 36 stops / shipments lo:\n\n* **Lakshmi Agencies (C0003):** 67 cases - 11 stops\n* **Mahalakshmi Distributors (C0016):** 27 cases - 7 stops  \n* **Sri Rama Warehousing (C0014):** 119 cases - 7 stops\n* **Balaji Supermarket (C0022), Mahalakshmi Traders (C0025), Sri Venkateswara Traders (C0015):** 0",
+   "run_id": "2b03e68ea5",
+   "phase": "test",
+   "arm": "T",
+   "used_learned": [
+    "total_returned_cases_stops_by_site_id_an",
+    "total_returned_cases_stops_by_site_id_an",
+    "total_returned_cases_stops_by_site_id_an",
+    "total_returned_cases_stops_by_site_id_an",
+    "total_returned_cases_stops_by_site_id_an",
+    "total_returned_cases_stops_by_site_id_an"
+   ],
+   "kept_from": "exp012b_20261030_232911_rows.jsonl"
+  },
+  {
+   "id": "T01-gap-held_out-08",
+   "company": "T01",
+   "type": "damaged_cases_month",
+   "lang": "te",
+   "question": "అక్టోబర్ లో డెలివరీలో ఎన్ని కేసులు పాడయ్యాయి?",
+   "answer_ok": true,
+   "right_tool": true,
+   "tools": [
+    "describe_tables",
+    "run_query",
+    "run_query"
+   ],
+   "cost_usd": 0.04162,
+   "tool_calls": 3,
+   "stop": "answered",
+   "reply": "అక్టోబర్ 2026 (2026-10-01 నుండి 2026-10-31 వరకు) డెలివరీలో మొత్తం **20 కేసులు** పాడయ్యాయి.\n\nఇవి 303 స్టాపుల్లో 6 స్టాపుల్లో నమోదయ్యాయి:\n\n* 2026-10-01 - T01-S00548 - Warangal (C0043) - 6 కేసులు\n* 2026-10-05 - T01-S00575 - Siddipet (C0038) - 5 కేసులు\n* 2026-10-08 - T01-S00592 - Karimnagar (C0028) - 5 కేసులు\n* 2026-10-09 - T01-S00599 - Jangaon (C0016) - 2 కేసులు\n* 2026-10-18 - T01-S00742 - Warangal (",
+   "run_id": "ab6de1afa5",
+   "phase": "test",
+   "arm": "Q",
+   "used_learned": [],
+   "kept_from": "exp012b_20261030_232911_rows.jsonl"
+  },
+  {
+   "id": "T01-gap-held_out-08",
+   "company": "T01",
+   "type": "damaged_cases_month",
+   "lang": "te",
+   "question": "అక్టోబర్ లో డెలివరీలో ఎన్ని కేసులు పాడయ్యాయి?",
+   "answer_ok": true,
+   "right_tool": true,
+   "tools": [
+    "total_damaged_cases_stops_with_record_by"
+   ],
+   "cost_usd": 0.01922,
+   "tool_calls": 1,
+   "stop": "answered",
+   "reply": "అక్టోబర్ 2026 (01-31) లో డెలివరీలో మొత్తం **20 కేసులు** పాడయ్యాయి. ఇవి 303 స్టాప్స్ లో 6 స్టాప్స్ లో జరిగాయి.",
+   "run_id": "142a6fdb23",
+   "phase": "test",
+   "arm": "T",
+   "used_learned": [
+    "total_damaged_cases_stops_with_record_by"
+   ],
+   "kept_from": "exp012b_20261030_232911_rows.jsonl"
+  },
+  {
+   "id": "T02-gap-dev-01",
+   "company": "T02",
+   "type": "worst_ontime_weekday",
+   "lang": "rt",
+   "question": "September lo ae weekday lo on-time deliveries worst ga unnayi?",
+   "answer_ok": true,
+   "right_tool": true,
+   "tools": [
+    "describe_tables",
+    "run_query",
+    "run_query",
+    "performance",
+    "run_query",
+    "run_query",
+    "run_query",
+    "run_query"
+   ],
+   "cost_usd": 0.09526,
+   "tool_calls": 8,
+   "stop": "answered",
+   "reply": "September 2026 lo on-time deliveries worst ga unna weekday **Tuesday (Mangalavaram)**:\n\n* **Tuesday - 65.9% on-time** (41 stops lo 27 on-time, 14 late - 34.1% late)\n* Thursday - 69.0% on-time (42 stops lo 29 on-time)\n* Wednesday - 71.7% on-time (46 stops lo 33 on-time)\n* Saturday - 76.3% on-time\n* Friday - 79.3% on-time\n* Sunday - 91.7% on-time\n* Monday - 93.9% on-time (best)\n\nOverall September lo",
+   "run_id": "69d404065a",
+   "phase": "learn",
+   "arm": "Q"
+  },
+  {
+   "id": "T02-gap-dev-02",
+   "company": "T02",
+   "type": "worst_ontime_weekday",
+   "lang": "te",
+   "question": "ఆగస్టు లో ఏ వారం రోజున సమయానికి డెలివరీలు అతి తక్కువగా జరిగాయి?",
+   "answer_ok": true,
+   "right_tool": true,
+   "tools": [
+    "describe_tables",
+    "run_query",
+    "run_query",
+    "run_query",
+    "run_query",
+    "run_query",
+    "run_query",
+    "run_query",
+    "run_query",
+    "run_query",
+    "run_query",
+    "run_query"
+   ],
+   "cost_usd": 0.0996,
+   "tool_calls": 12,
+   "stop": "limit",
+   "reply": "మీ ప్రశ్న: ఆగస్టు 2026 లో ఏ వారం రోజున సమయానికి డెలివరీలు అతి తక్కువగా జరిగాయి?\n\nనేను చేసినది:\n- orders, shipments, trip_outcomes టేబుల్స్ చూశాను. సమయానికి డెలివరీ అంటే `trip_outcomes.arrived_at` సమయం <= `orders.window_end` అని తీసుకున్నాను.\n- 2026-08-01 నమూనా చూశాను - ఉదా. CN-0014 కి window 09:00 కానీ arrived 10:03 (లేట్), CN-0017 కి window 13:00 కానీ arrived 14:12 (లేట్).\n- వారం రోజు వారీగా లెక్",
+   "run_id": "78c8aed79c",
+   "phase": "learn",
+   "arm": "Q"
+  },
+  {
+   "id": "T02-gap-dev-03",
+   "company": "T02",
+   "type": "busiest_weekday_town",
+   "lang": "en",
+   "question": "On which weekday do we make the most delivery stops in Parkal?",
+   "answer_ok": true,
+   "right_tool": true,
+   "tools": [
+    "describe_tables",
+    "run_query"
+   ],
+   "cost_usd": 0.03119,
+   "tool_calls": 2,
+   "stop": "answered",
+   "reply": "Most delivery stops in **Parkal** are on **Friday** - 6 stops.\n\nBreakdown by weekday (from shipment records):\n- Friday: 6\n- Monday: 5\n- Thursday: 4\n- Wednesday: 4\n- Sunday: 4\n- Saturday: 2\n- Tuesday: 2",
+   "run_id": "1708ab07fa",
+   "phase": "learn",
+   "arm": "Q"
+  },
+  {
+   "id": "T02-gap-dev-04",
+   "company": "T02",
+   "type": "busiest_weekday_town",
+   "lang": "rt",
+   "question": "Hanamkonda lo ae weekday lo manam ekkuva deliveries chestham?",
+   "answer_ok": true,
+   "right_tool": true,
+   "tools": [
+    "describe_tables",
+    "list_sites",
+    "run_query",
+    "run_query"
+   ],
+   "cost_usd": 0.05508,
+   "tool_calls": 4,
+   "stop": "answered",
+   "reply": "Hanamkonda lo Friday roju ekkuva deliveries chestham.\n\n5 sites unnai Hanamkonda lo - data prakaram:\n\n* Friday - 39 orders (35 delivered)\n* Thursday - 31 orders\n* Tuesday - 28 orders\n* Saturday - 27 orders\n* Monday - 24 orders\n* Wednesday - 23 orders\n* Sunday - 3 orders\n\nAndhuke Friday peak day.",
+   "run_id": "977c9bbddd",
+   "phase": "learn",
+   "arm": "Q"
+  },
+  {
+   "id": "T02-gap-dev-05",
+   "company": "T02",
+   "type": "busiest_weekday_town",
+   "lang": "te",
+   "question": "Suryapet లో ఏ వారం రోజున మనం ఎక్కువ డెలివరీలు చేస్తాం?",
+   "answer_ok": true,
+   "right_tool": true,
+   "tools": [
+    "describe_tables",
+    "trip_history",
+    "order_history",
+    "run_query",
+    "run_query",
+    "run_query"
+   ],
+   "cost_usd": 0.07337,
+   "tool_calls": 6,
+   "stop": "answered",
+   "reply": "Suryapet లో ఎక్కువ డెలివరీలు **సోమవారం (Monday) మరియు శనివారం (Saturday)** జరిగాయి:\n\n**ఆర్డర్ల లెక్క (మొత్తం 23 ఆర్డర్లు):**\n- శనివారం - 5\n- సోమవారం - 5\n- బుధవారం - 4\n- గురువారం - 3\n- మంగళవారం - 3\n- శుక్రవారం - 2\n- ఆదివారం - 1\n\n**ట్రిప్పుల లెక్క (shipments):**\n- సోమవారం - 5\n- శనివారం - 4\n- మిగతా రోజులు 1-3\n\nఅంటే Suryapet కి మనం ఎక్కువగా సోమవారం మరియు శనివారం డెలివరీలు చేస్తాం.",
+   "run_id": "687c0b1fbc",
+   "phase": "learn",
+   "arm": "Q"
+  },
+  {
+   "id": "T02-gap-dev-06",
+   "company": "T02",
+   "type": "returned_cases_town_month",
+   "lang": "en",
+   "question": "How many cases came back (returned cases) from Parkal in October?",
+   "answer_ok": true,
+   "right_tool": true,
+   "tools": [
+    "describe_tables",
+    "list_sites",
+    "find_site",
+    "run_query",
+    "run_query",
+    "run_query"
+   ],
+   "cost_usd": 0.04644,
+   "tool_calls": 6,
+   "stop": "answered",
+   "reply": "In October 2026 (2026-10-01 to 2026-10-31), **309 cases** were returned from **Parkal** (town total).\n\nBreakdown from `trip_outcomes` + `shipments` (11 shipments to Parkal in October):\n\n* **296 cases** - 2026-10-13 - `T02-S00364` - Sri Lakshmi Narasimha Traders (CN-0007) - status `returned` - Order `T02-O00606` (fully returned)\n* **13 cases** - 2026-10-25 - `T02-S00425` - Sri Lakshmi Narasimha Tra",
+   "run_id": "954e6bce25",
+   "phase": "learn",
+   "arm": "Q"
+  },
+  {
+   "id": "T02-gap-dev-07",
+   "company": "T02",
+   "type": "returned_cases_town_month",
+   "lang": "rt",
+   "question": "September lo Hanamkonda nunchi enni cases venakki vachayi?",
+   "answer_ok": true,
+   "right_tool": true,
+   "tools": [
+    "find_site",
+    "describe_tables",
+    "run_query",
+    "run_query",
+    "run_query",
+    "run_query"
+   ],
+   "cost_usd": 0.06763,
+   "tool_calls": 6,
+   "stop": "answered",
+   "reply": "September lo Hanamkonda nunchi motham **60 cases** venakki vachayi.\n\nDetails:\n* Motham 45 stops lo, 2 stops lo ne returns vachayi\n* Anni returns okate site nunchi - **Padmavathi Wholesale (CN-0025)**:\n  - 2026-09-25 (T02-S00269): 40 cases returned (164 delivered, status partial)\n  - 2026-09-26 (T02-S00273): 20 cases returned (436 delivered, status partial)\n\nMigatha Hanamkonda sites (Sai Ganesh Age",
+   "run_id": "a7df3cb283",
+   "phase": "learn",
+   "arm": "Q"
+  },
+  {
+   "id": "T02-gap-dev-08",
+   "company": "T02",
+   "type": "returned_cases_town_month",
+   "lang": "te",
+   "question": "ఆగస్టు లో Hanamkonda నుండి ఎన్ని కేసులు వెనక్కి వచ్చాయి?",
+   "answer_ok": true,
+   "right_tool": true,
+   "tools": [
+    "describe_tables",
+    "run_query",
+    "run_query",
+    "run_query",
+    "run_query",
+    "run_query"
+   ],
+   "cost_usd": 0.0585,
+   "tool_calls": 6,
+   "stop": "answered",
+   "reply": "ఆగస్టు 2026 (2026-08-01 నుండి 2026-08-31) లో Hanamkonda నుండి మొత్తం **6 కేసులు** వెనక్కి వచ్చాయి.\n\nవివరాలు:\n* **Hanamkonda లో 5 సైట్లు** ఉన్నాయి - మొత్తం 47 స్టాప్స్, 11,509 కేసులు డెలివరీ అయ్యాయి.\n* వెనక్కి వచ్చిన 6 కేసులు ఒకే సైట్ నుండి:\n  * **CN-0004 Manikanta Mart** - 6 కేసులు (10 స్టాప్స్ లో, 1,976 కేసులు డెలివరీ)\n* మిగతా 4 సైట్లు - 0 రిటర్న్:\n  * CN-0003 Sai Ganesh Agencies - 0 (12 స్టాప్స్",
+   "run_id": "0b68cd2ea2",
+   "phase": "learn",
+   "arm": "Q"
+  },
+  {
+   "id": "T02-gap-dev-09",
+   "company": "T02",
+   "type": "damaged_cases_month",
+   "lang": "en",
+   "question": "How many cases were damaged in delivery in September?",
+   "answer_ok": true,
+   "right_tool": true,
+   "tools": [
+    "describe_tables",
+    "run_query"
+   ],
+   "cost_usd": 0.03022,
+   "tool_calls": 2,
+   "stop": "answered",
+   "reply": "In September 2026 (delivery_date 2026-09-01 to 2026-09-30):\n\n**20 cases** were recorded as damaged in `trip_outcomes`.\n\n- 217 stops delivered in September\n- 5 stops had damage (>0 cases)\n",
+   "run_id": "ee784fc122",
+   "phase": "learn",
+   "arm": "Q"
+  },
+  {
+   "id": "T02-gap-dev-10",
+   "company": "T02",
+   "type": "damaged_cases_month",
+   "lang": "rt",
+   "question": "August lo delivery lo enni cases damage ayyayi?",
+   "answer_ok": true,
+   "right_tool": true,
+   "tools": [
+    "describe_tables",
+    "run_query",
+    "run_query"
+   ],
+   "cost_usd": 0.04034,
+   "tool_calls": 3,
+   "stop": "answered",
+   "reply": "August 2026 lo delivery lo motham **11 cases damage** ayyayi.\n\nTrip outcomes prakaram:\n* 213 stops delivery ayyayi August lo, andulo 3 stops lo ne damage record ayyindi.\n* Details:\n  - 2026-08-03 - T02-S00003 / CN-0013 - 6 cases damage\n  - 2026-08-26 - T02-S00104 / CN-0041 - 2 cases damage  \n  - 2026-08-29 - T02-S00133 / CN-0002 - 3 cases damage",
+   "run_id": "3948ec6d7a",
+   "phase": "learn",
+   "arm": "Q"
+  },
+  {
+   "id": "T02-gap-held_out-01",
+   "company": "T02",
+   "type": "worst_ontime_weekday",
+   "lang": "rt",
+   "question": "October lo ae weekday lo on-time deliveries worst ga unnayi?",
+   "answer_ok": true,
+   "right_tool": true,
+   "tools": [
+    "describe_tables",
+    "performance",
+    "run_query"
+   ],
+   "cost_usd": 0.04377,
+   "tool_calls": 3,
+   "stop": "answered",
+   "reply": "October lo **Wednesday** worst ga undi:\n\n* **Wednesday - 66.1% on-time** (62 stops lo 41 on-time, avg wait 54.9 min)\n* Tarvata Saturday 69.5% (59 lo 41), Monday 69.9% (73 lo 51)\n\nBest weekdays: Friday 88.5% (87 lo 77), Thursday 87.3%, Tuesday 85.1%.\n\nOverall October on-time 78% - Wednesday chala takkuva.",
+   "run_id": "b26f035e79",
+   "phase": "test",
+   "arm": "Q",
+   "used_learned": []
+  },
+  {
+   "id": "T02-gap-held_out-01",
+   "company": "T02",
+   "type": "worst_ontime_weekday",
+   "lang": "rt",
+   "question": "October lo ae weekday lo on-time deliveries worst ga unnayi?",
+   "answer_ok": true,
+   "right_tool": true,
+   "tools": [
+    "describe_tables",
+    "performance",
+    "get_transport_policy",
+    "run_query",
+    "run_query",
+    "run_query",
+    "run_query"
+   ],
+   "cost_usd": 0.09127,
+   "tool_calls": 7,
+   "stop": "answered",
+   "reply": "October 2026 (Oct 1-31) lo on-time deliveries worst ga unna weekday **Wednesday**:\n\n* **Wednesday - 67.6% on-time** (34 stops lo 23 on-time, 11 late - 32.4% late)\n* Tarvata **Saturday - 67.9% on-time** (28 stops lo 19 on-time)\n* **Sunday - 69.2% on-time** (13 stops)\n\nMigatha weekdays better:\nMonday 77.8%, Thursday 83.8%, Friday 85.0%, **Tuesday best 87.1% on-time**\n\nOverall October average 78% on-",
+   "run_id": "7a40cead6a",
+   "phase": "test",
+   "arm": "T",
+   "used_learned": []
+  },
+  {
+   "id": "T02-gap-held_out-02",
+   "company": "T02",
+   "type": "busiest_weekday_town",
+   "lang": "te",
+   "question": "Thorrur లో ఏ వారం రోజున మనం ఎక్కువ డెలివరీలు చేస్తాం?",
+   "answer_ok": true,
+   "right_tool": true,
+   "tools": [
+    "describe_tables",
+    "list_sites",
+    "find_site",
+    "run_query",
+    "run_query",
+    "run_query"
+   ],
+   "cost_usd": 0.03683,
+   "tool_calls": 6,
+   "stop": "answered",
+   "reply": "Thorrur లో మనకు 2 సైట్లు ఉన్నాయి - Durga Enterprises (CN-0030) మరియు Mahalakshmi Enterprises (CN-0029).\n\nరికార్డుల ప్రకారం **గురువారం** నాడు ఎక్కువ డెలివరీలు చేస్తాం:\n\n* **గురువారం - 5 డెలివరీలు**\n* సోమవారం - 3\n* శనివారం - 2\n* ఆదివారం, మంగళవారం, బుధవారం, శుక్రవారం - తలా 1\n\nOrders, Shipments, Trip Outcomes మూడింటిలోనూ గురువారమే అత్యధికం.",
+   "run_id": "f2d4d5fc61",
+   "phase": "test",
+   "arm": "Q",
+   "used_learned": []
+  },
+  {
+   "id": "T02-gap-held_out-02",
+   "company": "T02",
+   "type": "busiest_weekday_town",
+   "lang": "te",
+   "question": "Thorrur లో ఏ వారం రోజున మనం ఎక్కువ డెలివరీలు చేస్తాం?",
+   "answer_ok": true,
+   "right_tool": true,
+   "tools": [
+    "wnum_weekday_by_town",
+    "wday_num_weekday_by_town"
+   ],
+   "cost_usd": 0.019,
+   "tool_calls": 2,
+   "stop": "answered",
+   "reply": "Thorrur లో **గురువారం (Thursday)** రోజున మనం ఎక్కువ డెలివరీలు చేస్తాం.\n\n* గురువారం - 5 ఆర్డర్లు / 5 స్టాప్స్ (5 డెలివరీ అయ్యాయి)\n* సోమవారం - 3\n* శనివారం - 2\n* మిగతా రోజులు - 1 చొప్పున",
+   "run_id": "fb135f8cae",
+   "phase": "test",
+   "arm": "T",
+   "used_learned": [
+    "wnum_weekday_by_town",
+    "wday_num_weekday_by_town"
+   ]
+  },
+  {
+   "id": "T02-gap-held_out-03",
+   "company": "T02",
+   "type": "busiest_weekday_town",
+   "lang": "en",
+   "question": "On which weekday do we make the most delivery stops in Kazipet?",
+   "answer_ok": true,
+   "right_tool": true,
+   "tools": [
+    "describe_tables",
+    "run_query"
+   ],
+   "cost_usd": 0.03048,
+   "tool_calls": 2,
+   "stop": "answered",
+   "reply": "In Kazipet, we make the most delivery stops on **Monday** — 17 stops.\n\nBreakdown by weekday (from shipment history):\n- Monday: 17\n- Wednesday: 11\n- Thursday: 10\n- Friday: 8\n- Saturday: 8\n- Tuesday: 5\n- Sunday: 1",
+   "run_id": "c274555bda",
+   "phase": "test",
+   "arm": "Q",
+   "used_learned": []
+  },
+  {
+   "id": "T02-gap-held_out-03",
+   "company": "T02",
+   "type": "busiest_weekday_town",
+   "lang": "en",
+   "question": "On which weekday do we make the most delivery stops in Kazipet?",
+   "answer_ok": true,
+   "right_tool": true,
+   "tools": [
+    "wday_num_weekday_by_town"
+   ],
+   "cost_usd": 0.01789,
+   "tool_calls": 1,
+   "stop": "answered",
+   "reply": "In Kazipet, you make the most delivery stops on **Monday** - 17 stops.\n\nBreakdown:\n- Monday: 17\n- Wednesday: 11\n- Thursday: 10\n- Friday: 8\n- Saturday: 8\n- Tuesday: 5\n- Sunday: 1",
+   "run_id": "e370c8c575",
+   "phase": "test",
+   "arm": "T",
+   "used_learned": [
+    "wday_num_weekday_by_town"
+   ]
+  },
+  {
+   "id": "T02-gap-held_out-04",
+   "company": "T02",
+   "type": "busiest_weekday_town",
+   "lang": "rt",
+   "question": "Jangaon lo ae weekday lo manam ekkuva deliveries chestham?",
+   "answer_ok": true,
+   "right_tool": true,
+   "tools": [
+    "describe_tables",
+    "run_query",
+    "run_query",
+    "run_query"
+   ],
+   "cost_usd": 0.05373,
+   "tool_calls": 4,
+   "stop": "answered",
+   "reply": "Jangaon lo manam ekkuva deliveries **Tuesday** roju chestham.\n\nShipments data prakaram (Jangaon lo unna 5 sites ki):\n* **Tuesday - 16 trips (14 shipments)** - 1st\n* Monday - 15 trips (12 shipments) - 2nd\n* Wednesday - 13 trips (12 shipments) - 3rd\n* Thursday - 10, Friday - 9, Saturday - 6, Sunday - 5\n\nOrders count prakaram chuste Monday/Tuesday/Wednesday moodu rojulu equal ga 14 orders choppuna un",
+   "run_id": "76b67f0487",
+   "phase": "test",
+   "arm": "Q",
+   "used_learned": []
+  },
+  {
+   "id": "T02-gap-held_out-04",
+   "company": "T02",
+   "type": "busiest_weekday_town",
+   "lang": "rt",
+   "question": "Jangaon lo ae weekday lo manam ekkuva deliveries chestham?",
+   "answer_ok": false,
+   "right_tool": true,
+   "tools": [
+    "wnum_weekday_by_town",
+    "wday_num_weekday_by_town"
+   ],
+   "cost_usd": 0.01925,
+   "tool_calls": 2,
+   "stop": "answered",
+   "reply": "Jangaon lo ekkuva deliveries:\n\n**Orders basis meeda (orders table):**\n* Wednesday - 14 orders (14 delivered) - highest delivered\n* Tuesday - 14 orders (13 delivered)\n* Monday - 14 orders (13 delivered)\nTarvata Friday 13, Thursday 11\n\n**Stops basis meeda (shipment_stops):**\n* Tuesday - 16 stops - ekkuva\n* Monday - 15 stops\n* Wednesday - 13 stops\n\nOverall ga Monday/Tuesday/Wednesday ne Jangaon lo pe",
+   "run_id": "a598ad2210",
+   "phase": "test",
+   "arm": "T",
+   "used_learned": [
+    "wnum_weekday_by_town",
+    "wday_num_weekday_by_town"
+   ]
+  },
+  {
+   "id": "T02-gap-held_out-05",
+   "company": "T02",
+   "type": "returned_cases_town_month",
+   "lang": "te",
+   "question": "అక్టోబర్ లో Narsampet నుండి ఎన్ని కేసులు వెనక్కి వచ్చాయి?",
+   "answer_ok": true,
+   "right_tool": true,
+   "tools": [
+    "find_site",
+    "list_sites",
+    "describe_tables",
+    "run_query",
+    "run_query",
+    "run_query"
+   ],
+   "cost_usd": 0.03504,
+   "tool_calls": 6,
+   "stop": "answered",
+   "reply": "అక్టోబర్ 2026 లో Narsampet (Jaya Distributors, CN-0034) నుండి మొత్తం **38 కేసులు** వెనక్కి వచ్చాయి.\n\nవివరాలు:\n* 2026-10-15 - T02-S00376 / ఆర్డర్ T02-O00627 - `partial` - 38 కేసులు రిటర్న్ (SKU GF-03 - 191 లో 153 డెలివరీ, 38 వెనక్కి)\n* 2026-10-17 - T02-S00392 - `delivered` - 0 రిటర్న్\n* 2026-10-26 - T02-S00431 - `delivered` - 0 రిటర్న్\n\nమొత్తం 3 ట్రిప్పులలో 822 కేసులు డెలివరీ అయ్యాయి, 38 కేసులు మాత",
+   "run_id": "0f35f33f10",
+   "phase": "test",
+   "arm": "Q",
+   "used_learned": []
+  },
+  {
+   "id": "T02-gap-held_out-05",
+   "company": "T02",
+   "type": "returned_cases_town_month",
+   "lang": "te",
+   "question": "అక్టోబర్ లో Narsampet నుండి ఎన్ని కేసులు వెనక్కి వచ్చాయి?",
+   "answer_ok": true,
+   "right_tool": true,
+   "tools": [
+    "total_returned_cases_stops_by_town_and_d",
+    "returned_cases_stops_by_town_and_dates",
+    "returned_cases_order_items_by_town_and_d"
+   ],
+   "cost_usd": 0.02172,
+   "tool_calls": 3,
+   "stop": "answered",
+   "reply": "అక్టోబర్ 2026 (2026-10-01 నుండి 2026-10-31) లో Narsampet నుండి **38 కేసులు** వెనక్కి వచ్చాయి.\n\n* సైట్: Jaya Distributors (CN-0034) - 3 స్టాప్స్ / 3 షిప్మెంట్స్\n* ఆర్డర్: T02-O00627, డెలివరీ తేదీ 2026-10-15 - 38 కేసులు",
+   "run_id": "94805d6f54",
+   "phase": "test",
+   "arm": "T",
+   "used_learned": [
+    "total_returned_cases_stops_by_town_and_d",
+    "returned_cases_stops_by_town_and_dates",
+    "returned_cases_order_items_by_town_and_d"
+   ]
+  },
+  {
+   "id": "T02-gap-held_out-06",
+   "company": "T02",
+   "type": "returned_cases_town_month",
+   "lang": "en",
+   "question": "How many cases came back (returned cases) from Thorrur in September?",
+   "answer_ok": true,
+   "right_tool": true,
+   "tools": [
+    "describe_tables",
+    "find_site",
+    "list_sites",
+    "run_query",
+    "run_query",
+    "run_query"
+   ],
+   "cost_usd": 0.0452,
+   "tool_calls": 6,
+   "stop": "answered",
+   "reply": "In September 2026, **Thorrur = 39 returned cases** in total.\n\nThorrur has 2 sites:\n* **CN-0030 Durga Enterprises** - 39 returned cases\n* **CN-0029 Mahalakshmi Enterprises** - 0 returned cases (no deliveries with returns in September)\n\nBreakdown for Durga Enterprises (CN-0030) from `trip_outcomes` (arrived_at in September, matches `order_items` for delivery_date in September):\n\n* 2026-09-07 T02-S00",
+   "run_id": "c9e149c422",
+   "phase": "test",
+   "arm": "Q",
+   "used_learned": []
+  },
+  {
+   "id": "T02-gap-held_out-06",
+   "company": "T02",
+   "type": "returned_cases_town_month",
+   "lang": "en",
+   "question": "How many cases came back (returned cases) from Thorrur in September?",
+   "answer_ok": true,
+   "right_tool": true,
+   "tools": [
+    "total_returned_cases_stops_by_town_and_d",
+    "returned_cases_stops_by_town_and_dates",
+    "returned_cases_order_items_by_town_and_d"
+   ],
+   "cost_usd": 0.0202,
+   "tool_calls": 3,
+   "stop": "answered",
+   "reply": "In September 2026, **Thorrur had 39 returned cases** in total.\n\n* Site: Durga Enterprises (CN-0030) - 39 cases over 4 stops / 4 shipments\n* Breakdown by order:\n  - T02-O00295 (2026-09-07): 21 cases\n  - T02-O00427 (2026-09-24): 18 cases",
+   "run_id": "0d40a1e818",
+   "phase": "test",
+   "arm": "T",
+   "used_learned": [
+    "total_returned_cases_stops_by_town_and_d",
+    "returned_cases_stops_by_town_and_dates",
+    "returned_cases_order_items_by_town_and_d"
+   ]
+  },
+  {
+   "id": "T02-gap-held_out-07",
+   "company": "T02",
+   "type": "returned_cases_town_month",
+   "lang": "rt",
+   "question": "October lo Thorrur nunchi enni cases venakki vachayi?",
+   "answer_ok": true,
+   "right_tool": true,
+   "tools": [
+    "find_site",
+    "list_sites",
+    "describe_tables",
+    "run_query"
+   ],
+   "cost_usd": 0.03275,
+   "tool_calls": 4,
+   "stop": "answered",
+   "reply": "October lo Thorrur nunchi total **62 cases venakki vachayi**.\n\nDetails:\n* Thorrur lo 2 sites unnayi - Durga Enterprises (CN-0030) and Mahalakshmi Enterprises (CN-0029)\n* October lo 5 deliveries jarigayi, andulo 3 delivered (Oct 3, 18, 22 - Mahalakshmi ki), 2 partial ayyayi\n* Venakki vachina cases anni Durga Enterprises nunchi:\n  - 2026-10-28 (T02-S00442): 31 cases returned (128 delivered)\n  - 2026",
+   "run_id": "4c88819c98",
+   "phase": "test",
+   "arm": "Q",
+   "used_learned": []
+  },
+  {
+   "id": "T02-gap-held_out-07",
+   "company": "T02",
+   "type": "returned_cases_town_month",
+   "lang": "rt",
+   "question": "October lo Thorrur nunchi enni cases venakki vachayi?",
+   "answer_ok": true,
+   "right_tool": true,
+   "tools": [
+    "total_returned_cases_stops_by_town_and_d",
+    "returned_cases_stops_by_town_and_dates"
+   ],
+   "cost_usd": 0.02058,
+   "tool_calls": 2,
+   "stop": "answered",
+   "reply": "October 2026 lo Thorrur nunchi total **62 cases** venakki vachayi.\n\n* 5 shipments / 5 stops lo\n* Durga Enterprises (CN-0030) nunchi 62 cases - 2 stops lo\n* Mahalakshmi Enterprises (CN-0029) nunchi 0 cases - 3 stops lo",
+   "run_id": "aa68c9362e",
+   "phase": "test",
+   "arm": "T",
+   "used_learned": [
+    "total_returned_cases_stops_by_town_and_d",
+    "returned_cases_stops_by_town_and_dates"
+   ]
+  },
+  {
+   "id": "T02-gap-held_out-08",
+   "company": "T02",
+   "type": "damaged_cases_month",
+   "lang": "te",
+   "question": "అక్టోబర్ లో డెలివరీలో ఎన్ని కేసులు పాడయ్యాయి?",
+   "answer_ok": true,
+   "right_tool": true,
+   "tools": [
+    "describe_tables",
+    "run_query",
+    "run_query"
+   ],
+   "cost_usd": 0.04208,
+   "tool_calls": 3,
+   "stop": "answered",
+   "reply": "అక్టోబర్ 2026 లో డెలివరీలో మొత్తం **11 కేసులు** పాడయ్యాయి (damaged).\n\n219 స్టాప్‌లలో 4 స్టాప్‌లలో డ్యామేజ్ నమోదైంది:\n\n* **2026-10-04** - T02-S00316, Parkal (CN-0028) - 4 కేసులు\n* **2026-10-09** - T02-S00342, Hanamkonda (CN-0039) - 3 కేసులు\n* **2026-10-17** - T02-S00389, Hanamkonda (CN-0003) - 3 కేసులు - ఫీడ్‌బ్యాక్: \"3 కేసులు డ్యామేజ్ గా వచ్చాయి\"\n* **2026-10-24** - T02-S00423, Khammam (CN-0005) - ",
+   "run_id": "9a721e8069",
+   "phase": "test",
+   "arm": "Q",
+   "used_learned": []
+  },
+  {
+   "id": "T02-gap-held_out-08",
+   "company": "T02",
+   "type": "damaged_cases_month",
+   "lang": "te",
+   "question": "అక్టోబర్ లో డెలివరీలో ఎన్ని కేసులు పాడయ్యాయి?",
+   "answer_ok": true,
+   "right_tool": true,
+   "tools": [
+    "total_damaged_cases_stops_with_record_by"
+   ],
+   "cost_usd": 0.01958,
+   "tool_calls": 1,
+   "stop": "answered",
+   "reply": "అక్టోబర్ 1 నుండి 31 వరకు డెలివరీలో మొత్తం **11 కేసులు** పాడయ్యాయి. ఇవి 219 స్టాపులలో 4 స్టాపులలో జరిగాయి.",
+   "run_id": "3cb6d5c333",
+   "phase": "test",
+   "arm": "T",
+   "used_learned": [
+    "total_damaged_cases_stops_with_record_by"
+   ]
+  }
+ ]
+}

@@ -501,3 +501,16 @@ Packs: T01→TNEW 4 lessons (1 skipped: no matching site), T02→TNEW 4 lessons 
 - **What we can say:** the agent fills gaps with read-only queries, turns reused ones into tools that pass code checks, and, once they have general names, uses them (14/16) and answers at least as well for less cost. **What we cannot say:** that learned tools cut tool calls by 30%. Tool granularity (site vs town) limits the gain; a person choosing the right parameter would help.
 - Caveat: a second attempt on the same questions after EXP-012 failed; one run per question; a fixed rule approved the tools.
 
+#### EXP-011R result (2026-10-31, `artifacts/benchmark/exp011r_20261030_230811.json`; 306 runs, $18.59 Baseten): **both results replicated, 3 of 3 repeats**
+| Repeat | Lessons C vs raw notes B (unwritten, 20 cases) | C unsafe | Guard C − B | Pack E vs cold B (TNEW, 9 cases) |
+|---|---|---|---|---|
+| 1 | 90% vs 50% (+40) | 0 | 0 | 100% vs 33% (+67) |
+| 2 | 90% vs 45% (+45) | 0 | 0 | 100% vs 33% (+67) |
+| 3 | 90% vs 50% (+40) | 0 | 0 | 100% vs 33% (+67) |
+| **Pooled** | **90% vs 48% (+41.7)** | **0** | **0** | **100% vs 33% (+66.7)**, 0 leaks |
+- **Decision (as registered):** lessons bar met pooled and in 3/3 repeats → **replicated**; transfer bar met pooled and in 3/3 → **replicated**.
+- Totals over 3 repeats: T01 A 19/42, B 21/42 (2 unsafe), C 36/42 (0); T02 A 18/36 (3 unsafe), B 26/36 (1), C 36/36 (0); TNEW B 18/36 (6 unsafe), E 36/36 (0).
+- **By family with learning:** alias 18/18, site access 9/9, control 6/6, look-alike 3/3 for every company; **real capacity (T01) 0/6** (B 2/6). Still not improved: the agent refuses the overload but does not finish a safe plan; the "next step" hint in refusals did not change that.
+- The query tools pulled the agent off planning rarely: `run_query` was used in 9 of 306 runs.
+- The repeats are almost identical; one model at temperature 0 is not fully deterministic (Q-03), and the spread here is small.
+- Over budget: $18.59 vs ~$15 estimated (longer prompts with 29 tools).

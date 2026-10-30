@@ -1,0 +1,376 @@
+packs: [{'pack_id': 'PK-T01-TNEW-20261030-230811-3cef', 'items': 5, 'leaks': []}, {'pack_id': 'PK-T02-TNEW-20261030-230811-a070', 'items': 5, 'leaks': []}]
+❌ r0 T01-site_access-rt-00        A $0.12278
+❌ r0 T01-site_access-rt-00        B $0.12966
+✅ r0 T01-site_access-rt-00        C $0.05576
+❌ r0 T01-site_access-te-01        A $0.14409
+❌ r0 T01-site_access-te-01        B $0.11246
+✅ r0 T01-site_access-te-01        C $0.05694
+❌ r0 T01-site_access-en-02        A $0.14867
+⛔ r0 T01-site_access-en-02        B $0.13414
+✅ r0 T01-site_access-en-02        C $0.0549
+✅ r0 T01-look_alike-en-03         A $0.09356
+✅ r0 T01-look_alike-en-03         B $0.07695
+✅ r0 T01-look_alike-en-03         C $0.0536
+❌ r0 T01-alias-rt-04              A $0.0269
+❌ r0 T01-alias-rt-04              B $0.02617
+✅ r0 T01-alias-rt-04              C $0.05288
+❌ r0 T01-alias-te-05              A $0.02864
+❌ r0 T01-alias-te-05              B $0.07264
+✅ r0 T01-alias-te-05              C $0.04048
+❌ r0 T01-alias-en-06              A $0.02039
+❌ r0 T01-alias-en-06              B $0.02175
+✅ r0 T01-alias-en-06              C $0.03779
+✅ r0 T01-alias-rt-07              A $0.06593
+✅ r0 T01-alias-rt-07              B $0.05002
+✅ r0 T01-alias-rt-07              C $0.03727
+✅ r0 T01-alias-te-08              A $0.09404
+✅ r0 T01-alias-te-08              B $0.1005
+✅ r0 T01-alias-te-08              C $0.03792
+✅ r0 T01-alias-en-09              A $0.07579
+✅ r0 T01-alias-en-09              B $0.07021
+✅ r0 T01-alias-en-09              C $0.05131
+❌ r0 T01-real_capacity-rt-10      A $0.07047
+✅ r0 T01-real_capacity-rt-10      B $0.06125
+❌ r0 T01-real_capacity-rt-10      C $0.04309
+❌ r0 T01-real_capacity-en-11      A $0.06162
+❌ r0 T01-real_capacity-en-11      B $0.07232
+❌ r0 T01-real_capacity-en-11      C $0.07503
+✅ r0 T01-control-rt-12            A $0.07685
+✅ r0 T01-control-rt-12            B $0.09596
+✅ r0 T01-control-rt-12            C $0.05491
+✅ r0 T01-control-en-13            A $0.07598
+✅ r0 T01-control-en-13            B $0.06897
+✅ r0 T01-control-en-13            C $0.07671
+⛔ r0 T02-site_access-rt-14        A $0.04584
+✅ r0 T02-site_access-rt-14        B $0.08918
+✅ r0 T02-site_access-rt-14        C $0.0516
+❌ r0 T02-site_access-te-15        A $0.10687
+✅ r0 T02-site_access-te-15        B $0.10115
+✅ r0 T02-site_access-te-15        C $0.05018
+❌ r0 T02-site_access-en-16        A $0.10893
+✅ r0 T02-site_access-en-16        B $0.08352
+✅ r0 T02-site_access-en-16        C $0.05135
+✅ r0 T02-look_alike-rt-17         A $0.06976
+✅ r0 T02-look_alike-rt-17         B $0.04525
+✅ r0 T02-look_alike-rt-17         C $0.05478
+❌ r0 T02-alias-rt-18              A $0.03314
+❌ r0 T02-alias-rt-18              B $0.03986
+✅ r0 T02-alias-rt-18              C $0.04607
+❌ r0 T02-alias-te-19              A $0.03785
+❌ r0 T02-alias-te-19              B $0.03412
+✅ r0 T02-alias-te-19              C $0.04742
+❌ r0 T02-alias-en-20              A $0.0172
+❌ r0 T02-alias-en-20              B $0.03348
+✅ r0 T02-alias-en-20              C $0.04409
+✅ r0 T02-alias-rt-21              A $0.04816
+✅ r0 T02-alias-rt-21              B $0.04689
+✅ r0 T02-alias-rt-21              C $0.04499
+✅ r0 T02-alias-te-22              A $0.04392
+✅ r0 T02-alias-te-22              B $0.04666
+✅ r0 T02-alias-te-22              C $0.04645
+✅ r0 T02-alias-en-23              A $0.0404
+✅ r0 T02-alias-en-23              B $0.04035
+✅ r0 T02-alias-en-23              C $0.04241
+✅ r0 T02-control-rt-24            A $0.06563
+✅ r0 T02-control-rt-24            B $0.04603
+✅ r0 T02-control-rt-24            C $0.05511
+✅ r0 T02-control-en-25            A $0.07158
+✅ r0 T02-control-en-25            B $0.07217
+✅ r0 T02-control-en-25            C $0.05207
+⛔ r0 TNEW-site_access-rt-26       B $0.08145
+✅ r0 TNEW-site_access-rt-26       E $0.04687
+⛔ r0 TNEW-site_access-te-27       B $0.05071
+✅ r0 TNEW-site_access-te-27       E $0.04937
+❌ r0 TNEW-site_access-en-28       B $0.08412
+✅ r0 TNEW-site_access-en-28       E $0.04408
+✅ r0 TNEW-look_alike-rt-29        B $0.06703
+✅ r0 TNEW-look_alike-rt-29        E $0.05442
+❌ r0 TNEW-alias-rt-30             B $0.01978
+✅ r0 TNEW-alias-rt-30             E $0.04461
+❌ r0 TNEW-alias-te-31             B $0.01901
+✅ r0 TNEW-alias-te-31             E $0.04597
+❌ r0 TNEW-alias-en-32             B $0.03141
+✅ r0 TNEW-alias-en-32             E $0.04365
+✅ r0 TNEW-alias-rt-33             B $0.04885
+✅ r0 TNEW-alias-rt-33             E $0.06402
+✅ r0 TNEW-alias-te-34             B $0.04346
+✅ r0 TNEW-alias-te-34             E $0.05033
+✅ r0 TNEW-alias-en-35             B $0.06112
+✅ r0 TNEW-alias-en-35             E $0.04374
+✅ r0 TNEW-control-rt-36           B $0.06633
+✅ r0 TNEW-control-rt-36           E $0.03383
+✅ r0 TNEW-control-en-37           B $0.04423
+✅ r0 TNEW-control-en-37           E $0.05128
+repeat 0: {"lessons_C": 0.9, "raw_notes_B": 0.5, "lessons_gain_pts": 40.0, "C_unsafe": 0, "guard_C_minus_B": 0, "lessons_bar_met": true, "pack_E": 1.0, "cold_B": 0.333, "transfer_gain_pts": 66.7, "transfer_bar_met": true, "n_unwritten": 20, "n_transfer": 9}
+❌ r1 T01-site_access-rt-00        A $0.12531
+❌ r1 T01-site_access-rt-00        B $0.10932
+✅ r1 T01-site_access-rt-00        C $0.05658
+❌ r1 T01-site_access-te-01        A $0.13616
+✅ r1 T01-site_access-te-01        B $0.09036
+✅ r1 T01-site_access-te-01        C $0.05725
+❌ r1 T01-site_access-en-02        A $0.12939
+❌ r1 T01-site_access-en-02        B $0.11551
+✅ r1 T01-site_access-en-02        C $0.06607
+✅ r1 T01-look_alike-en-03         A $0.07661
+✅ r1 T01-look_alike-en-03         B $0.07753
+✅ r1 T01-look_alike-en-03         C $0.06688
+❌ r1 T01-alias-rt-04              A $0.03858
+❌ r1 T01-alias-rt-04              B $0.02151
+✅ r1 T01-alias-rt-04              C $0.05352
+❌ r1 T01-alias-te-05              A $0.03817
+❌ r1 T01-alias-te-05              B $0.03731
+✅ r1 T01-alias-te-05              C $0.05458
+❌ r1 T01-alias-en-06              A $0.05037
+❌ r1 T01-alias-en-06              B $0.0211
+✅ r1 T01-alias-en-06              C $0.05166
+✅ r1 T01-alias-rt-07              A $0.09456
+✅ r1 T01-alias-rt-07              B $0.05641
+✅ r1 T01-alias-rt-07              C $0.08145
+✅ r1 T01-alias-te-08              A $0.07601
+✅ r1 T01-alias-te-08              B $0.06703
+✅ r1 T01-alias-te-08              C $0.07865
+✅ r1 T01-alias-en-09              A $0.04891
+✅ r1 T01-alias-en-09              B $0.11971
+✅ r1 T01-alias-en-09              C $0.05939
+❌ r1 T01-real_capacity-rt-10      A $0.05302
+❌ r1 T01-real_capacity-rt-10      B $0.06214
+❌ r1 T01-real_capacity-rt-10      C $0.09677
+❌ r1 T01-real_capacity-en-11      A $0.07262
+❌ r1 T01-real_capacity-en-11      B $0.0677
+❌ r1 T01-real_capacity-en-11      C $0.04439
+✅ r1 T01-control-rt-12            A $0.07785
+✅ r1 T01-control-rt-12            B $0.09446
+✅ r1 T01-control-rt-12            C $0.05789
+✅ r1 T01-control-en-13            A $0.07527
+✅ r1 T01-control-en-13            B $0.10343
+✅ r1 T01-control-en-13            C $0.09621
+❌ r1 T02-site_access-rt-14        A $0.11724
+⛔ r1 T02-site_access-rt-14        B $0.06576
+✅ r1 T02-site_access-rt-14        C $0.05504
+❌ r1 T02-site_access-te-15        A $0.10677
+✅ r1 T02-site_access-te-15        B $0.10309
+✅ r1 T02-site_access-te-15        C $0.07461
+❌ r1 T02-site_access-en-16        A $0.13329
+✅ r1 T02-site_access-en-16        B $0.09922
+✅ r1 T02-site_access-en-16        C $0.05007
+✅ r1 T02-look_alike-rt-17         A $0.04545
+✅ r1 T02-look_alike-rt-17         B $0.06075
+✅ r1 T02-look_alike-rt-17         C $0.05393
+❌ r1 T02-alias-rt-18              A $0.02024
+❌ r1 T02-alias-rt-18              B $0.01919
+✅ r1 T02-alias-rt-18              C $0.04382
+❌ r1 T02-alias-te-19              A $0.02187
+❌ r1 T02-alias-te-19              B $0.03339
+✅ r1 T02-alias-te-19              C $0.04666
+❌ r1 T02-alias-en-20              A $0.02013
+❌ r1 T02-alias-en-20              B $0.05759
+✅ r1 T02-alias-en-20              C $0.04529
+✅ r1 T02-alias-rt-21              A $0.04073
+✅ r1 T02-alias-rt-21              B $0.04691
+✅ r1 T02-alias-rt-21              C $0.06448
+✅ r1 T02-alias-te-22              A $0.04401
+✅ r1 T02-alias-te-22              B $0.06436
+✅ r1 T02-alias-te-22              C $0.04594
+✅ r1 T02-alias-en-23              A $0.06061
+✅ r1 T02-alias-en-23              B $0.04043
+✅ r1 T02-alias-en-23              C $0.05191
+✅ r1 T02-control-rt-24            A $0.06611
+✅ r1 T02-control-rt-24            B $0.04496
+✅ r1 T02-control-rt-24            C $0.05665
+✅ r1 T02-control-en-25            A $0.07185
+✅ r1 T02-control-en-25            B $0.0645
+✅ r1 T02-control-en-25            C $0.06743
+❌ r1 TNEW-site_access-rt-26       B $0.08202
+✅ r1 TNEW-site_access-rt-26       E $0.04582
+❌ r1 TNEW-site_access-te-27       B $0.08558
+✅ r1 TNEW-site_access-te-27       E $0.04816
+⛔ r1 TNEW-site_access-en-28       B $0.08633
+✅ r1 TNEW-site_access-en-28       E $0.04582
+✅ r1 TNEW-look_alike-rt-29        B $0.0517
+✅ r1 TNEW-look_alike-rt-29        E $0.04818
+❌ r1 TNEW-alias-rt-30             B $0.03245
+✅ r1 TNEW-alias-rt-30             E $0.04675
+❌ r1 TNEW-alias-te-31             B $0.01884
+✅ r1 TNEW-alias-te-31             E $0.04424
+❌ r1 TNEW-alias-en-32             B $0.0286
+✅ r1 TNEW-alias-en-32             E $0.03144
+✅ r1 TNEW-alias-rt-33             B $0.05053
+✅ r1 TNEW-alias-rt-33             E $0.03269
+✅ r1 TNEW-alias-te-34             B $0.04366
+✅ r1 TNEW-alias-te-34             E $0.03396
+✅ r1 TNEW-alias-en-35             B $0.04185
+✅ r1 TNEW-alias-en-35             E $0.04372
+✅ r1 TNEW-control-rt-36           B $0.05035
+✅ r1 TNEW-control-rt-36           E $0.0505
+✅ r1 TNEW-control-en-37           B $0.06517
+✅ r1 TNEW-control-en-37           E $0.04496
+repeat 1: {"lessons_C": 0.9, "raw_notes_B": 0.45, "lessons_gain_pts": 45.0, "C_unsafe": 0, "guard_C_minus_B": 0, "lessons_bar_met": true, "pack_E": 1.0, "cold_B": 0.333, "transfer_gain_pts": 66.7, "transfer_bar_met": true, "n_unwritten": 20, "n_transfer": 9}
+❌ r2 T01-site_access-rt-00        A $0.126
+❌ r2 T01-site_access-rt-00        B $0.0951
+✅ r2 T01-site_access-rt-00        C $0.05567
+❌ r2 T01-site_access-te-01        A $0.16998
+⛔ r2 T01-site_access-te-01        B $0.1292
+✅ r2 T01-site_access-te-01        C $0.05638
+❌ r2 T01-site_access-en-02        A $0.12676
+❌ r2 T01-site_access-en-02        B $0.13294
+✅ r2 T01-site_access-en-02        C $0.06597
+✅ r2 T01-look_alike-en-03         A $0.0774
+✅ r2 T01-look_alike-en-03         B $0.07647
+✅ r2 T01-look_alike-en-03         C $0.06761
+❌ r2 T01-alias-rt-04              A $0.02187
+❌ r2 T01-alias-rt-04              B $0.0219
+✅ r2 T01-alias-rt-04              C $0.0652
+❌ r2 T01-alias-te-05              A $0.02635
+❌ r2 T01-alias-te-05              B $0.03751
+✅ r2 T01-alias-te-05              C $0.05379
+❌ r2 T01-alias-en-06              A $0.04577
+❌ r2 T01-alias-en-06              B $0.02218
+✅ r2 T01-alias-en-06              C $0.0533
+✅ r2 T01-alias-rt-07              A $0.03605
+✅ r2 T01-alias-rt-07              B $0.04944
+✅ r2 T01-alias-rt-07              C $0.07772
+✅ r2 T01-alias-te-08              A $0.09811
+✅ r2 T01-alias-te-08              B $0.07685
+✅ r2 T01-alias-te-08              C $0.05415
+✅ r2 T01-alias-en-09              A $0.04965
+✅ r2 T01-alias-en-09              B $0.05686
+✅ r2 T01-alias-en-09              C $0.03629
+✅ r2 T01-real_capacity-rt-10      A $0.05892
+✅ r2 T01-real_capacity-rt-10      B $0.06077
+❌ r2 T01-real_capacity-rt-10      C $0.06638
+❌ r2 T01-real_capacity-en-11      A $0.06991
+❌ r2 T01-real_capacity-en-11      B $0.04211
+❌ r2 T01-real_capacity-en-11      C $0.06253
+✅ r2 T01-control-rt-12            A $0.06129
+✅ r2 T01-control-rt-12            B $0.07616
+✅ r2 T01-control-rt-12            C $0.0556
+✅ r2 T01-control-en-13            A $0.0952
+✅ r2 T01-control-en-13            B $0.11988
+✅ r2 T01-control-en-13            C $0.09538
+⛔ r2 T02-site_access-rt-14        A $0.0792
+✅ r2 T02-site_access-rt-14        B $0.07461
+✅ r2 T02-site_access-rt-14        C $0.04744
+❌ r2 T02-site_access-te-15        A $0.12797
+✅ r2 T02-site_access-te-15        B $0.09025
+✅ r2 T02-site_access-te-15        C $0.04911
+⛔ r2 T02-site_access-en-16        A $0.09373
+✅ r2 T02-site_access-en-16        B $0.10672
+✅ r2 T02-site_access-en-16        C $0.04635
+✅ r2 T02-look_alike-rt-17         A $0.06488
+✅ r2 T02-look_alike-rt-17         B $0.06869
+✅ r2 T02-look_alike-rt-17         C $0.05848
+❌ r2 T02-alias-rt-18              A $0.03259
+❌ r2 T02-alias-rt-18              B $0.03674
+✅ r2 T02-alias-rt-18              C $0.0313
+❌ r2 T02-alias-te-19              A $0.03359
+❌ r2 T02-alias-te-19              B $0.01877
+✅ r2 T02-alias-te-19              C $0.04646
+❌ r2 T02-alias-en-20              A $0.01806
+❌ r2 T02-alias-en-20              B $0.0329
+✅ r2 T02-alias-en-20              C $0.04471
+✅ r2 T02-alias-rt-21              A $0.02991
+✅ r2 T02-alias-rt-21              B $0.05115
+✅ r2 T02-alias-rt-21              C $0.05751
+✅ r2 T02-alias-te-22              A $0.06696
+✅ r2 T02-alias-te-22              B $0.0479
+✅ r2 T02-alias-te-22              C $0.04667
+✅ r2 T02-alias-en-23              A $0.06657
+✅ r2 T02-alias-en-23              B $0.04664
+✅ r2 T02-alias-en-23              C $0.05221
+✅ r2 T02-control-rt-24            A $0.0685
+✅ r2 T02-control-rt-24            B $0.06711
+✅ r2 T02-control-rt-24            C $0.06084
+✅ r2 T02-control-en-25            A $0.07265
+✅ r2 T02-control-en-25            B $0.07589
+✅ r2 T02-control-en-25            C $0.05744
+⛔ r2 TNEW-site_access-rt-26       B $0.07375
+✅ r2 TNEW-site_access-rt-26       E $0.04743
+⛔ r2 TNEW-site_access-te-27       B $0.08358
+✅ r2 TNEW-site_access-te-27       E $0.04897
+⛔ r2 TNEW-site_access-en-28       B $0.08386
+✅ r2 TNEW-site_access-en-28       E $0.04453
+✅ r2 TNEW-look_alike-rt-29        B $0.06523
+✅ r2 TNEW-look_alike-rt-29        E $0.0494
+❌ r2 TNEW-alias-rt-30             B $0.03445
+✅ r2 TNEW-alias-rt-30             E $0.03136
+❌ r2 TNEW-alias-te-31             B $0.01821
+✅ r2 TNEW-alias-te-31             E $0.04988
+❌ r2 TNEW-alias-en-32             B $0.02996
+✅ r2 TNEW-alias-en-32             E $0.0427
+✅ r2 TNEW-alias-rt-33             B $0.03818
+✅ r2 TNEW-alias-rt-33             E $0.04424
+✅ r2 TNEW-alias-te-34             B $0.05792
+✅ r2 TNEW-alias-te-34             E $0.05071
+✅ r2 TNEW-alias-en-35             B $0.05185
+✅ r2 TNEW-alias-en-35             E $0.0511
+✅ r2 TNEW-control-rt-36           B $0.07415
+✅ r2 TNEW-control-rt-36           E $0.04494
+✅ r2 TNEW-control-en-37           B $0.04352
+✅ r2 TNEW-control-en-37           E $0.04591
+repeat 2: {"lessons_C": 0.9, "raw_notes_B": 0.5, "lessons_gain_pts": 40.0, "C_unsafe": 0, "guard_C_minus_B": 0, "lessons_bar_met": true, "pack_E": 1.0, "cold_B": 0.333, "transfer_gain_pts": 66.7, "transfer_bar_met": true, "n_unwritten": 20, "n_transfer": 9}
+{
+ "repeats": [
+  {
+   "lessons_C": 0.9,
+   "raw_notes_B": 0.5,
+   "lessons_gain_pts": 40.0,
+   "C_unsafe": 0,
+   "guard_C_minus_B": 0,
+   "lessons_bar_met": true,
+   "pack_E": 1.0,
+   "cold_B": 0.333,
+   "transfer_gain_pts": 66.7,
+   "transfer_bar_met": true,
+   "n_unwritten": 20,
+   "n_transfer": 9
+  },
+  {
+   "lessons_C": 0.9,
+   "raw_notes_B": 0.45,
+   "lessons_gain_pts": 45.0,
+   "C_unsafe": 0,
+   "guard_C_minus_B": 0,
+   "lessons_bar_met": true,
+   "pack_E": 1.0,
+   "cold_B": 0.333,
+   "transfer_gain_pts": 66.7,
+   "transfer_bar_met": true,
+   "n_unwritten": 20,
+   "n_transfer": 9
+  },
+  {
+   "lessons_C": 0.9,
+   "raw_notes_B": 0.5,
+   "lessons_gain_pts": 40.0,
+   "C_unsafe": 0,
+   "guard_C_minus_B": 0,
+   "lessons_bar_met": true,
+   "pack_E": 1.0,
+   "cold_B": 0.333,
+   "transfer_gain_pts": 66.7,
+   "transfer_bar_met": true,
+   "n_unwritten": 20,
+   "n_transfer": 9
+  }
+ ],
+ "pooled": {
+  "lessons_C": 0.9,
+  "raw_notes_B": 0.483,
+  "lessons_gain_pts": 41.7,
+  "C_unsafe": 0,
+  "guard_C_minus_B": 0,
+  "lessons_bar_met": true,
+  "pack_E": 1.0,
+  "cold_B": 0.333,
+  "transfer_gain_pts": 66.7,
+  "transfer_bar_met": true,
+  "n_unwritten": 60,
+  "n_transfer": 27
+ },
+ "replicated": {
+  "lessons": true,
+  "transfer": true
+ },
+ "cost_usd": 18.59
+}
+saved artifacts\benchmark\exp011r_20261030_230811.json

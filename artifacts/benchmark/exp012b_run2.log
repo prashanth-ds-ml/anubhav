@@ -1,0 +1,159 @@
+kept 16 test rows of ['T01'] from artifacts/benchmark/exp012b_20261030_232911_rows.jsonl
+learn T02 ✅ worst_ontime_weekday       rt calls=8 $0.09526
+learn T02 ✅ worst_ontime_weekday       te calls=12 $0.0996
+learn T02 ✅ busiest_weekday_town       en calls=2 $0.03119
+learn T02 ✅ busiest_weekday_town       rt calls=4 $0.05508
+learn T02 ✅ busiest_weekday_town       te calls=6 $0.07337
+learn T02 ✅ returned_cases_town_month  en calls=6 $0.04644
+learn T02 ✅ returned_cases_town_month  rt calls=6 $0.06763
+learn T02 ✅ returned_cases_town_month  te calls=6 $0.0585
+learn T02 ✅ damaged_cases_month        en calls=2 $0.03022
+learn T02 ✅ damaged_cases_month        rt calls=3 $0.04034
+T02: 6 tools approved by the fixed rule: ['total_returned_cases_stops_by_town_and_d', 'returned_cases_order_items_by_town_and_d', 'returned_cases_stops_by_town_and_dates', 'wday_num_weekday_by_town', 'wnum_weekday_by_town', 'total_damaged_cases_stops_with_record_by']
+test  T02 Q ✅ worst_ontime_weekday       rt calls=3 $0.04377
+test  T02 T ✅ worst_ontime_weekday       rt calls=7 $0.09127
+test  T02 Q ✅ busiest_weekday_town       te calls=6 $0.03683
+test  T02 T ✅ busiest_weekday_town       te calls=2 $0.019
+test  T02 Q ✅ busiest_weekday_town       en calls=2 $0.03048
+test  T02 T ✅ busiest_weekday_town       en calls=1 $0.01789
+test  T02 Q ✅ busiest_weekday_town       rt calls=4 $0.05373
+test  T02 T ❌ busiest_weekday_town       rt calls=2 $0.01925
+test  T02 Q ✅ returned_cases_town_month  te calls=6 $0.03504
+test  T02 T ✅ returned_cases_town_month  te calls=3 $0.02172
+test  T02 Q ✅ returned_cases_town_month  en calls=6 $0.0452
+test  T02 T ✅ returned_cases_town_month  en calls=3 $0.0202
+test  T02 Q ✅ returned_cases_town_month  rt calls=4 $0.03275
+test  T02 T ✅ returned_cases_town_month  rt calls=2 $0.02058
+test  T02 Q ✅ damaged_cases_month        te calls=3 $0.04208
+test  T02 T ✅ damaged_cases_month        te calls=1 $0.01958
+{
+ "learned": {
+  "T01": [
+   {
+    "name": "total_returned_cases_stops_by_site_id_an",
+    "params": [
+     "site_id",
+     "date_from",
+     "date_to"
+    ],
+    "from_requests": 5
+   },
+   {
+    "name": "rows_by_site_id_and_dates",
+    "params": [
+     "site_id",
+     "date_from",
+     "date_to"
+    ],
+    "from_requests": 3
+   },
+   {
+    "name": "total_damaged_cases_stops_with_record_by",
+    "params": [
+     "date_from",
+     "date_to"
+    ],
+    "from_requests": 3
+   },
+   {
+    "name": "rows_by_town",
+    "params": [
+     "town"
+    ],
+    "from_requests": 2
+   },
+   {
+    "name": "rows_by_dates",
+    "params": [
+     "date_from",
+     "date_to"
+    ],
+    "from_requests": 2
+   }
+  ],
+  "T02": [
+   {
+    "name": "total_returned_cases_stops_by_town_and_d",
+    "params": [
+     "town",
+     "date_from",
+     "date_to"
+    ],
+    "from_requests": 3
+   },
+   {
+    "name": "returned_cases_order_items_by_town_and_d",
+    "params": [
+     "town",
+     "date_from",
+     "date_to"
+    ],
+    "from_requests": 3
+   },
+   {
+    "name": "returned_cases_stops_by_town_and_dates",
+    "params": [
+     "town",
+     "date_from",
+     "date_to"
+    ],
+    "from_requests": 3
+   },
+   {
+    "name": "wday_num_weekday_by_town",
+    "params": [
+     "town"
+    ],
+    "from_requests": 2
+   },
+   {
+    "name": "wnum_weekday_by_town",
+    "params": [
+     "town"
+    ],
+    "from_requests": 2
+   },
+   {
+    "name": "total_damaged_cases_stops_with_record_by",
+    "params": [
+     "date_from",
+     "date_to"
+    ],
+    "from_requests": 2
+   }
+  ]
+ },
+ "learn": {
+  "n": 10,
+  "answer_ok": 1.0,
+  "right": 10,
+  "mean_tool_calls": 5.5,
+  "mean_cost": 0.0598,
+  "cost_usd": 0.598
+ },
+ "arms": {
+  "Q": {
+   "n": 16,
+   "answer_ok": 0.875,
+   "right": 14,
+   "mean_tool_calls": 4.5,
+   "mean_cost": 0.0494,
+   "cost_usd": 0.791
+  },
+  "T": {
+   "n": 16,
+   "answer_ok": 0.938,
+   "right": 15,
+   "mean_tool_calls": 3.62,
+   "mean_cost": 0.0375,
+   "cost_usd": 0.6
+  }
+ },
+ "decision": {
+  "R2_learned_tools_cheaper_not_worse": false,
+  "R2b_learned_tools_used": true,
+  "learned_tool_used_in": "14/16"
+ },
+ "cost_usd": 1.989
+}
+saved artifacts\benchmark\exp012b_20261030_233756.json

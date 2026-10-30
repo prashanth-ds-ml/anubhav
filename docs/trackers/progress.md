@@ -43,7 +43,7 @@ History before Oct 29 (order-desk plan): `archive/progress_order_desk.md`
 | FR-16 | Reject regressing patches | 4 | ✅ gate tests |
 | FR-17 | Tenant and role enforcement | 2 | ✅ tests |
 | FR-18 | Prompt-injection handling | 2, 5 | ✅ data marked untrusted; adversarial suite (injected notes) passes |
-| FR-19 | Four-arm controlled evaluation | 5 | 🟨 arm D (ablation) not run; EXP-011 on unseen world 5279: both pre-registered bars met (+55 pts lessons vs raw notes, +67 pts pack), 0 unsafe with learning |
+| FR-19 | Four-arm controlled evaluation | 5 | 🟨 arm D (ablation) not run; EXP-011R replicated EXP-011 3/3 on the shipped version; EXP-011 on unseen world 5279: both pre-registered bars met (+55 pts lessons vs raw notes, +67 pts pack), 0 unsafe with learning |
 | FR-20 | Held-out contamination protection | 5 | ✅ fresh unseen-seed worlds (4111, 5279); held-out towns in practice; files frozen by hash before model calls |
 | FR-21 | Hosted / replay mode | 6 | ✅ deployed https://anubhav-metahackathon.streamlit.app/; was 🟨: replay bundle + world from seed; fresh clone checked (8 pages, no keys); per-visitor state in hosted mode (D-038, AppTest); deploy pending (docs/deploy.md) |
 | FR-22 | Spend caps and secrets | 6 | ✅ keys only from env/secrets; live mode off without keys (buttons disabled, say why); 8 live runs per session and 60 per day for the app, voice included (D-038) |
@@ -71,5 +71,5 @@ History before Oct 29 (order-desk plan): `archive/progress_order_desk.md`
 | E deploy + recorded demo runs | Nov 2 | 🟨 deployed; recordings left |
 | F honest docs | Nov 2 | 🟨 README pass done; trackers clean-up left |
 | H slim onboarding | Oct 31 | ✅ (done Oct 30) |
-| J EXP-011R + EXP-012 (pre-registered) | Nov 2 | 🟨 running (started Oct 30) |
+| J EXP-011R + EXP-012 (pre-registered) | Nov 2 | ✅ EXP-011R replicated 3/3; EXP-012 rules not met; EXP-012b: learned tools used 14/16, −20% calls (bar −30% not met) |
 | G video, README, submit | Nov 3–4 | ⬜ |

@@ -19,7 +19,7 @@ Every shot is a real run. Replays are labelled "replay" on screen (the app does 
 | 1:25–1:40 | Fixed | Workbench, lessons on: same request → the 22 ft truck, the lesson cited | "Same request, same model: now it's safe." | replay (T01, lessons) |
 | 1:40–2:15 | Failure 2 → a tool it made itself | Workbench "New tool": "Hanamkonda lo ae weekday lo ekkuva deliveries?" → 5 calls, writes SQL, hedges. **New tools**: the query it reused for other towns, checks pass (same answers, 5 held-out towns) → Approve. Ask again → **1 call, Saturday** | "No tool answers this, so it writes a read-only query. It has needed that query before, so code checks it on towns it never saw, and I approve it as a tool. Next time: one call, a quarter of the cost, and the right answer." | replays: `demo:new-tool-before` ($0.066, 5 calls) and `live:c5-learned-tool` ($0.016, 1 call) |
 | 2:15–2:30 | The nightly review | **Logs**: "Run the nightly review" → tool use → Tuning, reused queries → New tools, stated facts → lesson proposals; then one run as Plan / Act / Observe / Code check | "Every night it reads its own runs and sends each problem to the right fix. Nothing changes without a person. And every step is in the logs." | Logs page |
-| 2:30–2:45 | Proof | **Proof & audit**: EXP-011 chart; one line for EXP-011R and EXP-012 | "On a world it had never seen: lessons beat searching raw notes, 35 to 90 percent; a brand-new company, 33 to 100 with a shared pack, and zero private details leaked." (+ EXP-011R / EXP-012 lines once known) | `artifacts/benchmark/exp011_*.json`, EXP-011R, EXP-012 |
+| 2:30–2:45 | Proof | **Proof & audit**: EXP-011 chart; one line for EXP-011R and EXP-012 | "On a world it had never seen, run three times on this exact version: lessons beat searching raw notes, 48 to 90 percent; a brand-new company goes from 33 to 100 with a shared pack, zero unsafe drafts, zero private details leaked. And the tools it learns: used in 14 of 16 new questions, a quarter cheaper." | `artifacts/benchmark/exp011_*.json`, EXP-011R, EXP-012 |
 | 2:45–2:50 | Close | Repo + hosted link; "Same model. Verified experience. Safer plans." | "Built during the hackathon on Muse Spark Open, Muse Spark 1.3 and Muse Voice Transcribe." | README |
 
 **Also say once, honestly:** the data is synthetic (allowed; it's how we can score against hidden truth), and the app is newer than the EXP-011 measurement (EXP-011R covers that).
@@ -30,7 +30,7 @@ Every shot is a real run. Replays are labelled "replay" on screen (the app does 
 - [x] A genuine failure: the cold 32 ft draft; the 5-call hedged answer before the tool existed (real, not staged)
 - [x] New-tool before/after replays in the hosted bundle (app test covers the flow)
 - [x] Logs page with "Meta models at work", run timeline, nightly review
-- [ ] EXP-011R and EXP-012 lines for the proof beat (running)
+- [x] EXP-011R and EXP-012b lines for the proof beat
 - [x] Architecture diagram (README mermaid)
 - [ ] English subtitles for every Telugu line
 - [ ] Every replayed segment labelled "replay" (the app shows it on the run header)

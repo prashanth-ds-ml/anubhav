@@ -1,0 +1,46 @@
+learn T01 ✅ worst_ontime_weekday       rt calls=4 $0.06513
+learn T01 ✅ worst_ontime_weekday       te calls=6 $0.05735
+learn T01 ✅ busiest_weekday_town       en calls=8 $0.0616
+learn T01 ❌ busiest_weekday_town       rt calls=4 $0.05335
+learn T01 ❌ busiest_weekday_town       te calls=2 $0.03289
+learn T01 ✅ returned_cases_town_month  en calls=7 $0.05754
+learn T01 ✅ returned_cases_town_month  rt calls=5 $0.06453
+learn T01 ✅ returned_cases_town_month  te calls=5 $0.04372
+learn T01 ✅ damaged_cases_month        en calls=4 $0.05307
+learn T01 ✅ damaged_cases_month        rt calls=3 $0.03988
+T01: 5 tools approved by the fixed rule: ['total_returned_cases_stops_by_site_id_an', 'rows_by_site_id_and_dates', 'total_damaged_cases_stops_with_record_by', 'rows_by_town', 'rows_by_dates']
+test  T01 Q ✅ worst_ontime_weekday       rt calls=5 $0.07287
+test  T01 T ✅ worst_ontime_weekday       rt calls=6 $0.11968
+test  T01 Q ❌ busiest_weekday_town       te calls=3 $0.03316
+test  T01 T ✅ busiest_weekday_town       te calls=3 $0.04543
+test  T01 Q ✅ busiest_weekday_town       en calls=5 $0.06518
+test  T01 T ✅ busiest_weekday_town       en calls=3 $0.04401
+test  T01 Q ❌ busiest_weekday_town       rt calls=3 $0.04405
+test  T01 T ✅ busiest_weekday_town       rt calls=3 $0.04355
+test  T01 Q ✅ returned_cases_town_month  te calls=5 $0.0649
+test  T01 T ✅ returned_cases_town_month  te calls=7 $0.03325
+test  T01 Q ✅ returned_cases_town_month  en calls=8 $0.07369
+test  T01 T ✅ returned_cases_town_month  en calls=7 $0.03199
+test  T01 Q ✅ returned_cases_town_month  rt calls=6 $0.07562
+test  T01 T ✅ returned_cases_town_month  rt calls=7 $0.0336
+test  T01 Q ✅ damaged_cases_month        te calls=3 $0.04162
+test  T01 T ✅ damaged_cases_month        te calls=1 $0.01922
+learn T02 ✅ worst_ontime_weekday       rt calls=6 $0.09407
+learn T02 ❌ worst_ontime_weekday       te calls=7 $0.12353
+learn T02 ✅ busiest_weekday_town       en calls=5 $0.06522
+learn T02 ✅ busiest_weekday_town       rt calls=4 $0.05509
+learn T02 ✅ busiest_weekday_town       te calls=3 $0.04377
+learn T02 ✅ returned_cases_town_month  en calls=7 $0.08113
+learn T02 ✅ returned_cases_town_month  rt calls=8 $0.06442
+learn T02 ✅ returned_cases_town_month  te calls=5 $0.0665
+learn T02 ✅ damaged_cases_month        en calls=3 $0.04091
+learn T02 ✅ damaged_cases_month        rt calls=3 $0.04128
+Traceback (most recent call last):
+  File "C:\Users\prash\projects\meta_hackathon\scripts\exp012b_new_tools.py", line 97, in <module>
+    main()
+  File "C:\Users\prash\projects\meta_hackathon\scripts\exp012b_new_tools.py", line 66, in main
+    tid = nt.propose(S, cid, g, c, nt.free_name(S, cid, nt.suggest_name(g)), nt.describe(g))
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\prash\projects\meta_hackathon\src\anubhav\learning\newtools.py", line 316, in propose
+    raise ValueError(f"the name mentions {', '.join(specific_words(g, name))}: name what the tool does for any value")
+ValueError: the name mentions parkal: name what the tool does for any value

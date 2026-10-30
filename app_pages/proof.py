@@ -46,6 +46,38 @@ if bench:
                "(bar +25) with 0 unsafe drafts; the new company gains +67 points from the pack (bar +25) with 0 leaks. "
                "Not improved: real capacity (the agent refused to overload the truck but didn't offer another one).")
 
+rep = sorted((ROOT / "artifacts" / "benchmark").glob("exp011r_2*.json"))
+rep = [p for p in rep if not p.name.endswith("_rows.json")]
+if rep:
+    d = json.loads(rep[-1].read_text(encoding="utf-8"))
+    st.subheader("The same benchmark, 3 times, on the version you are using (EXP-011R)")
+    st.caption(f"Pre-registered before any model call · {len(d['rows'])} runs · {rep[-1].name}")
+    st.dataframe([{"repeat": i + 1, "lessons (C)": r["lessons_C"], "raw notes (B)": r["raw_notes_B"],
+                   "gain, points": r["lessons_gain_pts"], "unsafe with lessons": r["C_unsafe"],
+                   "new company + pack (E)": r["pack_E"], "new company cold (B)": r["cold_B"]} for i, r in enumerate(d["repeats"])],
+                 hide_index=True, alt="EXP-011R: each repeat's results",
+                 column_config={k: st.column_config.ProgressColumn(format="percent", min_value=0, max_value=1)
+                                for k in ("lessons (C)", "raw notes (B)", "new company + pack (E)", "new company cold (B)")})
+    p = d["pooled"]
+    st.caption(f"Pooled: lessons {p['lessons_C']:.0%} vs raw notes {p['raw_notes_B']:.0%} (+{p['lessons_gain_pts']:.0f} points); "
+               f"new company {p['cold_B']:.0%} → {p['pack_E']:.0%}. Replicated (bar met pooled and in ≥ 2 of 3 repeats): "
+               f"lessons {'yes' if d['replicated']['lessons'] else 'no'}, sharing {'yes' if d['replicated']['transfer'] else 'no'}. "
+               "Still not improved: real truck capacity (0/6 with lessons).")
+
+nt12 = sorted((ROOT / "artifacts" / "benchmark").glob("exp012b_2*.json"))
+nt12 = [p for p in nt12 if not p.name.endswith("_rows.json")]
+if nt12:
+    d = json.loads(nt12[-1].read_text(encoding="utf-8"))
+    st.subheader("Tools it made itself (EXP-012 → EXP-012b)")
+    a = d["arms"]
+    with st.container(horizontal=True):
+        st.metric("Learned tools used", d["decision"]["learned_tool_used_in"], "was 0/16 with case-specific names", delta_color="off", border=True)
+        st.metric("Answers right", f"{a['T']['right']}/{a['T']['n']}", f"{a['Q']['right']}/{a['Q']['n']} without them", delta_color="off", border=True)
+        st.metric("Tool calls per question", a["T"]["mean_tool_calls"], f"{a['Q']['mean_tool_calls']} without them", delta_color="off", border=True)
+        st.metric("Cost per question", f"${a['T']['mean_cost']:.3f}", f"${a['Q']['mean_cost']:.3f} without them", delta_color="off", border=True)
+    st.caption("16 held-out questions on an unseen world. Pre-registered bar: 30% fewer tool calls, not met (20%). "
+               "EXP-012 failed both its rules first; EXP-012b changed one thing (general tool names). Both are in the experiments log.")
+
 st.subheader("Does it learn the right things?")
 st.caption("Mining precision and recall against the generator's hidden rules (never shown to the system).")
 mining = []

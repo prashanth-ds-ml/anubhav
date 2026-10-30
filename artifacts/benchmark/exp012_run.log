@@ -1,0 +1,202 @@
+learn T01 ❌ worst_ontime_weekday       rt calls=6 $0.10034
+learn T01 ✅ worst_ontime_weekday       te calls=4 $0.06572
+learn T01 ✅ busiest_weekday_town       en calls=6 $0.07717
+learn T01 ❌ busiest_weekday_town       rt calls=2 $0.03108
+learn T01 ✅ busiest_weekday_town       te calls=5 $0.06973
+learn T01 ✅ returned_cases_town_month  en calls=7 $0.06022
+learn T01 ✅ returned_cases_town_month  rt calls=8 $0.06666
+learn T01 ✅ returned_cases_town_month  te calls=6 $0.07351
+learn T01 ✅ damaged_cases_month        en calls=4 $0.05281
+learn T01 ✅ damaged_cases_month        rt calls=3 $0.04157
+T01: 5 tools approved by the fixed rule: ['sum_returned_cases_from_order_fe2b', 'trip_outcomes_detail_narsampet_september', 'count_september_stops_correctly_4b56', 'list_all_narsampet_orders_september_7277', 'detail_damaged_stops_september_17dd']
+test  T01 N ✅ worst_ontime_weekday       rt calls=18 $0.07559
+test  T01 Q ✅ worst_ontime_weekday       rt calls=8 $0.1069
+test  T01 T ❌ worst_ontime_weekday       rt calls=12 $0.14165
+test  T01 N ✅ busiest_weekday_town       te calls=3 $0.0449
+test  T01 Q ❌ busiest_weekday_town       te calls=4 $0.05654
+test  T01 T ✅ busiest_weekday_town       te calls=5 $0.07418
+test  T01 N ✅ busiest_weekday_town       en calls=5 $0.12256
+test  T01 Q ✅ busiest_weekday_town       en calls=5 $0.06503
+test  T01 T ✅ busiest_weekday_town       en calls=5 $0.07391
+test  T01 N ✅ busiest_weekday_town       rt calls=3 $0.05655
+test  T01 Q ❌ busiest_weekday_town       rt calls=6 $0.08315
+test  T01 T ✅ busiest_weekday_town       rt calls=4 $0.06121
+test  T01 N ❌ returned_cases_town_month  te calls=14 $0.07749
+test  T01 Q ✅ returned_cases_town_month  te calls=5 $0.04479
+test  T01 T ✅ returned_cases_town_month  te calls=5 $0.05377
+test  T01 N ❌ returned_cases_town_month  en calls=8 $0.05288
+test  T01 Q ✅ returned_cases_town_month  en calls=3 $0.04898
+test  T01 T ✅ returned_cases_town_month  en calls=6 $0.06181
+test  T01 N ❌ returned_cases_town_month  rt calls=3 $0.02492
+test  T01 Q ✅ returned_cases_town_month  rt calls=6 $0.07849
+test  T01 T ✅ returned_cases_town_month  rt calls=4 $0.04829
+test  T01 N ❌ damaged_cases_month        te calls=6 $0.04932
+test  T01 Q ✅ damaged_cases_month        te calls=4 $0.05483
+test  T01 T ✅ damaged_cases_month        te calls=2 $0.03515
+learn T02 ✅ worst_ontime_weekday       rt calls=3 $0.04526
+learn T02 ✅ worst_ontime_weekday       te calls=6 $0.11031
+learn T02 ✅ busiest_weekday_town       en calls=3 $0.04162
+learn T02 ✅ busiest_weekday_town       rt calls=4 $0.05403
+learn T02 ✅ busiest_weekday_town       te calls=2 $0.03087
+learn T02 ✅ returned_cases_town_month  en calls=8 $0.06196
+learn T02 ✅ returned_cases_town_month  rt calls=5 $0.06659
+learn T02 ✅ returned_cases_town_month  te calls=5 $0.07622
+learn T02 ✅ damaged_cases_month        en calls=4 $0.05325
+learn T02 ✅ damaged_cases_month        rt calls=3 $0.04197
+T02: 5 tools approved by the fixed rule: ['total_returned_cases_parkal_oct_bbd3', 'sum_damaged_cases_september_via_7597', 'count_parkal_delivery_stops_weekday_283e', 'detail_returned_cases_parkal_oct_1df2', 'list_september_damaged_stops_details_c41']
+test  T02 N ❌ worst_ontime_weekday       rt calls=18 $0.07755
+test  T02 Q ✅ worst_ontime_weekday       rt calls=6 $0.08862
+test  T02 T ✅ worst_ontime_weekday       rt calls=6 $0.11487
+test  T02 N ✅ busiest_weekday_town       te calls=3 $0.02457
+test  T02 Q ✅ busiest_weekday_town       te calls=2 $0.03203
+test  T02 T ✅ busiest_weekday_town       te calls=3 $0.04697
+test  T02 N ✅ busiest_weekday_town       en calls=3 $0.03509
+test  T02 Q ✅ busiest_weekday_town       en calls=2 $0.02993
+test  T02 T ✅ busiest_weekday_town       en calls=3 $0.04759
+test  T02 N ✅ busiest_weekday_town       rt calls=3 $0.03819
+test  T02 Q ❌ busiest_weekday_town       rt calls=3 $0.04266
+test  T02 T ✅ busiest_weekday_town       rt calls=4 $0.04025
+test  T02 N ✅ returned_cases_town_month  te calls=6 $0.02892
+test  T02 Q ✅ returned_cases_town_month  te calls=6 $0.03499
+test  T02 T ✅ returned_cases_town_month  te calls=4 $0.04843
+test  T02 N ✅ returned_cases_town_month  en calls=9 $0.03265
+test  T02 Q ✅ returned_cases_town_month  en calls=6 $0.05609
+test  T02 T ✅ returned_cases_town_month  en calls=4 $0.06147
+test  T02 N ✅ returned_cases_town_month  rt calls=10 $0.04931
+test  T02 Q ✅ returned_cases_town_month  rt calls=6 $0.04585
+test  T02 T ✅ returned_cases_town_month  rt calls=4 $0.05944
+test  T02 N ✅ damaged_cases_month        te calls=8 $0.11335
+test  T02 Q ✅ damaged_cases_month        te calls=5 $0.0518
+test  T02 T ✅ damaged_cases_month        te calls=4 $0.06063
+{
+ "learned": {
+  "T01": [
+   {
+    "name": "sum_returned_cases_from_order_fe2b",
+    "params": [
+     "site_id",
+     "date_from",
+     "date_to"
+    ],
+    "from_requests": 4
+   },
+   {
+    "name": "trip_outcomes_detail_narsampet_september",
+    "params": [
+     "site_id",
+     "date_from",
+     "date_to"
+    ],
+    "from_requests": 4
+   },
+   {
+    "name": "count_september_stops_correctly_4b56",
+    "params": [
+     "date_from",
+     "date_to"
+    ],
+    "from_requests": 2
+   },
+   {
+    "name": "list_all_narsampet_orders_september_7277",
+    "params": [
+     "site_id",
+     "date_from",
+     "date_to"
+    ],
+    "from_requests": 2
+   },
+   {
+    "name": "detail_damaged_stops_september_17dd",
+    "params": [
+     "date_from",
+     "date_to"
+    ],
+    "from_requests": 2
+   }
+  ],
+  "T02": [
+   {
+    "name": "total_returned_cases_parkal_oct_bbd3",
+    "params": [
+     "town",
+     "date_from",
+     "date_to"
+    ],
+    "from_requests": 3
+   },
+   {
+    "name": "sum_damaged_cases_september_via_7597",
+    "params": [
+     "date_from",
+     "date_to"
+    ],
+    "from_requests": 3
+   },
+   {
+    "name": "count_parkal_delivery_stops_weekday_283e",
+    "params": [
+     "town"
+    ],
+    "from_requests": 2
+   },
+   {
+    "name": "detail_returned_cases_parkal_oct_1df2",
+    "params": [
+     "town",
+     "date_from",
+     "date_to"
+    ],
+    "from_requests": 2
+   },
+   {
+    "name": "list_september_damaged_stops_details_c41",
+    "params": [
+     "date_from",
+     "date_to"
+    ],
+    "from_requests": 2
+   }
+  ]
+ },
+ "learn": {
+  "n": 20,
+  "answer_ok": 0.9,
+  "right": 18,
+  "mean_tool_calls": 4.7,
+  "mean_cost": 0.061,
+  "cost_usd": 1.221
+ },
+ "arms": {
+  "N": {
+   "n": 16,
+   "answer_ok": 0.688,
+   "right": 11,
+   "mean_tool_calls": 7.5,
+   "mean_cost": 0.0565,
+   "cost_usd": 0.904
+  },
+  "Q": {
+   "n": 16,
+   "answer_ok": 0.812,
+   "right": 13,
+   "mean_tool_calls": 4.81,
+   "mean_cost": 0.0575,
+   "cost_usd": 0.921
+  },
+  "T": {
+   "n": 16,
+   "answer_ok": 0.938,
+   "right": 15,
+   "mean_tool_calls": 4.69,
+   "mean_cost": 0.0644,
+   "cost_usd": 1.03
+  }
+ },
+ "decision": {
+  "R1_query_fills_gap": false,
+  "R2_learned_tools_cheaper_not_worse": false
+ },
+ "cost_usd": 4.075
+}
+saved artifacts\benchmark\exp012_20261030_230811.json
