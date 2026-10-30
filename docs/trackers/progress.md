@@ -43,7 +43,7 @@ History before Oct 29 (order-desk plan): `archive/progress_order_desk.md`
 | FR-16 | Reject regressing patches | 4 | ✅ gate tests |
 | FR-17 | Tenant and role enforcement | 2 | ✅ tests |
 | FR-18 | Prompt-injection handling | 2, 5 | ✅ data marked untrusted; adversarial suite (injected notes) passes |
-| FR-19 | Four-arm controlled evaluation | 5 | ✅ EXP-011 on unseen world 5279: both pre-registered bars met (+55 pts lessons vs raw notes, +67 pts pack), 0 unsafe with learning |
+| FR-19 | Four-arm controlled evaluation | 5 | 🟨 arm D (ablation) not run; EXP-011 on unseen world 5279: both pre-registered bars met (+55 pts lessons vs raw notes, +67 pts pack), 0 unsafe with learning |
 | FR-20 | Held-out contamination protection | 5 | ✅ fresh unseen-seed worlds (4111, 5279); held-out towns in practice; files frozen by hash before model calls |
 | FR-21 | Hosted / replay mode | 6 | 🟨 replay bundle + world from seed; fresh clone checked (8 pages, no keys); per-visitor state in hosted mode (D-038, AppTest); deploy pending (docs/deploy.md) |
 | FR-22 | Spend caps and secrets | 6 | ✅ keys only from env/secrets; live mode off without keys (buttons disabled, say why); 8 live runs per session and 60 per day for the app, voice included (D-038) |

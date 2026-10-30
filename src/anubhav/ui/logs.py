@@ -115,3 +115,19 @@ def events(company, runs=(), lesson_events=(), lessons=None, versions=(), feedba
                     "ref": f.get("run_id"), "raw": f})
     order = {id(x): i for i, x in enumerate(out)}       # same time: the later step (e.g. tested after proposed) first
     return sorted(out, key=lambda x: (x["ts"] or "", order[id(x)]), reverse=True)
+
+
+def model_roles(runs=(), lessons=(), versions=()):
+    """Which Meta model did what here, counted from the records (runs, mined lessons, proposed patches)."""
+    agent = [r for r in runs if "open" in str(r.get("model", ""))]
+    other_runs = [r for r in runs if r not in agent]
+    mined = [l for l in lessons if (l.get("miner") or {}).get("model")]
+    patches = [v for v in versions if v.get("version_id") != "h-000"]
+    return [
+        {"model": "Muse Spark Open", "access": "open weights · Baseten", "role": "the agent: plans, calls tools, answers in Telugu / Roman Telugu / English",
+         "count": f"{len(agent)} runs · ${sum(r.get('cost_usd', 0) for r in agent):.2f}"},
+        {"model": "Muse Spark 1.3", "access": "Meta Model API", "role": "proposes lessons from the records and tool-use patches; code checks every proposal",
+         "count": f"{len(mined)} lesson{'s' * (len(mined) != 1)} · {len(patches)} patch{'es' * (len(patches) != 1)}" + (f" · {len(other_runs)} agent runs" if other_runs else "")},
+        {"model": "Muse Voice Transcribe", "access": "Meta Model API", "role": "turns a spoken Telugu / Roman Telugu request into text the planner can correct",
+         "count": "on the Workbench microphone"},
+    ]

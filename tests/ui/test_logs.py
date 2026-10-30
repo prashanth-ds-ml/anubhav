@@ -41,3 +41,10 @@ def test_events_join_runs_lessons_patches_and_feedback_for_one_company_newest_fi
     assert "reply check failed" in out[2]["detail"] and "1 refused" in out[2]["detail"]
     assert [e["what"] for e in out[3:]] == ["patch h-001 rejected", "patch h-001 tested old vs new", "patch h-001 proposed"]
     assert "no held-out gain" in out[4]["detail"]
+
+
+def test_model_roles_are_counted_from_the_records():
+    lessons = [{"miner": {"model": "muse-spark-1.3"}}, {"miner": {}}]
+    roles = logs.model_roles([RUN, dict(RUN, cost_usd=0.02)], lessons, [{"version_id": "h-000"}, {"version_id": "h-001"}])
+    assert [r["model"] for r in roles] == ["Muse Spark Open", "Muse Spark 1.3", "Muse Voice Transcribe"]
+    assert roles[0]["count"] == "2 runs · $0.03" and roles[1]["count"] == "1 lesson · 1 patch"

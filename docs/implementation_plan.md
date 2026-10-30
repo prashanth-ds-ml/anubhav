@@ -106,6 +106,19 @@ Today the agent knows only "the dispatch-planning assistant of T01, a regional t
 
 **Tests:** the draft profile matches the records; an answer that contradicts the records is flagged with the right count; a supported rule becomes a candidate (not active); the prompt block is capped and has no markup; the page opens without keys.
 
+### I. Evidence for Impact and Meta tooling (Oct 31 – Nov 2; D-043)
+| # | Item | Who | Est. |
+|---|---|---|---|
+| I1 | README honesty pass: test count, a real Limitations section (n per claim: 20 and 9 cases, one run each; synthetic data; generator-made cases; the D-038 version gap), "by our leak check", Harness² and Meta-workshop credit (also in `LICENSES_AND_ATTRIBUTION.md`), FR-19 → 🟨 | Claude | 1 h |
+| I2 | Meta models on screen: each model's role and its calls/cost in this deployment (Spark Open plans, Spark 1.3 mines lessons and names tools, Voice Transcribe hears Telugu); Best Open Weights pitch in README | Claude | 1 h |
+| I3 | 1–2 cited freight statistics (sources checked, quoted exactly) for README and video | Claude | 0.5 h |
+| I4 | Dispatcher review kit: 10–15 learned lessons as a sheet (English + Telugu), true / false / unsure / "not in my region", plus a timing protocol for "plan tomorrow". Results recorded as-is, anonymised, with permission | Claude prepares, **owner** runs it | 1 h + owner |
+| I5 | "Who uses this on Monday": import a company's spreadsheet export (orders, sites, vehicles) through an adapter mapping (D-030) into a new company, then the profile and the agent work on it | Claude | 3–4 h, **cut first** |
+
+### J. Measurement on the shipped version (Nov 2; D-043)
+- **J1 EXP-011R:** the EXP-011 protocol, 3 repeats, on the current commit (after D-038 and Oct 31 changes), on the unseen world. Pre-registered in [[experiments]] with frozen file hashes before the first call. ~$15 on Spark Open. Reports mean and spread; replaces "one run each" in the README.
+- **J2 EXP-012:** new-tool creation on the C6 gap questions, pre-registered, ~$3 (from C6).
+
 ### C. New tool creation: the agent writes a query, and good ones become tools (Oct 31 PM – Nov 1, ~8 h)
 Design: D-040. **The agent writes read-only SQL, never Python.** Running Python the model wrote on a public host has no safe sandbox on Windows or Streamlit Cloud. SQL over a read-only copy of the company's own records gives the same "write code to analyse" ability with a small attack surface.
 
@@ -191,13 +204,14 @@ Design: D-039. New `src/anubhav/review.py` plus a CLI (`python -m anubhav.review
 | Day (IST) | Work | Hours |
 |---|---|---|
 | Thu Oct 30 (tonight) | P0 commit step 1 · docs (this plan, trackers) | 0.5 |
-| Fri Oct 31 | A1, A2 · B Logs page · H onboarding (profile, questions, checks, page) | 8 |
-| Sat Nov 1 | C1 sandbox + C2 `run_query` · C3 capture · C4 promotion + Tools tab · C5 broker · C6 gap questions · (EXP-012 pre-register + run, optional) | 8 |
-| Sun Nov 2 | D nightly review · E2 recorded runs · E1 deploy · F docs | 8 |
+| Fri Oct 31 | A1, A2 · B Logs page · H onboarding (slim) · E1 deploy (owner) · I1 README honesty · I2 models on screen | 8 |
+| Sat Nov 1 | (I3, I4 if not done) · C1 sandbox + C2 `run_query` · C3 capture · C4 promotion + Tools tab · C5 broker · C6 gap questions · (EXP-012 pre-register + run, optional) | 8 |
+| Sun Nov 2 | J1 EXP-011R + J2 EXP-012 (pre-registered) · D nightly review (slim) · E2 recorded runs · I5 if time | 8 |
 | Mon Nov 3 | G video script, recording, subtitles · README GIF · submission dry run | 8 |
 | Tue Nov 4 | Buffer · final checks · **submit** | — |
 
 ## 5. Cut order (if a day slips)
+1. I5 spreadsheet import.
 1. EXP-012 (C6 stays as practice questions; claims become "shown working").
 2. Muse naming in C4: code names the tool from the request words, and the person edits it.
 3. D shrinks to a button that runs Loop A and tool candidates; the Loop B run digest is cut.

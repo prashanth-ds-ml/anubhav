@@ -40,6 +40,11 @@ Used as dependencies only, installed from PyPI and not vendored. Exact versions 
 | pytest (dev) | MIT | tests |
 | pulp, highspy (dev) | MIT | archived prototype only |
 
+## Research and examples we built on
+Reimplemented in our own code; nothing copied.
+- **Harness²**, Google Research, "Harness^2: Recursive Agent Harnessing for an Open World", [arXiv 2610.14224](https://arxiv.org/abs/2610.14224) (code: google-research/harness2, Apache-2.0). Our tool-use loop (`src/anubhav/harness/`) adopts its Propose–Probe–Compose idea in a bounded form. We make no claim to that research.
+- **Meta legal-agent-workshop** (`meta-models/legal-agent-workshop`), reviewed on 2026-10-30. Patterns we adopted: client timeout and retries, a run that stops cleanly when the model call fails, and a code check of the reply's claims.
+
 ## Fonts, icons, images
 - Icons are Streamlit's built-in Material Symbols (Apache-2.0, Google).
 - No other third-party images or fonts are included.

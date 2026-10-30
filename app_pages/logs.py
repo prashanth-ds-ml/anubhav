@@ -16,6 +16,14 @@ lessons = {l["lesson_id"]: l for l in S.list(cid)}
 rows = logs.events(cid, runs=core.recent_runs(200), lesson_events=S.events(company=cid), lessons=lessons,
                    versions=H.versions(), feedback=H.feedback())
 
+st.markdown("**Meta models at work**")
+with st.container(horizontal=True):
+    for m in logs.model_roles(core.recent_runs(500), S.list(cid), H.versions()):
+        with st.container(border=True):
+            st.markdown(f"**{m['model']}** · :gray[{m['access']}]")
+            st.caption(m["role"])
+            st.markdown(f":blue-badge[{m['count']}]")
+
 with st.container(horizontal=True):
     for key, label in logs.STREAMS.items():
         st.metric(label, sum(r["stream"] == key for r in rows), border=True)

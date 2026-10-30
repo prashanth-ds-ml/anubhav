@@ -62,6 +62,17 @@ Items 1, 2, 6 and 7 from the workshop review fold straight into this commit. 147
 | D | Nightly review: reads runs, feedback, new notes, cancelled drafts → Loop A / Loop B (same gate) / tool candidates; report on the Logs page | Nov 2 | ⬜ |
 | E2 | Record the demo story live (session 1 → review → session 2, plus "plan tomorrow"), saved as replays (~$2) | Nov 2 | ⬜ |
 
+## Toward 9/10 (D-043)
+| # | Item | Day | Status |
+|---|---|---|---|
+| I1 | README honesty pass (test count, Limitations with n per claim, version gap, credits, FR-19 🟨) | Oct 31 | ✅ README results with n (7/20 → 18/20, 3/9 → 9/9) and commit `61cc927`; a Limitations section (8 points); 295 tests; Harness² + workshop credits in README and LICENSES; Open Weights paragraph; FR-19 🟨 |
+| I2 | Each Muse model's role and calls on screen; Best Open Weights pitch | Oct 31 | ✅ "Meta models at work" on the Logs page (runs and cost of Spark Open, lessons and patches proposed by Spark 1.3, voice), counted from the records; README "Open weights end to end" |
+| I3 | 1–2 cited freight statistics | Nov 1 | ⬜ |
+| I4 | Dispatcher review kit (Claude prepares; owner runs it with the interviewee) | Nov 1 | ⬜ |
+| I5 | Spreadsheet import into a new company (cut first) | Nov 2 | ⬜ |
+| J1 | EXP-011R: 3 repeats on the current version, pre-registered (~$15) | Nov 2 | ⬜ |
+| J2 | EXP-012: new tools on gap questions, pre-registered (~$3) | Nov 2 | ⬜ |
+
 ## Step 2: honest docs (~1.5 h, Nov 2)
 - ⬜ README: test count (now 147 + 128 archived = 275; README says 238); credit for Harness² (arXiv 2610.14224) here and in `LICENSES_AND_ATTRIBUTION.md`; the three learning routes, the Logs page and the tool-creation limits. The "Limitations" section exists: re-read it.
 - ⬜ FR-19 → 🟨 (arm D not run); tick the theme and anti-project items with a reason in [[submission_checklist]]
