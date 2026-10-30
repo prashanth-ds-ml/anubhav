@@ -92,7 +92,7 @@ for g in fresh:
         with st.form(f"chk:{g['key']}", border=False):
             n1, n2 = st.columns([1, 2])
             name = n1.text_input("Tool name", value=nt.suggest_name(g), key=f"n:{g['key']}", max_chars=40)
-            desc = n2.text_input("What it answers", value=(g["uses"][0]["purpose"] or g["uses"][0]["request"])[:200],
+            desc = n2.text_input("What it answers", value=nt.describe(g),
                                  key=f"d:{g['key']}", max_chars=300)
             if st.form_submit_button("Check it as a tool" if reused else "Check it anyway (used once)",
                                      icon=":material/rule:", type="primary" if reused else "secondary"):
