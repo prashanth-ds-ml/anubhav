@@ -22,7 +22,7 @@ from typing import Literal
 from pydantic import BaseModel, ConfigDict, Field, ValidationError, field_validator
 
 from .company import CompanyData, Conflict
-from .safety import validate_draft
+from .safety import rules, validate_draft
 
 ROLES = {"dispatcher": {"read", "draft", "append"}, "viewer": {"read"}, "reviewer": {"read"}}
 SPOOF_KEYS = {"tenant", "tenant_id", "company", "company_id", "role", "user", "approved", "approval"}
@@ -365,7 +365,8 @@ def create_dispatch_draft(b, a: CreateDraft):
                 "orders": json.loads(prior["order_ids"]), **{k: json.loads(prior["verdict"])[k] for k in ("load", "warnings")}}
     verdict = validate_draft(b.C, a.order_ids, a.vehicle_id, d, b.policies, b.advisories)
     if not verdict.ok:
-        raise ToolError(verdict.errors[0]["code"], "; ".join(x["message"] for x in verdict.errors))
+        hint = _next_step(b, verdict.errors, a.order_ids, d, a.vehicle_id)
+        raise ToolError(verdict.errors[0]["code"], "; ".join(x["message"] for x in verdict.errors) + (f". {hint}" if hint else ""))
     try:
         row, created = b.C.runtime.create_draft(f"DR-{uuid.uuid4().hex[:6].upper()}", b.s.user, d, a.vehicle_id,
                                                 a.order_ids, verdict.as_dict(), key)
@@ -546,6 +547,31 @@ def _not_free(b, v, d):
     return why
 
 
+TOO_BIG = {"CAPACITY_EXCEEDED", "VOLUME_EXCEEDED"}
+
+
+def _next_step(b, errors, order_ids, d, exclude):
+    """A refusal for a load that doesn't fit names what would: the load, and up to 3 vehicles free that day that are
+    big enough and allowed at every stop (site master, approved rules, cold chain). Otherwise: split the load."""
+    if not {x["code"] for x in errors} & TOO_BIG:
+        return ""
+    ld = [b.C.order_load(o) for o in dict.fromkeys(order_ids) if o in b.C.orders]
+    kg, m3 = sum(x["kg"] for x in ld), sum(x["m3"] for x in ld)
+    classes = {c for x in ld for c in x["handling_classes"]}
+    need_class = {cl for c, cl in rules()["cold_chain"].items() if c in classes}
+    sites = {b.C.orders[o]["site_id"] for o in order_ids if o in b.C.orders}
+    caps = [s for s in (b.C.sites.get(x, {}).get("max_vehicle_length_ft") for x in sites) if s]
+    caps += [p["max_length_ft"] for p in b.policies if p["site_id"] in sites]
+    fit = [v for v in b.C.vehicles.values() if v["vehicle_id"] != exclude and v["payload_kg"] >= kg and v["volume_m3"] >= m3
+           and (not need_class or v["class"] in need_class) and (not caps or v["length_ft"] <= min(caps)) and not _not_free(b, v, d)]
+    fit.sort(key=lambda v: (v["payload_kg"], v["volume_m3"]))
+    if fit:
+        return (f"Next step: the load is {kg:,.0f} kg / {m3:.1f} m3; free on {d} and big enough: "
+                + ", ".join(f"{v['vehicle_id']} ({v['payload_kg']:,.0f} kg, {v['volume_m3']:.0f} m3, {v['length_ft']} ft)" for v in fit[:3])
+                + ". Or split the orders over more than one vehicle.")
+    return f"Next step: the load is {kg:,.0f} kg / {m3:.1f} m3 and no single free vehicle fits on {d}: split the orders over more than one vehicle."
+
+
 def _site_limits(b, s, d):
     """A site's planning limits in one place: site master, approved rules and advice (learned), closures."""
     rec = {k: s.get(k) for k in ("max_vehicle_length_ft", "receiving_until_hour", "weekly_off", "night_only",
@@ -628,7 +654,8 @@ def check_load(b, a: Assignments):
         veh = b.C.vehicles.get(x.vehicle_id)
         fill = round(100 * v.load["kg"] / veh["payload_kg"]) if veh and veh["payload_kg"] else None
         out.append({"vehicle_id": x.vehicle_id, "order_ids": x.order_ids, "ok": not errors, "errors": errors,
-                    "warnings": v.warnings, "load": v.load, "fill_pct": fill})
+                    "warnings": v.warnings, "load": v.load, "fill_pct": fill,
+                    **({"next_step": hint} if (hint := _next_step(b, errors, x.order_ids, d, x.vehicle_id)) else {})})
     return {"delivery_date": d, "all_ok": all(r["ok"] for r in out), "checked": out,
             "note": "nothing was created; use create_dispatch_drafts for the ones that are ok"}
 

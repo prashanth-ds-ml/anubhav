@@ -48,6 +48,7 @@ pages = {
     "Share & proof": [
         st.Page("app_pages/share.py", title="Share", icon=":material/share:"),
         st.Page("app_pages/proof.py", title="Proof & audit", icon=":material/fact_check:"),
+        st.Page("app_pages/logs.py", title="Logs", icon=":material/timeline:"),
         st.Page("app_pages/report.py", title="Weekly report", icon=":material/mail:"),
     ],
     "Advanced": [

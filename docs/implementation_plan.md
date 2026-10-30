@@ -59,7 +59,7 @@ Each workstream lists its files, tests and when it counts as done. Estimates are
 ### A. Step 1b: reply check and helpful refusals (Oct 31, ~1.5 h)
 **A1 · W3 reply check** (`agent/graph.py: finish`, plain code):
 - every draft id and vehicle id mentioned in the reply exists in this run's drafts or tool results;
-- the reply never says the goods were dispatched or confirmed. The words to look for (English, Roman Telugu, Telugu) live in `configs/operating_rules.yaml: reply_forbidden`, beside the other written rules, not in code (D-034);
+- the reply never says the goods were dispatched or confirmed. The words to look for (English, Roman Telugu, Telugu) live in `configs/operating_rules.yaml: reply_claims`, beside the other written rules, not in code (D-034);
 - result: `reply_checks` in the finish step, shown as a warning on the workbench;
 - tests: a fake model reply with an invented draft id is flagged, and so is one saying "dispatched".
 
@@ -83,6 +83,28 @@ Builds on W5. New page `app_pages/logs.py`, plus helpers in `ui/core.py`. It rea
 - In hosted mode it shows the visitor's own session plus the saved demo runs.
 - Tests: the page opens with no keys (add it to `PAGES` in `tests/ui/test_app.py`); a recorded run shows one row per tool call, with refusals marked.
 - **Done when:** a judge can follow the three session-1 failures and their fixes on this page alone.
+
+### H. Onboarding: the agent learns what the business is (Oct 31, ~4–5 h; D-041)
+> **Oct 31 (D-042): slimmed after the deep audit.** Only H1 and H4 are built (profile from the records, editable, in the prompt; page). H2 (Muse questions) and H3 (answer checks) are cut. Deploy moved to Oct 31.
+
+Today the agent knows only "the dispatch-planning assistant of T01, a regional transport company". New: **session 0**.
+
+**H1 · Draft profile from the data** (`learning/profile.py`, code only, no model call):
+- facts computed from the company's own records: towns and site count, client brands, fleet (own vs hired, by class), orders per day, goods handling classes, planner languages, busiest weekdays;
+- every number cites the table it came from.
+
+**H2 · Questions** (Muse Spark, one call): given the draft, pick 5–7 questions about what the records can't show: priorities (cost / on-time / fill), customers that must never be late, rules applied but not written, who approves what, peaks, the company's own words. Each question is in the owner's language.
+
+**H3 · Answers are checked against the records** (Muse structures the answers into fields; code checks them):
+- stated rules of a kind the gate knows (weekly off, receiving hours, site access, vehicle requirement…) are run through `gate.check`: supported → a lesson candidate (`source = owner`, needs approval as usual); contradicted → shown back with the count ("14 Sunday deliveries in September");
+- priorities, key customers and words are saved as stated, labelled "owner said".
+
+**H4 · Saved and used** (`profile` table in the lesson store, versioned):
+- the agent prompt gets an "About this business" block (≤ 600 characters; data, not instructions), replacing "a regional transport company";
+- a "Business profile" page shows the draft, the questions, the answers, the checks and the versions. It works in replay without keys (a recorded onboarding).
+- Off in frozen experiment configs (`profile=False`), so EXP-009/011 stay as they were.
+
+**Tests:** the draft profile matches the records; an answer that contradicts the records is flagged with the right count; a supported rule becomes a candidate (not active); the prompt block is capped and has no markup; the page opens without keys.
 
 ### C. New tool creation: the agent writes a query, and good ones become tools (Oct 31 PM – Nov 1, ~8 h)
 Design: D-040. **The agent writes read-only SQL, never Python.** Running Python the model wrote on a public host has no safe sandbox on Windows or Streamlit Cloud. SQL over a read-only copy of the company's own records gives the same "write code to analyse" ability with a small attack surface.
@@ -169,8 +191,8 @@ Design: D-039. New `src/anubhav/review.py` plus a CLI (`python -m anubhav.review
 | Day (IST) | Work | Hours |
 |---|---|---|
 | Thu Oct 30 (tonight) | P0 commit step 1 · docs (this plan, trackers) | 0.5 |
-| Fri Oct 31 | A1, A2 · B Logs page · C1 sandbox + C2 `run_query` with tests | 8 |
-| Sat Nov 1 | C3 capture · C4 promotion + Tools tab · C5 broker · C6 gap questions · (EXP-012 pre-register + run, optional) | 8 |
+| Fri Oct 31 | A1, A2 · B Logs page · H onboarding (profile, questions, checks, page) | 8 |
+| Sat Nov 1 | C1 sandbox + C2 `run_query` · C3 capture · C4 promotion + Tools tab · C5 broker · C6 gap questions · (EXP-012 pre-register + run, optional) | 8 |
 | Sun Nov 2 | D nightly review · E2 recorded runs · E1 deploy · F docs | 8 |
 | Mon Nov 3 | G video script, recording, subtitles · README GIF · submission dry run | 8 |
 | Tue Nov 4 | Buffer · final checks · **submit** | — |

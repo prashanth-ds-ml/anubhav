@@ -53,6 +53,12 @@ def render_run(r):
             st.warning("Muse didn't answer (the model call failed after retries). Drafts made so far are kept; "
                        "try again, or use Replay.", icon=":material/cloud_off:")
         st.markdown(r["reply"] or "_(no reply)_")
+        rc = r.get("reply_check") or {}
+        if rc and not rc["ok"]:
+            st.warning("Code check of this reply: "
+                       + "; ".join(([f"ids not found in this run: {', '.join(rc['unknown_ids'])}"] if rc["unknown_ids"] else [])
+                                   + ([f"claims something was done ({', '.join(rc['claims'])}); only drafts exist"]
+                                      if rc["claims"] else [])), icon=":material/fact_check:")
         for k in core.lessons_used(r):
             st.badge(k.rsplit(" [", 1)[0][:90], icon=":material/school:", color="green")
         if st.toggle("Show as a graph", key=f"g:{r['run_id']}", value=True):

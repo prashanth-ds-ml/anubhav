@@ -3,6 +3,7 @@ the MCP server, the bounded agent loop and the trace store. Mock model only; no 
 
 import asyncio
 import json
+import re
 import threading
 
 import pytest
@@ -549,3 +550,90 @@ def test_a_missing_key_is_a_clear_error(monkeypatch):
     for name in ("open", "spark"):
         with pytest.raises(muse.MissingKeyError, match=muse.KEYS[name]):
             muse.client(name)
+
+
+# ---------- Oct 31, W3: the reply is checked by code before the planner reads it
+def test_reply_with_a_real_draft_passes_the_reply_check(broker_for):
+    b = broker_for("T01")
+    o, (v, _) = lakshmi(b), _free_pair(b)
+    m = MockClient([mock_tool_call("create_dispatch_draft", {"order_ids": [o["order_id"]], "vehicle_id": v["vehicle_id"]}),
+                    lambda msgs, t: mock_final(f"Draft {json.loads(msgs[-1]['content'])['result']['draft_id']} on "
+                                               f"{v['vehicle_id']} for {o['order_id']}; not dispatched.")])
+    r = graph.run(b, m, "Lakshmi load ki bandi pettu")
+    assert r["drafts"] and r["reply_check"] == {"ok": True, "unknown_ids": [], "claims": []}
+    assert r["trace"][-1]["type"] == "finish" and r["trace"][-1]["reply_check"]["ok"]
+
+
+def test_reply_with_an_invented_draft_or_vehicle_is_flagged(broker_for):
+    b = broker_for("T01")
+    m = MockClient([mock_tool_call("list_open_orders", {}), mock_final("Draft DR-ABC123 created on V99.")])
+    r = graph.run(b, m, "plan")
+    assert not r["reply_check"]["ok"] and r["reply_check"]["unknown_ids"] == ["DR-ABC123", "V99"]
+
+
+@pytest.mark.parametrize("reply, bad", [("All 4 orders have been dispatched.", True),
+                                        ("Lorry pampinchanu, check cheyyandi.", True),
+                                        ("లారీ పంపించాను.", True),
+                                        ("Draft only: nothing was dispatched.", False),
+                                        ("The orders were not dispatched; drafts are ready.", False),
+                                        ("Draft chesanu, dispatch cheyyaledu.", False)])
+def test_reply_claiming_a_dispatch_is_flagged_in_every_language(broker_for, reply, bad):
+    r = graph.run(broker_for("T01"), MockClient([mock_final(reply)]), "plan")
+    assert (not r["reply_check"]["ok"]) == bad, r["reply_check"]
+
+
+def test_reply_check_accepts_counts_per_known_class_but_not_invented_ids(broker_for):
+    from anubhav.runtime.safety import check_reply
+    seen = '{"vehicles": [{"vehicle_id": "TRK-001", "class": "LCV407"}, {"class": "ACE"}], "draft_id": "DR-1A2B3C"}'
+    assert check_reply("Free: ACE-1, LCV407-2. Draft DR-1A2B3C on TRK-001.", seen)["ok"]
+    assert check_reply("Draft DR-9Z9Z9Z on TRK-001", seen)["unknown_ids"] == ["DR-9Z9Z9Z"]
+    assert check_reply("Use TRK-099", seen)["unknown_ids"] == ["TRK-099"]
+
+
+# ---------- Oct 31, W4: a refusal for a load that doesn't fit names what would
+def _overload(b):
+    """The smallest free vehicle and open orders (one site, no chilled goods) that are too heavy for it."""
+    free = [v for v in b.call("list_vehicles", {"available_on": b.C.today})["result"]["vehicles"] if v["class"] != "REEFER14"]
+    small = min(free, key=lambda v: v["payload_kg"])
+    orders = sorted((o for o in open_orders(b) if "chilled" not in o["handling_classes"]), key=lambda o: -o["kg"])
+    pick, kg = [], 0
+    for o in orders:
+        pick.append(o["order_id"]); kg += o["kg"]
+        if kg > small["payload_kg"]:
+            return small, pick, kg
+    pytest.skip("open orders are too light to overload the smallest vehicle")
+
+
+def test_an_overloaded_draft_names_free_vehicles_that_fit(broker_for):
+    b = broker_for("T01")
+    small, pick, kg = _overload(b)
+    r = b.call("create_dispatch_draft", {"order_ids": pick, "vehicle_id": small["vehicle_id"]})
+    assert not r["ok"] and r["error"]["code"] == "CAPACITY_EXCEEDED"
+    msg = r["error"]["message"]
+    assert "Next step:" in msg and f"{kg:,.0f} kg" in msg
+    named = re.findall(r"(\S+) \([\d,]+ kg", msg.split("Next step:")[1])
+    for vid in named:
+        v = b.C.vehicles[vid]
+        assert v["payload_kg"] >= kg and vid != small["vehicle_id"]
+        assert b.call("check_vehicle_availability", {"vehicle_id": vid})["result"]["available"]
+
+
+def test_the_next_step_never_names_a_held_vehicle(broker_for):
+    b = broker_for("T01")
+    small, pick, kg = _overload(b)
+    first = b.call("create_dispatch_draft", {"order_ids": pick, "vehicle_id": small["vehicle_id"]})["error"]["message"]
+    named = re.findall(r"(\S+) \([\d,]+ kg", first.split("Next step:")[1])
+    if not named:
+        pytest.skip("no vehicle fits this load")
+    spare = [o for o in open_orders(b) if o["order_id"] not in pick and o["kg"] <= b.C.vehicles[named[0]]["payload_kg"]
+             and "chilled" not in o["handling_classes"]][:1]
+    assert b.call("create_dispatch_draft", {"order_ids": [spare[0]["order_id"]], "vehicle_id": named[0]})["ok"]
+    again = b.call("create_dispatch_draft", {"order_ids": pick, "vehicle_id": small["vehicle_id"]})["error"]["message"]
+    assert named[0] not in again.split("Next step:")[1]
+
+
+def test_check_load_carries_the_next_step(broker_for):
+    b = broker_for("T01")
+    small, pick, _ = _overload(b)
+    r = b.call("check_load", {"assignments": [{"vehicle_id": small["vehicle_id"], "order_ids": pick}]})["result"]
+    assert r["checked"][0]["next_step"].startswith("Next step:")

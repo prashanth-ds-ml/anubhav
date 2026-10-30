@@ -2,6 +2,7 @@
 of crashing, Replay offers only saved runs, and one visitor's actions never change another visitor's state.
 Runs the real app in-process (Streamlit AppTest) on the demo world; no model calls."""
 
+import gc
 import shutil
 
 import pytest
@@ -10,7 +11,7 @@ from streamlit.testing.v1 import AppTest
 from anubhav import muse
 from anubhav.ui import core
 
-PAGES = ["app_pages/workbench.py", "app_pages/learned.py", "app_pages/share.py", "app_pages/proof.py",
+PAGES = ["app_pages/workbench.py", "app_pages/learned.py", "app_pages/share.py", "app_pages/proof.py", "app_pages/logs.py",
          "app_pages/report.py", "app_pages/learning_lab.py", "app_pages/skills.py", "app_pages/tuning.py"]
 LIVE_BUTTONS = {"app_pages/learned.py": "Learn from my records", "app_pages/learning_lab.py": "Mine my records now",
                 "app_pages/skills.py": "Practice now (active version)", "app_pages/tuning.py": "Ask Muse for a patch"}
@@ -29,6 +30,7 @@ def visitor(monkeypatch):
         apps.append(at)
         return at
     yield new
+    gc.collect()                            # Windows can't delete a database file while a closed-over handle lingers
     for at in apps:
         sid = at.session_state["sid"] if "sid" in at.session_state else None
         if sid:
@@ -72,3 +74,13 @@ def test_one_visitor_clearing_lessons_does_not_touch_another(visitor):
     assert any(c.value.startswith("0 approved") for c in a.sidebar.caption)
     b.run()
     assert not any(c.value.startswith("0 approved") for c in b.sidebar.caption)
+
+
+def test_logs_page_shows_a_run_as_plan_act_observe(visitor):
+    at = visitor()
+    at.switch_page("app_pages/logs.py")
+    at.run()
+    assert not at.exception
+    assert any("Agent runs" in m.label for m in at.metric)
+    assert any(m.value.startswith("**Request:**") for m in at.markdown)      # the newest saved run is opened
+    assert any(e.label.startswith(("list_", "find_", "plan_board", "create_", "get_")) for e in at.expander)

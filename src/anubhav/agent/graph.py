@@ -1,6 +1,6 @@
 r"""The agent: a bounded LangGraph loop. Muse reads the request (any of English, Telugu, Roman Telugu or a mix),
 calls tools through the broker, and answers in the planner's language. Code, not the model, enforces the limits
-and re-checks every draft before the run ends.
+and re-checks every draft and the reply (ids must come from this run; no claim of a dispatch) before the run ends.
 
   model --(tool calls, within limits)--> tools --> model ... --> finish
                 \--(a limit is reached)--> wrap_up (one last model call, no tools) --> finish
@@ -15,7 +15,7 @@ from typing import TypedDict
 
 from langgraph.graph import END, START, StateGraph
 
-from ..runtime.safety import validate_draft
+from ..runtime.safety import check_reply, validate_draft
 
 
 @dataclass
@@ -189,9 +189,13 @@ def run(broker, client, request: str, knowledge=(), limits: Limits = Limits(), h
         {"recursion_limit": 4 * limits.max_turns + 4})
     new = out["messages"][len(messages):]       # only this request's turns: never repeat an earlier reply
     reply = next((m.get("content") for m in reversed(new) if m["role"] == "assistant" and m.get("content")), "")
+    # what the agent was given or found in this run; the reply's ids must come from here (its own words don't count)
+    seen = json.dumps([m for m in out["messages"] if m["role"] != "assistant"], ensure_ascii=False, default=str)
+    rc = check_reply(reply, seen)
+    trace = out["trace"][:-1] + [dict(out["trace"][-1], reply_check=rc)]     # the finish step carries it
     return {"run_id": uuid.uuid4().hex[:10], "company": broker.C.company, "role": broker.s.role, "user": broker.s.user,
             "model": getattr(client, "model", "?"), "request": request, "knowledge": list(knowledge), "reply": reply,
             "harness": harness or {},
             "drafts": out["drafts"], "stop": out["stop"], "turns": out["turns"], "tool_calls": out["tool_calls"],
-            "cost_usd": round(out["cost"], 5), "latency_s": round(time.perf_counter() - t0, 2), "trace": out["trace"],
+            "cost_usd": round(out["cost"], 5), "latency_s": round(time.perf_counter() - t0, 2), "trace": trace, "reply_check": rc,
             **({"error": next(t["error"] for t in out["trace"] if t["type"] == "model_error")} if out["stop"] == "error" else {})}

@@ -7,3 +7,12 @@ segregation:                       # W-SEGREGATE: a class here never shares a ve
   chemical: [dense_food, light_food, liquid, chilled]
 cold_chain:                        # goods of this handling class need this vehicle class
   chilled: REEFER14
+reply_claims:                      # the agent only drafts: a reply must never claim one of these was done
+  en: [has been dispatched, have been dispatched, was dispatched, were dispatched, is dispatched, i dispatched,
+       i have dispatched, dispatch is confirmed, dispatch confirmed, booking is confirmed, booking confirmed, truck is sent,
+       i sent the truck, i have confirmed]
+  rt: [dispatch chesanu, dispatch chesamu, dispatch chesam, pampinchanu, pampincham, pampinchamu, confirm chesanu,
+       confirm chesam]
+  te: [పంపించాను, పంపించాం, పంపించేశాను, డిస్పాచ్ చేశాను, డిస్పాచ్ చేసాను, కన్ఫర్మ్ చేశాను]
+reply_negations: [not, never, no, nothing, "n't", cannot, without]   # "not dispatched" is fine (English only;
+                                                                     # Telugu negatives are different verb forms)

@@ -4,6 +4,7 @@ learned advisories become warnings, never silent rewrites. The company's written
 segregation, cold chain, usual stops) come from configs/operating_rules.yaml, not from code."""
 
 import functools
+import re
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -97,3 +98,32 @@ def validate_draft(C, order_ids, vehicle_id, delivery_date, policies=(), advisor
     if value > R["eway_bill_value_rs"]:
         w("EWAY_BILL", f"consignment value Rs {value:,.0f} > Rs {R['eway_bill_value_rs']:,}: e-way bill needed")
     return Verdict(ok=not err, errors=err, warnings=warn, load=load)
+
+
+# An id-like token: letters and digits joined by dashes (V01, DR-3F2A1C, T01-O00042, CONS00017, DFS-T001).
+ID_TOKEN = re.compile(r"(?<![\w-])(?=[\w-]*\d)[A-Za-z][A-Za-z0-9]*(?:-[A-Za-z0-9]+)*(?![\w-])")
+
+
+def check_reply(reply, seen):
+    """The reply is checked by code before the planner reads it. seen: everything the agent was given or found in
+    this run (the request, earlier turns, tool arguments and results). Every id in the reply must appear there, and
+    the reply must not claim a dispatch or confirmation happened (the agent only drafts)."""
+    R = rules()
+    text = reply or ""
+    known, words = set(ID_TOKEN.findall(seen)), set(re.findall(r"[A-Za-z0-9]+", seen))
+
+    def count_of_known(t):          # "ACE-1", "T14-4": a vehicle class or other known word with a small count
+        head, _, tail = t.rpartition("-")
+        return head in words | known and tail.isdigit() and len(tail) <= 2
+
+    unknown = sorted({t for t in ID_TOKEN.findall(text)
+                      if t not in known and any(c.isupper() for c in t) and not count_of_known(t)})
+    low, claims = text.lower(), []
+    neg = set(R.get("reply_negations", []))
+    for phrases in R.get("reply_claims", {}).values():
+        for p in phrases:
+            for m in re.finditer(re.escape(p.lower()), low):
+                before = re.findall(r"[\w']+", low[max(0, m.start() - 30):m.start()])[-3:]
+                if not any(w in neg or w.endswith("n't") for w in before):
+                    claims.append(p)
+    return {"ok": not unknown and not claims, "unknown_ids": unknown, "claims": sorted(set(claims))}
