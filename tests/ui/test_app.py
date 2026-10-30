@@ -3,6 +3,7 @@ of crashing, Replay offers only saved runs, and one visitor's actions never chan
 Runs the real app in-process (Streamlit AppTest) on the demo world; no model calls."""
 
 import gc
+import re
 import shutil
 
 import pytest
@@ -83,7 +84,7 @@ def test_logs_page_shows_a_run_as_plan_act_observe(visitor):
     assert not at.exception
     assert any("Agent runs" in m.label for m in at.metric)
     assert any(m.value.startswith("**Request:**") for m in at.markdown)      # the newest saved run is opened
-    assert any(e.label.startswith(("list_", "find_", "plan_board", "create_", "get_")) for e in at.expander)
+    assert any(re.match(r"[a-z_]+\(", e.label) for e in at.expander)        # at least one "tool(args)" act row
 
 
 def test_a_visitor_saves_a_business_profile_and_only_they_see_it(visitor):

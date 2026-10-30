@@ -152,7 +152,7 @@ def broker(cid: str, use_lessons: bool, role="dispatcher", user="demo"):
     C = company(cid)
     knowledge, policies, advisories = store().active_for(cid, C) if use_lessons else ([], [], [])
     lessons = store().for_agent(cid, C) if use_lessons else []
-    return Broker(C, Session(cid, role, user), policies, advisories, lessons), knowledge
+    return Broker(C, Session(cid, role, user), policies, advisories, lessons, analysis=True), knowledge
 
 
 _SPEND_LOCK = threading.Lock()
