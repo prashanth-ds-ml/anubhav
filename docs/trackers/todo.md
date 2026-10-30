@@ -72,7 +72,7 @@ Items 1, 2, 6 and 7 from the workshop review fold straight into this commit. 147
 | I2 | Each Muse model's role and calls on screen; Best Open Weights pitch | Oct 31 | ✅ "Meta models at work" on the Logs page (runs and cost of Spark Open, lessons and patches proposed by Spark 1.3, voice), counted from the records; README "Open weights end to end" |
 | I3 | 1–2 cited freight statistics | Nov 1 | ✅ README "The problem": Redseer (Dec 2024) 12.5 M trucks, 3.5 M operators, "around 75% … own fewer than five trucks" (quoted from the page); DPIIT–NCAER logistics cost 7.97% of GDP in 2023–24 (secondary report, Sep 2025). Both checked on the page; a road-share figure was not found, so not used |
 | I4 | Dispatcher review kit (Claude prepares; owner runs it with the interviewee) | Nov 1 | 🟨 kit ready: `docs/review_kit/dispatcher_review.md` (11 learned lessons with their evidence; "is this kind real in your region" + reviewer decision; timing protocol for T03 plan tomorrow; 3 open questions; honesty rules, EN + TE). **Owner:** run it with the interviewee and fill in the results |
-| I5 | Spreadsheet import into a new company (cut first) | Nov 2 | ⬜ |
+| I5 | Spreadsheet import into a new company (cut first) | Nov 2 | ✂️ cut (Oct 30): first in the cut order; onboarding a client is an adapter mapping (D-030) and is described in the README; time goes to the video instead |
 | J1 | EXP-011R: 3 repeats on the current version, pre-registered (~$15) | Nov 2 | ⬜ |
 | J2 | EXP-012: new tools on gap questions, pre-registered (~$3) | Nov 2 | ⬜ |
 
