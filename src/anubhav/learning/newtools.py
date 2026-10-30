@@ -167,12 +167,53 @@ def candidates(runs, company, sb, marked=()):
     return [g for g in groups(runs, company, sb) if len(g["requests"]) >= MIN_USES or g["key"] in marked]
 
 
+def _outputs(tpl):
+    """The names a query gives its first columns (SELECT … AS name), to say what the tool returns."""
+    head = re.split(r"\bfrom\b", re.sub(r"\s+", " ", tpl), 1, flags=re.I)[0]
+    return [a.lower() for a in re.findall(r"\bas\s+([A-Za-z_][A-Za-z0-9_]*)", head, re.I)]
+
+
+def _inputs(g):
+    names = [p["name"] for p in g["uses"][0]["params"]]
+    dates = [n for n in names if n.startswith("date")]
+    rest = [n for n in names if not n.startswith("date")]
+    return rest + (["dates"] if len(dates) > 1 else dates)
+
+
 def suggest_name(g):
-    """A tool name from the agent's own stated purpose (a person can edit it before approving)."""
-    words = re.findall(r"[a-z]+", (g["uses"][0]["purpose"] or g["uses"][0]["request"]).lower())
-    stop = {"the", "a", "an", "of", "for", "in", "on", "by", "to", "and", "what", "which", "how", "is", "are", "our", "we"}
-    words = [w for w in words if w not in stop][:5] or ["query"]
-    return "_".join(words)[:40]
+    """A general name: what the query returns, by what it takes (never a value it was built from), e.g.
+    total_returned_cases_by_town_and_dates. A person can edit it before approving."""
+    outs = _outputs(g["template"])
+    what = "_".join(outs[:2]) if outs else "rows"
+    name = f"{what}_by_{'_and_'.join(_inputs(g))}" if _inputs(g) else what
+    return re.sub(r"_+", "_", re.sub(r"[^a-z0-9_]", "_", name.lower()))[:40].strip("_")
+
+
+def describe(g):
+    """What the tool returns and takes, with one example request whose values are replaced by the input names."""
+    u = g["uses"][0]
+    example = u["request"]
+    for p in u["params"]:
+        example = re.sub(re.escape(p["value"]), f"<{p['name']}>", example, flags=re.I)
+    outs = ", ".join(_outputs(g["template"])[:4]) or "rows"
+    ins = ", ".join(f"{p['name']} ({'YYYY-MM-DD' if p['kind'] == 'date' else p['column'].split('.')[1]})" for p in u["params"])
+    return (f"Returns {outs} for any {ins}. Learned from {len(g.get('requests') or [1])} requests, e.g. \"{example[:90]}\"")[:300]
+
+
+def free_name(store, company, name):
+    """name, or name_2, name_3… if a candidate or active tool already has it (for automated proposals)."""
+    taken = {x["name"] for x in tools(store, company) if x["status"] in ("candidate", "active")}
+    base, i = name[:37], 1
+    while name in taken:
+        i += 1
+        name = f"{base}_{i}"
+    return name
+
+
+def specific_words(g, text):
+    """Values the tool was built from that leaked into its name or description (they make it look one-off)."""
+    vals = {p["value"].lower() for u in g["uses"] for p in u["params"]}
+    return sorted(v for v in vals if v and v in (text or "").lower())
 
 
 def _shift(d, months=0, days=0):
@@ -271,6 +312,8 @@ def propose(store, company, g, checks, name, description):
     name = re.sub(r"[^a-z0-9_]", "_", name.lower()).strip("_")[:40] or "query"
     if not re.fullmatch(r"[a-z][a-z0-9_]{2,39}", name):
         raise ValueError("a tool name is 3–40 lowercase letters, digits or _ and starts with a letter")
+    if specific_words(g, name):
+        raise ValueError(f"the name mentions {', '.join(specific_words(g, name))}: name what the tool does for any value")
     if any(t["name"] == name and t["status"] in ("candidate", "active") for t in tools(store, company)):
         raise ValueError(f"a tool named {name} already exists")
     params = [{k: p[k] for k in ("name", "kind", "column")} | {"example": p["value"]} for p in g["uses"][0]["params"]]

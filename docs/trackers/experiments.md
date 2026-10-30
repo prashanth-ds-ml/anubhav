@@ -469,3 +469,22 @@ Packs: T01→TNEW 4 lessons (1 skipped: no matching site), T02→TNEW 4 lessons 
 - **Budget:** 68 runs, ~$3 Baseten.
 
 > **Date note (2026-10-30):** the registration commit `e44a49c` says "pre-registered 2026-11-02" in the scripts' docstrings; the real date was 2026-10-30 (work ran ahead of the plan's day labels). The frozen hashes are of those files as committed; the docstrings are left unchanged so the hashes still match.
+
+#### EXP-012 result (2026-10-30, `artifacts/benchmark/exp012_20261030_230811.json`; 68 runs, $4.08 Baseten): **both rules NOT met**
+| Held-out, 16 questions per arm (T01 + T02) | Right | Mean tool calls | Cost |
+|---|---|---|---|
+| N built-in tools only | 11 (69%) | 7.5 | $0.90 |
+| Q + query tools | 13 (81%) | 4.8 | $0.92 |
+| T + learned tools | 15 (94%) | 4.7 | $1.03 |
+- **R1 (Q − N ≥ 25 points): not met, +12.5.** The "gap" questions were less of a gap than designed: built-in tools answered all 6 busiest-weekday questions (N 6/6, Q 3/6). Where the query tool did help: returned cases per town and month (N 3/6 → Q 6/6), damaged cases per month (1/2 → 2/2), worst on-time weekday (1/2 → 2/2). Q also used 36% fewer tool calls than N.
+- **R2 (T calls ≤ 0.7 × Q, not worse): not met.** The fixed rule approved 10 tools (5 per company), but **the agent never called one (0/16)**. T's 15/16 is not evidence for learned tools.
+- **Why (diagnosed after the run):** each tool was named and described after the one request it came from (`trip_outcomes_detail_narsampet_september`, "Total returned cases Parkal Oct 2026 orders"), so it read as a one-off. Some approved tools were exploration listings, not answers. The one live success (C5) used a name a person wrote. → EXP-012b tests one change: general names and descriptions.
+- Learning phase: 18/20 dev questions right ($1.22).
+
+### EXP-012b: EXP-012 with general names for learned tools (frozen 2026-10-30 before any Muse call)
+- **Question:** If learned tools are named by what they return and take (never by a value they were built from), does the agent use them, and are they cheaper without losing accuracy?
+- **One change from EXP-012:** `newtools.suggest_name` (outputs + inputs, e.g. `weekday_stops_by_town`), `newtools.describe` (outputs, inputs with types, one example request with values replaced by `<input>`), and `propose` refuses a name containing a source value. Everything else as EXP-012 (world 5279, T01 + T02, same dev and held-out gap questions, same checks, same fixed approval rule). Arm N is not re-run.
+- **Frozen files:** `exp012b_new_tools.py` `68bbd5fb4990c9f1` · `newtools.py` `e8754a18200253e8` · `query.py` `a2c3fae9ddd9d389` (also fixes the value-shape helper, which had control characters where `\1\2` belonged; EXP-011R's running process loaded the earlier `query.py`) · others as EXP-012. 208 tests pass.
+- **Decision rule (fixed now, pooled, 16 held-out per arm):** **R2** as EXP-012 (T right ≥ Q right − 1 and T mean tool calls ≤ 0.7 × Q). **R2b:** T calls a learned tool in at least half of its held-out questions.
+- **Caveat stated now:** this is a second attempt after a failure on the same questions; it is reported as such, next to EXP-012.
+- **Budget:** ~52 runs, ~$3 Baseten.

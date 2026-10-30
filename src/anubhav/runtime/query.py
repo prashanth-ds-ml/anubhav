@@ -51,7 +51,7 @@ def _free_text(values):
 def _one_shape(values):
     """Names or ids of one kind look alike ("Jangaon", "C0001"); a change log of mixed values ("22:00", "Tuesday",
     "night_only") does not. Shape = letters → a, digits → 9, runs collapsed."""
-    shape = lambda v: re.sub(r"(a)a+|(9)9+", r"", re.sub(r"[^\W\d_]", "a", re.sub(r"\d", "9", v)))
+    shape = lambda v: re.sub(r"(a)a+|(9)9+", r"\1\2", re.sub(r"[^\W\d_]", "a", re.sub(r"\d", "9", v)))
     counts = {}
     for v in values:
         counts[shape(v)] = counts.get(shape(v), 0) + 1

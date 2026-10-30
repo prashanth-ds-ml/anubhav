@@ -120,3 +120,17 @@ def test_differently_written_queries_with_the_same_answers_are_one_tool(C):
     assert len(g["uses"]) == 2 and g["template"].isascii() and nt.check(g, sb)["pass"]
     runs.append(run_with(orders.format(town[2]), "orders by day C?", run_id="3"))           # counts orders, not stops
     assert [len(x["uses"]) for x in nt.candidates(runs, "T01", sb)] == [2]
+
+
+def test_names_and_descriptions_are_general_never_the_values_a_tool_was_built_from(C, tmp_path):
+    sb = Sandbox(C)
+    g = nt.candidates(two_runs(C), "T01", sb)[0]
+    name, desc = nt.suggest_name(g), nt.describe(g)
+    assert name == "returned_by_town_and_dates" and not nt.specific_words(g, name + " " + desc)
+    assert "town (town)" in desc and "<town>" in desc
+    S = LessonStore(tmp_path / "l.sqlite")
+    town = g["uses"][0]["params"][0]["value"]
+    with pytest.raises(ValueError):
+        nt.propose(S, "T01", g, {"pass": True}, f"returns_{town.lower()}_september", desc)
+    nt.propose(S, "T01", g, {"pass": True}, name, desc)
+    assert nt.free_name(S, "T01", name) == f"{name}_2"

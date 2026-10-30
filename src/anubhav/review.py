@@ -94,7 +94,7 @@ def review(C, store, runs, feedback, client=None, actor="nightly review", since=
             continue
         checks = newtools.check(g, sb)
         try:
-            tid = newtools.propose(store, cid, g, checks, newtools.suggest_name(g), (g["uses"][0]["purpose"] or g["uses"][0]["request"])[:200])
+            tid = newtools.propose(store, cid, g, checks, newtools.free_name(store, cid, newtools.suggest_name(g)), newtools.describe(g))
         except ValueError as e:
             proposed.append({"template": g["template"][:120], "error": str(e)})
             continue
