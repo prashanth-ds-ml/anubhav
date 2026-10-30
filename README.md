@@ -13,7 +13,7 @@ Muse already handles Telugu, Roman Telugu and tool calls well. What it can't kno
 
 ## Results (all pre-registered; files frozen by hash before any model call)
 
-**Final benchmark, EXP-011.** It runs on a world the system had never seen (fresh seed 5279), with the same model (Muse Spark Open) and the same 38 cases in RT/TE/EN, one run each.
+**Final benchmark, EXP-011.** It runs on a world the system had never seen (fresh seed 5279), with the same model (Muse Spark Open) and the same 38 cases in RT/TE/EN, one run each, using the 19 tools that existed then.
 
 | Company | Cold, with raw-note search | With learning |
 |---|---|---|
@@ -46,7 +46,7 @@ Details: [experiments log](docs/trackers/experiments.md) · [decisions](docs/tra
 flowchart TB
   U["Dispatcher · text or voice<br/>Roman Telugu / Telugu / English"] -->|Muse Voice Transcribe| A
   subgraph Agent["Agent · Muse Spark Open · LangGraph bounded loop"]
-    A[Plan with tools] --> T[19 generic MCP tools<br/>find site · orders · vehicles · constraints · routes · notes]
+    A[Plan with tools] --> T[27 generic MCP tools in 7 groups<br/>orders & sites · fleet & drivers · planning · trips & documents<br/>history & performance · knowledge]
     T --> D[Draft only: never dispatches]
     D --> V{{Deterministic safety check<br/>enforces approved rules}}
   end
@@ -61,7 +61,7 @@ flowchart TB
 ```
 
 1. **Records:** trips, staff corrections, driver notes and outcomes, in each client's own format. Adapters map them to one canonical view.
-2. **Generic tools:** 19 tools work on any client's data through an MCP server. Tool lists are filtered by role, and every call goes through one broker that enforces company and role.
+2. **Generic tools:** 27 tools in 7 groups (orders & sites, fleet & drivers, planning, trips & documents, history & performance, knowledge, system) work on any client's data through an MCP server. They come from an audit of what planners actually ask. `plan_board` shows a whole day in one call, `check_load` tests a plan without committing, and `list_lessons` lets the agent explain what it has learned. Tool lists are filtered by role, and every call goes through one broker that enforces company and role.
 3. **Mine:** Muse Spark 1.3 reads a digest of the history and proposes lessons, such as "32 ft trucks can't enter the Jangaon godown".
 4. **Check:** the evidence gate is code. It needs supporting observations, rejects contradictions, tests vendor reliability statistically and rejects habits that only look like rules.
 5. **Review:** a person approves each lesson as advice or as an enforced rule. Lessons expire, can be challenged by new outcomes and can be rolled back. Every step is audited.
@@ -113,7 +113,7 @@ Deploying: [docs/deploy.md](docs/deploy.md).
 ```
 src/anubhav/
   data/        world-first synthetic generator: hidden truth kept apart from what the agent sees; 3 client schemas
-  runtime/     canonical company view, 19-tool broker, safety validator, drafts and holds
+  runtime/     canonical company view, 27-tool broker (7 categories), safety validator, drafts and holds
   mcp_server.py
   agent/       LangGraph agent loop
   learning/    digest → miner → evidence gate → lesson store → domain packs; truth scoring (evaluation only)

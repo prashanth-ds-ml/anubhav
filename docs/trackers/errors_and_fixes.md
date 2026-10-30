@@ -24,6 +24,8 @@ Summary table first, details below. Newest at the bottom.
 | E-014 | 2026-10-29 | tools | A retry after cancel returned the cancelled draft (shared idempotency key), bypassing new policy checks | high | fixed (cancelled drafts never resurrected; test) | layer 2 commit |
 | E-015 | 2026-10-29 | infra | Rename sweep skipped every folder named `data` (incl. src/anubhav/data, tests/data); tests caught the stale import | low | fixed | layer 2 commit |
 | E-016 | 2026-10-29 | agent | Telugu-script request answered in Roman Telugu; reply offered to dispatch on confirmation (no such capability) | medium | fixed (system prompt: same script; 'you cannot dispatch') | layer 2 commit |
+| E-017 | 2026-10-30 | tools | 'Plan tomorrow' (T03, 21 orders) hit the 12-call limit: tools only looked at one site/vehicle at a time, so no plan was made | high | fixed (D-037: plan_board, check_load, batch drafts; live check: 16 drafts in 11 calls) | tools commit |
+| E-018 | 2026-10-30 | agent | A run that ended at the limit showed the previous turn's answer (reply taken from the whole conversation); no final answer was asked for | medium | fixed (reply from this turn only; wrap-up call with no tools at the limit; tests) | tools commit |
 
 **Areas:** model API · MCP · tools · agent · retrieval · verifier · voice · UI · infra · data · cost
 

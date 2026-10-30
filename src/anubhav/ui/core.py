@@ -121,7 +121,8 @@ def recent_runs(limit=60):
 def broker(cid: str, use_lessons: bool, role="dispatcher", user="demo"):
     C = company(cid)
     knowledge, policies, advisories = store().active_for(cid, C) if use_lessons else ([], [], [])
-    return Broker(C, Session(cid, role, user), policies, advisories), knowledge
+    lessons = store().for_agent(cid, C) if use_lessons else []
+    return Broker(C, Session(cid, role, user), policies, advisories, lessons), knowledge
 
 
 def live_ready(model_key):
@@ -208,6 +209,8 @@ def drafts(r):
     for s in tool_steps(r):
         if s["name"] == "create_dispatch_draft" and s["ok"]:
             out.append(s["result"])
+        if s["name"] == "create_dispatch_drafts" and s["ok"]:
+            out += [{**x, "draft_id": x["draft_id"]} for x in s["result"]["results"] if x["ok"]]
         if s["name"] == "cancel_dispatch_draft" and s["ok"]:
             out = [d for d in out if d["draft_id"] != (s.get("result") or {}).get("draft_id")]
     return out

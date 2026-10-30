@@ -281,3 +281,16 @@ def test_leak_check_ignores_the_recipients_own_ids_but_not_the_sources(C, S):
     v = next(v for v in src.vehicles.values() if v["owner"] != "own")
     bad = {"items": [{"kind": "alias", "params": {"phrase": v["reg_no"]}}]}
     assert v["reg_no"] in pack.leaks(bad, src, dst)
+
+
+def test_agent_can_list_what_it_learned_and_what_waits_for_review(C, S):
+    c = C("T01")
+    F = digest.Facts(c)
+    true, _ = truth_and_traps(c)
+    a, b = S.add_proposals("T01", F, [true["H-01"], true["H-03"]])
+    S.approve(a, "rev", "policy", "3 refused trips")
+    br = Broker(c, Session("T01"), lessons=S.for_agent("T01", c))
+    used = br.call("list_lessons", {})["result"]["lessons"]
+    assert [l["lesson_id"] for l in used] == [a] and used[0]["status"] == "enforced rule" and used[0]["approved_by"] == "rev"
+    waiting = br.call("list_lessons", {"status": "waiting_for_review"})["result"]["lessons"]
+    assert [l["lesson_id"] for l in waiting] == [b] and waiting[0]["approved_by"] is None

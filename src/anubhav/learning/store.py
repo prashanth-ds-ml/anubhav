@@ -158,6 +158,16 @@ class LessonStore:
                 advisories.append({"site_id": site["site_id"], "id": lid, "text": text.split(": ", 1)[-1]})
         return knowledge, policies, advisories
 
+    def for_agent(self, company, C):
+        """Every lesson of a company in plain words, for the agent's list_lessons tool (counts and reasons only)."""
+        status = {"ACTIVE_POLICY": "enforced rule", "ACTIVE_ADVISORY": "advice", "CANDIDATE": "waiting for review",
+                  "NEEDS_EVIDENCE": "waiting for more evidence", "CHALLENGED": "challenged by new records",
+                  "REJECTED": "rejected", "RETIRED": "retired", "EXPIRED": "expired"}
+        return [{"lesson_id": l["lesson_id"], "state": l["state"], "status": status.get(l["state"], l["state"]),
+                 "lesson": describe(l, C), "learned_from": "a partner company's pack" if l["source"].startswith("pack:") else "our own records",
+                 "approved_by": l["reviewer"] if l["state"] in ACTIVE else None,
+                 "evidence": (l["gate"] or {}).get("reason"), "updated": l["updated"]} for l in self.list(company)]
+
 
 def describe(les, C):
     """A lesson in plain words, with the company's own names."""

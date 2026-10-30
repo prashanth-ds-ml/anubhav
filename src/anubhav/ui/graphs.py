@@ -66,6 +66,12 @@ def run_dot(r, C=None):
         L.append(f't{i} [label="{label}", shape=box, fillcolor="{"#E3F1EA" if ok else "#FBE3E0"}", color="{"#1E7B4F" if ok else "#A1281B"}"];')
         L.append(f"{prev} -> t{i};")
         prev = f"t{i}"
+        if ok and s["name"] == "plan_board":                 # learned rules arrive for every site of the day at once
+            res = s.get("result") or {}
+            learned = [(x["name"], r) for x in res.get("sites", []) for r in x.get("approved_rules", []) + x.get("advice", [])]
+            for j, (site, rule) in enumerate(learned[:4]):
+                L.append(f'b{i}_{j} [label="Learned · {_q(site, 22)}\\n{_q(rule, 30)}", shape=note, fillcolor="#E8F2F1", color="#0F7A74"];')
+                L.append(f'b{i}_{j} -> t{i} [color="#0F7A74", style=dashed, label="learned"];')
         if ok and s["name"] == "get_site_constraints":      # where learned knowledge entered the decision
             res = s.get("result") or {}
             for j, p in enumerate(res.get("approved_policies", [])):
@@ -78,8 +84,13 @@ def run_dot(r, C=None):
                 L.append(f'n{i} [label="nothing recorded\\nabout this site", shape=note, fillcolor="#FFF4E5", color="#B4570B"];')
                 L.append(f'n{i} -> t{i} [color="#B4570B", style=dashed];')
     drafts = [s for s in steps if s["name"] == "create_dispatch_draft" and s["ok"]]
+    batch = [x for s in steps if s["name"] == "create_dispatch_drafts" and s["ok"] for x in s["result"]["results"] if x["ok"]]
     used = [k for k in r.get("knowledge", []) if "[" in k and k.rsplit("[", 1)[1].split()[-1].rstrip("]") in (r.get("reply") or "")]
-    if drafts:
+    if batch:
+        kg = sum(x["load"]["kg"] for x in batch)
+        L.append(f'd [label="{len(batch)} drafts\\n{", ".join(x["vehicle_id"] for x in batch[:6])} · {kg:,.0f} kg", shape=box, '
+                 f'fillcolor="#0F7A74", fontcolor="white"];')
+    elif drafts:
         d = drafts[-1]["result"]
         v = (C.vehicles.get(d["vehicle_id"], {}) if C else {})
         L.append(f'd [label="Draft {d["vehicle_id"]}\\n{v.get("length_ft", "?")} ft · {d["load"]["kg"]:,.0f} kg", shape=box, '

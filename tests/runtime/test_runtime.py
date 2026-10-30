@@ -48,13 +48,13 @@ def test_same_contract_on_every_client(broker_for, company):
     orders = open_orders(b)
     assert orders and set(orders[0]) >= {"order_id", "site_id", "site", "town", "window", "kg", "m3", "value_rs", "handling_classes"}
     vs = b.call("list_vehicles", {})["result"]["vehicles"]
-    assert vs and set(vs[0]) == set(VEH_FIELDS) | {"held_today"}
+    assert vs and set(vs[0]) == set(VEH_FIELDS) | {"held_today", "workshop_day_of_month"}
     assert all(isinstance(v["payload_kg"], (int, float)) and v["payload_kg"] >= 750 for v in vs)   # tonnes converted back for C
     s = b.call("get_site_constraints", {"site_id": orders[0]["site_id"]})["result"]
     assert set(s) >= {"site_id", "name", "town", "recorded_in_site_master", "written_rules"}
     assert b.call("get_order", {"order_id": orders[0]["order_id"]})["result"]["totals"]["kg"] > 0
-    caps = b.call("discover_capabilities", {})["result"]["capabilities"]
-    assert {c["tool"] for c in caps} == {t.name for t in REGISTRY}
+    cats = b.call("discover_capabilities", {})["result"]["categories"]
+    assert {t["tool"] for c in cats for t in c["tools"]} == {t.name for t in REGISTRY}
 
 
 def test_clients_really_use_different_schemas(world):
@@ -300,3 +300,138 @@ def test_voice_path_feeds_the_transcript_to_the_agent(world, tmp_path, monkeypat
     monkeypatch.setattr(vr.trace, "save", lambda r, label: tmp_path)
     vr.main(["--wav", "x.wav", "--world", str(world), "--yes"])
     assert seen["request"] == "Jangaon Lakshmi load ki bandi pettu"
+
+
+# ---------- whole-day planning, operations, performance and lessons (generic: every client)
+@pytest.mark.parametrize("company", COMPANIES)
+def test_plan_board_shows_the_whole_day_in_one_call(broker_for, company):
+    b = broker_for(company)
+    board = b.call("plan_board", {})["result"]
+    ids = {o["order_id"] for s in board["sites"] for o in s["orders"]}
+    assert ids == {o["order_id"] for o in open_orders(b)} and board["summary"]["open_orders"] == len(ids)
+    assert len(board["vehicles_free"]) + len(board["vehicles_not_free"]) == len(b.C.vehicles)
+    assert all({"recorded", "road_km", "drive_minutes", "orders"} <= set(s) for s in board["sites"])
+
+
+def test_plan_board_carries_learned_rules_and_advice(broker_for):
+    b0 = broker_for("T01")
+    sid = open_orders(b0)[0]["site_id"]
+    b = broker_for("T01", policies=[{"site_id": sid, "max_length_ft": 22, "id": "L-1"}],
+                   advisories=[{"site_id": sid, "id": "L-2", "text": "gate closes early"}])
+    site = next(s for s in b.call("plan_board", {})["result"]["sites"] if s["site_id"] == sid)
+    assert site["approved_rules"] == ["max 22 ft (L-1)"] and site["advice"] == ["gate closes early (L-2)"]
+
+
+def test_check_load_validates_without_creating_anything(broker_for):
+    b = broker_for("T01")
+    v, orders = _free_pair(b)
+    small = min(b.C.vehicles.values(), key=lambda x: x["payload_kg"])
+    heavy = max(open_orders(b), key=lambda o: o["kg"])
+    r = b.call("check_load", {"assignments": [
+        {"order_ids": [orders[0]["order_id"]], "vehicle_id": v["vehicle_id"]},
+        {"order_ids": [heavy["order_id"]], "vehicle_id": small["vehicle_id"]},
+        {"order_ids": [orders[1]["order_id"]], "vehicle_id": v["vehicle_id"]}]})["result"]
+    first, over, dup = r["checked"]
+    assert not r["all_ok"] and first["fill_pct"] is not None
+    assert any(e["code"] == "CAPACITY_EXCEEDED" for e in over["errors"])
+    assert any("more than one assignment" in e["message"] for e in dup["errors"])
+    assert b.C.runtime.drafts() == [] and not b.C.runtime.held(v["vehicle_id"], b.C.today)
+
+
+def test_batch_drafts_are_each_validated_and_listed(broker_for):
+    b = broker_for("T01")
+    v, orders = _free_pair(b)
+    small = min(b.C.vehicles.values(), key=lambda x: x["payload_kg"])
+    heavy = max(open_orders(b), key=lambda o: o["kg"])
+    args = {"assignments": [{"order_ids": [orders[0]["order_id"]], "vehicle_id": v["vehicle_id"]},
+                            {"order_ids": [heavy["order_id"]], "vehicle_id": small["vehicle_id"]}]}
+    r = b.call("create_dispatch_drafts", args)["result"]
+    assert r["created"] == 1 and r["failed"] == 1 and r["results"][1]["error"]["code"] == "CAPACITY_EXCEEDED"
+    listed = b.call("list_dispatch_drafts", {})["result"]
+    assert [d["draft_id"] for d in listed["drafts"]] == [r["results"][0]["draft_id"]]
+    assert orders[0]["order_id"] not in listed["orders_without_vehicle"]
+    again = b.call("create_dispatch_drafts", args)["result"]           # a retry returns the same draft
+    assert again["results"][0]["draft_id"] == r["results"][0]["draft_id"] and len(b.call("list_dispatch_drafts", {})["result"]["drafts"]) == 1
+
+
+def test_viewer_may_check_but_not_create_batch_drafts(broker_for):
+    b = broker_for("T01", role="viewer")
+    v, orders = _free_pair(broker_for("T01"))
+    one = {"assignments": [{"order_ids": [orders[0]["order_id"]], "vehicle_id": v["vehicle_id"]}]}
+    assert b.call("check_load", one)["ok"]
+    assert b.call("create_dispatch_drafts", one)["error"]["code"] == "PERMISSION_DENIED"
+
+
+def test_free_vehicles_exclude_holds_and_the_workshop_day(broker_for):
+    b = broker_for("T01")
+    v, orders = _free_pair(b)
+    b.call("create_dispatch_draft", {"order_ids": [orders[0]["order_id"]], "vehicle_id": v["vehicle_id"]})
+    free = {x["vehicle_id"] for x in b.call("list_vehicles", {"available_on": b.C.today})["result"]["vehicles"]}
+    assert v["vehicle_id"] not in free
+    shop = next(x for x in b.C.vehicles.values() if x.get("maintenance_day"))
+    day = f"{b.C.today[:8]}{int(shop['maintenance_day']):02d}"
+    r = b.call("check_vehicle_availability", {"vehicle_id": shop["vehicle_id"], "delivery_date": day})["result"]
+    assert not r["available"] and any("workshop" in w for w in r["why_not"])
+    from anubhav.runtime.safety import validate_draft
+    assert any("workshop" in e["message"] for e in validate_draft(b.C, [orders[0]["order_id"]], shop["vehicle_id"], day).errors)
+
+
+@pytest.mark.parametrize("company", ["T01", "T02", "T03"])
+def test_drivers_documents_and_performance_work_on_every_schema(broker_for, company):
+    b = broker_for(company)
+    drivers = b.call("list_drivers", {})["result"]["drivers"]
+    assert drivers and {"driver_id", "lang", "phone", "trips_last_30_days"} <= set(drivers[0])
+    ship = b.C.t["shipments"][0]
+    docs = b.call("trip_documents", {"shipment_id": ship["shipment_id"]})["result"]
+    assert docs["invoices"] and docs["lorry_receipts"] and docs["proof_of_delivery"]
+    assert b.call("trip_documents", {})["error"]["code"] == "BAD_ARGS"
+    lo, hi = "2026-09-01", "2026-09-30"
+    total = b.call("performance", {"date_from": lo, "date_to": hi})["result"]["groups"][0]
+    by_town = b.call("performance", {"date_from": lo, "date_to": hi, "group_by": "town"})["result"]["groups"]
+    assert total["stops"] == sum(g["stops"] for g in by_town) == b.call("trip_history", {"date_from": lo, "date_to": hi})["result"]["trips"]
+    assert 0 <= total["on_time_pct"] <= 100 and 0 < total["avg_fill_pct"] <= 120
+    vendors = b.call("performance", {"date_from": lo, "date_to": hi, "group_by": "vendor"})["result"]["groups"]
+    assert any(g["hired_placements"] for g in vendors)
+
+
+def test_document_problems_are_found(broker_for):
+    b = broker_for("T01")
+    bad = next(e for e in b.C.t["eway_bills"] if e["status"] != "ok")
+    inv = next(i for i in b.C.t["invoices"] if i["invoice_no"] == bad["invoice_no"])
+    docs = b.call("trip_documents", {"order_id": inv["order_id"]})["result"]["trips"]
+    assert any(bad["ewb_no"] in p for t in docs for p in t["problems"])
+
+
+def test_list_lessons_shows_only_what_the_session_was_given(broker_for):
+    assert b_lessons(broker_for("T01"))["lessons"] == []
+    rows = [{"lesson_id": "L-1", "state": "ACTIVE_POLICY", "text": "x"}, {"lesson_id": "L-2", "state": "CANDIDATE", "text": "y"}]
+    b = broker_for("T01", lessons=rows)
+    assert [l["lesson_id"] for l in b_lessons(b)["lessons"]] == ["L-1"]
+    assert [l["lesson_id"] for l in b.call("list_lessons", {"status": "waiting_for_review"})["result"]["lessons"]] == ["L-2"]
+
+
+def b_lessons(b):
+    return b.call("list_lessons", {})["result"]
+
+
+def test_tools_are_grouped_into_known_categories(broker_for):
+    from anubhav.runtime.broker import CATEGORIES
+    assert all(t.category in CATEGORIES for t in REGISTRY)
+    cats = broker_for("T01").call("discover_capabilities", {})["result"]["categories"]
+    assert [c["category"] for c in cats] == [c for c in CATEGORIES if any(t.category == c for t in REGISTRY)]
+
+
+def test_agent_answers_when_the_tool_budget_runs_out(broker_for):
+    b = broker_for("T01")
+    script = [lambda m, t: mock_tool_call("list_open_orders", {}) for _ in range(3)]
+    script.append(lambda m, t: mock_final("3 orders seen; still to plan: vehicles") if t is None else mock_tool_call("list_vehicles", {}))
+    r = graph.run(b, MockClient(script), "plan tomorrow", limits=graph.Limits(max_turns=4, max_tool_calls=10))
+    assert r["stop"] == "limit" and r["reply"] == "3 orders seen; still to plan: vehicles" and r["turns"] <= 4
+
+
+def test_reply_is_never_an_earlier_turns_answer(broker_for):
+    b = broker_for("T01")
+    history = [{"role": "user", "content": "orders?"}, {"role": "assistant", "content": "OLD ANSWER"}]
+    m = MockClient([lambda msgs, t: mock_tool_call("list_open_orders", {}) for _ in range(2)])
+    r = graph.run(b, m, "plan", limits=graph.Limits(max_turns=2, max_tool_calls=10), history=history)
+    assert r["reply"] != "OLD ANSWER"

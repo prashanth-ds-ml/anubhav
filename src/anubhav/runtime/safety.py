@@ -54,6 +54,8 @@ def validate_draft(C, order_ids, vehicle_id, delivery_date, policies=(), advisor
     if v:
         if v["status"] != "available":
             e("VEHICLE_UNAVAILABLE", f"{vehicle_id} is {v['status']}")
+        if v.get("maintenance_day") and int(v["maintenance_day"]) == int(delivery_date[8:10]):
+            e("VEHICLE_UNAVAILABLE", f"{vehicle_id} is in the workshop on {delivery_date} (maintenance day)")
         lapsed = [k for k in ("fitness_until", "permit_until", "insurance_until", "puc_until") if (v.get(k) or "9999") < delivery_date]
         if lapsed:
             e("DOCUMENTS_EXPIRED", f"{vehicle_id}: {', '.join(lapsed)} expired")
