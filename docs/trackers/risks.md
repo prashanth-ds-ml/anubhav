@@ -14,7 +14,7 @@ Review at the end of each day. Close a risk when it can no longer happen.
 | R-23 | Mining precision below bar (0.73): plausible-but-wrong lessons pass the gate | M | M | EXP-009: sharper statistical gates (no hard-coding); reviewer stays in the loop | Precision < 0.85 after EXP-009 | closed: EXP-009b precision 0.90 on an unseen world, 0 traps |
 | R-05 | Benchmark leakage / overfitting | M | H | Hidden rules separate; split by family and time; leakage scan | Proposer sees oracle | open |
 | R-07 | Credits run out | L | H | [[cost_ledger]], mock mode, budget in [[build_plan]] | >$20 in a day | open |
-| R-08 | Hosted demo abused or overspends | M | M | Spend cap, rate limit, replay default | Unusual spend | mitigated: replay default, 8 live runs/session, deploy without keys |
+| R-08 | Hosted demo abused or overspends | M | M | Spend cap, rate limit, replay default | Unusual spend | mitigated: replay default, 8 live runs/session, 60/day for the app, every live call behind one guard, deploy without keys (D-038) |
 | R-09 | Demo not reproducible | M | H | Seeds, hashes, replay artifacts | Clean clone fails | mitigated: fresh clone rebuilds the identical world (same hashes); replay bundle |
 | R-10 | Originality / rules challenge | L | H | Daily commits, attribution, fictional data | — | open |
 | R-11 | Secrets or personal info committed | L | H | `.gitignore`, history scan before each push | — | watching |
@@ -29,5 +29,10 @@ Review at the end of each day. Close a risk when it can no longer happen.
 | R-20 | Unverified citations in PRD (Harness², arXiv) | M | H | All 4 verified 2026-10-29 (questions I-05) | — | closed |
 | R-21 | Over-cautious lessons (warnings everywhere) make the agent useless | M | M | Measure warning rate and task success together | Many advisories, low success | open |
 | R-22 | Multi-schema adapters take longer than planned | M | M | Same contract tests; drop to 2 adapters if needed | Layer 2.1 > 1 day | open |
+| R-24 | Model-written query escapes its limits, reads other data, or hangs the app (D-040) | M | H | SQL only, never Python; in-memory copy of the company's own tables; query_only + SELECT-only authorizer; 2 s / 200 rows / 4 kB caps; a test for each | Any sandbox test fails | open |
+| R-25 | New features (Logs, new tools, nightly review) eat video day | M | H | Cut order in [[implementation_plan]] §5; Nov 3 reserved for the video | C not done by Nov 1 night | open |
+| R-26 | "Learns new tools" / "learns from its runs" claimed as measured when only shown | M | H | Pre-register EXP-012, or say "shown working"; D-038 separates the measured commits | Any claim without an experiment row | open |
+| R-27 | `run_query` changes measured behaviour (the agent writes SQL instead of using the right tool) | M | M | Off in frozen configs; "use other tools first"; Loop A flags wrong tool; visible on the Logs page | Gap-question runs use SQL for questions a tool answers | open |
+| R-28 | Hosted demo state leaks between visitors | M | M | Per-session runtime and lesson store; harness decisions local-only (D-038); AppTest isolation test | — | mitigated |
 
 Closed from the order-desk plan: R-03 (BigTool gain), R-06 (40 tools dilute quality); no longer applicable.

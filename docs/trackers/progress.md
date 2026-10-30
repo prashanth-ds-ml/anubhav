@@ -3,7 +3,7 @@ tags: [tracker, progress]
 ---
 # Progress tracker
 
-**Overall:** ~80% (as of 2026-10-30: build, learning loops and final benchmark done; left: deploy, video, submit)
+**Overall:** ~80% (as of 2026-10-30 evening: build, learning loops and final benchmark done; audit step 1 fixes done and tested, not yet committed. Next: [[implementation_plan]] (Logs page, new-tool creation, nightly review), then deploy, video, submit)
 Plan: [[build_plan]] · Status key: ⬜ pending · 🟨 in progress · ✅ done · ❌ blocked · ✂️ cut
 History before Oct 29 (order-desk plan): `archive/progress_order_desk.md`
 
@@ -19,7 +19,7 @@ History before Oct 29 (order-desk plan): `archive/progress_order_desk.md`
 | ✅ | **Nov 1, 10 AM** | **Demo-safe checkpoint** | Layers 0–3 done | ✅ reached Oct 29 | |
 | 4 | Oct 29– | Loop A harness patch, OR-Tools, specialists | One real patch decided | ✅ Loop A built (feedback, trace signals, Muse proposer, patch rules, paired test, versions, rollback; 11 tests). EXP-010: the patch was correctly rejected (no held-out gain), so none is active. Oct 30: 8 new tools from a user-question audit (D-037; 27 tools in 7 categories) | [[harness_versions]] |
 | 5 | Nov 1–2 | 100 sealed cases, review, adversarial, arms A–E | Paired results with counts | ✅ EXP-011 on unseen world 5279: both bars met. Scaled down: 38 cases (not 100), one run each, arm D not run (no active patch), casebook not human-reviewed | [[data_and_benchmark]] |
-| 6 | Oct 29– | Streamlit 3 views, judge challenge, hosting | Works in incognito | 🟨 8 pages work from a fresh clone with no keys (replay bundle, world built from seed, 8 live runs per session). Left: deploy (`docs/deploy.md`), judge seed challenge | `streamlit_app.py` |
+| 6 | Oct 29– | Streamlit 3 views, judge challenge, hosting | Works in incognito | 🟨 8 pages work from a fresh clone with no keys (replay bundle, world built from seed, 8 live runs per session). Oct 30 (D-038): hosted mode `ANUBHAV_PUBLIC=1` gives each visitor their own drafts and lessons; every live call behind one guard with a 60/day cap; replay offers only saved runs; AppTest suite. Left: Logs page, deploy (`docs/deploy.md`). Judge seed challenge cut | `streamlit_app.py` |
 | 7 | Nov 3–4 | README, video, submit | Submitted | 🟨 README, MIT LICENSE, licenses and attribution done; repo public, history clean. Left: screenshot/GIF, video, submit | [[submission_checklist]] |
 
 ## Functional requirements (PRD v3.1 §14)
@@ -45,8 +45,8 @@ History before Oct 29 (order-desk plan): `archive/progress_order_desk.md`
 | FR-18 | Prompt-injection handling | 2, 5 | ✅ data marked untrusted; adversarial suite (injected notes) passes |
 | FR-19 | Four-arm controlled evaluation | 5 | ✅ EXP-011 on unseen world 5279: both pre-registered bars met (+55 pts lessons vs raw notes, +67 pts pack), 0 unsafe with learning |
 | FR-20 | Held-out contamination protection | 5 | ✅ fresh unseen-seed worlds (4111, 5279); held-out towns in practice; files frozen by hash before model calls |
-| FR-21 | Hosted / replay mode | 6 | 🟨 replay bundle + world from seed; fresh clone checked (8 pages, no keys); deploy pending (docs/deploy.md) |
-| FR-22 | Spend caps and secrets | 6 | ✅ keys only from env/secrets; live mode off without keys; 8 live runs per session |
+| FR-21 | Hosted / replay mode | 6 | 🟨 replay bundle + world from seed; fresh clone checked (8 pages, no keys); per-visitor state in hosted mode (D-038, AppTest); deploy pending (docs/deploy.md) |
+| FR-22 | Spend caps and secrets | 6 | ✅ keys only from env/secrets; live mode off without keys (buttons disabled, say why); 8 live runs per session and 60 per day for the app, voice included (D-038) |
 | FR-23 | Licensing and originality ledger | 7 | ✅ `LICENSE` (MIT), `LICENSES_AND_ATTRIBUTION.md`, README "built during the hackathon" |
 | FR-24 | Domain pack isolation (opt-in, redaction, revocation) | 3 | ✅ tests + EXP-008 (0 leaks) |
 
@@ -59,3 +59,15 @@ History before Oct 29 (order-desk plan): `archive/progress_order_desk.md`
 | Duplicate exclusive hold | ✅ 0 under concurrency test |
 | Prompt-injection policy bypass | ✅ 0 in adversarial suite (injected driver notes) |
 | Unreviewed harness patch activated | ✅ 0 (activation needs a passing test + a person; tests) |
+
+## Next (plan of Oct 30, [[implementation_plan]])
+| Workstream | Days | Status |
+|---|---|---|
+| P0 commit step 1 | Oct 30 | ⬜ |
+| A reply check, refusals with next step | Oct 31 | ⬜ |
+| B Logs page | Oct 31 | ⬜ |
+| C new-tool creation (read-only SQL → approved tool) | Oct 31 – Nov 1 | ⬜ |
+| D nightly review (runs → Loop A / Loop B / tools) | Nov 2 | ⬜ |
+| E deploy + recorded demo runs | Nov 2 | ⬜ |
+| F honest docs | Nov 2 | ⬜ |
+| G video, README, submit | Nov 3–4 | ⬜ |

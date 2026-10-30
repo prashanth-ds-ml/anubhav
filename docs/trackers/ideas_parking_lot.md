@@ -17,3 +17,7 @@ Good ideas we are deliberately **not** doing now. Revisit only if we're ahead of
 | 5 history companies instead of 3 | More variety | Time (D-027) | if ahead |
 | Full Harness² upstream integration | Research depth | Time; safety of unrestricted executors | post-hackathon |
 | Order-desk quotation agent (EXP-001–004) | Proven 88% | Superseded by Anubhav | portability example only |
+| Hospital and call-centre demos on the same platform (Oct 30 brief) | Shows the platform is general | 2–3 days each (world, tools, gate checks, experiment); "medical" is an anti-project; the new-business story is already proven by EXP-011 + adapters (D-039) | one future-work slide |
+| React frontend for judges | Polish | 2–3 days of rebuild; fixes none of the hosting issues; Streamlit polished instead (D-039) | post-hackathon |
+| RAG over government logistics documents for the MCP | Real rules (e-way bill, axle limits) | "Basic RAG" is an anti-project, and raw retrieval is the arm B baseline we beat; written rules live in `configs/operating_rules.yaml` instead (D-039) | small cited rules file, if ahead |
+| Python code-writing agent (not just SQL) | Any analysis | No safe sandbox on Windows / Streamlit Cloud; SQL covers analysis over records (D-040) | post-hackathon, with a real sandbox |

@@ -10,7 +10,8 @@ tags: [home, index]
 **Deadline:** Wed Nov 4, 9:00 PM ET = **Thu Nov 5, 7:30 AM IST** (target: submit Nov 4 IST)
 
 ## Plan
-- [[build_plan]]: **start here.** Layers, dates, done-criteria, cut order
+- [[implementation_plan]]: **start here (from Oct 30).** Audit of the to-do list, demo story, workstreams A–G to submission, cut order
+- [[build_plan]]: layers, dates, done-criteria, cut order (Oct 29 plan)
 - [[PRD_v3.1]]: product requirements (source of truth), scaled per D-027
 - [[Data_Benchmark_Blueprint_v1.0]]: data generator, 100-case benchmark, review procedure
 - [[Data_Spec_v1]]: the demo world: references, scale, companies, vehicles, schema, **hidden rules (H-01…H-32)**, notes, generator steps
@@ -21,6 +22,7 @@ tags: [home, index]
 ## Trackers
 | Tracker | Use it for |
 |---|---|
+| [[todo]] | Open fixes and next steps (audit, workshop review, demo plan; Oct 30) |
 | [[progress]] | Layer status, FR status, release gates |
 | [[decisions]] | Every decision, with its reason (ADR-style) |
 | [[errors_and_fixes]] | Every bug or failure: symptom, cause, fix, prevention |
