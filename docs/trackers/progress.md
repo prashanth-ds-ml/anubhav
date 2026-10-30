@@ -3,7 +3,7 @@ tags: [tracker, progress]
 ---
 # Progress tracker
 
-**Overall:** 10% (design and experiments done; build starts Oct 29)
+**Overall:** ~80% (as of 2026-10-30: build, learning loops and final benchmark done; left: deploy, video, submit)
 Plan: [[build_plan]] · Status key: ⬜ pending · 🟨 in progress · ✅ done · ❌ blocked · ✂️ cut
 History before Oct 29 (order-desk plan): `archive/progress_order_desk.md`
 
@@ -13,14 +13,14 @@ History before Oct 29 (order-desk plan): `archive/progress_order_desk.md`
 | — | Oct 26–28 | Experiments EXP-001–006, interview, direction | Anubhav chosen (D-024) | ✅ | [[experiments]], [[Anubhav_overview]] |
 | — | Oct 29 | Repo cleanup, rename, PRD v3.1 + blueprint, build plan | Repo `anubhav` pushed | ✅ | D-025–D-027 |
 | 0 | Oct 29 | EXP-007 Arm B check, citations, project setup | Claim survives raw-note baseline; clean `uv sync` + `pytest` | ✅ (raw memory suffices on clean data → pitch reframed; citations verified; 159 tests pass) | [[experiments]] |
-| 1 | Oct 29–30 | Data world: 3 companies + T-new, 90 days | Pilot then full, 0 integrity violations | 🟨 generator + 31 tests done; pilot ✅ awaiting your review; full dry run ✅ | [[data_and_benchmark]], [[Data_Spec_v1]] |
+| 1 | Oct 29–30 | Data world: 3 companies + T-new, 90 days | Pilot then full, 0 integrity violations | ✅ generator + 31 tests; full 90-day world (seed, rebuilt from code in ~5 s); unseen worlds 4111 and 5279 for testing | [[data_and_benchmark]], [[Data_Spec_v1]] |
 | 2 | Oct 29 | MCP, tenant broker, LangGraph, safety, traces, voice | Golden path live in EN/TE/RT/MIX | ✅ live golden path in RT/TE/EN/MIX + ambiguity on Muse Spark Open ($0.29); voice path works (Muse Voice Transcribe); 30 runtime tests, 189 total | [[tool_calling]], `scripts/golden_path.py` |
 | 3 | Oct 29 | Loop B lessons + domain pack | Jangaon story end to end; habit rejected; 0 leaks | ✅ EXP-008: T01 0/4 → 4/4 safe and TNEW 0/4 → 4/4 via the pack (first attempt, 0 leaks); mining precision 0.73 (below the 0.85 bar), recall 0.73; 10 learning tests | [[lessons]], [[experiments]] |
 | ✅ | **Nov 1, 10 AM** | **Demo-safe checkpoint** | Layers 0–3 done | ✅ reached Oct 29 | |
-| 4 | Oct 29– | Loop A harness patch, OR-Tools, specialists | One real patch decided | 🟨 Loop A built (feedback, trace signals, Muse proposer, patch rules, paired test, versions, rollback; 11 tests); first real patch pending your feedback | [[harness_versions]] |
-| 5 | Nov 1–2 | 100 sealed cases, review, adversarial, arms A–E | Paired results with counts | ⬜ | [[data_and_benchmark]] |
-| 6 | Oct 29– | Streamlit 3 views, judge challenge, hosting | Works in incognito | 🟨 local app: Workbench (live/replay, voice, feedback), Learning Lab, Tuning, Share, Proof, Report | `streamlit_app.py` |
-| 7 | Nov 3–4 | README, video, submit | Submitted | ⬜ | [[submission_checklist]] |
+| 4 | Oct 29– | Loop A harness patch, OR-Tools, specialists | One real patch decided | ✅ Loop A built (feedback, trace signals, Muse proposer, patch rules, paired test, versions, rollback; 11 tests). EXP-010: the patch was correctly rejected (no held-out gain), so none is active. Oct 30: 8 new tools from a user-question audit (D-037; 27 tools in 7 categories) | [[harness_versions]] |
+| 5 | Nov 1–2 | 100 sealed cases, review, adversarial, arms A–E | Paired results with counts | ✅ EXP-011 on unseen world 5279: both bars met. Scaled down: 38 cases (not 100), one run each, arm D not run (no active patch), casebook not human-reviewed | [[data_and_benchmark]] |
+| 6 | Oct 29– | Streamlit 3 views, judge challenge, hosting | Works in incognito | 🟨 8 pages work from a fresh clone with no keys (replay bundle, world built from seed, 8 live runs per session). Left: deploy (`docs/deploy.md`), judge seed challenge | `streamlit_app.py` |
+| 7 | Nov 3–4 | README, video, submit | Submitted | 🟨 README, MIT LICENSE, licenses and attribution done; repo public, history clean. Left: screenshot/GIF, video, submit | [[submission_checklist]] |
 
 ## Functional requirements (PRD v3.1 §14)
 | FR | Requirement | Layer | Status |
@@ -47,7 +47,7 @@ History before Oct 29 (order-desk plan): `archive/progress_order_desk.md`
 | FR-20 | Held-out contamination protection | 5 | ✅ fresh unseen-seed worlds (4111, 5279); held-out towns in practice; files frozen by hash before model calls |
 | FR-21 | Hosted / replay mode | 6 | 🟨 replay bundle + world from seed; fresh clone checked (8 pages, no keys); deploy pending (docs/deploy.md) |
 | FR-22 | Spend caps and secrets | 6 | ✅ keys only from env/secrets; live mode off without keys; 8 live runs per session |
-| FR-23 | Licensing and originality ledger | 7 | ⬜ |
+| FR-23 | Licensing and originality ledger | 7 | ✅ `LICENSE` (MIT), `LICENSES_AND_ATTRIBUTION.md`, README "built during the hackathon" |
 | FR-24 | Domain pack isolation (opt-in, redaction, revocation) | 3 | ✅ tests + EXP-008 (0 leaks) |
 
 ## Release gates (must be zero before demoing as safe)

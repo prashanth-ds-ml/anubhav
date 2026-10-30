@@ -29,4 +29,5 @@ What the agent learned about each business, from candidate to retired. The lesso
 ## Domain pack publications
 | Pack | From | To | Lessons | Approved by | Leak test | Revoked? |
 |---|---|---|---|---|---|---|
-| | | | | | ⬜ | |
+| EXP-008 pack | T01 | TNEW | gated regional items | rule-based review (EXP-008) | ✅ 0 leaks | no |
+| EXP-011 packs | T01, T02 | TNEW (world 5279) | 5 + 5 | fixed review rule (EXP-011) | ✅ 0 leaks (recipient's own ids excluded, whole-token match) | no |
