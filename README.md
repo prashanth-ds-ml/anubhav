@@ -28,6 +28,10 @@ Muse already handles Telugu, Roman Telugu and tool calls well. What it can't kno
 - **Searching raw notes is not enough:** cold with and without note search scored about the same (30% vs 35%). The notes are there, but the agent rarely looks, and a note is not a rule.
 - **Not improved:** real truck capacity. The agent refused to overload the truck but didn't suggest another one.
 
+**New tools (EXP-012 and EXP-012b, unseen world 5279, 16 held-out questions no built tool was designed for).**
+- With the read-only query tool the agent answered 13/16 vs 11/16 with built-in tools only: +12.5 points, short of the pre-registered +25 (EXP-012).
+- In EXP-012 it never called the tools it had learned (0/16), because each was named after the one request it came from. With general names (EXP-012b) it used them in **14/16** questions, answered 15/16 (vs 14/16 without them), with 20% fewer tool calls and 24% lower cost. The pre-registered bar was 30% fewer calls: **not met**.
+
 **Does it learn the right things?** Mining is scored against the generator's hidden rules, which the system never sees.
 
 | | Precision | Recall | Traps let in |

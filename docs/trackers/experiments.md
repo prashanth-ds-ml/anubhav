@@ -489,3 +489,15 @@ Packs: T01→TNEW 4 lessons (1 skipped: no matching site), T02→TNEW 4 lessons 
 - **Caveat stated now:** this is a second attempt after a failure on the same questions; it is reported as such, next to EXP-012.
 - **Budget:** ~52 runs, ~$3 Baseten.
 - **Amendment (2026-10-30, after the T01 half, before any T02 test run):** the script crashed when a generated name still contained a source value (an output column alias "…parkal…"); `propose` refused it as designed, but the script did not catch the refusal. Fix: such a candidate is skipped (it cannot be a general tool). T01's learn and test phases had finished (rows kept: `exp012b_20261030_232911_rows.jsonl`, tools `exp012b_20261030_232911_T01_tools.sqlite`); T02 is re-run from the start (its first learn phase, ~$0.7, is discarded). Decision computed over T01 kept + T02 new, as registered. New hash `exp012b_new_tools.py` `c856d865f1d737ab`. T01 (kept, for the record): Q 6/8 right, 4.75 calls; T 8/8, 4.62 calls, learned tool used in 7/8.
+
+#### EXP-012b result (2026-10-30, `artifacts/benchmark/exp012b_20261030_233756.json`, T01 rows kept from the first run; $3.19 Baseten in total): **R2b met, R2 not met**
+| Held-out, 16 per arm (T01 + T02) | Right | Mean tool calls | Mean cost | Learned tool used |
+|---|---|---|---|---|
+| Q + query tools | 14 | 4.50 | $0.049 | – |
+| T + learned tools | 15 | 3.62 | $0.038 | **14/16** |
+- **R2b (the agent uses learned tools): met, 14/16** (EXP-012: 0/16). General names were the missing piece.
+- **R2 (T calls ≤ 0.7 × Q, not worse): not met.** Not worse (15 vs 14 right), but calls fell 20% (ratio 0.80), short of the 30% bar. Cost per question fell 24%.
+- **By type:** damaged cases per month 6 → 2 calls (−67%); busiest weekday per town 23 → 14 (−39%); returned cases per town and month 35 → 29 (−17%: T01's tool takes a site, so the agent calls it once per site in the town); worst on-time weekday: no tool was learned, 8 → 13 calls. By company: T02 4.25 → 2.62 calls (−38%), T01 4.75 → 4.62.
+- **What we can say:** the agent fills gaps with read-only queries, turns reused ones into tools that pass code checks, and, once they have general names, uses them (14/16) and answers at least as well for less cost. **What we cannot say:** that learned tools cut tool calls by 30%. Tool granularity (site vs town) limits the gain; a person choosing the right parameter would help.
+- Caveat: a second attempt on the same questions after EXP-012 failed; one run per question; a fixed rule approved the tools.
+
