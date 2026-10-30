@@ -49,6 +49,9 @@ def render_run(r):
             for s in steps:
                 with st.status(s["name"], type="step", state="complete" if s["ok"] else "error"):
                     st.caption(core.summarize(s))
+        if r.get("error"):
+            st.warning("Muse didn't answer (the model call failed after retries). Drafts made so far are kept; "
+                       "try again, or use Replay.", icon=":material/cloud_off:")
         st.markdown(r["reply"] or "_(no reply)_")
         for k in core.lessons_used(r):
             st.badge(k.rsplit(" [", 1)[0][:90], icon=":material/school:", color="green")
@@ -66,21 +69,38 @@ with left:
 
     prompt = st.chat_input("Type in Roman Telugu, Telugu or English…", submit_mode="disable")
     if not history:
-        pick = st.pills("Try", list(core.SUGGESTIONS), label_visibility="collapsed", key=f"pick:{key}")
-        if pick:
-            prompt = core.SUGGESTIONS[pick]
+        replay = mode == "Replay (free)"
+        options = core.replayable(cid, use) if replay else list(core.SUGGESTIONS)
+        if options:
+            pick = st.pills("Try", options, label_visibility="collapsed", key=f"pick:{key}")
+            if pick:
+                prompt = core.SUGGESTIONS[pick]
+            if replay:
+                st.caption(":material/history: Replay shows saved real runs for these requests. "
+                           "Typed requests need a live model.")
+        elif replay:
+            other = [c for c in core.COMPANIES if c != cid and core.replayable(c, use)]
+            st.info(f"No saved runs for {cid} with lessons {'on' if use else 'off'}. "
+                    + (f"Try {', '.join(other)} in the sidebar" if other else "Try the other lessons setting")
+                    + (", or switch Model to a live option." if not core.live_ready("open") else "."),
+                    icon=":material/history:")
     with st.container(border=True):
         audio = st.audio_input(":material/mic: Speak in Telugu, Roman Telugu or English", sample_rate=16000,
                                key=f"mic:{key}:{len(history)}")
-        if audio is not None and (blocked := core.live_ready("spark")):
+        sig = hash(audio.getvalue()) if audio is not None else None
+        fresh = sig is not None and st.session_state.get("voice_sig") != sig   # a new recording: transcribe it once
+        blocked = core.live_client("spark")[1] if fresh else None
+        if blocked:
             st.warning(blocked.replace("Use Replay", "Voice needs Muse Voice Transcribe"), icon=":material/mic_off:")
         elif audio is not None:
-            sig = hash(audio.getvalue())
-            if st.session_state.get("voice_sig") != sig:          # a new recording: transcribe it once
+            if fresh:
                 with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as f:
                     f.write(audio.getvalue())
-                with st.spinner("Muse Voice Transcribe…"):
-                    t = muse.transcribe(Path(f.name), keywords=sorted({s["town"] for s in C.sites.values()}))
+                try:
+                    with st.spinner("Muse Voice Transcribe…"):
+                        t = muse.transcribe(Path(f.name), keywords=sorted({s["town"] for s in C.sites.values()}))
+                finally:
+                    Path(f.name).unlink(missing_ok=True)
                 st.session_state.update(voice_sig=sig, voice_text=t["transcript"],
                                         voice_meta=f"{t['audio_ms'] / 1000:.1f} s audio · ${t['cost_usd']:.4f}")
             with st.form(f"voice:{key}", border=False):
@@ -104,8 +124,12 @@ with left:
             r = None
             st.warning(blocked, icon=":material/block:")
         else:
-            with st.spinner("Muse is planning…"):
-                r = core.run_live(cid, prompt, core.MODELS[mode], use, history)
+            try:
+                with st.spinner("Muse is planning…"):
+                    r = core.run_live(cid, prompt, core.MODELS[mode], use, history)
+            except muse.MissingKeyError as e:
+                r = None
+                st.warning(str(e), icon=":material/block:")
         if r:
             history.append({"request": prompt, "run": r})
             st.rerun()

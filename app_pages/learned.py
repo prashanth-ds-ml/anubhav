@@ -1,7 +1,6 @@
 import altair as alt
 import streamlit as st
 
-from anubhav import muse
 from anubhav.learning import digest, miner, timeline
 from anubhav.learning.store import describe
 from anubhav.ui import core
@@ -13,13 +12,18 @@ st.title("What it learned")
 st.caption(f"{core.COMPANIES[cid]} · from its own {len(C.t.get('shipments', [])):,} trips, "
            f"{len(C.t.get('driver_notes', [])):,} driver notes and {len(C.t.get('planner_messages', [])):,} planner messages")
 
-if st.button("Learn from my records", icon=":material/auto_awesome:", type="primary"):
-    with st.spinner("Reading 90 days of records and checking every finding against them…"):
-        F, d = digest.build(C)
-        props, meta = miner.mine(muse.client("spark"), C, d)
-        new = S.add_proposals(cid, F, props, meta)
-    st.toast(f"{len(new)} new findings (${meta['cost_usd']:.2f}).")
-    st.rerun()
+off = core.live_ready("spark")
+if st.button("Learn from my records", icon=":material/auto_awesome:", type="primary", disabled=bool(off), help=off):
+    client, off = core.live_client("spark")
+    if client:
+        with st.spinner("Reading 90 days of records and checking every finding against them…"):
+            F, d = digest.build(C)
+            props, meta = miner.mine(client, C, d)
+            new = S.add_proposals(cid, F, props, meta)
+        st.toast(f"{len(new)} new findings (${meta['cost_usd']:.2f}).")
+        st.rerun()
+if off:
+    st.caption(f":material/info: {off} The lessons below were mined by Muse in EXP-008.")
 
 lessons = S.list(cid)
 if not lessons:

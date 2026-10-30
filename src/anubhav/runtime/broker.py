@@ -10,6 +10,7 @@ Tools are grouped by what a planner asks about (CATEGORIES); the action class de
 """
 
 import difflib
+import functools
 import json
 import re
 import uuid
@@ -18,7 +19,7 @@ from dataclasses import dataclass, field
 from datetime import date, timedelta
 from typing import Literal
 
-from pydantic import BaseModel, ConfigDict, Field, ValidationError
+from pydantic import BaseModel, ConfigDict, Field, ValidationError, field_validator
 
 from .company import CompanyData, Conflict
 from .safety import validate_draft
@@ -30,6 +31,11 @@ UNTRUSTED = "untrusted_text"
 
 class Args(BaseModel):
     model_config = ConfigDict(extra="forbid")
+
+
+def _unique(ids):
+    """The same order twice would count its load twice: keep each order once, in the order given."""
+    return list(dict.fromkeys(ids))
 
 
 class FindSite(Args):
@@ -66,6 +72,8 @@ class CreateDraft(Args):
     delivery_date: str | None = Field(None, description="YYYY-MM-DD; defaults to today")
     idempotency_key: str | None = Field(None, description="Repeat the same key to retry safely")
     note: str | None = None
+
+    _dedupe = field_validator("order_ids")(_unique)
 
 
 class DraftId(Args):
@@ -188,11 +196,19 @@ class Broker:
         except ToolError as e:
             self.C.runtime.audit(self.s.user, self.s.role, name, args, e.code)
             return {"ok": False, "error": {"code": e.code, "message": e.message}}
+        except Exception as e:          # a bug must not end the run: the model sees an error it can work around
+            self.C.runtime.audit(self.s.user, self.s.role, name, args, "INTERNAL")
+            return {"ok": False, "error": {"code": "INTERNAL", "message": f"the tool failed ({type(e).__name__}); try another way"}}
 
     # ---------- helpers
     def _date(self, d):
-        if d and not re.fullmatch(r"\d{4}-\d{2}-\d{2}", d):
-            raise ToolError("BAD_ARGS", "dates are YYYY-MM-DD")
+        if d:
+            try:
+                if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", d):
+                    raise ValueError
+                date.fromisoformat(d)
+            except ValueError:
+                raise ToolError("BAD_ARGS", f"{d} is not a real date (YYYY-MM-DD)")
         return d or self.C.today
 
     def _site(self, sid):
@@ -203,6 +219,17 @@ class Broker:
 
     def _depot_km(self, s):
         return route_km(self.C, s)
+
+
+@functools.cache
+def speed_kmh():
+    """Average road speed from the world config (the company's own planning figure), not a number in code."""
+    from ..data.config import load
+    return load()["speed_kmh"]["highway"]
+
+
+def drive_minutes(km_):
+    return round(km_ / speed_kmh() * 60 + 20)
 
 
 def route_km(C, s):
@@ -320,7 +347,7 @@ def get_route_info(b, a: SiteId):
     s = b._site(a.site_id)
     km_ = b._depot_km(s)
     return {"site_id": s["site_id"], "town": s["town"], "road_km_from_depot": km_,
-            "drive_minutes": round(km_ / 38 * 60 + 20), "note": "estimate: state-road speed 38 km/h plus town time"}
+            "drive_minutes": drive_minutes(km_), "note": f"estimate: road speed {speed_kmh()} km/h plus town time"}
 
 
 def create_dispatch_draft(b, a: CreateDraft):
@@ -329,6 +356,9 @@ def create_dispatch_draft(b, a: CreateDraft):
     prior = b.C.runtime.by_key(key)
     if prior and prior["status"] != "draft":   # the earlier attempt was cancelled: this is a new request
         key, prior = f"{key}#{uuid.uuid4().hex[:6]}", None
+    if prior and (prior["vehicle_id"], prior["delivery_date"], sorted(json.loads(prior["order_ids"]))) !=             (a.vehicle_id, d, sorted(a.order_ids)):
+        raise ToolError("CONFLICT", f"idempotency key {a.idempotency_key} was already used for draft {prior['draft_id']} "
+                                    "with other orders, vehicle or date; use a new key")
     if prior:                       # a retry: return the draft we already made
         return {"draft_id": prior["draft_id"], "status": f"{prior['status']} (not dispatched)", "created": False,
                 "vehicle_id": prior["vehicle_id"], "delivery_date": prior["delivery_date"],
@@ -550,7 +580,7 @@ def plan_board(b, a: Day):
         s = b.C.sites[sid]
         km_ = b._depot_km(s)
         sites.append({"site_id": sid, "name": s["name"], "town": s["town"], "road_km": km_,
-                      "drive_minutes": round(km_ / 38 * 60 + 20), **_site_limits(b, s, d),
+                      "drive_minutes": drive_minutes(km_), **_site_limits(b, s, d),
                       "orders": [{"order_id": o["order_id"], "window": f"{o['window_start']}-{o['window_end']}",
                                   "priority": o["priority"], **b.C.order_load(o["order_id"]),
                                   "in_draft": o["order_id"] in taken} for o in orders]})
@@ -575,6 +605,8 @@ def plan_board(b, a: Day):
 class Assignment(Args):
     order_ids: list[str] = Field(min_length=1, description="Orders for one vehicle (max 3 stops)")
     vehicle_id: str
+
+    _dedupe = field_validator("order_ids")(_unique)
 
 
 class Assignments(Args):

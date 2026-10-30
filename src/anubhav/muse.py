@@ -20,6 +20,9 @@ OPEN_MODEL = "meta-models/muse-spark-open-1026"   # the hackathon key only works
 ASR_URL = "https://api.meta.ai/v1/asr/transcribe"
 ASR_MODEL = "muse-voice-transcribe-1.0"
 ASR_USD_PER_HOUR = 0.18
+TIMEOUT_S = 90          # one chat call; the SDK's default (600 s) would hang a hosted page
+MAX_RETRIES = 3         # the SDK retries rate limits (429) and overloads (5xx) on its own
+KEYS = {"spark": "meta_api", "open": "baseten_api_key"}
 
 PRICES = {  # USD per 1M tokens (input, output), checked 2026-10-27
     "muse-spark-1.3": (1.25, 4.25),
@@ -54,6 +57,18 @@ class ModelResponse:
         return msg
 
 
+class MissingKeyError(RuntimeError):
+    """No key for this backend: the app falls back to replay instead of crashing."""
+
+
+def key_for(name: str) -> str:
+    """'spark' (Meta Model API) or 'open' (Baseten). Raises MissingKeyError rather than KeyError."""
+    key = os.environ.get(KEYS[name], "").strip()
+    if not key:
+        raise MissingKeyError(f"{KEYS[name]} is not set: live Muse calls are off (add it to .env or the host's secrets)")
+    return key
+
+
 def cost_usd(model, tokens_in, tokens_out):
     p_in, p_out = PRICES.get(model, PRICES[DEFAULT_MODEL])
     return (tokens_in * p_in + tokens_out * p_out) / 1e6
@@ -62,11 +77,12 @@ def cost_usd(model, tokens_in, tokens_out):
 class MuseClient:
     """OpenAI-compatible Chat Completions client for Muse Spark (Meta API) or Muse Spark Open (Baseten)."""
 
-    def __init__(self, model=DEFAULT_MODEL, api_key=None, base_url=BASE_URL, **defaults):
+    def __init__(self, model=DEFAULT_MODEL, api_key=None, base_url=BASE_URL, http_client=None, **defaults):
         from openai import OpenAI
 
         self.model, self.defaults = model, defaults
-        self._client = OpenAI(base_url=base_url, api_key=api_key or os.environ["meta_api"])
+        self._client = OpenAI(base_url=base_url, api_key=api_key or key_for("spark"), timeout=TIMEOUT_S,
+                              max_retries=MAX_RETRIES, http_client=http_client)
 
     def chat(self, messages, tools=None, **kw) -> ModelResponse:
         t0 = time.perf_counter()
@@ -82,7 +98,7 @@ class MuseClient:
 
 
 def open_weights_client(**defaults) -> MuseClient:
-    return MuseClient(OPEN_MODEL, os.environ["baseten_api_key"].strip(), BASETEN_URL, **defaults)
+    return MuseClient(OPEN_MODEL, key_for("open"), BASETEN_URL, **defaults)
 
 
 def client(name: str = "open", **defaults):
@@ -124,7 +140,7 @@ def transcribe(wav: Path, language_bias=("Telugu", "English"), keywords=()) -> d
         settings["keywords"] = list(keywords)
     t0 = time.perf_counter()
     with Path(wav).open("rb") as f:
-        r = httpx.post(ASR_URL, headers={"Authorization": f"Bearer {os.environ['meta_api']}", "Accept": "application/json"},
+        r = httpx.post(ASR_URL, headers={"Authorization": f"Bearer {key_for('spark')}", "Accept": "application/json"},
                        files={"request": (None, json.dumps(settings), "application/json"),
                               "audio": (Path(wav).name, f, "audio/wav")}, timeout=120)
     r.raise_for_status()

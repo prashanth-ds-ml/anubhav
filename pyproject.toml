@@ -10,6 +10,7 @@ dependencies = [
     "mcp>=2.3.0",
     "numpy>=2.5.4",
     "openai>=3.39.0",
+    "pydantic>=2.12",
     "python-dotenv>=1.2.4",
     "pyyaml>=6.0.3",
     "sounddevice>=0.5.6",

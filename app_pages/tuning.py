@@ -1,6 +1,5 @@
 import streamlit as st
 
-from anubhav import muse
 from anubhav.harness import loop
 from anubhav.harness.store import CATEGORIES, PatchError, diff
 from anubhav.runtime.broker import Broker, Session
@@ -45,12 +44,18 @@ with right:
         st.caption("No tool errors, repeats or limit hits in recent runs.")
 
 st.subheader("2 · Propose one fix")
+off = core.live_ready("spark")
+if off:
+    st.caption(f":material/info: {off}")
+client = None
 if st.button("Ask Muse for a patch", icon=":material/auto_awesome:", type="primary",
-             disabled=not (problems["feedback"] or problems["trace_issues"])):
+             disabled=bool(off) or not (problems["feedback"] or problems["trace_issues"]), help=off):
+    client, off = core.live_client("spark")
+if client:
     C = core.company(cid)
     b = Broker(C, Session(cid))
     with st.spinner("Muse Spark is reading the problems…"):
-        patch, meta = loop.propose(muse.client("spark"), b, active["surfaces"], problems)
+        patch, meta = loop.propose(client, b, active["surfaces"], problems)
     try:
         v = H.propose(patch, patch.get("rationale", ""), [t.name for t in b.list_tools()], C)
         st.session_state["addresses"] = {v["version_id"]: [x for x in patch.get("addresses", []) if str(x).startswith("FB-")]}
@@ -77,11 +82,13 @@ for v in cands:
                       {"request": core.SUGGESTIONS["Ambiguous"], "company": cid, "use_lessons": False,
                        "origin": "regression (ambiguity)", "expects_draft": False}]
             st.caption(f"Paired test: {len(cases)} requests × old and new on Muse Spark Open (~${len(cases) * 0.1:.2f}).")
-            if st.button("Run paired test", key=f"probe:{v['version_id']}", icon=":material/science:"):
+            probe_off = core.live_ready("open") or core.live_ready("spark")
+            if st.button("Run paired test", key=f"probe:{v['version_id']}", icon=":material/science:",
+                         disabled=bool(probe_off), help=probe_off) and (agent := core.live_client("open")[0])                     and (judge := core.live_client("spark")[0]):
                 fb_by_id = {f["feedback_id"]: {"note": f["note"], "category": CATEGORIES.get(f["category"])} for f in new_fb}
                 with st.spinner("Running old and new versions on the same requests…"):
                     C = CompanyData(core.WORLD, cid, core.WORLD / "runtime" / "probe")
-                    res = loop.probe(C, muse.client("open"), muse.client("spark"), cases, H.get(v["parent"])["surfaces"],
+                    res = loop.probe(C, agent, judge, cases, H.get(v["parent"])["surfaces"],
                                      v["surfaces"], fb_by_id, core.knowledge_for)
                 H.record_probe(v["version_id"], res)
                 st.rerun()
@@ -111,19 +118,21 @@ for v in cands:
                                f"drafts {row['cand']['drafts']}")
                     b.markdown(row["cand_reply"])
             with st.container(horizontal=True):
-                if st.button("Activate", key=f"ok:{v['version_id']}", icon=":material/check:", type="primary",
+                if core.PUBLIC:        # the harness is shared by every visitor: decisions only in a local run
+                    st.caption("Activate and reject are available when you run it locally.")
+                elif st.button("Activate", key=f"ok:{v['version_id']}", icon=":material/check:", type="primary",
                              disabled=not g["pass"]):
                     H.decide(v["version_id"], "reviewer", True)
                     H.mark_feedback([f["feedback_id"] for f in fb if f["status"] == "new" and f["rating"] == 0], "addressed")
                     st.rerun()
-                if st.button("Reject", key=f"no:{v['version_id']}", icon=":material/close:"):
+                if not core.PUBLIC and st.button("Reject", key=f"no:{v['version_id']}", icon=":material/close:"):
                     H.decide(v["version_id"], "reviewer", False)
                     st.rerun()
 
 st.subheader("Versions")
 st.dataframe([{"version": v["version_id"], "status": v["status"], "from": v["parent"], "why": v["rationale"],
                "decided by": v["decided_by"]} for v in H.versions()], hide_index=True, alt="Harness versions")
-if active["parent"] and st.button("Roll back to the previous version", icon=":material/undo:"):
+if active["parent"] and not core.PUBLIC and st.button("Roll back to the previous version", icon=":material/undo:"):
     H.rollback("reviewer")
     st.rerun()
 with st.expander("Active harness (what the agent is told, in addition to its base prompt)"):

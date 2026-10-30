@@ -1,10 +1,15 @@
 """Shared helpers for the Streamlit demo: one place that loads company data, the lesson store and saved traces,
 runs the agent (live or replay), and turns a trace into something a person can read. Pages stay thin."""
 
+import copy
 import json
+import os
 import shutil
 import sqlite3
+import threading
+import uuid
 from contextlib import closing
+from datetime import date
 from pathlib import Path
 
 import streamlit as st
@@ -21,6 +26,8 @@ WORLD = ROOT / "data" / "worlds" / "full_seed20261104"
 EXP008 = sorted((ROOT / "artifacts" / "learning").glob("exp008_*_rep0.sqlite"))
 DEMO = ROOT / "demo"            # git-tracked bundle for a fresh (hosted) checkout: saved real runs, EXP-008 lessons, practice
 LIVE_RUNS_PER_SESSION = 8       # spend cap for live model calls on a public deployment
+LIVE_CALLS_PER_DAY = 60         # and for the whole app, across every visitor and page (reloading doesn't reset it)
+PUBLIC = os.environ.get("ANUBHAV_PUBLIC") == "1"   # hosted for judges: each visitor gets their own drafts and lessons
 COMPANIES = {"T01": "Sri Kakatiya Logistics", "T02": "Ramappa Carriers", "T03": "Deccan Freight Services",
              "TNEW": "Bhadrakali Transport Co (new)"}
 MODELS = {"Replay (free)": None, "Muse Spark Open": "open", "Muse Spark 1.3": "spark"}
@@ -43,27 +50,50 @@ def ensure_world():
     return WORLD
 
 
+def _sid():
+    """This browser session's id. Locally the demo shares one store (it persists); hosted, every visitor gets their own."""
+    return st.session_state.setdefault("sid", uuid.uuid4().hex[:12]) if PUBLIC else "shared"
+
+
 @st.cache_resource(max_entries=8)
-def company(cid: str) -> CompanyData:
+def _company(cid: str) -> CompanyData:
     return CompanyData(WORLD, cid, WORLD / "runtime" / "ui")
 
 
-@st.cache_resource
+def company(cid: str) -> CompanyData:
+    """The company's records are read once and shared; what the agent writes (drafts, holds) is per visitor when hosted."""
+    base = _company(cid)
+    if not PUBLIC:
+        return base
+    mine = st.session_state.setdefault("companies", {})
+    if cid not in mine:
+        from ..runtime.company import Runtime
+        mine[cid] = copy.copy(base)
+        mine[cid].runtime = Runtime(WORLD / "runtime" / "sessions" / _sid() / f"{cid}.sqlite")
+    return mine[cid]
+
+
+def _store_path():
+    return WORLD / "learning" / ("demo.sqlite" if not PUBLIC else f"sessions/{_sid()}.sqlite")
+
+
 def store() -> LessonStore:
-    return LessonStore(WORLD / "learning" / "demo.sqlite")
+    path = _store_path()
+    if PUBLIC and not path.exists():            # a new visitor starts with the EXP-008 lessons, as in the video
+        LessonStore(path)
+        load_exp008_lessons()
+    return LessonStore(path)
 
 
 def load_exp008_lessons():
-    """Copy the EXP-008 lesson store (mined by Muse, approved by the fixed review rule) into the demo store."""
-    dst = WORLD / "learning" / "demo.sqlite"
+    """Copy the EXP-008 lesson store (mined by Muse, approved by the fixed review rule) into this demo store."""
+    dst = _store_path()
     if EXP008:
-        st.cache_resource.clear()
         shutil.copy(EXP008[-1], dst)
         return True
     bundle = DEMO / "exp008_lessons.json"
     if not bundle.exists():
         return False
-    st.cache_resource.clear()
     _empty(dst)
     data = json.loads(bundle.read_text(encoding="utf-8"))
     with closing(sqlite3.connect(dst)) as con, con:
@@ -82,8 +112,7 @@ def _empty(path):
 
 
 def clear_lessons():
-    st.cache_resource.clear()
-    p = WORLD / "learning" / "demo.sqlite"
+    p = _store_path()
     if p.exists():
         _empty(p)
 
@@ -125,24 +154,57 @@ def broker(cid: str, use_lessons: bool, role="dispatcher", user="demo"):
     return Broker(C, Session(cid, role, user), policies, advisories, lessons), knowledge
 
 
+_SPEND_LOCK = threading.Lock()
+
+
+def _spend_file():
+    return WORLD / "runtime" / f"live_calls_{date.today().isoformat()}.json"
+
+
+def _calls_today():
+    try:
+        return json.loads(_spend_file().read_text(encoding="utf-8"))["calls"]
+    except (OSError, ValueError, KeyError):
+        return 0
+
+
 def live_ready(model_key):
-    """Live mode needs the model's key (a .env locally, or the host's secrets) and the session's run budget."""
-    import os
-    key = {"open": "baseten_api_key", "spark": "meta_api"}[model_key]
-    if not os.environ.get(key):
-        return f"Live mode is off here (no `{key}` set). Use Replay."
+    """Why live mode is off, or None. Needs the model's key (a .env locally, or the host's secrets), this session's
+    run budget and the app's daily budget."""
+    try:
+        muse.key_for(model_key)
+    except muse.MissingKeyError:
+        return f"Live mode is off here (no `{muse.KEYS[model_key]}` set). Use Replay."
     if st.session_state.get("live_runs", 0) >= LIVE_RUNS_PER_SESSION:
         return f"This session used its {LIVE_RUNS_PER_SESSION} live runs. Use Replay, or run it locally."
+    if _calls_today() >= LIVE_CALLS_PER_DAY:
+        return f"The demo's daily budget of {LIVE_CALLS_PER_DAY} live runs is used up. Use Replay, or run it locally."
     return None
 
 
+def live_client(model_key):
+    """The one way pages get a live Muse client: checks the key and both budgets, then counts the run.
+    Returns (client, None), or (None, reason) to show instead."""
+    with _SPEND_LOCK:
+        blocked = live_ready(model_key)
+        if blocked:
+            return None, blocked
+        st.session_state["live_runs"] = st.session_state.get("live_runs", 0) + 1
+        f = _spend_file()
+        f.parent.mkdir(parents=True, exist_ok=True)
+        f.write_text(json.dumps({"calls": _calls_today() + 1}), encoding="utf-8")
+    return muse.client(model_key), None
+
+
 def run_live(cid, request, model_key, use_lessons, history=()):
-    st.session_state["live_runs"] = st.session_state.get("live_runs", 0) + 1
+    client, blocked = live_client(model_key)
+    if blocked:
+        raise muse.MissingKeyError(blocked)
     b, knowledge = broker(cid, use_lessons)
     turns = []
     for h in list(history)[-6:]:                 # the last few exchanges, so follow-ups make sense
         turns += [{"role": "user", "content": h["request"]}, {"role": "assistant", "content": h["run"]["reply"]}]
-    r = graph.run(b, muse.client(model_key), request, knowledge=knowledge, harness=active_harness(), history=turns)
+    r = graph.run(b, client, request, knowledge=knowledge, harness=active_harness(), history=turns)
     trace.save(r, label=f"ui:{cid}:{'lessons' if use_lessons else 'cold'}")
     return r
 
@@ -210,7 +272,7 @@ def drafts(r):
         if s["name"] == "create_dispatch_draft" and s["ok"]:
             out.append(s["result"])
         if s["name"] == "create_dispatch_drafts" and s["ok"]:
-            out += [{**x, "draft_id": x["draft_id"]} for x in s["result"]["results"] if x["ok"]]
+            out += [x for x in s["result"]["results"] if x["ok"]]
         if s["name"] == "cancel_dispatch_draft" and s["ok"]:
             out = [d for d in out if d["draft_id"] != (s.get("result") or {}).get("draft_id")]
     return out

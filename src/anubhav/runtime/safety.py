@@ -1,11 +1,20 @@
 """The deterministic validator. The model proposes; this code decides whether a draft is allowed.
 It checks only what the company's systems know (paper capacity, recorded site limits, approved policies);
-learned advisories become warnings, never silent rewrites."""
+learned advisories become warnings, never silent rewrites. The company's written thresholds (e-way bill value,
+segregation, cold chain, usual stops) come from configs/operating_rules.yaml, not from code."""
 
+import functools
 from dataclasses import dataclass, field
+from pathlib import Path
 
-FOOD = {"dense_food", "light_food", "liquid", "chilled"}
-EWB_LIMIT = 50000
+import yaml
+
+RULES_FILE = Path(__file__).resolve().parents[3] / "configs" / "operating_rules.yaml"
+
+
+@functools.cache
+def rules():
+    return yaml.safe_load(RULES_FILE.read_text(encoding="utf-8"))
 
 
 @dataclass
@@ -22,6 +31,8 @@ class Verdict:
 def validate_draft(C, order_ids, vehicle_id, delivery_date, policies=(), advisories=()) -> Verdict:
     """C: CompanyData. policies: approved enforceable site rules [{"site_id", "max_length_ft", "id"}].
     advisories: approved/candidate warnings [{"site_id", "text", "id"}]."""
+    R = rules()
+    order_ids = list(dict.fromkeys(order_ids))      # an order listed twice is still one load
     err, warn = [], []
     e = lambda code, msg: err.append({"code": code, "message": msg})
     w = lambda code, msg: warn.append({"code": code, "message": msg})
@@ -65,8 +76,9 @@ def validate_draft(C, order_ids, vehicle_id, delivery_date, policies=(), advisor
             e("CAPACITY_EXCEEDED", f"{kg:.0f} kg > {vehicle_id} payload {v['payload_kg']:.0f} kg")
         if m3 > v["volume_m3"]:
             e("VOLUME_EXCEEDED", f"{m3:.1f} m3 > {vehicle_id} volume {v['volume_m3']:.0f} m3")
-        if "chilled" in classes and v["class"] != "REEFER14":
-            e("COLD_CHAIN", "chilled goods need a reefer")
+        for cls, vclass in R["cold_chain"].items():
+            if cls in classes and v["class"] != vclass:
+                e("COLD_CHAIN", f"{cls} goods need a {vclass} vehicle")
         for sid in sites:
             s = C.sites.get(sid, {})
             if s.get("max_vehicle_length_ft") and v["length_ft"] > s["max_vehicle_length_ft"]:
@@ -77,10 +89,11 @@ def validate_draft(C, order_ids, vehicle_id, delivery_date, policies=(), advisor
             for a in advisories:
                 if a["site_id"] == sid:
                     w("ADVISORY", f"{s.get('name')}: {a['text']} ({a['id']})")
-    if "chemical" in classes and classes & FOOD:
-        e("SEGREGATION", "food and chemical/home-care products can't share a vehicle")
-    if len(sites) > 3:
-        w("MANY_STOPS", f"{len(sites)} stops; usual maximum is 3")
-    if value > EWB_LIMIT:
-        w("EWAY_BILL", f"consignment value Rs {value:,.0f} > Rs 50,000: e-way bill needed")
+    for cls, never_with in R["segregation"].items():
+        if cls in classes and classes & set(never_with):
+            e("SEGREGATION", f"{cls} products can't share a vehicle with {', '.join(sorted(classes & set(never_with)))}")
+    if len(sites) > R["usual_max_stops"]:
+        w("MANY_STOPS", f"{len(sites)} stops; usual maximum is {R['usual_max_stops']}")
+    if value > R["eway_bill_value_rs"]:
+        w("EWAY_BILL", f"consignment value Rs {value:,.0f} > Rs {R['eway_bill_value_rs']:,}: e-way bill needed")
     return Verdict(ok=not err, errors=err, warnings=warn, load=load)

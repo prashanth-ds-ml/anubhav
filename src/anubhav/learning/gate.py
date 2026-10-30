@@ -156,9 +156,27 @@ def alias(F, p):
         return _out("rejected", "the phrase is the vendor's own recorded name")
     if kind == "vehicle":
         label = set(re.findall(r"[a-z0-9]+", str(F.C.vehicles[target].get("type_label", "")).lower()))
-        if label and set(re.findall(r"[a-z0-9]+", phrase)) - {"bandi", "lorry", "truck"} <= label:
+        if label and set(re.findall(r"[a-z0-9]+", phrase)) - _generic_vehicle_words(F) <= label:
             return _out("rejected", f"'{phrase}' is the vehicle's type name ({F.C.vehicles[target]['type_label']}), not a nickname")
     return _out(_level(good, len(msgs) - good), f"{good} of {len(msgs)} messages using it point to {target}", good, len(msgs) - good)
+
+
+def _generic_vehicle_words(F):
+    """Words the company's planners use for vehicles in general ('truck', or its local word): learned from its own
+    messages, never a word list in code. A word is generic if its messages point to many vehicles (a fifth of the
+    fleet) and no single vehicle has most of them; a nickname points to one vehicle most of the time."""
+    if not hasattr(F, "_generic_vehicle_words"):
+        seen = {}
+        for m in F.messages:
+            if m.get("shipment_id") in F.ships:
+                vehs = F.ship_vehicles(m["shipment_id"])
+                for w in set(re.findall(r"[a-z0-9]+", m["text"].lower())):
+                    n, c = seen.setdefault(w, [0, Counter()])
+                    seen[w][0] += 1
+                    c.update(vehs)
+        need = max(3, len(F.C.vehicles) // 5)
+        F._generic_vehicle_words = {w for w, (n, c) in seen.items() if len(c) >= need and max(c.values()) < 0.5 * n}
+    return F._generic_vehicle_words
 
 
 def real_capacity(F, p):

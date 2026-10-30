@@ -2,7 +2,6 @@ import json
 
 import streamlit as st
 
-from anubhav import muse
 from anubhav.harness import practice
 from anubhav.ui import core, graphs
 
@@ -16,14 +15,17 @@ st.caption("The agent practises on questions generated from the company's own re
 
 rows = H.practice()
 with st.container(horizontal=True, vertical_alignment="center"):
-    if st.button("Practice now (active version)", icon=":material/fitness_center:", type="primary"):
-        C = core.company(cid)
-        qs = practice.build(C, split="dev")
-        with st.spinner(f"Answering {len(qs)} practice questions with Muse Spark Open…"):
-            res = practice.run(C, muse.client("open"), qs, core.active_harness())
-        H.add_practice(f"UI-{cid}", H.active()["version_id"], res)
-        st.rerun()
-    st.caption(f"~${0.02 * 19:.2f} for one practice set on {cid}.")
+    off = core.live_ready("open")
+    if st.button("Practice now (active version)", icon=":material/fitness_center:", type="primary", disabled=bool(off), help=off):
+        client, off = core.live_client("open")
+        if client:
+            C = core.company(cid)
+            qs = practice.build(C, split="dev")
+            with st.spinner(f"Answering {len(qs)} practice questions with Muse Spark Open…"):
+                res = practice.run(C, client, qs, core.active_harness())
+            H.add_practice(f"UI-{cid}", H.active()["version_id"], res)
+            st.rerun()
+    st.caption(off or f"~${0.02 * 19:.2f} for one practice set on {cid}.")
 
 if not rows:
     st.info("No practice yet.", icon=":material/fitness_center:")

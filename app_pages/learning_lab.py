@@ -1,7 +1,6 @@
 import altair as alt
 import streamlit as st
 
-from anubhav import muse
 from anubhav.learning import digest, miner, timeline
 from anubhav.learning.store import ReviewError
 from anubhav.ui import core
@@ -22,14 +21,17 @@ with st.container(horizontal=True):
     st.metric("Approved", sum(s in ("ACTIVE_POLICY", "ACTIVE_ADVISORY") for s in states), border=True)
 
 with st.container(horizontal=True, vertical_alignment="center"):
-    if st.button("Mine my records now", icon=":material/auto_awesome:", type="primary"):
-        with st.spinner("Muse Spark is reading 90 days of records…"):
-            F, d = digest.build(C)
-            props, meta = miner.mine(muse.client("spark"), C, d)
-            S.add_proposals(cid, F, props, meta)
-        st.toast(f"{len(props)} proposals checked by the gate (${meta['cost_usd']:.3f}).")
-        st.rerun()
-    st.caption("Uses Muse Spark (~$0.07). Or load the EXP-008 lessons from the sidebar for free.")
+    off = core.live_ready("spark")
+    if st.button("Mine my records now", icon=":material/auto_awesome:", type="primary", disabled=bool(off), help=off):
+        client, off = core.live_client("spark")
+        if client:
+            with st.spinner("Muse Spark is reading 90 days of records…"):
+                F, d = digest.build(C)
+                props, meta = miner.mine(client, C, d)
+                S.add_proposals(cid, F, props, meta)
+            st.toast(f"{len(props)} proposals checked by the gate (${meta['cost_usd']:.3f}).")
+            st.rerun()
+    st.caption(off or "Uses Muse Spark (~$0.07). Or load the EXP-008 lessons from the sidebar for free.")
 
 if not lessons:
     st.info("No lessons yet for this company.", icon=":material/school:")

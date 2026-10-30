@@ -435,3 +435,117 @@ def test_reply_is_never_an_earlier_turns_answer(broker_for):
     m = MockClient([lambda msgs, t: mock_tool_call("list_open_orders", {}) for _ in range(2)])
     r = graph.run(b, m, "plan", limits=graph.Limits(max_turns=2, max_tool_calls=10), history=history)
     assert r["reply"] != "OLD ANSWER"
+
+
+# ---------- fixes from the Oct 30 audit (a judge-proof hosted demo)
+def test_an_impossible_date_is_a_typed_error_not_a_crash(broker_for):
+    b = broker_for("T01")
+    for name, args in (("plan_board", {"delivery_date": "2026-02-30"}), ("list_vehicles", {"available_on": "2026-13-01"}),
+                       ("check_vehicle_availability", {"vehicle_id": next(iter(b.C.vehicles)), "delivery_date": "2026-02-30"})):
+        out = b.call(name, args)
+        assert not out["ok"] and out["error"]["code"] == "BAD_ARGS", name
+    m = MockClient([lambda msgs, t: mock_tool_call("plan_board", {"delivery_date": "2026-02-30"}), mock_final("which date?")])
+    assert graph.run(b, m, "plan 30 Feb")["stop"] == "answered"
+
+
+def test_a_tool_bug_reaches_the_model_as_an_error(broker_for, monkeypatch):
+    b = broker_for("T01")
+    monkeypatch.setattr(b.tools["list_open_orders"], "fn", lambda *a: 1 / 0)
+    out = b.call("list_open_orders", {})
+    assert out == {"ok": False, "error": {"code": "INTERNAL", "message": "the tool failed (ZeroDivisionError); try another way"}}
+    assert b.C.runtime.audit_rows()[-1]["outcome"] == "INTERNAL"
+
+
+def test_a_reused_idempotency_key_for_other_orders_is_a_conflict(broker_for):
+    b = broker_for("T01")
+    v, orders = _free_pair(b)
+    first = b.call("create_dispatch_draft", {"order_ids": [orders[0]["order_id"]], "vehicle_id": v["vehicle_id"], "idempotency_key": "k"})
+    other = b.call("create_dispatch_draft", {"order_ids": [orders[1]["order_id"]], "vehicle_id": v["vehicle_id"], "idempotency_key": "k"})
+    assert first["ok"] and not other["ok"] and other["error"]["code"] == "CONFLICT"
+    assert first["result"]["draft_id"] in other["error"]["message"]
+
+
+def test_an_order_listed_twice_is_one_load(broker_for):
+    b = broker_for("T01")
+    v, orders = _free_pair(b)
+    o = orders[0]
+    out = b.call("create_dispatch_draft", {"order_ids": [o["order_id"], o["order_id"]], "vehicle_id": v["vehicle_id"]})
+    assert out["ok"] and out["result"]["orders"] == [o["order_id"]] and out["result"]["load"]["kg"] == o["kg"]
+    check = b.call("check_load", {"assignments": [{"order_ids": [o["order_id"]] * 2, "vehicle_id": v["vehicle_id"]}]})
+    assert check["ok"]
+
+
+def test_a_failed_model_call_ends_the_run_and_keeps_its_drafts(broker_for):
+    b = broker_for("T01")
+    v, orders = _free_pair(b)
+
+    def down(msgs, tools):
+        raise RuntimeError("503 overloaded")
+    m = MockClient([lambda msgs, t: mock_tool_call("create_dispatch_draft", {"order_ids": [orders[0]["order_id"]], "vehicle_id": v["vehicle_id"]}), down])
+    r = graph.run(b, m, "plan")
+    assert r["stop"] == "error" and "503 overloaded" in r["error"] and len(r["drafts"]) == 1
+    assert r["trace"][-1]["type"] == "finish" and r["trace"][-1]["draft_checks"][0]["still_valid"]
+
+
+def test_an_answer_on_the_turn_that_crosses_the_cost_cap_is_answered_not_limit(broker_for):
+    b = broker_for("T01")
+    final = mock_final("done")
+    final.cost_usd = 1.0
+    assert graph.run(b, MockClient([final]), "hi", limits=graph.Limits(max_usd=0.01))["stop"] == "answered"
+
+
+def test_the_system_prompt_carries_no_slang_or_place_facts(broker_for):
+    b = broker_for("T01")
+    m = MockClient([mock_final("ok")])
+    graph.run(b, m, "hi")
+    system = m.calls[0]["messages"][0]["content"]
+    assert "repu" not in system.lower() and "telangana" not in system.lower()
+
+
+def test_validator_thresholds_come_from_the_rules_file(broker_for, monkeypatch):
+    from anubhav.runtime import safety
+    b = broker_for("T01")
+    v, orders = _free_pair(b)
+    o = orders[0]
+    rules = dict(safety.rules(), eway_bill_value_rs=1)
+    monkeypatch.setattr(safety, "rules", lambda: rules)
+    w = safety.validate_draft(b.C, [o["order_id"]], v["vehicle_id"], b.C.today).warnings
+    assert any(x["code"] == "EWAY_BILL" and "Rs 1:" in x["message"] for x in w)
+
+
+# ---------- the real Muse client, offline (a fake HTTP transport; no credits)
+def _chat_json(tool=False):
+    msg = {"role": "assistant", "content": None if tool else "namaste"}
+    if tool:
+        msg["tool_calls"] = [{"id": "c1", "type": "function", "function": {"name": "list_open_orders", "arguments": "{}"}}]
+    return {"id": "x", "object": "chat.completion", "created": 0, "model": "muse-spark-1.3",
+            "choices": [{"index": 0, "message": msg, "finish_reason": "tool_calls" if tool else "stop"}],
+            "usage": {"prompt_tokens": 1000, "completion_tokens": 100, "total_tokens": 1100}}
+
+
+def test_muse_client_parses_tool_calls_usage_and_cost_and_retries_an_overload():
+    import httpx
+
+    from anubhav import muse
+    seen = []
+
+    def handler(request):
+        seen.append(request)
+        if len(seen) == 1:
+            return httpx.Response(503, json={"error": {"message": "overloaded"}})
+        return httpx.Response(200, json=_chat_json(tool=True))
+    c = muse.MuseClient(api_key="test", http_client=httpx.Client(transport=httpx.MockTransport(handler)))
+    r = c.chat([{"role": "user", "content": "orders?"}], tools=[])
+    assert len(seen) == 2 and seen[-1].headers["authorization"] == "Bearer test"
+    assert [t.name for t in r.tool_calls] == ["list_open_orders"] and (r.tokens_in, r.tokens_out) == (1000, 100)
+    assert r.cost_usd == pytest.approx((1000 * 1.25 + 100 * 4.25) / 1e6)
+    assert c._client.timeout == muse.TIMEOUT_S and c._client.max_retries == muse.MAX_RETRIES
+
+
+def test_a_missing_key_is_a_clear_error(monkeypatch):
+    from anubhav import muse
+    for k in muse.KEYS.values():
+        monkeypatch.delenv(k, raising=False)
+    for name in ("open", "spark"):
+        with pytest.raises(muse.MissingKeyError, match=muse.KEYS[name]):
+            muse.client(name)

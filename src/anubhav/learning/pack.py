@@ -8,12 +8,52 @@ What may travel is decided by code, never by the model's opinion:
 Publishing needs the source's approval; importing needs the recipient's opt-in; a pack can be revoked."""
 
 import json
+import re
 import sqlite3
-from datetime import datetime
+import unicodedata
+import uuid
+from datetime import date, datetime
 
 from .store import ACTIVE
 
 REGIONAL = {"site_access", "receiving_hours", "night_only", "time_window", "weekly_off", "closure", "moved_site", "alias"}
+
+
+# What each regional kind may carry across companies. Anything else in a lesson stays at home; free text is short and
+# plain, because the recipient's agent reads it (a pack is data from another organisation, never instructions).
+FIELDS = {"site_access": {"site_id": "id", "max_length_ft": "int"}, "receiving_hours": {"site_id": "id", "until_hour": "int"},
+          "night_only": {"site_id": "id", "from_hour": "int", "to_hour": "int"},
+          "time_window": {"site_id": "id", "min_length_ft": "int", "from_hour": "int", "to_hour": "int"},
+          "weekly_off": {"site_id": "id", "town": "text", "weekday": "int"},
+          "closure": {"town": "text", "what": "text", "valid_from": "date", "valid_to": "date"},
+          "moved_site": {"site_id": "id", "since": "date"},
+          "alias": {"phrase": "text", "target_kind": "id", "target_id": "id"}}
+MAX_TEXT = 40
+MARKUP = set('{}[]<>`"|#*\\')          # replaced by spaces in shared free text
+
+
+def clean(kind, params):
+    """Only the allowed fields, each of its type; None if a field can't be read as its type."""
+    out = {}
+    for k, v in (params or {}).items():
+        t = FIELDS.get(kind, {}).get(k)
+        if t is None or v is None:
+            continue
+        try:
+            if t == "int":
+                out[k] = int(v)
+            elif t == "date":
+                out[k] = date.fromisoformat(str(v)).isoformat()
+            elif t == "id":
+                if not re.fullmatch(r"[A-Za-z0-9_-]{1,40}", str(v)):
+                    return None
+                out[k] = str(v)
+            else:
+                text = "".join(" " if unicodedata.category(ch)[0] in "CZ" or ch in MARKUP else ch for ch in str(v))
+                out[k] = re.sub(r"\s+", " ", text).strip()[:MAX_TEXT]
+        except (TypeError, ValueError):
+            return None
+    return out
 
 
 def eligible(les):
@@ -52,7 +92,7 @@ def translate(les, src, dst):
     elif "town" in p:
         if not any(x["town"].lower() == str(p["town"]).lower() for x in dst.sites.values()):
             return None
-    return p
+    return clean(les["kind"], p)
 
 
 def publish(store, src, dst, approved_by, lesson_ids=None):
@@ -70,7 +110,7 @@ def publish(store, src, dst, approved_by, lesson_ids=None):
         items.append({"kind": les["kind"], "params": p, "source_lesson": les["lesson_id"].split("-")[-1], "effect": les["effect"],
                       "evidence": f"another company in the region: {g.get('support', 0)} supporting observation(s), "
                                   f"{g.get('counter', 0)} against; approved by its reviewer"})
-    pack_id = f"PK-{src.company}-{dst.company}-{datetime.now():%H%M%S}"
+    pack_id = f"PK-{src.company}-{dst.company}-{datetime.now():%Y%m%d-%H%M%S}-{uuid.uuid4().hex[:4]}"
     found = leaks({"items": items}, src, dst)
     if found:
         raise PermissionError(f"pack would leak private information: {found}")
@@ -108,6 +148,9 @@ def import_pack(store, pack, dst, accepted_by, accept_policies=False):
         n = con.execute("select count(*) from lessons where company = ?", (dst.company,)).fetchone()[0]
         for it in pack["items"]:
             now = datetime.now().isoformat(timespec="seconds")
+            if it.get("kind") not in REGIONAL or (params := clean(it["kind"], it.get("params"))) is None:
+                continue                 # the recipient re-checks what arrives: only regional kinds, allowed fields
+            it = dict(it, params=params, effect="policy" if it.get("effect") == "policy" else "advisory")
             prior = existing.get(_key(it["kind"], it["params"]))
             if prior:
                 g = dict(prior["gate"])
@@ -134,14 +177,22 @@ def import_pack(store, pack, dst, accepted_by, accept_policies=False):
 
 
 def revoke(store, pack_id, dst_company, actor):
-    """Revoking a pack removes its confirmation; a lesson no other partner confirms is retired."""
+    """Revoking a pack removes its confirmation. A lesson that came only from packs is retired when no partner confirms
+    it any more; a lesson the company learned itself stays active (it only loses the partner's confirmation)."""
     out = []
     for les in store.list(dst_company, ACTIVE):
         conf = les["gate"].get("confirmed_by") or ([les["source"].split(":", 1)[1]] if les["source"].startswith("pack:") else [])
         if pack_id not in conf:
             continue
         rest = [c for c in conf if c != pack_id]
-        if rest:
+        own = not les["source"].startswith("pack:")
+        if own:
+            g = {k: v for k, v in les["gate"].items() if k != "confirmed_by"} | ({"confirmed_by": rest} if rest else {})
+            with store._con() as con:
+                con.execute("update lessons set gate = ? where lesson_id = ?", (json.dumps(g), les["lesson_id"]))
+                store._event(con, les["lesson_id"], dst_company, actor, "unconfirm", les["state"], les["state"], pack_id)
+            out.append(store.get(les["lesson_id"]))
+        elif rest:
             g = dict(les["gate"], confirmed_by=rest, reason=f"confirmed by {len(rest)} partner compan{'y' if len(rest) == 1 else 'ies'}")
             with store._con() as con:
                 con.execute("update lessons set gate = ?, source = ? where lesson_id = ?", (json.dumps(g), f"pack:{rest[0]}", les["lesson_id"]))

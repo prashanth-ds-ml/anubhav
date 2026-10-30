@@ -1,0 +1,9 @@
+# Written operating rules the deterministic validator enforces (runtime/safety.py).
+# These are a company's own written rules (see written_policies in world_v1.yaml), not hidden knowledge:
+# a real deployment loads each company's copy. Kept out of code so no business fact is hardcoded.
+eway_bill_value_rs: 50000          # W-EWB: an e-way bill is needed above this consignment value
+usual_max_stops: 3                 # more stops than this on one vehicle gets a warning
+segregation:                       # W-SEGREGATE: a class here never shares a vehicle with the classes listed
+  chemical: [dense_food, light_food, liquid, chilled]
+cold_chain:                        # goods of this handling class need this vehicle class
+  chilled: REEFER14
