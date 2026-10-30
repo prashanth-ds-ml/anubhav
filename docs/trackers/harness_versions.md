@@ -10,13 +10,15 @@ Loop A: the agent improves *how it uses its tools*. Each row is one candidate, f
 **Built 2026-10-29:** `src/anubhav/harness/` (store, loop) and the app's Tuning page. Versions live in `data/harness/harness.sqlite`; this page records the notable ones for the README and demo.
 
 ## Active version
-- **Current:** `h-000` (baseline)
-- **Model (frozen):** `<muse model id>` · temperature `__`
+- **Current:** `h-000` (baseline): no patch has passed its paired test yet
+- **Model (frozen):** `meta-models/muse-spark-open-1026` (agent) · patches proposed by `muse-spark-1.3` · temperature `0`
 
 ## Version history
 | Version | Date | Parent | Surface | Change summary | Approved by | Status |
 |---|---|---|---|---|---|---|
-| h-000 | | | | Baseline harness | | active |
+| h-000 | 2026-10-29 | – | – | Baseline harness | system | active |
+| h-001 | 2026-10-29 | h-000 | response_guidelines | Proposed after tool practice: "the agent called the right tool but the reply didn't match the records" | – | **not activated**: paired test failed (no measurable improvement; held-out 100% → no room), EXP-010 |
+| h-002 | 2026-10-29 | h-000 | tool_hints | Proposed from traces: 9–10 calls per single-order draft; route straight to the valid draft | – | candidate, never tested (superseded by the D-037 tools: plan_board, check_load) |
 
 ## Candidate corrections
 | C-ID | From failure (run_id / E-ID) | Root-cause class | Surface | Patch (diff link) | Targeted fixed? | Paraphrase probes pass | Regressions | Held-out Δ | Cost/latency Δ | Decision | → Version |

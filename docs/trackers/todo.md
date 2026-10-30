@@ -77,11 +77,11 @@ Items 1, 2, 6 and 7 from the workshop review fold straight into this commit. 147
 | J2 | EXP-012: new tools on gap questions, pre-registered (~$3) | Nov 2 | ⬜ |
 
 ## Step 2: honest docs (~1.5 h, Nov 2)
-- ⬜ README: test count (now 147 + 128 archived = 275; README says 238); credit for Harness² (arXiv 2610.14224) here and in `LICENSES_AND_ATTRIBUTION.md`; the three learning routes, the Logs page and the tool-creation limits. The "Limitations" section exists: re-read it.
-- ⬜ FR-19 → 🟨 (arm D not run); tick the theme and anti-project items with a reason in [[submission_checklist]]
-- ⬜ Close or refresh: risks R-04/R-17/R-22 (R-18/R-21 disclose); stale questions I-01/I-02/I-03/Q-06; ask Q-05/Q-07 by Nov 3
-- ⬜ Fix the [[cost_ledger]] totals; fill in [[harness_versions]]; re-score [[rubric_scorecard]]; clean up stale content in [[experiments]] and [[data_and_benchmark]]
-- ⬜ Delete the `Untitled*.canvas` files in the repo root (3 files)
+- ✅ (Oct 30) README: test count; credit for Harness² (arXiv 2610.14224) here and in `LICENSES_AND_ATTRIBUTION.md`; the three learning routes, the Logs page and the tool-creation limits. The "Limitations" section exists: re-read it.
+- ✅ (Oct 30) FR-19 → 🟨 (arm D not run); theme and anti-project ticked with a reason in [[submission_checklist]]
+- ✅ (Oct 30) Risks R-04/R-05/R-17/R-18/R-19/R-21/R-22 refreshed; questions I-01–I-06, Q-05–Q-07 resolved or cut; I-07 waits for the dispatcher review
+- ✅ (Oct 30) [[cost_ledger]] totals and forecast; [[harness_versions]] filled in (h-001 not activated, h-002 never tested); [[rubric_scorecard]] re-scored (6.7 self-score); [[experiments]] has EXP-011R/012
+- ✅ (Oct 30) Deleted the three empty `Untitled*.canvas` files
 - ⬜ Owner: set spend alerts on Meta and Baseten
 
 ## Step 3: deploy and video
