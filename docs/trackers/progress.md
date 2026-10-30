@@ -63,11 +63,13 @@ History before Oct 29 (order-desk plan): `archive/progress_order_desk.md`
 ## Next (plan of Oct 30, [[implementation_plan]])
 | Workstream | Days | Status |
 |---|---|---|
-| P0 commit step 1 | Oct 30 | ⬜ |
-| A reply check, refusals with next step | Oct 31 | ⬜ |
-| B Logs page | Oct 31 | ⬜ |
-| C new-tool creation (read-only SQL → approved tool) | Oct 31 – Nov 1 | ⬜ |
-| D nightly review (runs → Loop A / Loop B / tools) | Nov 2 | ⬜ |
-| E deploy + recorded demo runs | Nov 2 | ⬜ |
-| F honest docs | Nov 2 | ⬜ |
+| P0 commit step 1 | Oct 30 | ✅ |
+| A reply check, refusals with next step | Oct 31 | ✅ (done Oct 30) |
+| B Logs page | Oct 31 | ✅ (done Oct 30) |
+| C new-tool creation (read-only SQL → approved tool) | Oct 31 – Nov 1 | ✅ (done Oct 30; live: 1 call on a new town) |
+| D nightly review (runs → Loop A / Loop B / tools) | Nov 2 | ✅ (done Oct 30) |
+| E deploy + recorded demo runs | Nov 2 | 🟨 deployed; recordings left |
+| F honest docs | Nov 2 | 🟨 README pass done; trackers clean-up left |
+| H slim onboarding | Oct 31 | ✅ (done Oct 30) |
+| J EXP-011R + EXP-012 (pre-registered) | Nov 2 | 🟨 running (started Oct 30) |
 | G video, README, submit | Nov 3–4 | ⬜ |

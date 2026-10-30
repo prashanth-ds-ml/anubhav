@@ -35,6 +35,6 @@ The video is the primary artifact. Final-round judges also try the hosted demo, 
 - [ ] Uploaded; link works in incognito
 
 ## Hosted demo
-- **URL:** https://anubhav-metahackathon.streamlit.app/ (deployed 2026-10-31, no keys, `ANUBHAV_PUBLIC=1`)
+- **URL:** https://anubhav-metahackathon.streamlit.app/ (deployed 2026-10-30, no keys, `ANUBHAV_PUBLIC=1`)
 - **Modes:** replay (default) · live (spend-capped) · judge seed challenge
 - [ ] Spend cap enforced · [ ] Rate limit · [ ] Works in incognito

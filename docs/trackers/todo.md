@@ -8,6 +8,8 @@ Sources:
 - the three-part audit (context, code, readiness) and the review of `meta-models/legal-agent-workshop`, both on 2026-10-30;
 - the owner's demo brief, the same evening.
 
+> **Dates:** the Day column is the plan's schedule. All items marked done so far were done on **2026-10-30** (the real date), ahead of plan.
+
 **How and why: [[implementation_plan]]** (D-039, D-040). Related: [[progress]], [[submission_checklist]], [[risks]].
 **Audit of this list on Oct 30 (evening):**
 - Step 1 is done and re-tested (147 passed) but **not committed**.
