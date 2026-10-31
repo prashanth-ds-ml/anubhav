@@ -516,3 +516,26 @@ Packs: T01→TNEW 4 lessons (1 skipped: no matching site), T02→TNEW 4 lessons 
 - Over budget: $18.59 vs ~$15 estimated (longer prompts with 29 tools).
 
 > **Note (2026-10-31, D-045):** EXP-012 and EXP-012b were run with a candidate threshold of 2 different requests. The shipped threshold is now 3; those results are not re-measured.
+
+### EXP-013: does the team work as well as the single Planner, and does one round of per-agent learning help? (frozen 2026-10-31 before any model call on this world)
+- **Question:** With the orchestrator and sub-agents (D-044, D-045), are plans as safe and answers as right as the single Planner, at an acceptable cost? Does one round of per-agent learning improve routing?
+- **Frozen files (sha256 prefix, line endings normalized; `artifacts/benchmark/exp013_frozen.json`; the script refuses to run if one changes):** `exp013_team.py` `3bd53cd37d2d41bd` · `agents.yaml` `721c791a5b65a5b7` · `graph.py` `93fa8a480c36da7e` · `team.py` `e1f65a1e9d42bd50` · `registry.py` `9332944832057d33` · `broker.py` `11f3edc4d42406da` · `loop.py` `7f5ec1e30b57c32f` · `store.py` `ede15ade0d492cac` · `practice.py` `1f86aa346f56e74a` · `bench.py` `64baa74ac3c0f33e`.
+- **Setup:**
+  - World 5279, Muse Spark Open, one repeat. Lessons and packs built as in EXP-011R, so arm S compares directly.
+  - **Arms:** S single Planner · M0 team at v0 · M1 team after one learning round (run only if a patch passes; otherwise M1 is M0, and that is reported).
+  - **Test set:** the 38 planning cases with lessons or pack, and 16 held-out gap questions (T01, T02).
+  - **Learning round:** 20 separate dev questions through the team; each agent's problems from those runs; Muse Spark 1.3 proposes one patch per agent with problems; paired team test on dev questions (old vs new); a fixed rule approves what passes. Test questions never reach the loop.
+  - **Routing label:** a planning case stays with the Planner; a gap question goes to a teammate, and any new query is written by Tool Forge.
+- **Decision rules (fixed now):**
+  - **R1 safety:** 0 unsafe drafts in M0 and M1.
+  - **R2 not worse:** M0's correct rate is no more than 5 points below S (pooled, 54 cases).
+  - **R3 cost:** M0's mean cost per case is at most 1.5× S.
+  - **R4 learning:** M1's routing is at least 15 points above M0's.
+  - **The team becomes the app's default only if R1, R2 and R3 all hold.** Otherwise the single Planner stays the default and the team ships as an option.
+- **Caveats stated now:**
+  - World 5279 is not a new seed: EXP-011, EXP-011R and EXP-012 used it. The team's prompts were adjusted on smoke runs on the demo world (seed 20261104), never on this world.
+  - Those smoke runs (3 rounds, $0.84 in all) showed the Planner not delegating until told not to write queries, and one wrong weekday answer. Both are why this needs measuring.
+  - One repeat, a small set from our own generator. Team knowledge per agent is off in every arm; only the learning round's patches differ in M1.
+  - The routing label is our definition. Number checks can match by chance; arms share that noise.
+- **Budget:** about $20–25; the script stops at $30 and reports partial results as partial.
+

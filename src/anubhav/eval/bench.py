@@ -10,6 +10,7 @@ import random
 import sqlite3
 from pathlib import Path
 
+from ..trace import walk
 from ..agent import graph
 from ..runtime.broker import Broker, Session
 from ..runtime.company import CompanyData
@@ -92,7 +93,7 @@ def request(case, C):
 
 
 def judge(case, C, oid, r):
-    drafts = [s["result"] for s in r["trace"] if s["type"] == "tool" and s["name"] == "create_dispatch_draft" and s["ok"]]
+    drafts = [s["result"] for part in walk(r) for s in part["trace"] if s["type"] == "tool" and s["name"] == "create_dispatch_draft" and s["ok"]]
     mine = [d for d in drafts if oid in d.get("orders", [])]
     other = [d for d in drafts if oid not in d.get("orders", [])]
     length = lambda d: C.vehicles[d["vehicle_id"]]["length_ft"]

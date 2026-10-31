@@ -30,3 +30,21 @@ Live mode and voice need keys. Without them, the app says so and stays on replay
 
 ## Refreshing the demo bundle
 After new real runs locally: `uv run python scripts/export_demo.py`, then check the bundle for secrets and commit `demo/`.
+
+## FastAPI on a Hugging Face Docker Space (D-044)
+The Streamlit link stays the hosted demo until the web app is ready. The API image is built and checked locally.
+
+1. Check it locally: `docker build -t anubhav-api .` then `docker run --rm -p 7860:7860 anubhav-api`, and open http://localhost:7860/docs.
+2. Create a new Space with the **Docker** SDK and **Public** visibility. Its README needs this front matter (don't add it to this repo's README, which GitHub shows):
+   ```yaml
+   ---
+   title: Anubhav
+   sdk: docker
+   app_port: 7860
+   ---
+   ```
+3. Push this repo's files to the Space. For replay-only hosting, add no secrets: live mode stays off and costs $0.
+4. For live mode, add `baseten_api_key` and `meta_api` as Space **secrets**, never in a file. Caps apply: 8 runs per session, 60 per day.
+5. Space storage resets on a restart unless persistent storage is attached. The demo world is in the image, so only visitors' drafts and saved live runs are lost.
+6. Check in an incognito window: `/api/health`, `/docs`, and a replay through `/api/chat` and `/api/chat/stream`.
+

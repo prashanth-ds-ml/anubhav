@@ -5,8 +5,10 @@ import logging
 from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
+from fastapi.staticfiles import StaticFiles
 from starlette.exceptions import HTTPException
 
+from ..data.config import ROOT
 from ..harness.store import PatchError
 from ..learning.store import ReviewError
 from ..service import session
@@ -62,6 +64,9 @@ def create_app(public=None, world=None, replay_pace=0.05) -> FastAPI:
         return _error(500, "INTERNAL", "something went wrong on the server")
 
     app.include_router(api)
+    dist = ROOT / "web" / "dist"
+    if dist.exists():           # the built web app, once there is one; /api and /docs stay as they are
+        app.mount("/", StaticFiles(directory=dist, html=True), name="web")
     return app
 
 

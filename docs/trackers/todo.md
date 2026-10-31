@@ -124,14 +124,14 @@ Owner and Claude in parallel. The single Planner stays the baseline and fallback
 | B1 | Service layer `service/{session,runs,views}.py` (no framework); `ui/core.py` is a thin layer; team mode runs and saves through it; caps live here | ✅ Oct 31 (379 tests) |
 | B2 | Live event streaming: `events.Emitter` used live and over saved runs (same stream); `service/stream.py` runs a request in a thread, writes each event at once, resumes by seq | ✅ Oct 31 |
 | API | FastAPI: all endpoints in `contracts/api.md` (session, dashboard, chat + SSE, agents, lessons, tools, harness, packs, review, proof, ledger, logs, tool tracking, report); visitors isolated, including their saved live runs; shared or paid actions refused on the public host | ✅ Oct 31 (scripted model only) |
-| B3 | A learning loop per agent (versions by `agent_id`, rollback per agent, cross-agent gate) | ⬜ |
-| B4 | Knowledge per agent | ⬜ |
-| B5 | Learned routing hints | ⬜ |
-| B6 | Tool Forge agent (naming; code keeps the checks) | ⬜ |
-| B7 | Lesson Miner agent (evidence gate stays in code) | ⬜ |
-| B8 | `learning_event` events | ⬜ |
-| B9 | Benchmark S / M0 / M1 frozen by hash, then the run (~$30) | ⬜ |
-| B10 | Docker image + Hugging Face Space config | ⬜ |
+| B3 | A learning loop per agent: versions and rollback per agent, `team_probe`, gate blocks harm to another agent | ✅ Oct 31 |
+| B4 | Knowledge per agent (`service/knowledge.py`, from the records; off in EXP-013) | ✅ Oct 31 |
+| B5 | Routing evidence from runs (`logs.routing_stats`) and a `routing_hints` surface through the same test and approval | ✅ Oct 31 |
+| B6 | Tool Forge: active; writes the first query (real model reaches it, smoke run); suggests names; code keeps the checks | ✅ Oct 31 |
+| B7 | Lesson Miner: active; `records_digest`, `propose_lesson` through the evidence gate; a person approves. Not run on the real model yet | ✅ Oct 31 (scripted model) |
+| B8 | Learning timeline for lessons, patches and tools, per agent (`/api/learning/timeline`, in the ledger) | ✅ Oct 31 |
+| B9 | EXP-013: S / M0 / M1 pre-registered in [[experiments]], frozen by hash, then the run (≤ $30) | 🟨 frozen; running |
+| B10 | Dockerfile built and checked locally (no keys in the image, non-root, replay works, paid routes refused); deploying the Space is the owner's step ([[deploy]]) | ✅ Oct 31 |
 | Web | React app (V1–V4, V6–V9, V11–V15) | ⬜ later (owner's direction) |
 
 ## Cut

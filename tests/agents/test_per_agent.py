@@ -124,8 +124,8 @@ def test_each_agent_gets_its_own_knowledge(C, world, tmp_path, monkeypatch):
     ws = Workspace("kn" + tmp_path.name[-6:], True, {}, world)
     ws.store()
     items = knowledge.for_team(ws, "T01")
-    assert len(items["analyst"]) == 1 and "2 requests" in items["analyst"][0] and town[0] not in items["analyst"][0]
-    assert items["tool_forge"] == [] and "Earlier proposals" in items["lesson_miner"][0]
+    assert len(items["tool_forge"]) == 1 and "2 requests" in items["tool_forge"][0] and town[0] not in items["tool_forge"][0]
+    assert items["analyst"] == [] and "Earlier proposals" in items["lesson_miner"][0]
     assert knowledge.sizes(ws, "T01")["planner"] > 0
 
 

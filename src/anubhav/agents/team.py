@@ -18,7 +18,7 @@ from ..agent.graph import Limits
 from ..learning import digest as digests
 from ..learning.miner import KINDS
 from ..runtime.broker import Args, Broker, NoArgs, Session, Tool, ToolError, drive_minutes
-from . import registry
+from . import registry  # noqa: F401  (scripts reach the roster through here)
 
 MIN_USD = 0.005         # below this a teammate couldn't make one model call: refuse instead of starting it
 
