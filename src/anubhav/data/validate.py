@@ -3,7 +3,6 @@ report (does every hidden rule leave the traces it is supposed to?). Generation 
 
 import re
 from collections import Counter, defaultdict
-from datetime import datetime
 
 from .store import HIDDEN_COLUMNS, company_view
 

@@ -5,9 +5,11 @@ tags: [tracker, cost]
 
 | Credit | Total $ | Spent $ | Left $ | Used for |
 |---|---|---|---|---|
-| Meta Model API | 150.00 | ~16.1 | ~133.9 | Muse Spark + Voice Transcribe runtime, evals |
+| Meta Model API | 150.00 | ~16.5 | ~133.5 | Muse Spark + Voice Transcribe runtime, evals |
 | Baseten | 100.00 (+2M TPM) | ~64.7 | ~35.3 | The agent (Muse Spark Open): all benchmarks and live checks |
-| **Total** | **250.00** | **~80.8** | **~169.2** | Totals are summed from our per-run costs at list prices; the billing pages have not been checked yet |
+| **Total** | **250.00** | **~81.2** | **~168.8** | Totals are summed from our per-run costs at list prices; the billing pages have not been checked yet |
+
+**Rules (D-048, Nov 1):** Baseten is kept for the demo and judges; our own runs use Meta. Keep at least $50 of Meta for the demo and judges (~$83.5 free now). Log every real run here, because `scripts/preflight.py` checks these figures. Check the billing pages too.
 
 **Forecast to submission (Oct 31):** EXP-011R 3 repeats ~$15 · EXP-012 ~$3 · recorded demo runs ~$2 · nightly review (Spark 1.3) ~$1 · remaining live checks ~$3 · video takes ~$2 → **~$26 more, ~$65 total**, about $185 left. **Actual by Oct 31: ~$65.3 used** (EXP-011R $18.59, EXP-012 + 012b $7.27, live checks ~$0.6); left to spend: recordings and video takes, ~$2–4. Hosted demo: $0 (no keys).
 
@@ -42,6 +44,7 @@ tags: [tracker, cost]
 | 2026-10-29 | Voice | Muse Voice Transcribe pipeline check (20 s, Day-1 recording) | | | | 0.001 | ~15.26 | ⬜ |
 | 2026-10-29 | Benchmark | EXP-008 mining, Spark 1.3 (6 calls, ~45k-char digests) | | | | 0.42 | ~15.7 | ⬜ |
 | 2026-10-29 | Benchmark | EXP-009 + EXP-009b mining on fresh worlds 4111 and 5279, Spark 1.3 (3 companies each) | | | | 0.42 | ~16.1 | ⬜ |
+| 2026-11-01 | muse-spark-1.3 | Real test of sign-off, reject with notes, ask and resume, 6 requests (`artifacts/smoke_supervised.json`) | | | | 0.39 | ~16.5 | ⬜ |
 
 ### Prices (verified 2026-10-27)
 | Model | Input /1M | Output /1M | Cached /1M |

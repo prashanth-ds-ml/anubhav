@@ -140,7 +140,7 @@ def routing_stats(runs):
         for r in walk(top):
             steps = [s for s in r.get("trace", []) if s.get("type") == "tool"]
             kinds = sorted({category.get(s["name"], "learned_tools") for s in steps if category.get(s["name"]) != "system" and s["name"] != "delegate"})
-            if not kinds or (s := next((x for x in steps if x["name"] in ("delegate", "find_capability", "sequence_stops")), None)) and not [x for x in steps if x["name"] not in ("delegate", "find_capability", "sequence_stops")]:
+            if not kinds or (next((x for x in steps if x["name"] in ("delegate", "find_capability", "sequence_stops")), None)) and not [x for x in steps if x["name"] not in ("delegate", "find_capability", "sequence_stops")]:
                 continue
             k = ("+".join(kinds), r.get("agent_id") or "planner")
             row = rows.setdefault(k, {"task_kind": k[0], "handled_by": k[1], "requests": 0, "answered": 0, "tool_errors": 0, "tool_calls": 0, "cost_usd": 0.0})

@@ -126,3 +126,14 @@ def test_both_models_can_be_picked_live_and_meta_is_the_default(monkeypatch, tmp
     w.live_client("open")
     w.live_client("spark")
     assert w.state["live_runs"] == 2 and w.calls_today() == 2
+
+
+def test_one_model_reaching_its_daily_cap_leaves_the_other_open(monkeypatch, tmp_path):
+    for key in muse.KEYS.values():
+        monkeypatch.setenv(key, "test-key")
+    monkeypatch.setattr(session, "LIVE_CALLS_PER_DAY_BY_MODEL", {"open": 1})
+    w = Workspace(world=tmp_path)
+    assert w.live_client("open")[1] is None
+    client, blocked = w.live_client("open")
+    assert client is None and "Pick another model" in blocked and "used" in blocked
+    assert w.live_client("spark")[1] is None and w.calls_today() == 2 and w.calls_today("open") == 1

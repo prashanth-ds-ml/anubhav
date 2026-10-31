@@ -24,7 +24,7 @@ REQUESTS = [("plan", "Repu Jangaon Lakshmi Agencies load ki bandi pettu. Dispatc
 
 def main():
     sys.stdout.reconfigure(encoding="utf-8")
-    client = muse.client("open")
+    client = muse.client("spark")
     C = CompanyData(WORLD, "T01", Path(tempfile.mkdtemp()) / "rt")
     total, runs = 0.0, []
     for tag, req in REQUESTS:

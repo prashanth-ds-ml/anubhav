@@ -45,7 +45,7 @@ def build(world, companies=("T01", "T02", "TNEW"), seed=11):
     cases = []
     for cid in companies:
         C = CompanyData(world, cid, Path(world) / "runtime" / "bench-build")
-        add = lambda fam, lang, **kw: cases.append({"id": f"{cid}-{fam}-{lang}-{len(cases):02d}", "company": cid, "family": fam,
+        add = lambda fam, lang, **kw: cases.append({"id": f"{cid}-{fam}-{lang}-{len(cases):02d}", "company": cid, "family": fam,  # noqa: B023 (used inside this loop only)
                                                    "lang": lang, **kw})
         for rule in T.rules.values():
             if rule["kind"] == "site_access" and (sid := T.site_by_key(cid, rule["site"])):

@@ -38,8 +38,11 @@ with st.sidebar:
             core.company(st.session_state.company).runtime.reset()
             st.session_state.chat = {}
             st.toast("Drafts and vehicle holds cleared.")
-    if st.session_state.model != "Replay (free)":
-        st.caption(f":orange[:material/payments:] Live mode calls Muse (about $0.05 per request), "
+    picked = core.MODELS.get(st.session_state.model)
+    if blocked := picked and core.live_ready(picked):
+        st.caption(f":orange[:material/block:] {blocked}")
+    elif picked:
+        st.caption(f":orange[:material/payments:] Live on {st.session_state.model} (about $0.05 per request), "
                    f"{core.LIVE_RUNS_PER_SESSION - st.session_state.get('live_runs', 0)} left this session.")
 
 pages = {

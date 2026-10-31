@@ -174,7 +174,7 @@ def candidates(runs, company, sb, marked=()):
 
 def _outputs(tpl):
     """The names a query gives its first columns (SELECT … AS name), to say what the tool returns."""
-    head = re.split(r"\bfrom\b", re.sub(r"\s+", " ", tpl), 1, flags=re.I)[0]
+    head = re.split(r"\bfrom\b", re.sub(r"\s+", " ", tpl), maxsplit=1, flags=re.I)[0]
     return [a.lower() for a in re.findall(r"\bas\s+([A-Za-z_][A-Za-z0-9_]*)", head, re.I)]
 
 

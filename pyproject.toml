@@ -2,6 +2,9 @@
 name = "anubhav"
 version = "0.1.0"
 description = "Anubhav: a multilingual agent that learns a business's unwritten rules from its own records, on Meta Muse"
+readme = "README.md"
+license = { file = "LICENSE" }
+authors = [{ name = "prashanth-ds-ml" }]
 requires-python = ">=3.12"
 dependencies = [
     "fastapi>=0.162.0",
@@ -20,6 +23,12 @@ dependencies = [
     "websockets>=17.3",
 ]
 
+[project.scripts]
+anubhav-preflight = "anubhav.preflight:main"
+
+[project.urls]
+Repository = "https://github.com/prashanth-ds-ml/anubhav"
+
 [dependency-groups]
 dev = [
     "highspy>=1.15.1",
@@ -33,8 +42,21 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/anubhav", "archive/prototype_experiments/src/order_agent"]
+packages = ["src/anubhav"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests", "archive/prototype_experiments/tests"]
 pythonpath = ["src", "archive/prototype_experiments/src"]
+
+[tool.ruff]
+line-length = 200
+target-version = "py312"
+extend-exclude = ["archive", "Other_assistant", "scripts/exp*.py"]   # frozen experiments stay byte for byte as they ran
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "B"]
+ignore = ["B007", "B008", "B904", "B905", "E501", "E702", "E731", "E741"]    # FastAPI's Depends defaults; the repo's compact style
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["B023", "B018", "F841"]
+"src/anubhav/data/*" = ["B023", "F841"]    # the seeded world generator: untouched, so the same seed gives the same world

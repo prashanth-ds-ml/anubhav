@@ -27,6 +27,7 @@ EXP008 = sorted((ROOT / "artifacts" / "learning").glob("exp008_*_rep0.sqlite"))
 DEMO = ROOT / "demo"            # git-tracked bundle for a fresh (hosted) checkout: saved real runs, EXP-008 lessons, practice
 LIVE_RUNS_PER_SESSION = 8       # spend cap for live model calls on a public deployment
 LIVE_CALLS_PER_DAY = 60         # and for the whole app, across every visitor and page (reloading doesn't reset it)
+LIVE_CALLS_PER_DAY_BY_MODEL = {"open": 30}    # Baseten has the smaller credit, kept for judges (D-048): at most $12 a day
 PUBLIC = os.environ.get("ANUBHAV_PUBLIC") == "1"   # hosted for judges: each visitor gets their own drafts and lessons
 COMPANIES = {"T01": "Sri Kakatiya Logistics", "T02": "Ramappa Carriers", "T03": "Deccan Freight Services",
              "TNEW": "Bhadrakali Transport Co (new)"}
@@ -162,9 +163,10 @@ class Workspace:
     def _spend_file(self):
         return Path(self.world) / "runtime" / f"live_calls_{date.today().isoformat()}.json"
 
-    def calls_today(self):
+    def calls_today(self, model_key=None):
         try:
-            return json.loads(self._spend_file().read_text(encoding="utf-8"))["calls"]
+            data = json.loads(self._spend_file().read_text(encoding="utf-8"))
+            return data.get("by_model", {}).get(model_key, 0) if model_key else data["calls"]
         except (OSError, ValueError, KeyError):
             return 0
 
@@ -182,6 +184,9 @@ class Workspace:
             return f"This session used its {LIVE_RUNS_PER_SESSION} live runs. Use Replay, or run it locally."
         if self.calls_today() >= LIVE_CALLS_PER_DAY:
             return f"The demo's daily budget of {LIVE_CALLS_PER_DAY} live runs is used up. Use Replay, or run it locally."
+        cap = LIVE_CALLS_PER_DAY_BY_MODEL.get(model_key)
+        if cap is not None and self.calls_today(model_key) >= cap:
+            return f"This model's daily budget of {cap} live runs is used up. Pick another model, or use Replay."
         return None
 
     def live_client(self, model_key):
@@ -194,5 +199,7 @@ class Workspace:
             self.state["live_runs"] = self.state.get("live_runs", 0) + 1
             f = self._spend_file()
             f.parent.mkdir(parents=True, exist_ok=True)
-            f.write_text(json.dumps({"calls": self.calls_today() + 1}), encoding="utf-8")
+            by_model = {k: self.calls_today(k) for k in muse.KEYS}
+            by_model[model_key] += 1
+            f.write_text(json.dumps({"calls": self.calls_today() + 1, "by_model": by_model}), encoding="utf-8")
         return muse.client(model_key), None

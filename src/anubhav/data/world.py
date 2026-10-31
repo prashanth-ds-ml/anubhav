@@ -3,7 +3,7 @@ vehicles, drivers, and the hidden rules resolved to concrete ids. Nothing here d
 
 import math
 from dataclasses import dataclass, field
-from datetime import date, timedelta
+from datetime import timedelta
 
 from .config import as_date, rng
 

@@ -265,3 +265,12 @@ def test_preflight_reports_without_spending_or_showing_keys(world, monkeypatch):
     rows = preflight.run(models=(), world=world)
     assert all(ok for name, ok, _ in rows if name != "live runs left today") and "sk-secret-value" not in str(rows)
     assert not dict((n, ok) for n, ok, _ in preflight.run(models=(), world=world, bundle=world / "none.jsonl"))["saved replays"]
+
+
+def test_preflight_warns_when_credit_falls_into_the_demo_reserve(tmp_path):
+    ledger = tmp_path / "l.md"
+    ledger.write_text("| Meta Model API | 150.00 | ~110.0 | ~40.0 | x |\n| Baseten | 100.00 (+2M TPM) | ~64.7 | ~35.3 | y |\n", encoding="utf-8")
+    meta, base = preflight.check_credits(ledger)
+    assert not meta[1] and "~$0.00 free" in meta[2] and base[1] and "free" not in base[2]
+    assert not preflight.check_credits(tmp_path / "none.md")[0][1]
+    assert all(ok for _, ok, _ in preflight.check_credits())    # the real ledger today

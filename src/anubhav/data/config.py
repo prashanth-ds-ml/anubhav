@@ -1,5 +1,6 @@
 """Load the world config, hash it, and hand out independent random substreams."""
 
+import os
 import hashlib
 import json
 import random
@@ -8,7 +9,7 @@ from pathlib import Path
 
 import yaml
 
-ROOT = Path(__file__).resolve().parents[3]
+ROOT = Path(os.environ.get("ANUBHAV_HOME") or Path(__file__).resolve().parents[3])    # configs/ and data/ live here, not in the package
 DEFAULT_CONFIG = ROOT / "configs" / "world_v1.yaml"
 SUBSTREAMS = ("geography", "demand", "resources", "disruptions", "people", "notes", "benchmark")
 

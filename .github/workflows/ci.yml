@@ -1,0 +1,29 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          version: "0.9.5"
+      - name: Install system audio library
+        run: sudo apt-get update && sudo apt-get install -y libportaudio2
+      - name: Install
+        run: uv sync --frozen
+      - name: Lint
+        run: uvx ruff@0.14.0 check .
+      - name: Test (scripted model; no keys, no credits)
+        run: uv run pytest -q
+      - name: Build the package
+        run: uv build --wheel

@@ -134,6 +134,7 @@ Owner and Claude in parallel. The single Planner stays the baseline and fallback
 | B11 | Team replays in the demo bundle (6 real runs); Lesson Miner's first real run proposed nothing | ✅ Oct 31 |
 | B13 | Measuring learning: paired test scores right answers; agent totals and scores by version; agents practise alone; Miner routed; per-agent review; Forge names through the API; `/api/compare`, `/api/proof/curve`; live learning events | ✅ Oct 31 (scripted model) |
 | B15 | Workshop gaps (D-047): plan sign-off, stop/ask/resume, hand-off after 3 refusals, reply check sends back, setup check; both models switchable live | ✅ Nov 1 (scripted model; not yet tried on a real model) |
+| B16 | Repo hygiene: ruff in CI, GitHub Actions, `.env.example`, project metadata, `anubhav-preflight` command, archived prototype out of the package, `ANUBHAV_HOME`, Muse Spark Open capped at 30 live runs a day | ✅ Nov 1 |
 | B14 | EXP-014 whole-team curve: written and tested on a scripted model, **not run** (D-046) | ✂️ |
 | B12 | Show team runs in Streamlit, so the work is visible if React slips | ⬜ |
 | B10 | Dockerfile built and checked locally (no keys in the image, non-root, replay works, paid routes refused); deploying the Space is the owner's step ([[deploy]]) | ✅ Oct 31 |

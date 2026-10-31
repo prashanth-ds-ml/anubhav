@@ -9,7 +9,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends libportaudio2 &
 
 WORKDIR /app
 COPY pyproject.toml uv.lock README.md LICENSE ./
-COPY archive/prototype_experiments/src archive/prototype_experiments/src
 COPY src src
 COPY configs configs
 COPY contracts contracts

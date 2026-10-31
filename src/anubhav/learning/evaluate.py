@@ -82,7 +82,7 @@ class Truth:
 
 def score(truth, company, lessons):
     """lessons: rows from LessonStore.list(company)."""
-    learn, traps = set(truth.learnable(company)), set(truth.traps(company))
+    learn = set(truth.learnable(company))
     passed = [l for l in lessons if l["state"] in ("CANDIDATE", "NEEDS_EVIDENCE", "EXPIRED")]
     rows, found, admitted_traps, false = [], set(), set(), []
     for l in lessons:

@@ -30,7 +30,7 @@ def show(tag, r):
 def main():
     sys.stdout.reconfigure(encoding="utf-8")
     tmp = Path(tempfile.mkdtemp())
-    client = muse.client("open")
+    client = muse.client("spark")
     shutil.copy(EXP008[-1], tmp / "lessons.sqlite")
     S = LessonStore(tmp / "lessons.sqlite")
     total = 0.0

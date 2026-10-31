@@ -73,4 +73,6 @@ Replays are labelled "replay" on screen. Voice and video remain the owner's.
 ## Decisions for the owner
 1. **React + FastAPI, or Streamlit on the same service layer?** React matches the design and looks better; Streamlit is already hosted and is the safer path with the video still to record. Recommended: start React on the fixtures, and keep Streamlit as the hosted link until React passes in an incognito window.
 2. **Host:** a Hugging Face Docker Space ([[deploy]]), or keep only Streamlit.
-3. **Keys on the host (owner wants judges to try both models):** add both keys to the host, with the existing caps? Worst case is 60 live runs a day; at the $0.40 a request ceiling that is at most $24 a day, typically far less. Results differ by model, and all measured numbers are on Muse Spark Open.
+Credits: see D-048. Baseten is only for judges and the demo; our own runs use Meta, keeping $50.
+
+3. **Keys on the host: yes (owner, Nov 1); the owner adds them in the host's secrets.** Muse Spark Open is capped at 30 live runs a day. Worst case is 60 live runs a day; at the $0.40 a request ceiling that is at most $24 a day, typically far less. Results differ by model, and all measured numbers are on Muse Spark Open.

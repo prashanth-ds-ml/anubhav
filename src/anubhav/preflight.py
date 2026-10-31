@@ -2,6 +2,7 @@
 spent) and checks the data, saved replays and spend caps. Reports problems by name: keys are never printed."""
 
 import json
+import re
 
 from . import muse
 from .agents import registry
@@ -10,6 +11,9 @@ from .service import session
 
 URLS = {"spark": muse.BASE_URL, "open": muse.BASETEN_URL}
 WANT = {"spark": muse.DEFAULT_MODEL, "open": muse.OPEN_MODEL}
+LEDGER = ROOT / "docs" / "trackers" / "cost_ledger.md"
+RESERVE = {"Meta Model API": 50.0, "Baseten": 30.0}     # kept for the demo and the judges (D-048); our own use is on Meta only
+OURS = {"Meta Model API"}
 
 
 def _list_models(key_name):
@@ -45,5 +49,31 @@ def check_local(world=None, bundle=None):
     return out
 
 
+def check_credits(ledger=LEDGER, reserve=RESERVE):
+    """Credit left against what's kept for the demo, from our own ledger (the billing pages are the real figure)."""
+    text = ledger.read_text(encoding="utf-8") if ledger.exists() else ""
+    out = []
+    for name, floor in reserve.items():
+        m = re.search(rf"^\| {re.escape(name)} \|[^|]*\|[^|]*\| ~?([\d.]+) \|", text, re.M)
+        if not m:
+            out.append((f"credit: {name}", False, "not found in the ledger"))
+            continue
+        left = float(m.group(1))
+        free = f", ~${max(left - floor, 0):.2f} free for our own runs" if name in OURS else ", none for our own runs"
+        out.append((f"credit: {name}", left >= floor, f"~${left:.2f} left, keep ${floor:.2f} for the demo and judges{free}"))
+    return out
+
+
 def run(models=("spark", "open"), list_models=_list_models, world=None, bundle=None):
-    return [check_model(m, list_models) for m in models] + check_local(world, bundle)
+    return [check_model(m, list_models) for m in models] + check_local(world, bundle) + check_credits()
+
+
+def main(argv=None):
+    import argparse
+    ap = argparse.ArgumentParser(description="Check everything before recording or going live. Lists models only: no tokens are spent.")
+    ap.add_argument("--replay-only", action="store_true", help="skip the model keys (a host with none)")
+    a = ap.parse_args(argv)
+    rows = run(models=() if a.replay_only else ("spark", "open"))
+    for name, ok, detail in rows:
+        print(f"{'ok  ' if ok else 'FAIL'} {name}: {detail}")
+    return 0 if all(ok for _, ok, _ in rows) else 1

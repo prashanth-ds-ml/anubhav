@@ -5,8 +5,7 @@ so traces and the cost ledger never depend on which backend ran. Ported from the
 import json
 import os
 import time
-from collections.abc import Callable
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from pathlib import Path
 
 from dotenv import load_dotenv

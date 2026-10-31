@@ -944,7 +944,7 @@ ANALYSIS = [
 def learned_tool(spec):
     """An approved learned tool: its stored query with typed parameters, run in the read-only sandbox."""
     from pydantic import create_model
-    fields = {p["name"]: (str, Field(description=(f"a date YYYY-MM-DD" if p["kind"] == "date" else f"a value of {p['column']}")
+    fields = {p["name"]: (str, Field(description=("a date YYYY-MM-DD" if p["kind"] == "date" else f"a value of {p['column']}")
                                     + f", e.g. {p['example']}")) for p in spec["params"]}
     model = create_model(f"Args_{spec['name']}", __base__=Args, **fields)
 

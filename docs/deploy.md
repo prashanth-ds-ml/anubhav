@@ -22,11 +22,12 @@ Live mode and voice need keys. Without them, the app says so and stays on replay
 5. Click **Deploy**.
 
 ## Spend control
-- Each browser session gets `LIVE_RUNS_PER_SESSION` live runs (8, in `src/anubhav/ui/core.py`), at about $0.05 each.
+- Each browser session gets `LIVE_RUNS_PER_SESSION` live runs (8, in `src/anubhav/service/session.py`), at about $0.05 each.
 - The whole app gets `LIVE_CALLS_PER_DAY` live calls (60), counted in a file, so reloading the page doesn't reset it.
 - Every live button (agent, miner, practice, tuning, voice) goes through the same check; without keys they are disabled and say why.
 - Replay is the default and costs nothing.
-- For judging, the safest choice is to deploy **without** secrets (replay only) and show live runs in the video.
+- `LIVE_CALLS_PER_DAY_BY_MODEL` also limits Muse Spark Open to 30 live runs a day, so Baseten's smaller credit lasts (D-048).
+- **For judging, deploy with both keys (owner, Nov 1)** so judges can pick either model. Set spend alerts on both billing pages first.
 
 ## Refreshing the demo bundle
 After new real runs locally: `uv run python scripts/export_demo.py`, then check the bundle for secrets and commit `demo/`.
