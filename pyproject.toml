@@ -21,6 +21,7 @@ dependencies = [
 [dependency-groups]
 dev = [
     "highspy>=1.15.1",
+    "jsonschema>=4.26",
     "pulp>=4.2.0",
     "pytest>=9.1.1",
 ]

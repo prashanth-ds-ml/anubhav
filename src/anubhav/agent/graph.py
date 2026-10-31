@@ -63,7 +63,10 @@ class State(TypedDict):
     stop: str
 
 
-def build(broker, client, knowledge=(), limits: Limits = Limits(), hints=None):
+RETRIES = 3     # multi-agent mode: at most 3 failed attempts per tool in one run, then it must change course
+
+
+def build(broker, client, knowledge=(), limits: Limits = Limits(), hints=None, retry_cap=None):
     tools = broker.openai_tools(hints)
 
     def model(s: State):
@@ -81,22 +84,33 @@ def build(broker, client, knowledge=(), limits: Limits = Limits(), hints=None):
     def run_tools(s: State):
         last = s["messages"][-1]
         msgs, trace, drafts, n = list(s["messages"]), list(s["trace"]), list(s["drafts"]), s["tool_calls"]
+        cost = s["cost"]
         for tc in last.get("tool_calls", []):
             n += 1
+            name = tc["function"]["name"]
+            failed = sum(1 for x in trace if x["type"] == "tool" and x["name"] == name and not x["ok"]) if retry_cap else 0
             if n > limits.max_tool_calls:
                 out = {"ok": False, "error": {"code": "LIMIT", "message": "tool-call limit reached; answer with what you have"}}
+            elif retry_cap and failed >= retry_cap:
+                out = {"ok": False, "error": {"code": "RETRY_LIMIT", "message": f"{name} failed {failed} times in this request; "
+                       "stop retrying it: use another tool, hand the task to a teammate, or tell the planner what failed"}}
             else:
-                out = broker.call(tc["function"]["name"], tc["function"]["arguments"])
+                out = broker.call(name, tc["function"]["arguments"])
+            if out["ok"] and name == "delegate":      # a teammate's spend counts against this run's budget
+                cost += out["result"].get("cost_usd", 0.0)
             if out["ok"] and tc["function"]["name"] == "create_dispatch_draft":
                 drafts.append(out["result"]["draft_id"])
             if out["ok"] and tc["function"]["name"] == "create_dispatch_drafts":
                 drafts += [r["draft_id"] for r in out["result"]["results"] if r.get("draft_id")]
             if out["ok"] and tc["function"]["name"] == "cancel_dispatch_draft" and out["result"]["cancelled"]:
                 drafts = [d for d in drafts if d != out["result"]["draft_id"]]
-            trace.append({"type": "tool", "name": tc["function"]["name"], "arguments": tc["function"]["arguments"],
-                          "ok": out["ok"], "result": out.get("result"), "error": out.get("error")})
+            step = {"type": "tool", "name": name, "arguments": tc["function"]["arguments"],
+                    "ok": out["ok"], "result": out.get("result"), "error": out.get("error")}
+            if failed:
+                step["attempt"] = min(failed, retry_cap) + 1
+            trace.append(step)
             msgs.append({"role": "tool", "tool_call_id": tc["id"], "content": json.dumps(out, ensure_ascii=False, default=str)})
-        return {"messages": msgs, "tool_calls": n, "trace": trace, "drafts": drafts}
+        return {"messages": msgs, "tool_calls": n, "trace": trace, "drafts": drafts, "cost": cost}
 
     def wrap_up(s: State):
         """A limit was reached: close any unanswered tool calls, then ask once more with no tools so the planner
@@ -176,11 +190,21 @@ class _RuntimeWithout:
         return None if h == self.d else h
 
 
-def run(broker, client, request: str, knowledge=(), limits: Limits = Limits(), history=(), harness=None, about=""):
-    """One planner request end to end. Returns the reply, drafts, the full trace, cost and stop reason."""
+def run(broker, client, request: str, knowledge=(), limits: Limits = Limits(), history=(), harness=None, about="",
+        agent=None):
+    """One planner request end to end. Returns the reply, drafts, the full trace, cost and stop reason.
+
+    With `agent` (a spec from agents/registry.py, D-044) the run belongs to that agent: the lead agent gets the planner
+    prompt plus its team instructions, a teammate gets only its own instructions, every trace step carries the agent and
+    its depth, and failed tools are capped at RETRIES attempts. Without it the run is the single-Planner baseline."""
     from datetime import date, timedelta
     plan_date = (date.fromisoformat(broker.C.today) - timedelta(days=1)).isoformat()
-    sysmsg = SYSTEM.format(company=broker.C.company, today=broker.C.today, plan_date=plan_date)
+    if agent is None or agent.voice:
+        sysmsg = SYSTEM.format(company=broker.C.company, today=broker.C.today, plan_date=plan_date)
+        if agent is not None:
+            sysmsg += "\n\n" + agent.instructions + broker.team.describe(agent.agent_id)
+    else:
+        sysmsg = agent.instructions.format(company=broker.C.company, today=broker.C.today) + broker.team.describe(agent.agent_id)
     if about:                                   # the business profile (onboarding); empty in frozen experiments
         sysmsg += ABOUT.format(text=about)
     if knowledge:
@@ -190,7 +214,7 @@ def run(broker, client, request: str, knowledge=(), limits: Limits = Limits(), h
         sysmsg += render(harness)
     messages = [{"role": "system", "content": sysmsg}, *history, {"role": "user", "content": request}]
     t0 = time.perf_counter()
-    out = build(broker, client, knowledge, limits, (harness or {}).get("tool_hints")).invoke(
+    out = build(broker, client, knowledge, limits, (harness or {}).get("tool_hints"), RETRIES if agent else None).invoke(
         {"messages": messages, "turns": 0, "tool_calls": 0, "cost": 0.0, "trace": [], "drafts": [], "stop": ""},
         {"recursion_limit": 4 * limits.max_turns + 4})
     new = out["messages"][len(messages):]       # only this request's turns: never repeat an earlier reply
@@ -199,9 +223,12 @@ def run(broker, client, request: str, knowledge=(), limits: Limits = Limits(), h
     seen = json.dumps([m for m in out["messages"] if m["role"] != "assistant"], ensure_ascii=False, default=str)
     rc = check_reply(reply, seen)
     trace = out["trace"][:-1] + [dict(out["trace"][-1], reply_check=rc)]     # the finish step carries it
+    tag = {"agent_id": agent.agent_id, "depth": broker.depth} if agent else {}
+    if tag:
+        trace = [dict(s, **tag) for s in trace]
     return {"run_id": uuid.uuid4().hex[:10], "company": broker.C.company, "role": broker.s.role, "user": broker.s.user,
             "model": getattr(client, "model", "?"), "request": request, "knowledge": list(knowledge), "reply": reply,
-            "harness": harness or {}, **({"about": about} if about else {}),
+            "harness": harness or {}, **({"about": about} if about else {}), **tag,
             "drafts": out["drafts"], "stop": out["stop"], "turns": out["turns"], "tool_calls": out["tool_calls"],
             "cost_usd": round(out["cost"], 5), "latency_s": round(time.perf_counter() - t0, 2), "trace": trace, "reply_check": rc,
             **({"error": next(t["error"] for t in out["trace"] if t["type"] == "model_error")} if out["stop"] == "error" else {})}

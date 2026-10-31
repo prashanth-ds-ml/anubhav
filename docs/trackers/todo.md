@@ -92,6 +92,32 @@ Items 1, 2, 6 and 7 from the workshop review fold straight into this commit. 147
 - ⬜ Owner: README hero GIF, quotes with the interviewee's permission, video link (Nov 3)
 - ⬜ Dry-run submission, check commit authorship again (Nov 3); submit on Nov 4 IST
 
+## Multi-agent redesign (D-044, [[Anubhav_MultiAgent_Design_v1]] §4.9)
+Owner and Claude in parallel. The single Planner stays the baseline and fallback; Streamlit stays the hosted link until React is verified.
+
+**Sprint 0: contract (Oct 31) ✅**
+| # | Item | Status |
+|---|---|---|
+| S0.1 | Event schema `contracts/events.schema.json` (11 types) | ✅ |
+| S0.2 | API contract `contracts/api.md` (dashboard, agents, learning, ledger, proof, chat + SSE with reconnect) | ✅ |
+| S0.3 | Fixtures `web/fixtures/*.jsonl` (`scripts/make_fixtures.py`): a real Muse run (plain plan with lessons and a draft); Planner → Analyst hand-off; tool_missing → hand-off → query fails twice, fixed on attempt 3 (scripted model, real loop, broker and sandbox; labelled) | ✅ |
+
+**Sprint 1: core agents (Oct 31 – Nov 1)**
+| # | Item | Status |
+|---|---|---|
+| P1 | Agent registry as data (`configs/agents.yaml`, `agents/registry.py`): Planner, Analyst active; Tool Forge, Lesson Miner planned | ✅ |
+| P2 | `graph.run(agent=…)`: agent's own prompt, `agent_id` + `depth` on every step; baseline untouched without it | ✅ |
+| P3 | `delegate` (depth ≤ 2, no self-call, shared budget, partial answers flagged, teammate cost counted), teammates in `discover_capabilities`, audit records the acting agent | ✅ |
+| P4 | Event store `events.py` (from any saved run, nested hand-offs, reconnect by seq) | ✅ |
+| P5 | Retry cap (3 failed attempts per tool, then `RETRY_LIMIT`), `find_capability` with `tool_missing` | ✅ |
+| P6 | `sequence_stops` (nearest town first from the depot; estimated, not optimized) | ✅ |
+| P7 | Baseline intact: 336 old tests green; 20 new tests | ✅ |
+| V1–V4 | React shell on the fixtures (Vite + TS, tokens, chat stream, Why this plan, roster) | ⬜ |
+| V5 | Take the Streamlit-free parts out of `ui/core.py` into a service module | ⬜ |
+
+**Sprint 2 (Nov 1–2):** P8 per-agent harness surfaces · P9 per-agent knowledge · P10 learned routing hints · P11 Tool Forge naming agent · P12 benchmark harness, frozen by hash · P13 live event streaming · V6–V10 FastAPI, SSE, ledger, agent cards, Docker Space ⬜
+**Sprint 3 (Nov 2–3):** P14 practice runs · P15 pre-registered benchmark (≤ $30) · P16 live recordings · P17 fallback check · V11–V15 Proof tab, Playwright, polish, final deploy ⬜
+
 ## Cut
 - ✂️ Hospital and call-centre demos, React frontend, government-docs RAG (D-039; [[ideas_parking_lot]])
 - ✂️ Judge seed challenge UI, double-booking UI (Oct 30 optional list)

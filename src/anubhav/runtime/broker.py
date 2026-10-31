@@ -141,21 +141,27 @@ class Session:
     role: str = "dispatcher"
     user: str = "planner"
     session_id: str = field(default_factory=lambda: uuid.uuid4().hex[:8])
+    agent: str = ""                 # which agent of the team is calling (D-044); empty in the single-Planner baseline
 
 
 class Broker:
     def __init__(self, data: CompanyData, session: Session, policies=(), advisories=(), lessons=(), analysis=False,
-                 learned_tools=()):
+                 learned_tools=(), team=None, depth=0):
         if session.company != data.company:
             raise PermissionError("session company does not match the data it was given")
         self.C, self.s = data, session
         self.policies, self.advisories = list(policies), list(advisories)   # from the learning layer (Loop B)
         self.lessons = list(lessons)                                         # what list_lessons may show
+        self.analysis, self.learned_specs = analysis, list(learned_tools)
         # analysis (D-040): the read-only query tools are offered only when switched on (off in frozen experiments)
         self.tools = {t.name: t for t in REGISTRY + (ANALYSIS if analysis else [])}
         for spec in learned_tools:              # approved tools this company learned from its own queries (D-040)
             if spec["name"] not in self.tools:
                 self.tools[spec["name"]] = learned_tool(spec)
+        # multi-agent mode (D-044): the team's tools (delegate, find_capability, sequence_stops); same guards for all
+        self.team, self.depth = team, depth
+        if team is not None:
+            self.tools.update({t.name: t for t in team.tools()})
 
     # ---------- registry
     def allowed(self, tool):
@@ -196,16 +202,20 @@ class Broker:
             except ValidationError as e:
                 raise ToolError("BAD_ARGS", e.errors()[0]["msg"] + f" ({'.'.join(map(str, e.errors()[0]['loc']))})")
             result = tool.fn(self, parsed)
-            self.C.runtime.audit(self.s.user, self.s.role, name, args, "ok")
+            self.C.runtime.audit(self._who(), self.s.role, name, args, "ok")
             return {"ok": True, "result": result}
         except ToolError as e:
-            self.C.runtime.audit(self.s.user, self.s.role, name, args, e.code)
+            self.C.runtime.audit(self._who(), self.s.role, name, args, e.code)
             return {"ok": False, "error": {"code": e.code, "message": e.message}}
         except Exception as e:          # a bug must not end the run: the model sees an error it can work around
-            self.C.runtime.audit(self.s.user, self.s.role, name, args, "INTERNAL")
+            self.C.runtime.audit(self._who(), self.s.role, name, args, "INTERNAL")
             return {"ok": False, "error": {"code": "INTERNAL", "message": f"the tool failed ({type(e).__name__}); try another way"}}
 
     # ---------- helpers
+    def _who(self):
+        """The audit's actor: the user, and which agent acted for them in multi-agent mode."""
+        return f"{self.s.user}@{self.s.agent}" if self.s.agent else self.s.user
+
     def _date(self, d):
         if d:
             try:
@@ -433,8 +443,11 @@ def discover_capabilities(b, a: NoArgs):
     groups = {}
     for t in b.list_tools():
         groups.setdefault(t.category, []).append({"tool": t.name, "action_class": t.action, "purpose": t.description})
-    return {"company_schema": "hidden behind the adapter",
-            "categories": [{"category": c, "about": CATEGORIES[c], "tools": groups[c]} for c in CATEGORIES if c in groups]}
+    out = {"company_schema": "hidden behind the adapter",
+           "categories": [{"category": c, "about": CATEGORIES[c], "tools": groups[c]} for c in CATEGORIES if c in groups]}
+    if b.team is not None:          # multi-agent mode: teammates are capabilities too (call them with delegate)
+        out["agents"] = b.team.roster_for(b.s.agent)
+    return out
 
 
 def inspect_contract(b, a: CapabilityName):
@@ -859,6 +872,7 @@ CATEGORIES = {
     "system": "what this session can do and each tool's contract",
     "analysis": "questions no other tool answers: one read-only SQL query over the company's records",
     "learned_tools": "tools this company's agent made from its own queries; each was checked and approved by a person",
+    "team": "hand a task to a teammate agent, find a tool or teammate by need, order a draft's stops",
 }
 
 REGISTRY = [

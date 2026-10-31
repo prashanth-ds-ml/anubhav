@@ -57,6 +57,7 @@ dependencies = [
 [package.dev-dependencies]
 dev = [
     { name = "highspy" },
+    { name = "jsonschema" },
     { name = "pulp" },
     { name = "pytest" },
 ]
@@ -80,6 +81,7 @@ requires-dist = [
 [package.metadata.requires-dev]
 dev = [
     { name = "highspy", specifier = ">=1.15.1" },
+    { name = "jsonschema", specifier = ">=4.26" },
     { name = "pulp", specifier = ">=4.2.0" },
     { name = "pytest", specifier = ">=9.1.1" },
 ]
