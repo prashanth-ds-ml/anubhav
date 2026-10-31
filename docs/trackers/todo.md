@@ -85,9 +85,11 @@ Items 1, 2, 6 and 7 from the workshop review fold straight into this commit. 147
 - ⬜ Owner: set spend alerts on Meta and Baseten
 
 ## Step 3: deploy and video
-- ⬜ Deploy without keys; follow the video flow in incognito (Nov 2)
-- ⬜ Rewrite [[demo_video]] around session 1 → review → session 2, with EXP-011 as the proof; record with English subtitles (Nov 3)
-- ⬜ README: hero GIF, 1–2 cited stats, quotes with the interviewee's permission, demo and video links (Nov 3)
+- ✅ (Oct 30) Deployed without keys at https://anubhav-metahackathon.streamlit.app/; video flow works in incognito (owner checked). Kept running: with no keys it replays only and spends $0 (Oct 31)
+- ✅ (Oct 30–31) [[demo_video]] rewritten around real runs, proof beat uses EXP-011R and EXP-012b
+- ⬜ Owner: record the video with English subtitles (Nov 3); not recorded yet
+- ✅ README: cited stats (Redseer Dec 2024; DPIIT–NCAER logistics cost) and hosted demo link
+- ⬜ Owner: README hero GIF, quotes with the interviewee's permission, video link (Nov 3)
 - ⬜ Dry-run submission, check commit authorship again (Nov 3); submit on Nov 4 IST
 
 ## Cut

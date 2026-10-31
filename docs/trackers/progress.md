@@ -3,7 +3,7 @@ tags: [tracker, progress]
 ---
 # Progress tracker
 
-**Overall:** ~80% (as of 2026-10-30 evening: build, learning loops and final benchmark done; audit step 1 fixes done and tested, not yet committed. Next: [[implementation_plan]] (Logs page, new-tool creation, nightly review), then deploy, video, submit)
+**Overall:** ~90% (as of 2026-10-31: build, learning loops, new tools, nightly review, deploy and all measurements done; EXP-011R replicated 3/3. Left, all owner: dispatcher review, voice, video, README GIF, spend alerts, submit)
 Plan: [[build_plan]] · Status key: ⬜ pending · 🟨 in progress · ✅ done · ❌ blocked · ✂️ cut
 History before Oct 29 (order-desk plan): `archive/progress_order_desk.md`
 
@@ -68,8 +68,8 @@ History before Oct 29 (order-desk plan): `archive/progress_order_desk.md`
 | B Logs page | Oct 31 | ✅ (done Oct 30) |
 | C new-tool creation (read-only SQL → approved tool) | Oct 31 – Nov 1 | ✅ (done Oct 30; live: 1 call on a new town) |
 | D nightly review (runs → Loop A / Loop B / tools) | Nov 2 | ✅ (done Oct 30) |
-| E deploy + recorded demo runs | Nov 2 | 🟨 deployed; recordings left |
-| F honest docs | Nov 2 | 🟨 README pass done; trackers clean-up left |
+| E deploy + recorded demo runs | Nov 2 | ✅ deployed (no keys, $0); new-tool story replays in the bundle |
+| F honest docs | Nov 2 | ✅ README and trackers updated (Oct 31) |
 | H slim onboarding | Oct 31 | ✅ (done Oct 30) |
 | J EXP-011R + EXP-012 (pre-registered) | Nov 2 | ✅ EXP-011R replicated 3/3; EXP-012 rules not met; EXP-012b: learned tools used 14/16, −20% calls (bar −30% not met) |
-| G video, README, submit | Nov 3–4 | ⬜ |
+| G video, README, submit | Nov 3–4 | ⬜ owner (video not recorded yet) |
