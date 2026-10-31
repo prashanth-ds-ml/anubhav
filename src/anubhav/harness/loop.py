@@ -149,7 +149,11 @@ def gate(rows, judged, max_cost_ratio=1.3, agent=None):
         reasons.append(f"more tool errors on {len(worse_errors)} request(s)")
     if bc and cc > max_cost_ratio * bc:
         reasons.append(f"cost +{(cc / bc - 1):.0%}")
-    if not improves:
+    scored = [x for x in rows if x.get("base_correct") is not None]
+    answers = {"base": sum(x["base_correct"] for x in scored), "cand": sum(x["cand_correct"] for x in scored), "of": len(scored)}
+    if answers["cand"] < answers["base"]:
+        reasons.append(f"fewer correct answers ({answers['base']} → {answers['cand']} of {answers['of']})")
+    if not improves and answers["cand"] <= answers["base"]:
         reasons.append("no measurable improvement on the problem")
     if agent:
         total = lambda side, who: sum(x[side]["errors_by_agent"].get(who, 0) for x in rows)
@@ -157,8 +161,13 @@ def gate(rows, judged, max_cost_ratio=1.3, agent=None):
         for who in sorted(others):
             if total("cand", who) > total("base", who):
                 reasons.append(f"harms {who}: its tool errors went from {total('base', who)} to {total('cand', who)}")
-    return {"pass": not reasons, "reasons": reasons, "feedback_addressed": {"base": base_ok, "cand": cand_ok, "of": len(judged)},
+    return {"pass": not reasons, "reasons": reasons, "answers": answers, "feedback_addressed": {"base": base_ok, "cand": cand_ok, "of": len(judged)},
             "cost": {"base": round(bc, 4), "cand": round(cc, 4)}}
+
+
+def _correct(case, rb, rc):
+    """A case that can be checked against the records (case["score"](run) -> bool) counts right answers, old and new."""
+    return {"base_correct": bool(case["score"](rb)), "cand_correct": bool(case["score"](rc))} if case.get("score") else {}
 
 
 def probe(C, client, judge_client, cases, base, cand, feedback_by_id, knowledge_for):
@@ -168,7 +177,7 @@ def probe(C, client, judge_client, cases, base, cand, feedback_by_id, knowledge_
         rc = run_case(C, client, case, cand, knowledge_for)
         row = {"request": case["request"], "origin": case["origin"], "expects_draft": case.get("expects_draft", False),
                "base": measure(rb, C), "cand": measure(rc, C), "base_reply": rb["reply"], "cand_reply": rc["reply"],
-               "base_run": rb["run_id"], "cand_run": rc["run_id"]}
+               "base_run": rb["run_id"], "cand_run": rc["run_id"], **_correct(case, rb, rc)}
         fb = feedback_by_id.get(case.get("feedback_id"))
         if fb:
             judged.append({"request": case["request"], "base": judge(judge_client, fb, case["request"], rb["reply"]),
@@ -193,7 +202,7 @@ def team_probe(C, client, judge_client, cases, agent, base, cand, feedback_by_id
         rb, rc = one(case, base), one(case, cand)
         rows.append({"request": case["request"], "origin": case["origin"], "expects_draft": case.get("expects_draft", False),
                      "base": measure(rb, C), "cand": measure(rc, C), "base_reply": rb["reply"], "cand_reply": rc["reply"],
-                     "base_run": rb["run_id"], "cand_run": rc["run_id"]})
+                     "base_run": rb["run_id"], "cand_run": rc["run_id"], **_correct(case, rb, rc)})
         fb = feedback_by_id.get(case.get("feedback_id"))
         if fb:
             judged.append({"request": case["request"], "base": judge(judge_client, fb, case["request"], rb["reply"]),

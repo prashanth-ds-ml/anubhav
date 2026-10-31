@@ -197,14 +197,20 @@ def _propose_lesson(b, a: LessonProposal):
     return {"lesson_id": ids[0], "state": les["state"], "gate": les["gate"].get("reason"), "note": "waiting for a person; not in use"}
 
 
+MINE_BRIEF = "Read the company's records and propose the unwritten rules they support, at most 8."
+
+
 # ---------- one request in multi-agent mode
 def run(C, session: Session, client, request, roster=None, knowledge=(), harness=None, about="", history=(), hooks=None,
-        run_id=None, harnesses=None, knowledge_by_agent=None, lesson_store=None, **broker_kw):
+        run_id=None, harnesses=None, knowledge_by_agent=None, lesson_store=None, lead_agent=None, **broker_kw):
     """The lead agent answers the request with the team behind it. Returns the lead's run with every teammate run
     (`children`), so the whole request can be saved, replayed and turned into events."""
     roster = roster or registry.load()
     team = Team(roster, client, knowledge, harness, about, knowledge_by_agent, hooks=hooks, harnesses=harnesses, lesson_store=lesson_store)
-    lead = roster.lead()
+    lead = roster.get(lead_agent) if lead_agent else roster.lead()      # lead_agent: one agent on its own kind of work
+    if lead_agent:
+        knowledge = knowledge or (knowledge_by_agent or {}).get(lead_agent, ())
+        harness = (harnesses or {}).get(lead_agent) or harness
     b = Broker(C, Session(session.company, session.role, session.user, agent=lead.agent_id), team=team, depth=0,
                **({"analysis": True} | broker_kw))
     lim = lead.limits

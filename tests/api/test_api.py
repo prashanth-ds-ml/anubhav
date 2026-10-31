@@ -23,7 +23,7 @@ ROUTES = [("GET", "/api/health"), ("GET", "/api/session"), ("GET", "/api/compani
           ("GET", "/api/agents"), ("GET", "/api/agents/analyst"), ("GET", "/api/learning/lessons"), ("GET", "/api/tools"), ("GET", "/api/tools/candidates"),
           ("GET", "/api/harness"), ("GET", "/api/harness/problems"), ("GET", "/api/practice"), ("GET", "/api/packs"), ("GET", "/api/review/history"),
           ("GET", "/api/proof"), ("GET", "/api/ledger"), ("GET", "/api/logs/events"), ("GET", "/api/logs/runs"), ("GET", "/api/logs/tools"),
-          ("GET", "/api/logs/models"), ("GET", "/api/logs/routing"), ("GET", "/api/learning/timeline"), ("GET", "/api/report/weekly")]
+          ("GET", "/api/logs/models"), ("GET", "/api/logs/agents"), ("GET", "/api/proof/curve"), ("GET", "/api/logs/routing"), ("GET", "/api/learning/timeline"), ("GET", "/api/report/weekly")]
 LOCKED = [("POST", "/api/learning/mine"), ("POST", "/api/harness/propose"), ("POST", "/api/harness/rollback"), ("POST", "/api/harness/h-001/probe"),
           ("POST", "/api/harness/h-001/decide"), ("POST", "/api/practice")]
 
@@ -78,7 +78,7 @@ def test_the_route_list_above_is_complete(env):
     other = {"/api/session/reset-drafts", "/api/dashboard/drafts/{draft_id}/cancel", "/api/dashboard/company/profile", "/api/chat", "/api/chat/stream",
              "/api/runs/{run_id}", "/api/runs/{run_id}/feedback", "/api/learning/lessons/{lesson_id}/decide", "/api/tools/candidates/{key}/check",
              "/api/tools/{tool_id}/decide", "/api/tools/{tool_id}/retire", "/api/packs/publish", "/api/packs/revoke", "/api/review/run",
-             "/api/agents/{agent_id}", "/api/harness/{version_id}/probe", "/api/harness/{version_id}/decide", "/api/logs/runs/{run_id}"}
+             "/api/compare", "/api/agents/{agent_id}", "/api/harness/{version_id}/probe", "/api/harness/{version_id}/decide", "/api/logs/runs/{run_id}"}
     normal = {p.replace("/analyst", "/{agent_id}").replace("/h-001/", "/{version_id}/") for p in tested}
     assert paths <= normal | other, paths - normal - other
 

@@ -12,6 +12,7 @@ from collections import Counter
 
 from ..agent import graph
 from ..runtime.broker import REGISTRY, Broker, Session
+from ..trace import walk
 
 MONTHS = {"08": ("August", "ఆగస్టు"), "09": ("September", "సెప్టెంబర్"), "10": ("October", "అక్టోబర్")}
 
@@ -191,7 +192,7 @@ def build(C, seed=7, per_type=4, split="dev"):
 
 
 def score(q, r):
-    steps = [s for s in r["trace"] if s["type"] == "tool"]
+    steps = [s for part in walk(r) for s in part["trace"] if s["type"] == "tool"]
     called = [s["name"] for s in steps]
     reply = r["reply"] or ""
     c = q["check"]
@@ -215,6 +216,17 @@ def run(C, client, questions, harness=None, analysis=False, learned_tools=()):
         b = Broker(C, Session(C.company, "dispatcher", "practice"), analysis=analysis, learned_tools=learned_tools)
         r = graph.run(b, client, q["question"], harness=harness)
         results.append({**q, **score(q, r)})
+    return results
+
+
+def run_agent(C, client, questions, agent="planner", harnesses=None, knowledge_by_agent=None, learned_tools=()):
+    """The same questions through the team, with `agent` answering first: its own score, on its own kind of question."""
+    from ..agents import team
+    results = []
+    for q in questions:
+        r = team.run(C, Session(C.company, "dispatcher", "practice"), client, q["question"], analysis=True, lead_agent=agent, harnesses=harnesses,
+                     knowledge_by_agent=knowledge_by_agent, learned_tools=learned_tools)
+        results.append({**q, **score(q, r), "tool_calls": sum(p.get("tool_calls", 0) for p in walk(r))})
     return results
 
 

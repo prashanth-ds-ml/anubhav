@@ -39,19 +39,22 @@ def find_run(run_id, ws=None):
     return None
 
 
-def find_replay(ws: Workspace, cid, request, use_lessons, learned=None):
+def find_replay(ws: Workspace, cid, request, use_lessons, learned=None, team=False):
     """The newest saved real run with the same company, request and knowledge setting (local traces, then the demo
-    bundle). If the visitor has approved learned tools (or not), a run made the same way is preferred."""
+    bundle). A run made the same way is preferred: same learned tools first, then single Planner or team."""
     learned = ws.has_learned_tools(cid) if learned is None else learned
-    fallback = None
+    best, rank = None, -1
     for p in trace_files():
         for line in reversed(p.read_text(encoding="utf-8").splitlines()):
             r = json.loads(line)
             if r["company"] == cid and r["request"].strip() == request.strip() and bool(r.get("knowledge")) == use_lessons and visible(r, ws):
-                if bool(r.get("learned_tools")) == learned:
+                same_tools, same_mode = bool(r.get("learned_tools")) == learned, (r.get("mode") == "team") == team
+                score = 2 * same_tools + same_mode
+                if score == 3:
                     return r
-                fallback = fallback or r
-    return fallback
+                if score > rank:
+                    best, rank = r, score
+    return best
 
 
 def replayable(ws: Workspace, cid, use_lessons):
@@ -87,6 +90,17 @@ def run_with(ws: Workspace, client, cid, request, use_lessons, history=(), team=
     if ws.public:
         r["visitor"] = ws.sid
     trace.save(r, label=label)
+    return r
+
+
+def mine_with_agent(ws: Workspace, client, cid):
+    """The Lesson Miner on its own: reads the records and proposes through the evidence gate; a person still approves."""
+    knowledge = agent_knowledge.for_team(ws, cid)
+    r = team_mode.run(ws.company(cid), Session(cid, "dispatcher", "demo"), client, team_mode.MINE_BRIEF, lead_agent="lesson_miner", analysis=True,
+                      lesson_store=ws.store(), knowledge_by_agent=knowledge, harnesses=harness_store().active_all())
+    if ws.public:
+        r["visitor"] = ws.sid
+    trace.save(r, label=f"ui:{cid}:mine")
     return r
 
 

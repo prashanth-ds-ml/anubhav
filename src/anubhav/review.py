@@ -88,6 +88,8 @@ def review(C, store, runs, feedback, client=None, actor="nightly review", since=
     problems = loop.collect(runs, [f for f in feedback if f.get("category") not in FACT_CATEGORIES])
     report["tool_use"] = {"issues": problems["trace_issues"], "feedback": len(problems["feedback"]),
                           "route": "Tuning: propose one patch, test old vs new, a person decides" if problems["trace_issues"] or problems["feedback"] else "nothing to fix"}
+    agents = sorted({p.get("agent_id") or "planner" for top in runs for p in walk(top)})
+    report["by_agent"] = {a: {"issues": loop.collect(runs, [], a)["trace_issues"], "route": f"Tuning for {a}"} for a in agents}
 
     # New tools: queries it had to write, checked by code, waiting for a person
     sb = sandbox(C)

@@ -9,6 +9,8 @@ import sqlite3
 from pathlib import Path
 
 from anubhav.data.config import ROOT
+from anubhav.agents.team import Team
+from anubhav.agents import registry
 from anubhav.runtime.broker import ANALYSIS, REGISTRY
 from anubhav.ui.core import SUGGESTIONS
 
@@ -20,15 +22,15 @@ OUT = ROOT / "demo"
 def main():
     OUT.mkdir(exist_ok=True)
     wanted = set(SUGGESTIONS.values())
-    builtin = {t.name for t in REGISTRY + ANALYSIS}
+    builtin = {t.name for t in REGISTRY + ANALYSIS + Team(registry.load(), None).tools()}
     runs, seen = [], set()
     for p in sorted((ROOT / "data" / "traces").glob("*.jsonl"), reverse=True):
         for line in reversed(p.read_text(encoding="utf-8").splitlines()):
             r = json.loads(line)
             if "learned_tools" not in r:      # older runs: a tool that is not built in was a learned one
                 r["learned_tools"] = sorted({s["name"] for s in r["trace"] if s["type"] == "tool" and s["name"] not in builtin})
-            key = (r["company"], r["request"].strip(), bool(r.get("knowledge")), bool(r["learned_tools"]))
-            story = r.get("label") in STORY_LABELS          # the runs the New tools page learns from in the demo
+            key = (r["company"], r["request"].strip(), bool(r.get("knowledge")), bool(r["learned_tools"]), r.get("mode"))
+            story = r.get("label") in STORY_LABELS or str(r.get("label")).startswith("demo:team")          # the runs the New tools page learns from in the demo
             if (story or r["request"].strip() in wanted) and r["company"] in ("T01", "TNEW") and key not in seen:
                 seen.add(key)
                 runs.append(r)

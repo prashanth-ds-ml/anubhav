@@ -104,6 +104,8 @@ class HarnessStore:
                 create table if not exists feedback (feedback_id text primary key, ts text, company text, run_id text,
                     request text, reply text, rating int, category text, note text, source text, status text,
                     use_lessons int);
+                create table if not exists agent_scores (ts text, agent text, version_id text, test_set text, n int, correct int,
+                    unsafe int, tool_calls int, tool_errors int, cost_usd real, note text);
             """)
             if "agent" not in {r[1] for r in con.execute("pragma table_info(versions)")}:     # versions are per agent (D-044)
                 con.execute("alter table versions add column agent text default 'planner'")
@@ -190,6 +192,17 @@ class HarnessStore:
                         (by, _now(), cur["version_id"]))
             con.execute("update versions set status = 'active' where version_id = ?", (cur["parent"],))
         return self.active(agent)
+
+    # ---------- an agent's score at a version, on a named test set: the learning curve
+    def add_score(self, agent, version_id, test_set, n, correct, unsafe=0, tool_calls=0, tool_errors=0, cost_usd=0.0, note=""):
+        with self._con() as con:
+            con.execute("insert into agent_scores values (?,?,?,?,?,?,?,?,?,?,?)",
+                        (_now(), agent, version_id, test_set, n, correct, unsafe, tool_calls, tool_errors, cost_usd, note))
+
+    def scores(self, agent=None):
+        with self._con() as con:
+            rows = [dict(r) for r in con.execute("select * from agent_scores order by ts, rowid")]
+        return [r for r in rows if agent is None or r["agent"] == agent]
 
     # ---------- practice results (the Skills view reads these)
     def add_practice(self, round_id, version_id, results):

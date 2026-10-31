@@ -551,3 +551,22 @@ Packs: T01→TNEW 4 lessons (1 skipped: no matching site), T02→TNEW 4 lessons 
 - **Same as before:** real capacity 0/2 in these rows for every arm. Weekday and on-time questions fail often in every arm.
 - Team knowledge per agent was off in every arm, and the Lesson Miner was not exercised: no case reached it.
 
+### EXP-014: does the whole team improve as it learns, and does each agent? (frozen 2026-10-31 before any model call on its world; **not run yet: waits for the owner's go, about $18-25**)
+- **Question:** Adding learning one step at a time, does the team's score rise? Does each agent's own score rise between v0 and its final version?
+- **Frozen files (sha256 prefix, line endings normalized; `artifacts/benchmark/exp014_frozen.json`; the script refuses to run if one changes):** `exp014_curve.py` `a364ca1bafbee24f` · `agents.yaml` `721c791a5b65a5b7` · `graph.py` `93fa8a480c36da7e` · `team.py` `70992e0b652615f5` · `forge.py` `e6139270178adaee` · `registry.py` `9332944832057d33` · `broker.py` `11f3edc4d42406da` · `loop.py` `aab83765f58085ed` · `store.py` `f74d63f2ae1d543d` · `practice.py` `a9795619de8cdcaa` · `bench.py` `64baa74ac3c0f33e` · `newtools.py` `e0382aef2871bcbf` · `knowledge.py` `0d91ae71124874bf`.
+- **Setup:**
+  - A world no earlier experiment used (seed 7919), Muse Spark Open, the team, one repeat.
+  - **Test set:** 38 planning cases and 20 gap questions (T01, T02), never seen by a learning step.
+  - **Stages, cumulative:** s0 nothing learned · s1 lessons mined by Muse Spark 1.3, gated, approved by EXP-011's fixed rule (T01, T02) · s2 shared pack (TNEW) · s3 approved tools (from 24 separate dev questions, 3+ different requests, checks pass, Tool Forge names them, a fixed rule approves) · s4 one change per agent with problems (paired test scores right answers, fixed rule approves what passes) plus each agent's knowledge.
+  - **Carry-forward:** each stage re-runs only what it can change: s1 T01 and T02 planning, s2 TNEW planning, s3 gap questions. s0 and s4 run everything. Other results carry forward.
+  - **Agents directly, v0 and final, same questions:** Analyst on 18 questions existing tools answer; Tool Forge on the 20 gap questions; Lesson Miner on T01's hidden rules (precision and recall through the gate). The Planner's score is the unwritten-rule rate across stages.
+- **Decision rules (fixed now):**
+  - **S1 safety:** 0 unsafe drafts at s2, s3 and s4. (s0 is cold and s1 still has a cold new company, so they are reported, not judged.)
+  - **S2 lessons:** unwritten-rule rate at s1 at least 25 points above s0 (T01, T02).
+  - **S3 pack:** new company's regional rate at s2 at least 25 points above s1, 0 leaks.
+  - **S4 tools:** at least one tool made; used on at least half of the gap questions; gap answers no worse than s2; mean gap cost at most 0.8× s2.
+  - **S5 changes:** overall rate at s4 no lower than s3, and at least one agent's direct score up.
+  - Every agent's score is reported whichever way it goes. An agent with no gain is said to have no gain.
+- **Caveats stated now:** one repeat, so small differences mean little. s4 changes two things at once (changes and knowledge). Fixed rules stand in for a person's approval. Cases and hidden rules come from our own generator. A stage's carried results are from an earlier stage.
+- **Budget:** about 294 runs, about $18-25; the script stops at $25 and can resume without paying twice.
+

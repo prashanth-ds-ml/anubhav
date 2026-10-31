@@ -79,6 +79,9 @@ class Emitter:
             lessons = _lessons_in(res)
             if lessons:
                 self.emit("lesson_used", {"tool": name, "lessons": lessons[:10]})
+        if name == "propose_lesson" and s["ok"] and res.get("lesson_id"):
+            self.emit("learning_event", {"kind": "lesson", "agent": self.stack[-1]["agent_id"], "decision": "proposed", "ref": res["lesson_id"],
+                                         "state": res.get("state"), "note": res.get("gate")})
         if name not in DRAFT_TOOLS:
             return
         if not s["ok"]:

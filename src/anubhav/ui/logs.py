@@ -96,6 +96,25 @@ def tool_usage(runs):
             for (a, t), n in seen.most_common()]
 
 
+def agent_totals(runs):
+    """Each agent's own work across runs: its runs, calls, errors and spend (a lead's cost includes its teammates', so
+    theirs is taken out)."""
+    out = {}
+    for top in runs:
+        for r in walk(top):
+            who = r.get("agent_id") or "planner"
+            row = out.setdefault(who, {"agent": who, "runs": 0, "answered": 0, "stopped_early": 0, "tool_calls": 0, "tool_errors": 0, "cost_usd": 0.0})
+            steps = [s for s in r.get("trace", []) if s.get("type") == "tool"]
+            row["runs"] += 1
+            row["answered"] += r.get("stop") == "answered"
+            row["stopped_early"] += r.get("stop") in ("limit", "error")
+            row["tool_calls"] += len(steps)
+            row["tool_errors"] += sum(not s["ok"] for s in steps)
+            own = (r.get("cost_usd") or 0) - (sum(c.get("cost_usd") or 0 for c in top.get("children", [])) if r is top else 0)
+            row["cost_usd"] = round(row["cost_usd"] + own, 5)
+    return sorted(out.values(), key=lambda x: -x["runs"])
+
+
 def missing_tools(runs):
     """What agents needed and no tool or teammate fitted, most asked first, with the requests behind it."""
     needs = {}

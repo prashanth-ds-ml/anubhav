@@ -9,7 +9,7 @@ from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, ConfigDict, Field
 
 from .. import review as nightly
-from ..agents import registry
+from ..agents import forge, registry
 from ..harness import loop, practice
 from ..harness.store import CATEGORIES, PatchError, diff
 from ..learning import digest, miner, newtools as nt, pack, profile, report
@@ -157,11 +157,11 @@ def chat(body: Chat, ws: Workspace = Ws):
             run_id = stream.start(ws, client, cid, body.message, body.use_lessons, _history(ws, key), body.team)
             _remember(ws, key, run_id)
             return {"run_id": run_id, "mode": "live"}
-    r = runs.find_replay(ws, cid, body.message, body.use_lessons)
+    r = runs.find_replay(ws, cid, body.message, body.use_lessons, team=body.team)
     if not r:
         extra = {"suggestions": runs.replayable(ws, cid, body.use_lessons)}
         raise ApiError(404, "NO_REPLAY", (f"{reason} " if reason else "") + "No saved run for this request and setting.", **extra)
-    return {"run_id": r["run_id"], "mode": "replay", **({"reason": reason} if reason else {})}
+    return {"run_id": r["run_id"], "mode": "replay", "replay_of": "team" if r.get("mode") == "team" else "single", **({"reason": reason} if reason else {})}
 
 
 def _sse(event_type, seq, data):
@@ -239,8 +239,10 @@ def agent_detail(agent_id: str, company: str = Cid, ws: Workspace = Ws):
         if v["probe"] and v["probe"].get("rows"):
             rows = v["probe"]["rows"]
             curve.append({"version": v["version_id"], **{f"{side}_{m}": sum(x[side][m] for x in rows) for side in ("base", "cand") for m in ("tool_errors", "tool_calls", "cost_usd")}})
+    recent = [r for r in runs.recent_runs(500, ws) if r["company"] == company]
     return {**_agent_row(a, H, knowledge.sizes(ws, company)), "instructions": a.instructions, "limits": vars(a.limits), "active_surfaces": H.active(agent_id)["surfaces"],
-            "knowledge": known.get(agent_id, []), "versions": versions, "learning_curve": curve}
+            "knowledge": known.get(agent_id, []), "versions": versions, "paired_tests": curve, "scores": H.scores(agent_id),
+            "totals": next((t for t in logs.agent_totals(recent) if t["agent"] == agent_id), None)}
 
 
 # ---------- lessons
@@ -282,7 +284,12 @@ def learning_timeline(company: str = Cid, agent: str | None = None, ws: Workspac
 
 
 @api.post("/learning/mine", dependencies=[LocalOnly])
-def mine(company: str = Cid, ws: Workspace = Ws):
+def mine(company: str = Cid, by: Literal["agent", "offline"] = "agent", ws: Workspace = Ws):
+    """The Lesson Miner agent (Muse Spark Open), or the offline miner the measured results used (Muse Spark 1.3)."""
+    if by == "agent":
+        r = runs.mine_with_agent(ws, live(ws, "open"), company)
+        made = [s["result"] for s in r["trace"] if s["type"] == "tool" and s["name"] == "propose_lesson" and s["ok"] and s["result"].get("lesson_id")]
+        return {"new": [m["lesson_id"] for m in made], "cost_usd": r["cost_usd"], "run_id": r["run_id"], "stop": r["stop"]}
     client = live(ws, "spark")
     C = ws.company(company)
     F, d = digest.build(C)
@@ -326,8 +333,12 @@ def tool_check(key: str, body: ToolCheck, company: str = Cid, ws: Workspace = Ws
     g = next((x for x in groups if x["key"] == key), None)
     if not g:
         raise ApiError(404, "NOT_FOUND", f"no query group {key}")
-    tid = nt.propose(ws.store(), company, g, nt.check(g, sb), body.name or nt.suggest_name(g), body.description or nt.describe(g))
-    return next(t for t in nt.tools(ws.store(), company) if t["tool_id"] == tid)
+    named = {"name": body.name, "description": body.description, "named_by": "person"} if body.name else None
+    if not named:           # Tool Forge names it when a live model is allowed here; otherwise code does, for free
+        client = None if ws.public or ws.live_ready("open") else ws.live_client("open")[0]
+        named = forge.name_tool(client, ws.company(company), g, knowledge=knowledge.tool_forge([], ws.company(company), ws.store()))
+    tid = nt.propose(ws.store(), company, g, nt.check(g, sb), named["name"], body.description or named["description"] or nt.describe(g))
+    return {**next(t for t in nt.tools(ws.store(), company) if t["tool_id"] == tid), "named_by": named["named_by"]}
 
 
 class ToolDecision(Body):
@@ -417,6 +428,10 @@ def harness_probe(version_id: str, company: str = Cid, ws: Workspace = Ws):
     agent, judge = live(ws, "open"), live(ws, "spark")
     fb = {f["feedback_id"]: {"note": f["note"], "category": CATEGORIES.get(f["category"])} for f in new_fb}
     C = CompanyData(ws.world, company, ws.world / "runtime" / "probe")
+    # dev questions with answers from the records: a change must not lose right answers to pass
+    for q in practice.build_gaps(C, split="dev")[:2]:
+        cases.append({"request": q["question"], "company": company, "use_lessons": False, "origin": "dev question", "expects_draft": False,
+                      "score": lambda r, q=q: practice.score(q, r)["answer_ok"]})
     if v["agent"] == "planner":
         res = loop.probe(C, agent, judge, cases, H.get(v["parent"])["surfaces"], v["surfaces"], fb, ws.knowledge_for)
     else:           # another agent's change is only seen through the team, and may not harm the others
@@ -452,13 +467,22 @@ def practice_view():
 
 
 @api.post("/practice", dependencies=[LocalOnly])
-def practice_run(company: str = Cid, ws: Workspace = Ws):
+def practice_run(company: str = Cid, agent: str | None = None, ws: Workspace = Ws):
+    """A practice set, by the single Planner, or by one agent of the team on its own kind of question; its score is kept."""
     H = harness_store()
     client = live(ws, "open")
     C = ws.company(company)
-    res = practice.run(C, client, practice.build(C, split="dev"), H.active()["surfaces"])
-    H.add_practice(f"API-{company}", H.active()["version_id"], res)
-    return practice.summary(res)
+    if agent is None:
+        res = practice.run(C, client, practice.build(C, split="dev"), H.active()["surfaces"])
+        H.add_practice(f"API-{company}", H.active()["version_id"], res)
+        return practice.summary(res)
+    _spec(agent)
+    questions = practice.build_gaps(C, split="dev") if agent == "tool_forge" else practice.build(C, split="dev")
+    res = practice.run_agent(C, client, questions, agent, H.active_all(), knowledge.for_team(ws, company), nt.tools(ws.store(), company, "active"))
+    s = practice.summary(res)
+    H.add_score(agent, H.active(agent)["version_id"], f"practice:dev:{company}", s["questions"], sum(x["answer_ok"] for x in res), 0,
+                sum(x["tool_calls"] for x in res), s["tool_errors"], s["cost_usd"])
+    return s
 
 
 # ---------- sharing
@@ -520,6 +544,22 @@ def proof():
     return proof_files.results()
 
 
+@api.get("/proof/curve")
+def proof_curve():
+    """The whole system at each learning stage and each agent's score (EXP-014), or {"measured": false} until it has run."""
+    return proof_files.curve()
+
+
+@api.get("/compare")
+def compare(request: str, company: str = Cid, ws: Workspace = Ws):
+    """The same request before and after learning, from real saved runs: cold vs with lessons, and before vs after learned tools."""
+    def view(r):
+        return r and {"run_id": r["run_id"], "reply": r.get("reply"), "drafts": views.drafts(r), "tool_calls": views.team_parts(r)["tool_calls"], "cost_usd": r.get("cost_usd"),
+                      "agents": views.team_parts(r)["agents"], "lessons_in_prompt": len(r.get("knowledge") or []), "learned_tools": r.get("learned_tools") or []}
+    return {"request": request, "cold": view(runs.find_replay(ws, company, request, False, learned=False)), "with_lessons": view(runs.find_replay(ws, company, request, True, learned=False)),
+            "with_learned_tools": view(next((r for r in [runs.find_replay(ws, company, request, False, learned=True)] if r and r.get("learned_tools")), None))}
+
+
 @api.get("/ledger")
 def ledger(company: str = Cid, agent: str | None = None, type: str | None = None, limit: int = 200, ws: Workspace = Ws):
     from ..events import from_run
@@ -573,6 +613,11 @@ def log_tools(company: str | None = None, ws: Workspace = Ws):
 @api.get("/logs/routing")
 def log_routing(company: str | None = None, ws: Workspace = Ws):
     return logs.routing_stats([r for r in runs.recent_runs(500, ws) if not company or r["company"] == company])
+
+
+@api.get("/logs/agents")
+def log_agents(company: str | None = None, ws: Workspace = Ws):
+    return logs.agent_totals([r for r in runs.recent_runs(500, ws) if not company or r["company"] == company])
 
 
 @api.get("/logs/models")

@@ -36,3 +36,11 @@ def results():
         if d:
             out.append({"id": eid, "file": f, "measured_on": "lesson mining against the generator's hidden rules", "pooled": d["primary_fresh_world"]["pooled"]})
     return out
+
+
+def curve():
+    f, d = _latest(BENCH, "exp014_2*.json")
+    if not d:
+        return {"measured": False, "note": "EXP-014 has not run yet"}
+    return {"measured": True, "file": f, "stages": d["stages"], "agents": d["agents"], "decision": d["decision"], "cost_usd": d["cost_usd"]}
+
