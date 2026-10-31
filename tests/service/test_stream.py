@@ -97,7 +97,7 @@ def test_events_are_readable_while_the_run_is_still_going(world, tmp_path, trace
     assert got[-1]["type"] == "agent_done" and [e["seq"] for e in got] == list(range(len(got)))
     assert stream.status(run_id)["status"] == "done" and stream.ended_stop(run_id) == "answered"
     assert trace.load(run_id, traces)["run_id"] == run_id
-    assert got[0]["ts"] is not None                 # the save stamped them
+    assert stream.store().load(run_id)[0]["ts"] is not None     # null while live; the save stamps them
 
 
 def test_a_reader_can_reconnect_and_gets_only_what_it_missed(world, traces):
