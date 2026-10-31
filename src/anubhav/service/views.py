@@ -1,6 +1,13 @@
-"""Read models: a saved run turned into something a person can read. No framework, works for live runs and replays."""
+"""Read models: a saved run turned into something a person can read, and the dashboard's views. No framework; works for
+live runs and replays. Dashboard reads call the tools' own code directly, so opening a page doesn't fill the audit log."""
 
 import json
+
+from .. import events
+from ..agents.team import Stops, _sequence_stops
+from ..learning import profile
+from ..runtime.broker import Day, ListOpenOrders, ToolError, get_transport_policy, list_open_orders, list_vehicles, plan_board, NoArgs, ListVehicles
+from ..trace import walk
 
 
 def tool_steps(r):
@@ -62,3 +69,78 @@ def lessons_used(r):
         if lid and lid in text:
             used.append(k)
     return used
+
+
+# ---------- dashboard
+def orders(ws, cid):
+    b, _ = ws.broker(cid, False)
+    drafted = b.C.runtime.orders_in_drafts(b.C.today)
+    rows = list_open_orders(b, ListOpenOrders())["orders"]
+    return {"delivery_date": b.C.today, "orders": [dict(o, in_draft=o["order_id"] in drafted) for o in rows]}
+
+
+def fleet(ws, cid):
+    b, _ = ws.broker(cid, True)
+    board = plan_board(b, Day())
+    why = {v["vehicle_id"]: v.get("reason") or v.get("why") for v in board["vehicles_not_free"]}
+    return {"delivery_date": b.C.today, "vehicles": [dict(v, free=v["vehicle_id"] not in why, reason=why.get(v["vehicle_id"]))
+                                                     for v in list_vehicles(b, ListVehicles())["vehicles"]]}
+
+
+def why_plan(run, draft_id):
+    """Why this draft: the lessons, agents and tools of the run that made it, from that run's events."""
+    ev = events.from_run(run)
+    if not any(e["type"] == "draft_created" and e["payload"]["draft_id"] == draft_id for e in ev):
+        return None
+    return {"run_id": run["run_id"], "request": run["request"], "lessons": [x for e in ev if e["type"] == "lesson_used" for x in e["payload"]["lessons"]],
+            "lessons_in_prompt": len(run.get("knowledge") or []), "agents": sorted({e["agent_id"] for e in ev}),
+            "tools": list(dict.fromkeys(e["payload"]["tool"] for e in ev if e["type"] == "tool_call")),
+            "checks": [e["payload"] for e in ev if e["type"] == "validator_check" and e["payload"].get("draft_id") == draft_id]}
+
+
+def _stops(b, draft_id=None, site_ids=None):
+    try:
+        return _sequence_stops(b, Stops(draft_id=draft_id, site_ids=site_ids))
+    except ToolError:
+        return None
+
+
+def drafts_for(ws, cid, runs_seen=()):
+    """This visitor's current drafts, each with its ordered stops and why it was made."""
+    b, _ = ws.broker(cid, False)
+    out = []
+    for row in b.C.runtime.drafts():
+        verdict = json.loads(row["verdict"]) if row.get("verdict") else {}
+        out.append({"draft_id": row["draft_id"], "status": row["status"], "vehicle_id": row["vehicle_id"], "delivery_date": row["delivery_date"],
+                    "orders": json.loads(row["order_ids"]), "load": verdict.get("load"), "warnings": verdict.get("warnings", []),
+                    "stops": _stops(b, draft_id=row["draft_id"]) if row["status"] == "draft" else None,
+                    "why": next((w for r in runs_seen if (w := why_plan(r, row["draft_id"]))), None), "source": "live"})
+    return out
+
+
+def drafts_of_run(ws, cid, run):
+    """A run's drafts, read from its trace: a replay creates nothing, but shows what the real run made."""
+    b, _ = ws.broker(cid, False)
+    out = []
+    for d in drafts(run):
+        sites = list(dict.fromkeys(b.C.orders[o]["site_id"] for o in d.get("orders", []) if o in b.C.orders))
+        out.append({"draft_id": d["draft_id"], "status": "draft (not dispatched)", "vehicle_id": d.get("vehicle_id"), "delivery_date": d.get("delivery_date"),
+                    "orders": d.get("orders"), "load": d.get("load"), "warnings": d.get("warnings", []), "stops": _stops(b, site_ids=sites) if sites else None,
+                    "why": why_plan(run, d["draft_id"]), "source": "run"})
+    return out
+
+
+def company_profile(ws, cid):
+    b, _ = ws.broker(cid, False)
+    S = ws.store()
+    saved = profile.latest(S, cid)
+    return {"company": cid, "facts": saved["facts"] if saved else profile.from_records(b.C), "owner": saved["owner"] if saved else {},
+            "owner_fields": profile.OWNER_FIELDS, "agent_reads": profile.render(saved) if saved else "", "version": saved["version"] if saved else None,
+            "versions": [{k: v[k] for k in ("version", "ts", "actor", "owner")} for v in profile.versions(S, cid)],
+            "written_rules": get_transport_policy(b, NoArgs())["policies"]}
+
+
+def team_parts(run):
+    """How many agents and tool calls a saved request really took, teammates included."""
+    parts = list(walk(run))
+    return {"agents": [p.get("agent_id") or "planner" for p in parts], "tool_calls": sum(p.get("tool_calls", 0) for p in parts)}

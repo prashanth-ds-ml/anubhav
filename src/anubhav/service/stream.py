@@ -50,17 +50,22 @@ def start(ws, client, cid, request, use_lessons, history=(), team=False, harness
     return run_id
 
 
-def follow(run_id, after=-1, poll_s=0.1, timeout_s=300):
-    """Yield a live run's events after `after` as they appear, ending when the run has ended and all were read."""
+def follow(run_id, after=-1, poll_s=0.1, timeout_s=300, heartbeat_s=None):
+    """Yield a live run's events after `after` as they appear, ending when the run has ended and all were read.
+    With heartbeat_s, yields None when nothing happened for that long (a long model call), so proxies keep the line open."""
     st = store()
     deadline = time.monotonic() + timeout_s
+    quiet = time.monotonic()
     while True:
         ended = status(run_id).get("status") != "running"     # read before the events, so none are missed
         for e in st.load(run_id, after):
-            after = e["seq"]
+            after, quiet = e["seq"], time.monotonic()
             yield e
         if ended or time.monotonic() > deadline:
             return
+        if heartbeat_s and time.monotonic() - quiet > heartbeat_s:
+            quiet = time.monotonic()
+            yield None
         time.sleep(poll_s)
 
 

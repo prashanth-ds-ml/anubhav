@@ -13,21 +13,28 @@ def trace_files():
     return sorted(trace.TRACE_DIR.glob("*.jsonl"), reverse=True) + ([DEMO / "replay_runs.jsonl"] if (DEMO / "replay_runs.jsonl").exists() else [])
 
 
-def recent_runs(limit=60):
+def visible(r, ws=None):
+    """Hosted, a visitor sees the saved demo runs and their own live runs, never another visitor's."""
+    return not (ws and ws.public) or r.get("visitor") in (None, ws.sid)
+
+
+def recent_runs(limit=60, ws=None):
     rows = []
     for p in trace_files():
-        rows += [json.loads(x) for x in reversed(p.read_text(encoding="utf-8").splitlines()) if x.strip()]
+        rows += [r for r in (json.loads(x) for x in reversed(p.read_text(encoding="utf-8").splitlines()) if x.strip()) if visible(r, ws)]
         if len(rows) >= limit:
             break
     return rows[:limit]
 
 
-def find_run(run_id):
+def find_run(run_id, ws=None):
     """A saved run by id: local traces, then the demo bundle."""
     for p in trace_files():
         for line in p.read_text(encoding="utf-8").splitlines():
-            if line.strip() and json.loads(line)["run_id"] == run_id:
-                return json.loads(line)
+            if line.strip():
+                r = json.loads(line)
+                if r["run_id"] == run_id:
+                    return r if visible(r, ws) else None
     return None
 
 
@@ -39,7 +46,7 @@ def find_replay(ws: Workspace, cid, request, use_lessons, learned=None):
     for p in trace_files():
         for line in reversed(p.read_text(encoding="utf-8").splitlines()):
             r = json.loads(line)
-            if r["company"] == cid and r["request"].strip() == request.strip() and bool(r.get("knowledge")) == use_lessons:
+            if r["company"] == cid and r["request"].strip() == request.strip() and bool(r.get("knowledge")) == use_lessons and visible(r, ws):
                 if bool(r.get("learned_tools")) == learned:
                     return r
                 fallback = fallback or r
@@ -75,6 +82,8 @@ def run_with(ws: Workspace, client, cid, request, use_lessons, history=(), team=
         b, knowledge = ws.broker(cid, use_lessons)
         r = graph.run(b, client, request, knowledge=knowledge, harness=harness, history=turns, about=ws.about(cid), hooks=hooks, run_id=run_id)
         r["learned_tools"] = [t.name for t in b.list_tools() if t.category == "learned_tools"]
+    if ws.public:
+        r["visitor"] = ws.sid
     trace.save(r, label=label)
     return r
 

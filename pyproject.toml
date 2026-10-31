@@ -4,6 +4,7 @@ version = "0.1.0"
 description = "Anubhav: a multilingual agent that learns a business's unwritten rules from its own records, on Meta Muse"
 requires-python = ">=3.12"
 dependencies = [
+    "fastapi>=0.162.0",
     "graphviz>=0.21",
     "httpx>=0.28.1",
     "langgraph>=1.2.18",
@@ -15,6 +16,7 @@ dependencies = [
     "pyyaml>=6.0.3",
     "sounddevice>=0.5.6",
     "streamlit>=1.66.1",
+    "uvicorn>=0.54.0",
     "websockets>=17.3",
 ]
 

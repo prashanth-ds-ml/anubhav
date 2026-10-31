@@ -64,7 +64,7 @@ def knowledge_for(cid):
 
 
 def recent_runs(limit=60):
-    return runs.recent_runs(limit)
+    return runs.recent_runs(limit, workspace())
 
 
 def broker(cid: str, use_lessons: bool, role="dispatcher", user="demo"):
