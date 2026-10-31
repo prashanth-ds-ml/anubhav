@@ -39,8 +39,7 @@ def run_team(C, script, **kw):
 def test_roster_is_data_with_one_lead():
     r = registry.load()
     assert r.lead().agent_id == "planner"
-    assert {a.agent_id for a in r.active()} == {"planner", "analyst", "tool_forge"}
-    assert {"tool_forge", "lesson_miner"} <= set(r.agents)
+    assert {a.agent_id for a in r.active()} == {"planner", "analyst", "tool_forge", "lesson_miner"}
     assert all(a.purpose and a.instructions for a in r.agents.values())
 
 
@@ -87,7 +86,9 @@ def test_teammate_prompt_is_its_own_and_lead_prompt_lists_the_team(C):
 
 @pytest.mark.parametrize("agent,code", [("planner", "DELEGATION_LIMIT"), ("nobody", "NOT_FOUND"), ("lesson_miner", "NOT_FOUND")])
 def test_delegate_refuses_self_unknown_and_planned_agents(C, agent, code):
-    r = run_team(C, [delegate(agent), mock_final("ok")])
+    roster = registry.load()
+    roster = replace(roster, agents={**roster.agents, "lesson_miner": replace(roster.agents["lesson_miner"], status="planned")})
+    r = run_team(C, [delegate(agent), mock_final("ok")], roster=roster)
     step = next(s for s in r["trace"] if s["type"] == "tool")
     assert not step["ok"] and step["error"]["code"] == code and r["children"] == []
 
@@ -144,7 +145,7 @@ def test_find_capability_says_plainly_when_nothing_fits(C):
 def test_discover_capabilities_lists_teammates_in_team_mode(C):
     b = Broker(C, Session("T01", agent="planner"), team=team.Team(registry.load(), None))
     agents = {a["agent"]: a for a in b.call("discover_capabilities", {})["result"]["agents"]}
-    assert agents["analyst"]["available"] and not agents["planner"]["available"] and not agents["lesson_miner"]["available"]
+    assert agents["analyst"]["available"] and agents["lesson_miner"]["available"] and not agents["planner"]["available"]
 
 
 # ---------- route order (estimate)

@@ -6,6 +6,7 @@ from .. import muse, trace
 from ..agent import graph
 from ..agents import team as team_mode
 from ..runtime.broker import Session
+from . import knowledge as agent_knowledge
 from .session import DEMO, SUGGESTIONS, Workspace, harness_store
 
 
@@ -76,7 +77,8 @@ def run_with(ws: Workspace, client, cid, request, use_lessons, history=(), team=
         knowledge, policies, advisories, lessons, learned = ws.broker_args(cid, use_lessons)
         r = team_mode.run(ws.company(cid), Session(cid, "dispatcher", "demo"), client, request, knowledge=knowledge,
                           harness=harness, about=ws.about(cid), history=turns, policies=policies, advisories=advisories,
-                          lessons=lessons, learned_tools=learned, hooks=hooks, run_id=run_id)
+                          lessons=lessons, learned_tools=learned, hooks=hooks, run_id=run_id, harnesses=harness_store().active_all(),
+                          knowledge_by_agent=agent_knowledge.for_team(ws, cid), lesson_store=ws.store())
         r["learned_tools"] = [t["name"] for t in learned]
     else:
         b, knowledge = ws.broker(cid, use_lessons)

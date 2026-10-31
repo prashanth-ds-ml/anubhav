@@ -21,7 +21,7 @@ Reply with JSON only: {{"name": "<lowercase_with_underscores, 3-40 characters>",
 Name what it answers for any input. Never mention a specific place, site, person, vehicle or date."""
 
 
-def name_tool(client, C, g, spec=None):
+def name_tool(client, C, g, spec=None, knowledge=()):
     """{name, description, named_by, cost_usd, why?}. named_by is 'tool_forge', or 'code' when it fell back."""
     fallback = {"name": nt.suggest_name(g), "description": nt.describe(g), "named_by": "code", "cost_usd": 0.0}
     if client is None:
@@ -30,6 +30,8 @@ def name_tool(client, C, g, spec=None):
     prompt = PROMPT.format(instructions=spec.instructions.format(company=C.company, today=C.today), uses=len(g["requests"]),
                            template=g["template"], inputs=", ".join(p["name"] for p in g["uses"][0]["params"]),
                            requests="\n".join(f"- {r[:150]}" for r in g["requests"][:5]))
+    if knowledge:           # what a person approved or rejected before
+        prompt += "\n\nEarlier names here (information):\n" + "\n".join(f"- {k}" for k in knowledge)
     try:
         r = client.chat([{"role": "user", "content": prompt}], None, temperature=0)
     except Exception as e:              # no model, no name: the candidate still goes to the person

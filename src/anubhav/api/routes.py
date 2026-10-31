@@ -17,7 +17,7 @@ from ..learning.store import describe
 from ..runtime.broker import Broker, Session
 from ..runtime.company import CompanyData
 from ..runtime.query import sandbox
-from ..service import proof as proof_files, runs, stream, views
+from ..service import knowledge, proof as proof_files, runs, stream, views
 from ..service.session import COMPANIES, LIVE_CALLS_PER_DAY, LIVE_RUNS_PER_SESSION, MODELS, SUGGESTIONS, Workspace, harness_store
 from ..ui import logs
 from .deps import ApiError, Cid, LocalOnly, Ws, live
@@ -212,19 +212,35 @@ def run_feedback(run_id: str, body: Feedback, ws: Workspace = Ws):
 
 
 # ---------- agents
+def _agent_row(a, H, sizes):
+    return {"agent": a.agent_id, "name": a.name, "purpose": a.purpose, "status": a.status, "voice": a.voice, "model": a.model, "handles": list(a.handles),
+            "version": H.active(a.agent_id)["version_id"], "versions_tried": len(H.versions(a.agent_id)) - 1, "knowledge_items": sizes.get(a.agent_id, 0)}
+
+
 @api.get("/agents")
-def agents():
-    return [{"agent": a.agent_id, "name": a.name, "purpose": a.purpose, "status": a.status, "voice": a.voice, "model": a.model, "handles": list(a.handles)}
-            for a in registry.load().agents.values()]
+def agents(company: str = Cid, ws: Workspace = Ws):
+    H, sizes = harness_store(), knowledge.sizes(ws, company)
+    return [_agent_row(a, H, sizes) for a in registry.load().agents.values()]
 
 
 @api.get("/agents/{agent_id}")
-def agent_detail(agent_id: str):
+def agent_detail(agent_id: str, company: str = Cid, ws: Workspace = Ws):
+    """One agent: its instructions, what it knows, every version with its test result, and the score at each version."""
     a = registry.load().get(agent_id)
     if not a:
         raise ApiError(404, "NOT_FOUND", f"no agent {agent_id}")
-    return {"agent": a.agent_id, "name": a.name, "purpose": a.purpose, "status": a.status, "voice": a.voice, "model": a.model, "handles": list(a.handles),
-            "instructions": a.instructions, "limits": vars(a.limits)}
+    H = harness_store()
+    known = {"planner": ws.knowledge_for(company)[0]} | knowledge.for_team(ws, company)
+    versions, curve = [], []
+    for v in H.versions(agent_id):
+        g = (v["probe"] or {}).get("gate") or {}
+        versions.append({k: v[k] for k in ("version_id", "parent", "status", "created", "rationale", "decided_by", "decided", "note")}
+                        | {"diff": diff(H.get(v["parent"])["surfaces"], v["surfaces"]) if v["parent"] else [], "test_passed": g.get("pass"), "test_reasons": g.get("reasons", [])})
+        if v["probe"] and v["probe"].get("rows"):
+            rows = v["probe"]["rows"]
+            curve.append({"version": v["version_id"], **{f"{side}_{m}": sum(x[side][m] for x in rows) for side in ("base", "cand") for m in ("tool_errors", "tool_calls", "cost_usd")}})
+    return {**_agent_row(a, H, knowledge.sizes(ws, company)), "instructions": a.instructions, "limits": vars(a.limits), "active_surfaces": H.active(agent_id)["surfaces"],
+            "knowledge": known.get(agent_id, []), "versions": versions, "learning_curve": curve}
 
 
 # ---------- lessons
@@ -253,6 +269,16 @@ def lesson_decide(lesson_id: str, body: LessonDecision, company: str = Cid, ws: 
     if not body.why.strip():
         raise ApiError(422, "BAD_ARGS", f"{body.decision} needs a reason")
     return (S.reject if body.decision == "reject" else S.retire)(lesson_id, "reviewer", body.why)
+
+
+def _timeline(ws, company):
+    S, H = ws.store(), harness_store()
+    return logs.learning_events(company, S.events(company=company), {l["lesson_id"]: l for l in S.list(company)}, H.versions(), nt.tools(S, company))
+
+
+@api.get("/learning/timeline")
+def learning_timeline(company: str = Cid, agent: str | None = None, ws: Workspace = Ws):
+    return [e for e in _timeline(ws, company) if not agent or e["agent"] == agent]
 
 
 @api.post("/learning/mine", dependencies=[LocalOnly])
@@ -324,43 +350,57 @@ def tool_retire(tool_id: str, company: str = Cid, ws: Workspace = Ws):
 
 
 # ---------- tuning: Loop A (one harness for every visitor, so changes are local-only)
+def _spec(agent):
+    a = registry.load().get(agent)
+    if not a:
+        raise ApiError(404, "NOT_FOUND", f"no agent {agent}")
+    return a
+
+
+def _problems(ws, agent):
+    recent = runs.recent_runs(60, ws)
+    return {**loop.collect(recent, harness_store().feedback("new"), agent), "routing_evidence": logs.routing_stats(recent) if agent == "planner" else []}
+
+
 @api.get("/harness")
-def harness_view():
+def harness_view(agent: str = "planner"):
+    _spec(agent)
     H = harness_store()
-    versions = H.versions()
-    return {"active": H.active(), "versions": [dict(v, diff=diff(H.get(v["parent"])["surfaces"], v["surfaces"]) if v["parent"] else []) for v in versions],
+    return {"agent": agent, "active": H.active(agent), "versions": [dict(v, diff=diff(H.get(v["parent"])["surfaces"], v["surfaces"]) if v["parent"] else []) for v in H.versions(agent)],
             "feedback": H.feedback(), "categories": CATEGORIES}
 
 
 @api.get("/harness/problems")
-def harness_problems(ws: Workspace = Ws):
-    return loop.collect(runs.recent_runs(60, ws), harness_store().feedback("new"))
+def harness_problems(agent: str = "planner", ws: Workspace = Ws):
+    _spec(agent)
+    return _problems(ws, agent)
 
 
 @api.post("/harness/propose", dependencies=[LocalOnly])
-def harness_propose(company: str = Cid, ws: Workspace = Ws):
+def harness_propose(company: str = Cid, agent: str = "planner", ws: Workspace = Ws):
+    spec = _spec(agent)
     H = harness_store()
-    problems = loop.collect(runs.recent_runs(60, ws), H.feedback("new"))
+    problems = _problems(ws, agent)
     if not (problems["feedback"] or problems["trace_issues"]):
-        raise ApiError(409, "NOTHING_TO_FIX", "no problems in recent runs or new feedback")
+        raise ApiError(409, "NOTHING_TO_FIX", f"no problems in {agent}'s recent runs or new feedback")
     client = live(ws, "spark")
     C = ws.company(company)
-    b = Broker(C, Session(company))
-    patch, meta = loop.propose(client, b, H.active()["surfaces"], problems)
+    b = Broker(C, Session(company), analysis=True, learned_tools=nt.tools(ws.store(), company, "active"))
+    patch, meta = loop.propose(client, b, H.active(agent)["surfaces"], problems, "" if agent == "planner" else f"{spec.name}: {spec.purpose}")
     try:
-        v = H.propose(patch, patch.get("rationale", ""), [t.name for t in b.list_tools()], C)
+        v = H.propose(patch, patch.get("rationale", ""), [t.name for t in b.list_tools()], C, agent)
     except PatchError as e:
         raise ApiError(422, "PATCH_REFUSED", str(e), patch=patch)
     return {"version": v, "cost_usd": meta["cost_usd"]}
 
 
 @api.post("/harness/rollback", dependencies=[LocalOnly])
-def harness_rollback():
+def harness_rollback(agent: str = "planner"):
+    _spec(agent)
     H = harness_store()
-    if not H.active()["parent"]:
+    if not H.active(agent)["parent"]:
         raise ApiError(409, "NOTHING_TO_ROLL_BACK", "the active version is the baseline")
-    H.rollback("reviewer")
-    return H.active()
+    return H.rollback("reviewer", agent)
 
 
 @api.post("/harness/{version_id}/probe", dependencies=[LocalOnly])
@@ -377,7 +417,10 @@ def harness_probe(version_id: str, company: str = Cid, ws: Workspace = Ws):
     agent, judge = live(ws, "open"), live(ws, "spark")
     fb = {f["feedback_id"]: {"note": f["note"], "category": CATEGORIES.get(f["category"])} for f in new_fb}
     C = CompanyData(ws.world, company, ws.world / "runtime" / "probe")
-    res = loop.probe(C, agent, judge, cases, H.get(v["parent"])["surfaces"], v["surfaces"], fb, ws.knowledge_for)
+    if v["agent"] == "planner":
+        res = loop.probe(C, agent, judge, cases, H.get(v["parent"])["surfaces"], v["surfaces"], fb, ws.knowledge_for)
+    else:           # another agent's change is only seen through the team, and may not harm the others
+        res = loop.team_probe(C, agent, judge, cases, v["agent"], H.get(v["parent"])["surfaces"], v["surfaces"], fb, ws.knowledge_for, H.active_all())
     H.record_probe(version_id, res)
     return res
 
@@ -480,13 +523,16 @@ def proof():
 @api.get("/ledger")
 def ledger(company: str = Cid, agent: str | None = None, type: str | None = None, limit: int = 200, ws: Workspace = Ws):
     from ..events import from_run
-    kinds = {"handoff", "draft_created", "validator_check", "lesson_used", "tool_missing", "learning_event"}
+    kinds = {"handoff", "draft_created", "validator_check", "lesson_used", "tool_missing"}
     out = []
     for r in runs.recent_runs(200, ws):
         if r["company"] != company:
             continue
         out += [e for e in from_run(r) if e["type"] in kinds and (not agent or e["agent_id"] == agent) and (not type or e["type"] == type)]
-    return out[:min(limit, 1000)]
+    if type in (None, "learning_event"):      # decisions come from the learning stores, in the same event shape
+        out += [{"run_id": x["ref"], "seq": i, "agent_id": x["agent"], "agent_run_id": x["ref"], "caller": "learning", "depth": 0, "ts": x["ts"], "type": "learning_event", "payload": x}
+                for i, x in enumerate(_timeline(ws, company)) if not agent or x["agent"] == agent]
+    return sorted(out, key=lambda e: e["ts"] or "", reverse=True)[:min(limit, 1000)]
 
 
 def _entry(e):
@@ -522,6 +568,11 @@ def log_run(run_id: str, ws: Workspace = Ws):
 def log_tools(company: str | None = None, ws: Workspace = Ws):
     rows = [r for r in runs.recent_runs(500, ws) if not company or r["company"] == company]
     return {"usage": logs.tool_usage(rows), "missing": logs.missing_tools(rows)}
+
+
+@api.get("/logs/routing")
+def log_routing(company: str | None = None, ws: Workspace = Ws):
+    return logs.routing_stats([r for r in runs.recent_runs(500, ws) if not company or r["company"] == company])
 
 
 @api.get("/logs/models")

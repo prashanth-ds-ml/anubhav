@@ -23,7 +23,7 @@ ROUTES = [("GET", "/api/health"), ("GET", "/api/session"), ("GET", "/api/compani
           ("GET", "/api/agents"), ("GET", "/api/agents/analyst"), ("GET", "/api/learning/lessons"), ("GET", "/api/tools"), ("GET", "/api/tools/candidates"),
           ("GET", "/api/harness"), ("GET", "/api/harness/problems"), ("GET", "/api/practice"), ("GET", "/api/packs"), ("GET", "/api/review/history"),
           ("GET", "/api/proof"), ("GET", "/api/ledger"), ("GET", "/api/logs/events"), ("GET", "/api/logs/runs"), ("GET", "/api/logs/tools"),
-          ("GET", "/api/logs/models"), ("GET", "/api/report/weekly")]
+          ("GET", "/api/logs/models"), ("GET", "/api/logs/routing"), ("GET", "/api/learning/timeline"), ("GET", "/api/report/weekly")]
 LOCKED = [("POST", "/api/learning/mine"), ("POST", "/api/harness/propose"), ("POST", "/api/harness/rollback"), ("POST", "/api/harness/h-001/probe"),
           ("POST", "/api/harness/h-001/decide"), ("POST", "/api/practice")]
 
@@ -367,7 +367,7 @@ def test_proof_says_what_each_result_measured(env):
 def test_agents_roster_and_detail(env):
     c = client(env)
     roster = {a["agent"]: a for a in c.get("/api/agents").json()}
-    assert roster["planner"]["voice"] and roster["tool_forge"]["status"] == "active" and roster["lesson_miner"]["status"] == "planned"
+    assert roster["planner"]["voice"] and roster["tool_forge"]["status"] == "active" and roster["lesson_miner"]["status"] == "active"
     assert "{company}" in c.get("/api/agents/analyst").json()["instructions"] and c.get("/api/agents/nope").status_code == 404
 
 

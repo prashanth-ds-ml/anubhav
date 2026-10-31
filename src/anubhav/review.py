@@ -97,7 +97,7 @@ def review(C, store, runs, feedback, client=None, actor="nightly review", since=
         if g["key"][:8] in known:
             continue
         checks = newtools.check(g, sb)
-        named = forge.name_tool(forge_client, C, g)
+        named = forge.name_tool(forge_client, C, g, knowledge=[f"{t['name']}: {t['status']}" for t in newtools.tools(store, cid) if t["status"] != "candidate"][-6:])
         try:
             tid = newtools.propose(store, cid, g, checks, newtools.free_name(store, cid, named["name"]), named["description"])
         except ValueError as e:

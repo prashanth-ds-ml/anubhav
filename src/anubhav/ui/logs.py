@@ -111,6 +111,62 @@ def missing_tools(runs):
     return sorted(needs.values(), key=lambda x: -x["times"])
 
 
+def routing_stats(runs):
+    """Who handled which kind of task and how it went: the evidence for routing hints. A task's kind is the tool
+    categories its steps used, so it comes from the runs, not from a word list."""
+    from ..runtime.broker import ANALYSIS, REGISTRY
+    category = {t.name: t.category for t in REGISTRY + ANALYSIS}
+    rows = {}
+    for top in runs:
+        for r in walk(top):
+            steps = [s for s in r.get("trace", []) if s.get("type") == "tool"]
+            kinds = sorted({category.get(s["name"], "learned_tools") for s in steps if category.get(s["name"]) != "system" and s["name"] != "delegate"})
+            if not kinds or (s := next((x for x in steps if x["name"] in ("delegate", "find_capability", "sequence_stops")), None)) and not [x for x in steps if x["name"] not in ("delegate", "find_capability", "sequence_stops")]:
+                continue
+            k = ("+".join(kinds), r.get("agent_id") or "planner")
+            row = rows.setdefault(k, {"task_kind": k[0], "handled_by": k[1], "requests": 0, "answered": 0, "tool_errors": 0, "tool_calls": 0, "cost_usd": 0.0})
+            row["requests"] += 1
+            row["answered"] += r.get("stop") == "answered"
+            row["tool_errors"] += sum(not s["ok"] for s in steps)
+            row["tool_calls"] += len(steps)
+            row["cost_usd"] = round(row["cost_usd"] + (r.get("cost_usd") or 0), 5)
+    return sorted(rows.values(), key=lambda x: -x["requests"])
+
+
+def learning_events(company, lesson_events=(), lessons=None, versions=(), new_tools=()):
+    """Every learning decision for one company, newest first: what was proposed, tested, approved or refused, for which
+    agent. Read from the stores that already record them, so nothing can show here that didn't happen."""
+    lessons = lessons or {}
+    out = []
+    for e in lesson_events:
+        if e.get("company") == company:
+            les = lessons.get(e["lesson_id"], {})
+            out.append({"ts": e["ts"], "kind": "lesson", "agent": "lesson_miner", "decision": e["action"], "ref": e["lesson_id"], "by": e.get("actor"),
+                        "what": les.get("claim") or les.get("kind") or "", "state": e.get("to_state"), "note": e.get("note") or ""})
+    for v in versions:
+        if v.get("parent") is None:
+            continue
+        agent = v.get("agent") or "planner"
+        out.append({"ts": v.get("created", ""), "kind": "patch", "agent": agent, "decision": "proposed", "ref": v["version_id"], "by": "Muse (proposer)",
+                    "what": v.get("rationale") or "", "state": "candidate", "note": ""})
+        if v.get("probe"):
+            g = v["probe"].get("gate") or {}
+            out.append({"ts": v.get("decided") or v.get("created", ""), "kind": "patch", "agent": agent, "decision": "tested", "ref": v["version_id"], "by": "code (paired test)",
+                        "what": v.get("rationale") or "", "state": "passed" if g.get("pass") else "failed", "note": "; ".join(map(str, g.get("reasons", [])))})
+        if v.get("decided"):
+            out.append({"ts": v["decided"], "kind": "patch", "agent": agent, "decision": v["status"], "ref": v["version_id"], "by": v.get("decided_by"),
+                        "what": v.get("rationale") or "", "state": v["status"], "note": v.get("note") or ""})
+    for t in new_tools:
+        if t.get("company") == company:
+            c = t.get("checks") or {}
+            out.append({"ts": t["created"], "kind": "tool", "agent": "tool_forge", "decision": "checked", "ref": t["tool_id"], "by": "code (promotion checks)",
+                        "what": t["name"], "state": "passed" if c.get("pass") else "failed", "note": "; ".join(c.get("reasons", []))})
+            if t.get("decided"):
+                out.append({"ts": t["decided"], "kind": "tool", "agent": "tool_forge", "decision": t["status"], "ref": t["tool_id"], "by": t.get("decided_by"),
+                            "what": t["name"], "state": t["status"], "note": t.get("note") or ""})
+    return sorted(out, key=lambda x: x["ts"] or "", reverse=True)
+
+
 def events(company, runs=(), lesson_events=(), lessons=None, versions=(), feedback=(), new_tools=(), reviews=()):
     """Every recorded event for one company, newest first: {ts, stream, what, who, detail, ref, raw}."""
     lessons = lessons or {}

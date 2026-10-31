@@ -9,9 +9,10 @@ import uuid
 from datetime import datetime
 from pathlib import Path
 
-SURFACES = ("response_guidelines", "tool_hints", "glossary")
-LIMITS = {"response_guidelines": 10, "glossary": 30, "line_chars": 260, "tool_hint_chars": 320}
+SURFACES = ("response_guidelines", "tool_hints", "glossary", "routing_hints")
+LIMITS = {"response_guidelines": 10, "glossary": 30, "routing_hints": 10, "line_chars": 260, "tool_hint_chars": 320}
 EMPTY = {"response_guidelines": [], "tool_hints": {}, "glossary": []}
+LEAD = "planner"
 CATEGORIES = {"not_from_data": "Not from the data / not needed", "language": "Language or tone",
               "wrong_plan": "Wrong plan", "wrong_tool": "Used tools badly", "other": "Other"}
 
@@ -53,7 +54,7 @@ def apply_patch(surfaces, patch):
         else:
             s["tool_hints"][patch["tool"]] = text
     else:
-        lst = s[surface]
+        lst = s.setdefault(surface, [])
         if op == "remove":
             s[surface] = [x for x in lst if x != patch.get("old", text)]
         elif op == "replace" and patch.get("old") in lst:
@@ -72,12 +73,14 @@ def render(surfaces):
         parts.append("Working guidelines learned from feedback and tested:\n" + "\n".join(f"- {g}" for g in surfaces["response_guidelines"]))
     if surfaces.get("glossary"):
         parts.append("Language notes (from native speakers):\n" + "\n".join(f"- {g}" for g in surfaces["glossary"]))
+    if surfaces.get("routing_hints"):
+        parts.append("Who handled this kind of task well (from this team's own runs, tested):\n" + "\n".join(f"- {g}" for g in surfaces["routing_hints"]))
     return ("\n\n" + "\n\n".join(parts)) if parts else ""
 
 
 def diff(old, new):
     out = []
-    for k in ("response_guidelines", "glossary"):
+    for k in ("response_guidelines", "glossary", "routing_hints"):
         out += [f"+ {k}: {x}" for x in new.get(k, []) if x not in old.get(k, [])]
         out += [f"- {k}: {x}" for x in old.get(k, []) if x not in new.get(k, [])]
     for t in sorted(set(old.get("tool_hints", {})) | set(new.get("tool_hints", {}))):
@@ -102,14 +105,20 @@ class HarnessStore:
                     request text, reply text, rating int, category text, note text, source text, status text,
                     use_lessons int);
             """)
+            if "agent" not in {r[1] for r in con.execute("pragma table_info(versions)")}:     # versions are per agent (D-044)
+                con.execute("alter table versions add column agent text default 'planner'")
             if not con.execute("select 1 from versions").fetchone():
-                con.execute("insert into versions values (?,?,?,?,?,?,?,?,?,?,?)",
-                            ("h-000", None, json.dumps(EMPTY), "active", _now(), None, "baseline", None, "system", _now(), ""))
+                self._baseline(con, LEAD)
 
     def _con(self):
         con = sqlite3.connect(self.path, timeout=10)
         con.row_factory = sqlite3.Row
         return con
+
+    def _baseline(self, con, agent):
+        vid = "h-000" if agent == LEAD else f"{agent}-000"
+        con.execute("insert into versions (version_id, parent, surfaces, status, created, patch, rationale, probe, decided_by, decided, note, agent) "
+                    "values (?,?,?,?,?,?,?,?,?,?,?,?)", (vid, None, json.dumps(EMPTY), "active", _now(), None, "baseline", None, "system", _now(), "", agent))
 
     def _row(self, r):
         d = dict(r)
@@ -118,29 +127,41 @@ class HarnessStore:
         return d
 
     # ---------- versions
-    def active(self):
+    def active(self, agent=LEAD):
+        """An agent's active version; each agent starts at its own empty baseline."""
         with self._con() as con:
-            return self._row(con.execute("select * from versions where status = 'active'").fetchone())
+            r = con.execute("select * from versions where status = 'active' and agent = ?", (agent,)).fetchone()
+            if not r:
+                self._baseline(con, agent)
+                r = con.execute("select * from versions where status = 'active' and agent = ?", (agent,)).fetchone()
+            return self._row(r)
+
+    def active_all(self):
+        """Every agent's active surfaces: {agent: surfaces}."""
+        with self._con() as con:
+            return {r["agent"]: self._row(r)["surfaces"] for r in con.execute("select * from versions where status = 'active'")}
 
     def get(self, vid):
         with self._con() as con:
             r = con.execute("select * from versions where version_id = ?", (vid,)).fetchone()
             return self._row(r) if r else None
 
-    def versions(self):
+    def versions(self, agent=None):
         with self._con() as con:
-            return [self._row(r) for r in con.execute("select * from versions order by created")]
+            rows = [self._row(r) for r in con.execute("select * from versions order by created, rowid")]
+        return [r for r in rows if agent is None or r["agent"] == agent]
 
-    def propose(self, patch, rationale, tool_names, C=None):
+    def propose(self, patch, rationale, tool_names, C=None, agent=LEAD):
         validate_patch(patch, tool_names, C)
-        base = self.active()
+        base = self.active(agent)
         surfaces = apply_patch(base["surfaces"], patch)
         with self._con() as con:
-            n = con.execute("select count(*) from versions").fetchone()[0]
-            vid = f"h-{n:03d}"
-            con.execute("insert into versions values (?,?,?,?,?,?,?,?,?,?,?)",
+            n = con.execute("select count(*) from versions where agent = ?", (agent,)).fetchone()[0]
+            vid = f"h-{n:03d}" if agent == LEAD else f"{agent}-{n:03d}"
+            con.execute("insert into versions (version_id, parent, surfaces, status, created, patch, rationale, probe, decided_by, decided, note, agent) "
+                        "values (?,?,?,?,?,?,?,?,?,?,?,?)",
                         (vid, base["version_id"], json.dumps(surfaces, ensure_ascii=False), "candidate", _now(),
-                         json.dumps(patch, ensure_ascii=False), rationale, None, None, None, ""))
+                         json.dumps(patch, ensure_ascii=False), rationale, None, None, None, "", agent))
         return self.get(vid)
 
     def record_probe(self, vid, result):
@@ -155,20 +176,20 @@ class HarnessStore:
             raise PatchError("only a candidate that passed its paired test can be activated")
         with self._con() as con:
             if approve:
-                con.execute("update versions set status = 'superseded' where status = 'active'")
+                con.execute("update versions set status = 'superseded' where status = 'active' and agent = ?", (v["agent"],))
             con.execute("update versions set status = ?, decided_by = ?, decided = ?, note = ? where version_id = ?",
                         ("active" if approve else "rejected", by, _now(), note, vid))
         return self.get(vid)
 
-    def rollback(self, by):
-        cur = self.active()
+    def rollback(self, by, agent=LEAD):
+        cur = self.active(agent)
         if not cur["parent"]:
             raise PatchError("already at the baseline")
         with self._con() as con:
             con.execute("update versions set status = 'rolled_back', decided_by = ?, decided = ? where version_id = ?",
                         (by, _now(), cur["version_id"]))
             con.execute("update versions set status = 'active' where version_id = ?", (cur["parent"],))
-        return self.active()
+        return self.active(agent)
 
     # ---------- practice results (the Skills view reads these)
     def add_practice(self, round_id, version_id, results):
