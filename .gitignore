@@ -45,6 +45,12 @@ archive/prototype_experiments/data/
 # Personal voice transcripts log
 **/voice_log.jsonl
 
+# Copies of the project made in other tools (merged by hand; never committed)
+/Other_assistant/
+
+# Sprint plan that names people (kept local, see its section 9)
+docs/Implementation_Plan_Sprints.md
+
 # Obsidian state when the repo root is opened as a vault (docs/ is the vault)
 /.obsidian/
 

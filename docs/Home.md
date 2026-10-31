@@ -10,7 +10,10 @@ tags: [home, index]
 **Deadline:** Wed Nov 4, 9:00 PM ET = **Thu Nov 5, 7:30 AM IST** (target: submit Nov 4 IST)
 
 ## Plan
-- [[implementation_plan]]: **start here (from Oct 30).** Audit of the to-do list, demo story, workstreams A–G to submission, cut order
+- [[Anubhav_MultiAgent_Design_v1]]: **Oct 31 design (from another assistant's session, merged Oct 31):** orchestrated multi-agent system (Planner, Analyst, Tool Forge, Lesson Miner) with per-agent learning, and a React + FastAPI app on a Hugging Face Space. Decisions #1–16, delivery plan §4.9. Not started (D-044)
+- [[React_UI_Brainstorm]]: the discussion that led to it (superseded, kept as history)
+- `Implementation_Plan_Sprints.md`: sprint plan for the design; local only, not in git (it names people)
+- [[implementation_plan]]: plan from Oct 30. Audit of the to-do list, demo story, workstreams A–G to submission, cut order
 - [[build_plan]]: layers, dates, done-criteria, cut order (Oct 29 plan)
 - [[PRD_v3.1]]: product requirements (source of truth), scaled per D-027
 - [[Data_Benchmark_Blueprint_v1.0]]: data generator, 100-case benchmark, review procedure
