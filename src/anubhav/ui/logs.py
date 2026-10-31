@@ -3,6 +3,9 @@
 no Streamlit."""
 
 import json
+from collections import Counter
+
+from ..trace import walk
 
 STREAMS = {"run": "Agent runs", "lesson": "Business facts (Loop B)", "harness": "Tool use (Loop A)",
            "tool": "New tools", "review": "Nightly reviews", "feedback": "Feedback"}
@@ -24,6 +27,7 @@ def timeline(r, summarize=None):
     """A run as plan → act → observe rows, then the code checks. kind: plan | act | observe | refused | check | error.
     summarize(step) may give a readable one-line result; the raw step is kept on every row."""
     rows = []
+    children = {c["run_id"]: c for c in r.get("children", [])}
     for s in r.get("trace", []):
         t = s["type"]
         if t == "model":
@@ -41,6 +45,9 @@ def timeline(r, summarize=None):
             else:
                 rows.append({"turn": None, "kind": "refused", "text": f"{s['error']['code']}: {s['error']['message']}",
                              "raw": s["error"]})
+            child = children.get((s.get("result") or {}).get("run_id")) if s["name"] == "delegate" else None
+            if child:                       # the teammate's own steps, in place
+                rows += [{**x, "agent": x.get("agent") or child.get("agent_id")} for x in timeline(child, summarize)]
         elif t == "model_error":
             rows.append({"turn": s.get("turn"), "kind": "error", "text": s["error"], "raw": s})
         elif t == "finish":
@@ -60,7 +67,7 @@ def timeline(r, summarize=None):
 def run_issues(r):
     """What a reviewer should look at in a run (shown on the log row)."""
     out = []
-    refused = [s for s in r.get("trace", []) if s["type"] == "tool" and not s["ok"]]
+    refused = [s for part in walk(r) for s in part.get("trace", []) if s["type"] == "tool" and not s["ok"]]
     if refused:
         out.append(f"{len(refused)} refused")
     if r.get("stop") in ("limit", "error"):
@@ -71,6 +78,39 @@ def run_issues(r):
     return ", ".join(out)
 
 
+def tool_usage(runs):
+    """Which agent used which tool, how often and how it went, from every run and teammate run."""
+    seen = Counter()
+    failed = Counter()
+    last = {}
+    for top in runs:
+        for r in walk(top):
+            for s in r.get("trace", []):
+                if s.get("type") != "tool":
+                    continue
+                k = (r.get("agent_id") or "planner", s["name"])
+                seen[k] += 1
+                failed[k] += not s["ok"]
+                last[k] = max(last.get(k, ""), top.get("saved_at") or "")
+    return [{"agent": a, "tool": t, "calls": n, "failed": failed[(a, t)], "last_used": last[(a, t)]}
+            for (a, t), n in seen.most_common()]
+
+
+def missing_tools(runs):
+    """What agents needed and no tool or teammate fitted, most asked first, with the requests behind it."""
+    needs = {}
+    for top in runs:
+        for r in walk(top):
+            for s in r.get("trace", []):
+                res = s.get("result") if s.get("type") == "tool" and s.get("ok") else None
+                if res and res.get("tool_missing"):
+                    n = needs.setdefault(res["need"], {"need": res["need"], "times": 0, "requests": []})
+                    n["times"] += 1
+                    if top.get("request") not in n["requests"]:
+                        n["requests"].append(top.get("request"))
+    return sorted(needs.values(), key=lambda x: -x["times"])
+
+
 def events(company, runs=(), lesson_events=(), lessons=None, versions=(), feedback=(), new_tools=(), reviews=()):
     """Every recorded event for one company, newest first: {ts, stream, what, who, detail, ref, raw}."""
     lessons = lessons or {}
@@ -78,7 +118,7 @@ def events(company, runs=(), lesson_events=(), lessons=None, versions=(), feedba
     for r in runs:
         if r.get("company") != company:
             continue
-        n = sum(1 for s in r.get("trace", []) if s["type"] == "tool")
+        n = sum(1 for part in walk(r) for s in part.get("trace", []) if s["type"] == "tool")
         out.append({"ts": r.get("saved_at", ""), "stream": "run", "what": _short(r.get("request", ""), 90),
                     "who": f"agent ({r.get('model', '?').split('/')[-1]})",
                     "detail": f"{n} tool calls · {len(r.get('drafts', []))} drafts · ${r.get('cost_usd', 0):.3f}"

@@ -12,6 +12,8 @@ from mcp.server.mcpserver import MCPServer
 from mcp.server.mcpserver.exceptions import ToolError as MCPToolError
 
 from .data.config import ROOT
+from .learning import newtools
+from .learning.store import LessonStore
 from .runtime.broker import Broker, Session
 from .runtime.company import CompanyData
 
@@ -44,6 +46,12 @@ def build_server(broker: Broker) -> MCPServer:
     return server
 
 
+def learned_for(world, company):
+    """The tools a person approved for this company: the server offers them like any other tool."""
+    path = Path(world) / "learning" / "demo.sqlite"
+    return newtools.tools(LessonStore(path), company, "active") if path.exists() else []
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser()
     ap.add_argument("--company", required=True)
@@ -51,7 +59,8 @@ def main(argv=None):
     ap.add_argument("--user", default="planner")
     ap.add_argument("--world", default=str(DEFAULT_WORLD))
     a = ap.parse_args(argv)
-    broker = Broker(CompanyData(Path(a.world), a.company), Session(a.company, a.role, a.user))
+    broker = Broker(CompanyData(Path(a.world), a.company), Session(a.company, a.role, a.user),
+                    learned_tools=learned_for(a.world, a.company))
     build_server(broker).run()
 
 

@@ -119,6 +119,8 @@ Owner and Claude in parallel. The single Planner stays the baseline and fallback
 
 | # | Backend item ([[backend_plan]] §3) | Status |
 |---|---|---|
+| L0 | **Logs are the base (owner):** team runs saved whole with their events; every reader of runs sees teammates; `tool_usage`, `missing_tools` | ✅ Oct 31 |
+| T1 | **Tool creation (owner's decisions):** candidate at 3+ different requests (`MIN_USES = 3`), any agent's query counts; `tool_missing` → Tool Forge (now active) writes the first read-only query; Forge suggests names, code falls back; a person approves; approved tools on the MCP server | ✅ Oct 31 (scripted model only; no live run yet) |
 | B1 | Service layer out of `ui/core.py`; Streamlit keeps working on it | ⬜ next |
 | B2 | Live event streaming (hook in graph/broker → queue + event store; worker thread) | ⬜ |
 | API | ~45 endpoints in [[backend_plan]] §2 (session, dashboard, chat + SSE, agents, learning, tools, harness, packs, review, proof, ledger, logs, report) | ⬜ |

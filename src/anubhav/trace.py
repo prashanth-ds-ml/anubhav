@@ -7,8 +7,15 @@ from datetime import datetime
 from pathlib import Path
 
 from .data.config import ROOT
+from .events import EventStore
 
 TRACE_DIR = ROOT / "data" / "traces"
+
+
+def walk(run: dict):
+    """A run and every teammate run under it (multi-agent mode), lead first. A baseline run is just itself."""
+    yield run
+    yield from run.get("children", [])
 
 
 def save(run: dict, directory: Path = TRACE_DIR, label: str = "live") -> Path:
@@ -28,6 +35,7 @@ def save(run: dict, directory: Path = TRACE_DIR, label: str = "live") -> Path:
                  run["latency_s"], path.name))
     con.commit()
     con.close()
+    EventStore(directory / "events.sqlite").add_run(run)
     return path
 
 
@@ -46,10 +54,12 @@ def replay(run_id: str, directory: Path = TRACE_DIR) -> list[str]:
     if not r:
         return [f"no run {run_id}"]
     lines = [f"REPLAY of {r['run_id']} ({r['label']}, {r['model']}, {r['company']}): {r['request']}"]
-    for s in r["trace"]:
-        if s["type"] == "tool":
-            lines.append(f"  tool {s['name']}({s['arguments']}) -> {'ok' if s['ok'] else s['error']['code']}")
-        elif s["type"] == "model" and s.get("content"):
-            lines.append(f"  model: {s['content'][:200]}")
+    for part in walk(r):
+        who = f"{part['agent_id']}: " if part.get("agent_id") else ""
+        for s in part["trace"]:
+            if s["type"] == "tool":
+                lines.append(f"  {who}tool {s['name']}({s['arguments']}) -> {'ok' if s['ok'] else s['error']['code']}")
+            elif s["type"] == "model" and s.get("content"):
+                lines.append(f"  {who}model: {s['content'][:200]}")
     lines.append(f"  reply: {r['reply'][:300]} · drafts {r['drafts']} · ${r['cost_usd']} · {r['stop']}")
     return lines

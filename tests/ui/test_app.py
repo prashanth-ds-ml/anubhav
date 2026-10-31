@@ -106,7 +106,8 @@ def test_a_reused_query_is_checked_approved_and_offered_to_the_agent(visitor, mo
     runs = [{"run_id": f"r{i}", "company": "T01", "request": req, "trace": [{"type": "tool", "name": "run_query", "ok": True,
              "arguments": json.dumps({"sql": q.format(town, a, b), "purpose": "returned stops in a town"}), "result": {"row_count": 1}}]}
             for i, (req, town, a, b) in enumerate([("returns in town A?", towns[0], "2026-09-01", "2026-09-30"),
-                                                   ("returns in town B?", towns[1], "2026-08-01", "2026-08-31")])]
+                                                   ("returns in town B?", towns[1], "2026-08-01", "2026-08-31"),
+                                                   ("returns in town C?", towns[2], "2026-10-01", "2026-10-15")])]
     monkeypatch.setattr(core, "recent_runs", lambda limit=60: runs)
     at = visitor()
     at.switch_page("app_pages/new_tools.py"); at.run()

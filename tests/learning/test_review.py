@@ -40,6 +40,8 @@ def runs_for(C):
          "trace": [tool("run_query", {"sql": Q.format(towns[0]), "purpose": "returned stops in a town"})]},
         {"run_id": "b", "company": "T01", "request": "returns in B?", "saved_at": "2026-10-01T10:05:00",
          "trace": [tool("run_query", {"sql": Q.format(towns[1]), "purpose": "returned stops in a town"})]},
+        {"run_id": "b2", "company": "T01", "request": "returns in C?", "saved_at": "2026-10-01T10:06:00",
+         "trace": [tool("run_query", {"sql": Q.format(towns[2]), "purpose": "returned stops in a town"})]},
         {"run_id": "c", "company": "T01", "request": "plan", "saved_at": "2026-10-01T10:10:00", "stop": "limit",
          "trace": [tool("list_open_orders", {}) for _ in range(3)]
          + [tool("record_driver_note", {"text": f"32 ft lorry {lak['name']} gate lo pattaledu, 22 ft matrame", "lang": "rt"})]},
@@ -56,12 +58,12 @@ def test_each_problem_goes_to_its_own_route_without_a_model(C, tmp_path):
     S = LessonStore(tmp_path / "l.sqlite")
     runs, _ = runs_for(C)
     rep = review.review(C, S, runs, FEEDBACK)
-    assert rep["runs"] == 3                                                     # T02's run is not T01's business
+    assert rep["runs"] == 4                                                     # T02's run is not T01's business
     assert {i["kind"] for i in rep["tool_use"]["issues"]} >= {"repeated_call", "limit_hit"} and rep["tool_use"]["feedback"] == 1
     (cand,) = rep["new_tools"]["candidates"]
     assert cand["checks_passed"] and newtools.tools(S, "T01", "candidate") and not newtools.tools(S, "T01", "active")
     assert rep["facts"]["signals"] == 1 and rep["facts"]["route"].startswith("skipped")
-    assert review.last_review(S, "T01")["report"]["runs"] == 3
+    assert review.last_review(S, "T01")["report"]["runs"] == 4
 
 
 def test_a_stated_fact_becomes_a_lesson_candidate_through_the_gate_never_active(C, tmp_path):

@@ -56,7 +56,7 @@ def from_run(run: dict) -> list[dict]:
             if s["type"] == "tool":
                 args = s.get("arguments")
                 args = json.loads(args) if isinstance(args, str) and args.strip().startswith("{") else args
-                if s.get("attempt", 1) > 1:
+                if 1 < s.get("attempt", 1) <= 3:      # a refused fourth attempt shows as its RETRY_LIMIT result
                     emit(r, caller, depth, "retry", {"tool": s["name"], "attempt": s["attempt"], "of": 3})
                 emit(r, caller, depth, "tool_call", {"tool": s["name"], "arguments": args})
                 res = s.get("result") or {}

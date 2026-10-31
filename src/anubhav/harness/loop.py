@@ -10,6 +10,7 @@ from collections import Counter
 
 from ..agent import graph
 from ..runtime.broker import Broker, Session
+from ..trace import walk
 from .store import CATEGORIES
 
 # ---------- 1. signals from traces (the agent's own experience)
@@ -36,7 +37,7 @@ def collect(runs, feedback):
     """Group problems so the proposer sees patterns, with a few concrete examples each."""
     issues = Counter()
     examples = {}
-    for r in runs:
+    for r in (part for top in runs for part in walk(top)):
         for i in trace_issues(r):
             k = (i["kind"], i["tool"])
             issues[k] += 1

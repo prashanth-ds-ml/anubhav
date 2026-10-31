@@ -36,7 +36,7 @@ with st.container(border=True):
         off = core.live_ready("spark")
         if st.button("Run the nightly review now", icon=":material/bedtime:", type="primary"):
             client = core.live_client("spark")[0] if not off else None
-            rep = review.review(core.company(cid), S, core.recent_runs(500), H.feedback(), client)
+            rep = review.review(core.company(cid), S, core.recent_runs(500), H.feedback(), client, forge_client=client)
             st.toast(f"Reviewed {rep['runs']} runs: {len(rep['new_tools']['candidates'])} tool candidates, "
                      f"{len(rep['facts'].get('proposed', []))} lessons proposed.")
             st.rerun()

@@ -514,3 +514,5 @@ Packs: T01→TNEW 4 lessons (1 skipped: no matching site), T02→TNEW 4 lessons 
 - The query tools pulled the agent off planning rarely: `run_query` was used in 9 of 306 runs.
 - The repeats are almost identical; one model at temperature 0 is not fully deterministic (Q-03), and the spread here is small.
 - Over budget: $18.59 vs ~$15 estimated (longer prompts with 29 tools).
+
+> **Note (2026-10-31, D-045):** EXP-012 and EXP-012b were run with a candidate threshold of 2 different requests. The shipped threshold is now 3; those results are not re-measured.

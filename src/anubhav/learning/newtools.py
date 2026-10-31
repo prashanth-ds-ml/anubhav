@@ -15,7 +15,9 @@ import json
 import re
 from datetime import date, datetime
 
-MIN_USES = 2
+from ..trace import walk
+
+MIN_USES = 3     # owner, Oct 31: written for 3+ different requests before it is offered as a tool
 HELD_OUT = 5
 STRING = re.compile(r"'((?:[^']|'')*)'")
 DATE = re.compile(r"\d{4}-\d{2}-\d{2}")
@@ -74,23 +76,26 @@ def key(tpl):
 
 
 def uses_in(runs, company, sb):
-    """Every successful run_query in these runs, as (template, params, request, purpose, sql, run_id)."""
+    """Every successful run_query in these runs, by any agent, as (template, params, request, purpose, sql, run_id,
+    agent). The request is always the person's: a teammate's brief is one request however it is worded."""
     out = []
-    for r in runs:
-        if r.get("company") != company:
+    for top in runs:
+        if top.get("company") != company:
             continue
-        for s in r.get("trace", []):
-            if s.get("type") != "tool" or s.get("name") != "run_query" or not s.get("ok"):
-                continue
-            a = s["arguments"]
-            a = json.loads(a) if isinstance(a, str) else (a or {})
-            if not a.get("sql") or not (s.get("result") or {}).get("row_count"):
-                continue                           # a query that found nothing is not worth a tool
-            tpl, params = template(a["sql"], sb)
-            if not params:
-                continue                           # nothing to vary: an answer, not a tool
-            out.append({"template": tpl, "key": key(tpl), "params": params, "request": r.get("request", ""),
-                        "purpose": a.get("purpose", ""), "sql": a["sql"], "run_id": r.get("run_id")})
+        for r in walk(top):
+            for s in r.get("trace", []):
+                if s.get("type") != "tool" or s.get("name") != "run_query" or not s.get("ok"):
+                    continue
+                a = s["arguments"]
+                a = json.loads(a) if isinstance(a, str) else (a or {})
+                if not a.get("sql") or not (s.get("result") or {}).get("row_count"):
+                    continue                       # a query that found nothing is not worth a tool
+                tpl, params = template(a["sql"], sb)
+                if not params:
+                    continue                       # nothing to vary: an answer, not a tool
+                out.append({"template": tpl, "key": key(tpl), "params": params, "request": top.get("request", ""),
+                            "purpose": a.get("purpose", ""), "sql": a["sql"], "run_id": r.get("run_id"),
+                            "agent": r.get("agent_id") or "planner"})
     return out
 
 

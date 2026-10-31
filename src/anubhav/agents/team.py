@@ -120,10 +120,14 @@ def _find_capability(b, a: Need):
     out = {"need": a.need, "matches": matches}
     if not matches:
         out["tool_missing"] = True
-        out["next_step"] = ("No tool or teammate matches this need. "
-                            + ("run_query answers one read-only question over the records (call describe_tables first). "
-                               if "run_query" in b.tools else "")
-                            + "Otherwise tell the planner it can't be done with the current tools.")
+        forge = b.team.roster.handler("tool_missing", exclude=b.s.agent)
+        if forge:
+            step = f"Hand the need to {forge.agent_id} with delegate: it writes a read-only query and answers it. "
+        elif "run_query" in b.tools:
+            step = "run_query answers one read-only question over the records (call describe_tables first). "
+        else:
+            step = ""
+        out["next_step"] = f"No tool or teammate matches this need. {step}If that can't answer it, say so plainly."
     return out
 
 

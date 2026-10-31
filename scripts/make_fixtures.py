@@ -3,7 +3,7 @@ contracts/events.schema.json. No credits.
 
 1. plain_plan.jsonl          a real saved Muse Spark Open run from the demo bundle (T01 with its lessons, Roman Telugu)
 2. handoff_analyst.jsonl     Planner -> Analyst -> read-only query -> answer, in multi-agent mode
-3. retry_tool_missing.jsonl  no tool fits (tool_missing) -> hand-off -> a query fails, is fixed, and answers (retry)
+3. retry_tool_missing.jsonl  no tool fits (tool_missing) -> Tool Forge -> a query fails, is fixed, and answers (retry)
 
 2 and 3 run the real loop, broker, sandbox and validator with a scripted model in place of Muse (labelled
 "mock (scripted fixture)" in each agent_start); their SQL is what the agent wrote in the real run cd7dc7c3c0.
@@ -61,7 +61,7 @@ def busiest(msgs):
 def relay(msgs):
     reply = json.loads(msgs[-1]["content"])["result"]["reply"]
     day = reply.split("on ")[1].split(" (")[0]
-    return f"Hanamkonda lo manam ekkuva deliveries {day} roju chestham (Analyst records nunchi count chesaru)."
+    return f"Hanamkonda lo manam ekkuva deliveries {day} roju chestham (records nunchi count chesamu)."
 
 
 def main():
@@ -82,7 +82,7 @@ def main():
             answer_from(relay)])
         runs["retry_tool_missing"] = team_run(C, [
             mock_tool_call("find_capability", {"need": "busiest weekday"}, call_id="f1"),
-            mock_tool_call("delegate", {"agent": "analyst", "brief": BRIEF}, call_id="d1"),
+            mock_tool_call("delegate", {"agent": "tool_forge", "brief": BRIEF}, call_id="d1"),
             query(WRONG_SQL, "weekday stops Hanamkonda", "a1"),
             query(WRONG_SQL.replace("t.delivery_date", "t.date"), "weekday stops Hanamkonda", "a2"),
             query(STOPS_SQL, "weekday stops via shipments", "a3"),

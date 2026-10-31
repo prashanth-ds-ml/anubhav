@@ -1,6 +1,6 @@
 ---
 tags: [plan, backend, api, multi-agent]
-status: PROPOSED (Oct 31). Waiting on the owner's answers in §6 before B1 starts. No code written for it yet.
+status: IN PROGRESS (owner's go, Oct 31). Build status in [[todo]].
 date: 2026-10-31
 ---
 # Backend plan: FastAPI for the React app, and the rest of the multi-agent work

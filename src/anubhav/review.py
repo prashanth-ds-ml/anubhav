@@ -16,10 +16,13 @@ import argparse
 import json
 from datetime import datetime
 
+from .agents import forge
 from .harness import loop
 from .learning import digest, newtools
 from .learning.miner import KINDS, parse
 from .runtime.query import sandbox
+from .trace import walk
+from .ui.logs import missing_tools
 
 REVIEW = """You are reviewing what happened in an AI dispatch agent's runs for {company}, a transport company.
 Today is {today}. Below are corrections from people who used the agent, and notes it recorded from drivers and
@@ -62,7 +65,7 @@ def fact_signals(runs, feedback):
     recorded with record_driver_note. Marked as untrusted text; Muse only reads them to propose."""
     out = [{"source": f"feedback on: {f['request'][:80]}", "text": f["note"][:300]}
            for f in feedback if f["rating"] == 0 and f.get("note") and f.get("category") in FACT_CATEGORIES]
-    for r in runs:
+    for r in (part for top in runs for part in walk(top)):
         for s in r.get("trace", []):
             if s.get("type") == "tool" and s.get("name") == "record_driver_note" and s.get("ok"):
                 a = s["arguments"]
@@ -72,8 +75,9 @@ def fact_signals(runs, feedback):
     return out
 
 
-def review(C, store, runs, feedback, client=None, actor="nightly review", since=None):
-    """Review one company's runs and feedback since `since` (default: the last review). Returns the report."""
+def review(C, store, runs, feedback, client=None, actor="nightly review", since=None, forge_client=None):
+    """Review one company's runs and feedback since `since` (default: the last review). Returns the report.
+    With forge_client, Tool Forge suggests the name of each new candidate; otherwise code names it."""
     cid = C.company
     since = since if since is not None else ((last_review(store, cid) or {}).get("ts") or "")
     runs = [r for r in runs if r.get("company") == cid and (r.get("saved_at") or "9999") > since]
@@ -93,13 +97,16 @@ def review(C, store, runs, feedback, client=None, actor="nightly review", since=
         if g["key"][:8] in known:
             continue
         checks = newtools.check(g, sb)
+        named = forge.name_tool(forge_client, C, g)
         try:
-            tid = newtools.propose(store, cid, g, checks, newtools.free_name(store, cid, newtools.suggest_name(g)), newtools.describe(g))
+            tid = newtools.propose(store, cid, g, checks, newtools.free_name(store, cid, named["name"]), named["description"])
         except ValueError as e:
             proposed.append({"template": g["template"][:120], "error": str(e)})
             continue
-        proposed.append({"tool_id": tid, "requests": len(g["requests"]), "checks_passed": checks["pass"], "reasons": checks["reasons"]})
+        proposed.append({"tool_id": tid, "requests": len(g["requests"]), "checks_passed": checks["pass"], "reasons": checks["reasons"],
+                         "named_by": named["named_by"], "agents": sorted({u["agent"] for u in g["uses"]})})
     report["new_tools"] = {"candidates": proposed, "route": "New tools page: a person approves" if proposed else "no reused queries"}
+    report["missing_tools"] = missing_tools(runs)     # needs nothing fitted; reused queries above show what got built
 
     # Loop B: facts people stated → Muse proposes → the evidence gate over the records → reviewer
     signals = fact_signals(runs, feedback)
