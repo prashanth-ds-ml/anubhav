@@ -10,7 +10,7 @@ Loop A: the agent improves *how it uses its tools*. Each row is one candidate, f
 **Built 2026-10-29:** `src/anubhav/harness/` (store, loop) and the app's Tuning page. Versions live in `data/harness/harness.sqlite`; this page records the notable ones for the README and demo.
 
 ## Active version
-- **Current:** `h-000` (baseline): no patch has passed its paired test yet
+- **Current:** `h-000` (baseline) for the app. In EXP-013, `analyst-001` and `tool_forge-001` passed their paired tests and were approved by a fixed rule in the experiment's own store; neither is active in the app, and neither improved answers on the test set
 - **Model (frozen):** `meta-models/muse-spark-open-1026` (agent) · patches proposed by `muse-spark-1.3` · temperature `0`
 
 ## Version history

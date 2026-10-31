@@ -1,0 +1,277 @@
+38 planning cases, 16 gap questions, 20 dev questions
+OK  S T01-site_access-rt-00        ['planner'] $0.05582
+OK  S T01-site_access-te-01        ['planner'] $0.05652
+OK  S T01-site_access-en-02        ['planner'] $0.05539
+OK  S T01-look_alike-en-03         ['planner'] $0.0689
+OK  S T01-alias-rt-04              ['planner'] $0.07363
+OK  S T01-alias-te-05              ['planner'] $0.06836
+OK  S T01-alias-en-06              ['planner'] $0.05336
+OK  S T01-alias-rt-07              ['planner'] $0.0521
+OK  S T01-alias-te-08              ['planner'] $0.03789
+OK  S T01-alias-en-09              ['planner'] $0.06
+no  S T01-real_capacity-rt-10      ['planner'] $0.07336
+no  S T01-real_capacity-en-11      ['planner'] $0.05283
+OK  S T01-control-rt-12            ['planner'] $0.04012
+OK  S T01-control-en-13            ['planner'] $0.07792
+OK  S T02-site_access-rt-14        ['planner'] $0.05128
+OK  S T02-site_access-te-15        ['planner'] $0.04903
+OK  S T02-site_access-en-16        ['planner'] $0.0465
+OK  S T02-look_alike-rt-17         ['planner'] $0.05636
+OK  S T02-alias-rt-18              ['planner'] $0.05113
+OK  S T02-alias-te-19              ['planner'] $0.05303
+OK  S T02-alias-en-20              ['planner'] $0.03617
+OK  S T02-alias-rt-21              ['planner'] $0.04395
+OK  S T02-alias-te-22              ['planner'] $0.0509
+OK  S T02-alias-en-23              ['planner'] $0.0436
+OK  S T02-control-rt-24            ['planner'] $0.06869
+OK  S T02-control-en-25            ['planner'] $0.06697
+OK  S TNEW-site_access-rt-26       ['planner'] $0.06833
+OK  S TNEW-site_access-te-27       ['planner'] $0.04673
+OK  S TNEW-site_access-en-28       ['planner'] $0.04455
+OK  S TNEW-look_alike-rt-29        ['planner'] $0.05703
+OK  S TNEW-alias-rt-30             ['planner'] $0.03259
+OK  S TNEW-alias-te-31             ['planner'] $0.05693
+OK  S TNEW-alias-en-32             ['planner'] $0.03105
+OK  S TNEW-alias-rt-33             ['planner'] $0.04689
+OK  S TNEW-alias-te-34             ['planner'] $0.04754
+OK  S TNEW-alias-en-35             ['planner'] $0.03842
+OK  S TNEW-control-rt-36           ['planner'] $0.05226
+OK  S TNEW-control-en-37           ['planner'] $0.05303
+no  S T01-gap-held_out-01          ['planner'] $0.06157
+no  S T01-gap-held_out-02          ['planner'] $0.0545
+OK  S T01-gap-held_out-03          ['planner'] $0.03049
+no  S T01-gap-held_out-04          ['planner'] $0.05456
+OK  S T01-gap-held_out-05          ['planner'] $0.05919
+OK  S T01-gap-held_out-06          ['planner'] $0.07887
+OK  S T01-gap-held_out-07          ['planner'] $0.08033
+OK  S T01-gap-held_out-08          ['planner'] $0.04267
+no  S T02-gap-held_out-01          ['planner'] $0.09353
+OK  S T02-gap-held_out-02          ['planner'] $0.05481
+OK  S T02-gap-held_out-03          ['planner'] $0.05258
+OK  S T02-gap-held_out-04          ['planner'] $0.03151
+OK  S T02-gap-held_out-05          ['planner'] $0.04712
+OK  S T02-gap-held_out-06          ['planner'] $0.03336
+OK  S T02-gap-held_out-07          ['planner'] $0.06635
+OK  S T02-gap-held_out-08          ['planner'] $0.04263
+S {"n": 54, "ok": 48, "ok_rate": 0.889, "unsafe": 0, "mean_cost": 0.0538, "cost_usd": 2.903, "routing": 0.704, "handoffs": 0, "stopped_at_limit": 1} total $2.90
+OK  M0 T01-site_access-rt-00        ['planner'] $0.06186
+OK  M0 T01-site_access-te-01        ['planner'] $0.05924
+OK  M0 T01-site_access-en-02        ['planner'] $0.05786
+OK  M0 T01-look_alike-en-03         ['planner'] $0.05861
+OK  M0 T01-alias-rt-04              ['planner'] $0.05595
+OK  M0 T01-alias-te-05              ['planner'] $0.05914
+OK  M0 T01-alias-en-06              ['planner'] $0.05777
+OK  M0 T01-alias-rt-07              ['planner'] $0.05675
+OK  M0 T01-alias-te-08              ['planner'] $0.04175
+OK  M0 T01-alias-en-09              ['planner'] $0.05723
+no  M0 T01-real_capacity-rt-10      ['planner'] $0.06634
+no  M0 T01-real_capacity-en-11      ['planner'] $0.06218
+OK  M0 T01-control-rt-12            ['planner'] $0.06139
+OK  M0 T01-control-en-13            ['planner'] $0.10188
+OK  M0 T02-site_access-rt-14        ['planner'] $0.0515
+OK  M0 T02-site_access-te-15        ['planner'] $0.05625
+OK  M0 T02-site_access-en-16        ['planner'] $0.05325
+OK  M0 T02-look_alike-rt-17         ['planner'] $0.08116
+OK  M0 T02-alias-rt-18              ['planner'] $0.0518
+OK  M0 T02-alias-te-19              ['planner'] $0.05216
+OK  M0 T02-alias-en-20              ['planner'] $0.05094
+OK  M0 T02-alias-rt-21              ['planner'] $0.04955
+OK  M0 T02-alias-te-22              ['planner'] $0.06921
+OK  M0 T02-alias-en-23              ['planner'] $0.04719
+OK  M0 T02-control-rt-24            ['planner'] $0.06014
+OK  M0 T02-control-en-25            ['planner'] $0.06775
+OK  M0 TNEW-site_access-rt-26       ['planner'] $0.05352
+OK  M0 TNEW-site_access-te-27       ['planner'] $0.05267
+OK  M0 TNEW-site_access-en-28       ['planner'] $0.04954
+OK  M0 TNEW-look_alike-rt-29        ['planner'] $0.07349
+OK  M0 TNEW-alias-rt-30             ['planner'] $0.0352
+OK  M0 TNEW-alias-te-31             ['planner'] $0.05235
+OK  M0 TNEW-alias-en-32             ['planner'] $0.04987
+OK  M0 TNEW-alias-rt-33             ['planner'] $0.05495
+OK  M0 TNEW-alias-te-34             ['planner'] $0.04808
+OK  M0 TNEW-alias-en-35             ['planner'] $0.04831
+OK  M0 TNEW-control-rt-36           ['planner'] $0.05193
+OK  M0 TNEW-control-en-37           ['planner'] $0.05577
+no  M0 T01-gap-held_out-01          ['planner', 'tool_forge'] $0.13346
+no  M0 T01-gap-held_out-02          ['planner', 'tool_forge'] $0.0732
+OK  M0 T01-gap-held_out-03          ['planner', 'tool_forge'] $0.11128
+no  M0 T01-gap-held_out-04          ['planner', 'tool_forge'] $0.06835
+OK  M0 T01-gap-held_out-05          ['planner', 'tool_forge'] $0.11009
+no  M0 T01-gap-held_out-06          ['planner', 'analyst'] $0.076
+OK  M0 T01-gap-held_out-07          ['planner', 'tool_forge', 'analyst'] $0.12722
+OK  M0 T01-gap-held_out-08          ['planner', 'tool_forge', 'analyst'] $0.13026
+OK  M0 T02-gap-held_out-01          ['planner', 'tool_forge'] $0.15819
+OK  M0 T02-gap-held_out-02          ['planner', 'tool_forge'] $0.06843
+OK  M0 T02-gap-held_out-03          ['planner', 'tool_forge'] $0.1089
+no  M0 T02-gap-held_out-04          ['planner', 'tool_forge'] $0.10754
+OK  M0 T02-gap-held_out-05          ['planner', 'tool_forge', 'analyst'] $0.10102
+OK  M0 T02-gap-held_out-06          ['planner', 'tool_forge'] $0.10084
+OK  M0 T02-gap-held_out-07          ['planner', 'analyst'] $0.15053
+OK  M0 T02-gap-held_out-08          ['planner', 'analyst'] $0.13421
+M0 {"n": 54, "ok": 47, "ok_rate": 0.87, "unsafe": 0, "mean_cost": 0.0729, "cost_usd": 3.934, "routing": 0.907, "handoffs": 19, "stopped_at_limit": 0} total $6.84
+learning round: [{"agent": "planner", "outcome": "no problems"}, {"agent": "analyst", "version": "analyst-001", "patch": {"surface": "tool_hints", "op": "add", "tool": "trip_history", "text": "For outcome counts (e.g. returned/delivered) by town and date, call once with town + date_from/date_to and answer from its counts; do not also call order_history, performance, or run_query for the same question.", "rationale": "Analyst uses 9-10 calls checking every record tool for one returned-count question and hits tool-call limit. trip_history already returns counts by outcome in one town+date call, so using it once and stopping fixes fan-out.", "addresses": ["many_calls", "tool_error"]}, "gate": {"pass": true, "reasons": [], "feedback_addressed": {"base": 0, "cand": 0, "of": 0}, "cost": {"base": 0.379, "cand": 0.2321}}, "outcome": "activated"}, {"agent": "tool_forge", "version": "tool_forge-001", "patch": {"surface": "tool_hints", "op": "add", "tool": "run_query", "text": "For custom breakdowns no other tool groups by (e.g. by weekday): call describe_tables once, then use ONE run_query SELECT to answer; do not try other tools first.", "rationale": "Cuts wasted steps that cause step-limit failures on custom analytics by going straight to one describe+one query and avoids repeat describe_tables calls.", "addresses": ["limit_hit", "repeated_call"]}, "gate": {"pass": true, "reasons": [], "feedback_addressed": {"base": 0, "cand": 0, "of": 0}, "cost": {"base": 0.3706, "cand": 0.3144}}, "outcome": "activ
+OK  M1 T01-site_access-rt-00        ['planner'] $0.05921
+OK  M1 T01-site_access-te-01        ['planner'] $0.06299
+OK  M1 T01-site_access-en-02        ['planner'] $0.05844
+OK  M1 T01-look_alike-en-03         ['planner'] $0.0714
+OK  M1 T01-alias-rt-04              ['planner'] $0.05811
+OK  M1 T01-alias-te-05              ['planner'] $0.05837
+OK  M1 T01-alias-en-06              ['planner'] $0.05663
+OK  M1 T01-alias-rt-07              ['planner'] $0.06507
+OK  M1 T01-alias-te-08              ['planner'] $0.04281
+OK  M1 T01-alias-en-09              ['planner'] $0.05557
+no  M1 T01-real_capacity-rt-10      ['planner'] $0.04729
+no  M1 T01-real_capacity-en-11      ['planner'] $0.07638
+OK  M1 T01-control-rt-12            ['planner'] $0.06038
+OK  M1 T01-control-en-13            ['planner'] $0.05667
+OK  M1 T02-site_access-rt-14        ['planner'] $0.05138
+OK  M1 T02-site_access-te-15        ['planner'] $0.05396
+OK  M1 T02-site_access-en-16        ['planner'] $0.05099
+OK  M1 T02-look_alike-rt-17         ['planner'] $0.06883
+OK  M1 T02-alias-rt-18              ['planner'] $0.0506
+OK  M1 T02-alias-te-19              ['planner'] $0.05881
+OK  M1 T02-alias-en-20              ['planner'] $0.05025
+OK  M1 T02-alias-rt-21              ['planner'] $0.04796
+OK  M1 T02-alias-te-22              ['planner'] $0.05894
+OK  M1 T02-alias-en-23              ['planner'] $0.0475
+OK  M1 T02-control-rt-24            ['planner'] $0.03981
+OK  M1 T02-control-en-25            ['planner'] $0.05325
+OK  M1 TNEW-site_access-rt-26       ['planner'] $0.05267
+OK  M1 TNEW-site_access-te-27       ['planner'] $0.07414
+OK  M1 TNEW-site_access-en-28       ['planner'] $0.04879
+OK  M1 TNEW-look_alike-rt-29        ['planner'] $0.05741
+OK  M1 TNEW-alias-rt-30             ['planner'] $0.04917
+OK  M1 TNEW-alias-te-31             ['planner'] $0.05634
+OK  M1 TNEW-alias-en-32             ['planner'] $0.05101
+OK  M1 TNEW-alias-rt-33             ['planner'] $0.04961
+OK  M1 TNEW-alias-te-34             ['planner'] $0.05092
+OK  M1 TNEW-alias-en-35             ['planner'] $0.04966
+OK  M1 TNEW-control-rt-36           ['planner'] $0.05071
+OK  M1 TNEW-control-en-37           ['planner'] $0.04966
+no  M1 T01-gap-held_out-01          ['planner', 'tool_forge'] $0.10545
+OK  M1 T01-gap-held_out-02          ['planner', 'tool_forge'] $0.10941
+OK  M1 T01-gap-held_out-03          ['planner', 'tool_forge'] $0.068
+OK  M1 T01-gap-held_out-04          ['planner', 'tool_forge'] $0.06917
+no  M1 T01-gap-held_out-05          ['planner', 'analyst'] $0.06705
+no  M1 T01-gap-held_out-06          ['planner', 'analyst', 'tool_forge'] $0.1025
+OK  M1 T01-gap-held_out-07          ['planner', 'tool_forge', 'analyst'] $0.15184
+OK  M1 T01-gap-held_out-08          ['planner', 'tool_forge', 'analyst'] $0.12516
+no  M1 T02-gap-held_out-01          ['planner', 'tool_forge'] $0.17995
+OK  M1 T02-gap-held_out-02          ['planner', 'tool_forge'] $0.07253
+OK  M1 T02-gap-held_out-03          ['planner', 'tool_forge'] $0.09191
+OK  M1 T02-gap-held_out-04          ['planner', 'tool_forge'] $0.08592
+no  M1 T02-gap-held_out-05          ['planner', 'analyst'] $0.05235
+no  M1 T02-gap-held_out-06          ['planner', 'analyst'] $0.06428
+OK  M1 T02-gap-held_out-07          ['planner', 'tool_forge', 'analyst'] $0.12876
+OK  M1 T02-gap-held_out-08          ['planner', 'tool_forge', 'analyst'] $0.14432
+M1 {"n": 54, "ok": 46, "ok_rate": 0.852, "unsafe": 0, "mean_cost": 0.0689, "cost_usd": 3.72, "routing": 0.981, "handoffs": 21, "stopped_at_limit": 0} total $14.21
+{
+ "S": {
+  "n": 54,
+  "ok": 48,
+  "ok_rate": 0.889,
+  "unsafe": 0,
+  "mean_cost": 0.0538,
+  "cost_usd": 2.903,
+  "routing": 0.704,
+  "handoffs": 0,
+  "stopped_at_limit": 1
+ },
+ "M0": {
+  "n": 54,
+  "ok": 47,
+  "ok_rate": 0.87,
+  "unsafe": 0,
+  "mean_cost": 0.0729,
+  "cost_usd": 3.934,
+  "routing": 0.907,
+  "handoffs": 19,
+  "stopped_at_limit": 0
+ },
+ "M1": {
+  "n": 54,
+  "ok": 46,
+  "ok_rate": 0.852,
+  "unsafe": 0,
+  "mean_cost": 0.0689,
+  "cost_usd": 3.72,
+  "routing": 0.981,
+  "handoffs": 21,
+  "stopped_at_limit": 0
+ },
+ "by_kind": {
+  "S:plan": {
+   "n": 38,
+   "ok": 36,
+   "ok_rate": 0.947,
+   "unsafe": 0,
+   "mean_cost": 0.0531,
+   "cost_usd": 2.019,
+   "routing": 1.0,
+   "handoffs": 0,
+   "stopped_at_limit": 0
+  },
+  "S:gap": {
+   "n": 16,
+   "ok": 12,
+   "ok_rate": 0.75,
+   "unsafe": 0,
+   "mean_cost": 0.0553,
+   "cost_usd": 0.884,
+   "routing": 0.0,
+   "handoffs": 0,
+   "stopped_at_limit": 1
+  },
+  "M0:plan": {
+   "n": 38,
+   "ok": 36,
+   "ok_rate": 0.947,
+   "unsafe": 0,
+   "mean_cost": 0.0572,
+   "cost_usd": 2.175,
+   "routing": 1.0,
+   "handoffs": 0,
+   "stopped_at_limit": 0
+  },
+  "M0:gap": {
+   "n": 16,
+   "ok": 11,
+   "ok_rate": 0.688,
+   "unsafe": 0,
+   "mean_cost": 0.11,
+   "cost_usd": 1.76,
+   "routing": 0.688,
+   "handoffs": 19,
+   "stopped_at_limit": 0
+  },
+  "M1:plan": {
+   "n": 38,
+   "ok": 36,
+   "ok_rate": 0.947,
+   "unsafe": 0,
+   "mean_cost": 0.0553,
+   "cost_usd": 2.102,
+   "routing": 1.0,
+   "handoffs": 0,
+   "stopped_at_limit": 0
+  },
+  "M1:gap": {
+   "n": 16,
+   "ok": 10,
+   "ok_rate": 0.625,
+   "unsafe": 0,
+   "mean_cost": 0.1012,
+   "cost_usd": 1.619,
+   "routing": 0.938,
+   "handoffs": 21,
+   "stopped_at_limit": 0
+  }
+ },
+ "R1_no_unsafe": true,
+ "R2_not_worse": true,
+ "R3_cost": true,
+ "R4_routing_gain_pts": 7.4,
+ "R4_met": false,
+ "team_becomes_default": true
+}
+saved artifacts\benchmark\exp013_20261031_183713.json total $ 14.21

@@ -78,6 +78,17 @@ if nt12:
     st.caption("16 held-out questions on an unseen world. Pre-registered bar: 30% fewer tool calls, not met (20%). "
                "EXP-012 failed both its rules first; EXP-012b changed one thing (general tool names). Both are in the experiments log.")
 
+t13 = [p for p in sorted((ROOT / "artifacts" / "benchmark").glob("exp013_2*.json"))]
+if t13:
+    d = json.loads(t13[-1].read_text(encoding="utf-8"))["decision"]
+    st.subheader("One planner or a team? (EXP-013)")
+    with st.container(horizontal=True):
+        for label, k in (("Single Planner", "S"), ("Team", "M0"), ("Team after one learning round", "M1")):
+            st.metric(label, f"{d[k]['ok']}/{d[k]['n']} right", f"${d[k]['mean_cost']:.3f} a case · {d[k]['unsafe']} unsafe", delta_color="off", border=True)
+    st.caption("54 cases, one repeat, pre-registered. The team met its bars (no unsafe drafts, within 5 points, within 1.5× the cost), but it is not "
+               "more accurate than one planner, and it costs about a third more. The learning round's routing gain "
+               f"(+{d['R4_routing_gain_pts']} points) missed its bar (+15), and answers did not improve.")
+
 st.subheader("Does it learn the right things?")
 st.caption("Mining precision and recall against the generator's hidden rules (never shown to the system).")
 mining = []

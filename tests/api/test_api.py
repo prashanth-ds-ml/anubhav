@@ -108,7 +108,7 @@ def test_shared_and_paid_actions_are_refused_on_the_public_host(env, method, pat
 
 def test_session_says_live_is_off_without_keys_and_never_shows_a_key(env, monkeypatch):
     body = client(env).get("/api/session").json()
-    assert body["public"] and body["default_mode"] == "replay" and not body["default_team"]
+    assert body["public"] and body["default_mode"] == "replay" and body["default_team"]
     assert not body["models"]["Muse Spark Open"]["available"] and "Use Replay" in body["models"]["Muse Spark Open"]["reason"]
     monkeypatch.setenv(muse.KEYS["open"], "sk-secret-value")
     assert "sk-secret-value" not in client(env).get("/api/session").text
@@ -362,6 +362,7 @@ def test_proof_says_what_each_result_measured(env):
     assert {"EXP-011", "EXP-011R", "EXP-012", "EXP-012b", "EXP-009", "EXP-009b"} <= set(results)
     assert all(x["measured_on"] for x in results.values()) and results["EXP-011R"]["replicated"]["lessons"]
     assert "threshold of 2" in results["EXP-012b"]["measured_on"]
+    assert results["EXP-013"]["decision"]["team_becomes_default"] and not results["EXP-013"]["decision"]["R4_met"]
 
 
 def test_agents_roster_and_detail(env):

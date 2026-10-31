@@ -130,7 +130,9 @@ Owner and Claude in parallel. The single Planner stays the baseline and fallback
 | B6 | Tool Forge: active; writes the first query (real model reaches it, smoke run); suggests names; code keeps the checks | ✅ Oct 31 |
 | B7 | Lesson Miner: active; `records_digest`, `propose_lesson` through the evidence gate; a person approves. Not run on the real model yet | ✅ Oct 31 (scripted model) |
 | B8 | Learning timeline for lessons, patches and tools, per agent (`/api/learning/timeline`, in the ledger) | ✅ Oct 31 |
-| B9 | EXP-013: S / M0 / M1 pre-registered in [[experiments]], frozen by hash, then the run (≤ $30) | 🟨 frozen; running |
+| B9 | EXP-013: R1–R3 met (team default in the API), R4 not met; team not more accurate than one planner; $14.21 ([[experiments]]) | ✅ Oct 31 |
+| B11 | Record team replays for the demo bundle (hosted replays are single-Planner); run the Lesson Miner on the real model (~$1–2) | ⬜ next |
+| B12 | Show team runs in Streamlit, so the work is visible if React slips | ⬜ |
 | B10 | Dockerfile built and checked locally (no keys in the image, non-root, replay works, paid routes refused); deploying the Space is the owner's step ([[deploy]]) | ✅ Oct 31 |
 | Web | React app (V1–V4, V6–V9, V11–V15) | ⬜ later (owner's direction) |
 

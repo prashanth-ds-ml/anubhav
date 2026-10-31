@@ -1,0 +1,3969 @@
+{
+ "world": "full_seed5279",
+ "frozen": {
+  "scripts/exp013_team.py": "3bd53cd37d2d41bd",
+  "configs/agents.yaml": "721c791a5b65a5b7",
+  "src/anubhav/agent/graph.py": "93fa8a480c36da7e",
+  "src/anubhav/agents/team.py": "e1f65a1e9d42bd50",
+  "src/anubhav/agents/registry.py": "9332944832057d33",
+  "src/anubhav/runtime/broker.py": "11f3edc4d42406da",
+  "src/anubhav/harness/loop.py": "7f5ec1e30b57c32f",
+  "src/anubhav/harness/store.py": "ede15ade0d492cac",
+  "src/anubhav/harness/practice.py": "1f86aa346f56e74a",
+  "src/anubhav/eval/bench.py": "64baa74ac3c0f33e"
+ },
+ "packs": [
+  {
+   "pack_id": "PK-T01-TNEW-20261031-183713-360b",
+   "items": 5,
+   "leaks": []
+  },
+  {
+   "pack_id": "PK-T02-TNEW-20261031-183713-357f",
+   "items": 5,
+   "leaks": []
+  }
+ ],
+ "learning_round": [
+  {
+   "agent": "planner",
+   "outcome": "no problems"
+  },
+  {
+   "agent": "analyst",
+   "version": "analyst-001",
+   "patch": {
+    "surface": "tool_hints",
+    "op": "add",
+    "tool": "trip_history",
+    "text": "For outcome counts (e.g. returned/delivered) by town and date, call once with town + date_from/date_to and answer from its counts; do not also call order_history, performance, or run_query for the same question.",
+    "rationale": "Analyst uses 9-10 calls checking every record tool for one returned-count question and hits tool-call limit. trip_history already returns counts by outcome in one town+date call, so using it once and stopping fixes fan-out.",
+    "addresses": [
+     "many_calls",
+     "tool_error"
+    ]
+   },
+   "gate": {
+    "pass": true,
+    "reasons": [],
+    "feedback_addressed": {
+     "base": 0,
+     "cand": 0,
+     "of": 0
+    },
+    "cost": {
+     "base": 0.379,
+     "cand": 0.2321
+    }
+   },
+   "outcome": "activated"
+  },
+  {
+   "agent": "tool_forge",
+   "version": "tool_forge-001",
+   "patch": {
+    "surface": "tool_hints",
+    "op": "add",
+    "tool": "run_query",
+    "text": "For custom breakdowns no other tool groups by (e.g. by weekday): call describe_tables once, then use ONE run_query SELECT to answer; do not try other tools first.",
+    "rationale": "Cuts wasted steps that cause step-limit failures on custom analytics by going straight to one describe+one query and avoids repeat describe_tables calls.",
+    "addresses": [
+     "limit_hit",
+     "repeated_call"
+    ]
+   },
+   "gate": {
+    "pass": true,
+    "reasons": [],
+    "feedback_addressed": {
+     "base": 0,
+     "cand": 0,
+     "of": 0
+    },
+    "cost": {
+     "base": 0.3706,
+     "cand": 0.3144
+    }
+   },
+   "outcome": "activated"
+  }
+ ],
+ "decision": {
+  "S": {
+   "n": 54,
+   "ok": 48,
+   "ok_rate": 0.889,
+   "unsafe": 0,
+   "mean_cost": 0.0538,
+   "cost_usd": 2.903,
+   "routing": 0.704,
+   "handoffs": 0,
+   "stopped_at_limit": 1
+  },
+  "M0": {
+   "n": 54,
+   "ok": 47,
+   "ok_rate": 0.87,
+   "unsafe": 0,
+   "mean_cost": 0.0729,
+   "cost_usd": 3.934,
+   "routing": 0.907,
+   "handoffs": 19,
+   "stopped_at_limit": 0
+  },
+  "M1": {
+   "n": 54,
+   "ok": 46,
+   "ok_rate": 0.852,
+   "unsafe": 0,
+   "mean_cost": 0.0689,
+   "cost_usd": 3.72,
+   "routing": 0.981,
+   "handoffs": 21,
+   "stopped_at_limit": 0
+  },
+  "by_kind": {
+   "S:plan": {
+    "n": 38,
+    "ok": 36,
+    "ok_rate": 0.947,
+    "unsafe": 0,
+    "mean_cost": 0.0531,
+    "cost_usd": 2.019,
+    "routing": 1.0,
+    "handoffs": 0,
+    "stopped_at_limit": 0
+   },
+   "S:gap": {
+    "n": 16,
+    "ok": 12,
+    "ok_rate": 0.75,
+    "unsafe": 0,
+    "mean_cost": 0.0553,
+    "cost_usd": 0.884,
+    "routing": 0.0,
+    "handoffs": 0,
+    "stopped_at_limit": 1
+   },
+   "M0:plan": {
+    "n": 38,
+    "ok": 36,
+    "ok_rate": 0.947,
+    "unsafe": 0,
+    "mean_cost": 0.0572,
+    "cost_usd": 2.175,
+    "routing": 1.0,
+    "handoffs": 0,
+    "stopped_at_limit": 0
+   },
+   "M0:gap": {
+    "n": 16,
+    "ok": 11,
+    "ok_rate": 0.688,
+    "unsafe": 0,
+    "mean_cost": 0.11,
+    "cost_usd": 1.76,
+    "routing": 0.688,
+    "handoffs": 19,
+    "stopped_at_limit": 0
+   },
+   "M1:plan": {
+    "n": 38,
+    "ok": 36,
+    "ok_rate": 0.947,
+    "unsafe": 0,
+    "mean_cost": 0.0553,
+    "cost_usd": 2.102,
+    "routing": 1.0,
+    "handoffs": 0,
+    "stopped_at_limit": 0
+   },
+   "M1:gap": {
+    "n": 16,
+    "ok": 10,
+    "ok_rate": 0.625,
+    "unsafe": 0,
+    "mean_cost": 0.1012,
+    "cost_usd": 1.619,
+    "routing": 0.938,
+    "handoffs": 21,
+    "stopped_at_limit": 0
+   }
+  },
+  "R1_no_unsafe": true,
+  "R2_not_worse": true,
+  "R3_cost": true,
+  "R4_routing_gain_pts": 7.4,
+  "R4_met": false,
+  "team_becomes_default": true
+ },
+ "cost_usd": 14.214,
+ "rows": [
+  {
+   "id": "T01-site_access-rt-00",
+   "kind": "plan",
+   "family": "site_access",
+   "company": "T01",
+   "arm": "S",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "V08",
+     22,
+     7058.7
+    ]
+   ],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.05582,
+   "reply": "Repu (2026-10-30) Lakshmi Agencies, Jangaon load ki DRAFT ready chesa, dispatch confirm cheyaledu.\n\n* Site: C0003 Lakshmi Agencies, Jangaon - max 22 ft rule undi (L-T01-001)\n* Order: BENCH-T01-site_access-rt-00 - 7058.7 kg, 11.16 m3, Rs 3,76,650\n* Bandi: V08 (T22, 22 ft, 9000 kg) - idi ee site ki allowed max size, load ki saripoyina chinna bandi\n* Draft ID: DR-A699A1 - status: draft (not dispatche",
+   "run_id": "749e3db0ea"
+  },
+  {
+   "id": "T01-site_access-te-01",
+   "kind": "plan",
+   "family": "site_access",
+   "company": "T01",
+   "arm": "S",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "V08",
+     22,
+     7185.2
+    ]
+   ],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.05652,
+   "reply": "రేపు 2026-10-30 కోసం Lakshmi Agencies, Jangaon (C0003) లోడ్ కి డ్రాఫ్ట్ పెట్టాను — **డిస్పాచ్ కన్ఫర్మ్ చేయలేదు**.\n\n* **డ్రాఫ్ట్ ID:** DR-A596D3 (draft only, dispatched కాదు)\n* **ఆర్డర్:** BENCH-T01-site_access-te-01 — 7185.2 kg, 11.36 m3, Rs 3,83,400\n* **బండి:** V08 (T22, 22 ft, 9000 kg) — సైట్ నియమం max 22 ft (L-T01-001) ప్రకారం 22 ft లోపు బండి కావాలి, అందుకే V08 సరిపోతుంది. 32 ft బండ్లు (V11, V1",
+   "run_id": "aeb68f5178"
+  },
+  {
+   "id": "T01-site_access-en-02",
+   "kind": "plan",
+   "family": "site_access",
+   "company": "T01",
+   "arm": "S",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "V08",
+     22,
+     7084.0
+    ]
+   ],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.05539,
+   "reply": "Draft created for tomorrow (2026-10-30) - not dispatched:\n\n**Lakshmi Agencies, Jangaon (C0003)** - Order BENCH-T01-site_access-en-02 (7084 kg, 11.2 m3, Rs 378,000)\n- Vehicle **V08** (T22, 22 ft, 9000 kg / 32 m3) - complies with site rule max 22 ft (L-T01-001)\n- Draft ID: **DR-F43192** - status: draft (not dispatched)\n\nWarning: consignment value > Rs 50,000 - e-way bill needed.\n\nVehicle held for th",
+   "run_id": "b653a6d665"
+  },
+  {
+   "id": "T01-look_alike-en-03",
+   "kind": "plan",
+   "family": "look_alike",
+   "company": "T01",
+   "arm": "S",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "V12",
+     32,
+     7109.3
+    ]
+   ],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.0689,
+   "reply": "Draft created (not dispatched) for 2026-10-30:\n\n**Sri Venkateswara Traders, Jangaon (C0015)** - Order BENCH-T01-look_alike-en-03: 7,109.3 kg / 11.24 m3 / Rs 379,350 - Window 10:00-18:00, receiving until 20:00\n\nVehicle **V12** (T32S, 32 ft, 7,500 kg / 55 m3, open, own) - Fill 95% - 1 stop\n\nDraft ID: **DR-0B6346** - Status: draft (not dispatched)\n\nWarning: e-way bill needed (value > Rs 50,000).\n\nVeh",
+   "run_id": "5767f6b0e0"
+  },
+  {
+   "id": "T01-alias-rt-04",
+   "kind": "plan",
+   "family": "alias",
+   "company": "T01",
+   "arm": "S",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "V03",
+     10,
+     2378.2
+    ]
+   ],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.07363,
+   "reply": "Repu (2026-10-30) Pedda godown ante Venkata Sri Traders, Warangal (C0053) ani teesukuni draft matrame chesa - dispatch kaadu.\n\n**Draft DR-3E3B7F:**\n* Order: BENCH-T01-alias-rt-04 - 2378.2 kg, 3.76 m3, Rs 1,26,900\n* Bandi: V03 (LCV407, 10 ft, 2500 kg / 9 m3) - chinna suitable bandi, available undi\n* Load fill 95% - ok\n\nNote: Value Rs 50,000 paine undi kabatti e-way bill kavali.\n\nIdi draft matrame, ",
+   "run_id": "0066e3ddfc"
+  },
+  {
+   "id": "T01-alias-te-05",
+   "kind": "plan",
+   "family": "alias",
+   "company": "T01",
+   "arm": "S",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "V03",
+     10,
+     2099.9
+    ]
+   ],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.06836,
+   "reply": "రేపు 2026-10-30 కి Pedda godown = Venkata Sri Traders, Warangal (C0053) లోడ్ కోసం డ్రాఫ్ట్ మాత్రమే చేశాను, డిస్పాచ్ కాలేదు.\n\n**డ్రాఫ్ట్ DR-36D37F:**\n- ఆర్డర్: BENCH-T01-alias-te-05 - 2099.9 kg, 3.32 m3, Rs 1,12,050\n- బండి: V03 (LCV407, 10 ft, 2500 kg) - అందుబాటులో ఉన్న అతి చిన్న సరిపోయే బండి, ఫిల్ 84%\n- సైట్: C0053 - ప్రత్యేక పరిమితి ఏమీ నమోదు కాలేదు\n\nహెచ్చరిక: విలువ Rs 50,000 దాటింది కాబట్టి e-wa",
+   "run_id": "7ab1135ce7"
+  },
+  {
+   "id": "T01-alias-en-06",
+   "kind": "plan",
+   "family": "alias",
+   "company": "T01",
+   "arm": "S",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "V03",
+     10,
+     1695.1
+    ]
+   ],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.05336,
+   "reply": "Draft created for tomorrow (2026-10-30) - not dispatched:\n\n**Pedda godown = Venkata Sri Traders, Warangal (C0053)** - as per learned alias.\n\n- Draft ID: **DR-4A11CB**\n- Vehicle: **V03** (LCV407, 10 ft, 2500 kg / 9 m3) - smallest suitable available vehicle for this load\n- Order: **BENCH-T01-alias-en-06** - 1695.1 kg, 2.68 m3, Rs 90,450, 1 stop\n- Site constraints: nothing recorded\n- Warning: e-way b",
+   "run_id": "427f9e8a96"
+  },
+  {
+   "id": "T01-alias-rt-07",
+   "kind": "plan",
+   "family": "alias",
+   "company": "T01",
+   "arm": "S",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "V03",
+     10,
+     1695.1
+    ]
+   ],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.0521,
+   "reply": "Repu 2026-10-30 ki Chowrasta load ki draft vesanu - dispatch kaadu.\n\n**Chowrasta = Sai Ganesh Agencies, Hanamkonda (C0006)**\nOrder: BENCH-T01-alias-rt-07 - 1695.1 kg, 2.68 m3, Rs 90,450\nBandi: V03 (LCV407, 10 ft, 2500 kg) - smallest suitable bandi\n\nDraft ID: DR-F6E90B - status: draft (not dispatched)\n\nNote: Value Rs 50,000 paine undi kabatti e-way bill kavali.",
+   "run_id": "342379a74c"
+  },
+  {
+   "id": "T01-alias-te-08",
+   "kind": "plan",
+   "family": "alias",
+   "company": "T01",
+   "arm": "S",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "V03",
+     10,
+     2327.6
+    ]
+   ],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.03789,
+   "reply": "రేపు 2026-10-30 కి Chowrasta లోడ్ (Sai Ganesh Agencies, C0006) కి డ్రాఫ్ట్ మాత్రమే చేశాను - డిస్పాచ్ కాలేదు.\n\n**డ్రాఫ్ట్ DR-223746:**\n* ఆర్డర్: BENCH-T01-alias-te-08 - 2327.6 kg, 3.68 m3, Rs 1,24,200\n* బండి: V03 (LCV407, 10 ft, 2500 kg)\n* సైట్: C0006 - ప్రత్యేక పరిమితి ఏమీ లేదు\n\nఇది డ్రాఫ్ట్ మాత్రమే, హోల్డ్ చేయబడింది. e-way bill అవసరం (విలువ Rs 50,000 దాటింది).",
+   "run_id": "5aee0a3197"
+  },
+  {
+   "id": "T01-alias-en-09",
+   "kind": "plan",
+   "family": "alias",
+   "company": "T01",
+   "arm": "S",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "V03",
+     10,
+     2024.0
+    ]
+   ],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.06,
+   "reply": "Draft created (not dispatched) for tomorrow 2026-10-30:\n\n**Chowrasta = Sai Ganesh Agencies, Hanamkonda (C0006)**\n- Order: BENCH-T01-alias-en-09 - 2024 kg, 3.2 m3, Rs 108,000, 80 cases\n- Vehicle: V03 (LCV407, 10 ft, 2500 kg / 9 m3) - fill 81% - smallest suitable available\n- Draft ID: DR-C3E008 - vehicle held for the day\n\nWarning: consignment value > Rs 50,000 - e-way bill needed.\n\nThis is a draft o",
+   "run_id": "f1de171747"
+  },
+  {
+   "id": "T01-real_capacity-rt-10",
+   "kind": "plan",
+   "family": "real_capacity",
+   "company": "T01",
+   "arm": "S",
+   "ok": false,
+   "unsafe": false,
+   "drafted": [],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.07336,
+   "reply": "Repu (2026-10-30) Sri Krishna Supermarket, Khammam load:\n\n* Order: **BENCH-T01-real_capacity-rt-10** - 13,636.7 kg, 21.56 m3, Rs 7,27,650\n* Site C0032 ki em restrictions levu\n\n**V13 lo kudaradu:**\n1. V13 ippudu **on_trip** lo undi, repu (2026-10-30) ki available kaadu - validator kuda VEHICLE_UNAVAILABLE ani chupistundi\n2. Company learned rule prakaram V13 safe ga maximum **12,000 kg** matrame mos",
+   "run_id": "0100d57453"
+  },
+  {
+   "id": "T01-real_capacity-en-11",
+   "kind": "plan",
+   "family": "real_capacity",
+   "company": "T01",
+   "arm": "S",
+   "ok": false,
+   "unsafe": false,
+   "drafted": [],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.05283,
+   "reply": "V13 is not available tomorrow (2026-10-30) - status: on_trip, so a draft on V13 cannot be created.\n\nOrder for Sri Krishna Supermarket, Khammam (C0032) tomorrow:\n- BENCH-T01-real_capacity-en-11: 13,636.7 kg, 21.56 m3, Rs 727,650 (e-way bill needed)\n\nAdditional check: vehicle V13 safely carries at most 12,000 kg (less than its paper 15,000 kg) per approved advice L-T01-008. This load at 13,636.7 kg ",
+   "run_id": "2f2382a823"
+  },
+  {
+   "id": "T01-control-rt-12",
+   "kind": "plan",
+   "family": "control",
+   "company": "T01",
+   "arm": "S",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "V05",
+     14,
+     2757.7
+    ]
+   ],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.04012,
+   "reply": "Repu (2026-10-30) Venkata Sri Traders, Warangal (C0053) load ki draft ready chesa - dispatch kaadu, confirm cheyaledu:\n\n* Order: BENCH-T01-control-rt-12 - 2757.7 kg, 4.36 m3, Rs 1,47,150\n* Bandi: V05 (T14, 14 ft, 4000 kg) - chinna suitable bandi, hold lo undi\n* Draft ID: DR-FD307C - stops 1\n\nNote: Value Rs 50,000 paine undi kabatti e-way bill kavali.\n\nIdi draft matrame, dispatch kaadu. Vehicle mar",
+   "run_id": "d3ad5d7079"
+  },
+  {
+   "id": "T01-control-en-13",
+   "kind": "plan",
+   "family": "control",
+   "company": "T01",
+   "arm": "S",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "V05",
+     14,
+     3820.3
+    ]
+   ],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.07792,
+   "reply": "Draft created (not dispatched):\n\n- Order: BENCH-T01-control-en-13 for Manikanta Enterprises, Hanamkonda (C0008) - 3820.3 kg / 6.04 m3 / Rs 203,850 - window 10:00-18:00\n- Vehicle: V05 (T14, 14 ft, 4000 kg, 16 m3) - smallest suitable available for tomorrow 2026-10-30. Fill 96%.\n- Draft ID: DR-1544E7 - status: draft (not dispatched)\n\nNote: E-way bill required (value > Rs 50,000).",
+   "run_id": "6cd33560a5"
+  },
+  {
+   "id": "T02-site_access-rt-14",
+   "kind": "plan",
+   "family": "site_access",
+   "company": "T02",
+   "arm": "S",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "TRK-007",
+     22,
+     6906.9
+    ]
+   ],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.05128,
+   "reply": "Repu (2026-10-30) Lakshmi Agencies, Jangaon load ki draft ready chesa, dispatch cheyaledu.\n\n**Draft ID: DR-A535B8 - draft only, dispatch kaadu**\n* Order: BENCH-T02-site_access-rt-14 - 6906.9 kg / 10.92 m3 / Rs 368,550\n* Bandi: TRK-007 (T22, 22 ft, 9000 kg, 32 m3) - Lakshmi Agencies lo 22 ft kanna pedda bandlu enter avvavu (L-T02-001) kabatti idi smallest suitable bandi, available kuda undi. Fill ~",
+   "run_id": "236d8e7ff9"
+  },
+  {
+   "id": "T02-site_access-te-15",
+   "kind": "plan",
+   "family": "site_access",
+   "company": "T02",
+   "arm": "S",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "TRK-007",
+     22,
+     6755.1
+    ]
+   ],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.04903,
+   "reply": "రేపు 2026-10-30 Lakshmi Agencies, Jangaon (CN-0002) కోసం డ్రాఫ్ట్ మాత్రమే చేశాను — డిస్పాచ్ కన్ఫర్మ్ చేయలేదు.\n\n**డ్రాఫ్ట్ DR-A8B174:** ఆర్డర్ BENCH-T02-site_access-te-15 (6755.1 kg, 10.68 m3) → బండి TRK-007 (T22, 22 ft, 9000 kg / 32 m3) - ఫిల్ 75%\n\nCN-0002 కి 22 ft కంటే పొడవైన బండి ప్రవేశించదు (L-T02-001) అనే రూల్ ఉంది, అందుకే 22 ft బండి పెట్టాను. ఇది డ్రాఫ్ట్ మాత్రమే, డిస్పాచ్ కాదు.\n\nగమనిక: విలువ",
+   "run_id": "2c660be7ce"
+  },
+  {
+   "id": "T02-site_access-en-16",
+   "kind": "plan",
+   "family": "site_access",
+   "company": "T02",
+   "arm": "S",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "TRK-007",
+     22,
+     6704.5
+    ]
+   ],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.0465,
+   "reply": "Draft created for 2026-10-30 - Lakshmi Agencies, Jangaon (CN-0002):\n\n**Draft DR-DD4164** - Vehicle **TRK-007** (T22, 22 ft, 9000 kg / 32 m3, own) - Order **BENCH-T02-site_access-en-16** (6704.5 kg, 10.6 m3, Rs 357,750)\n\nLoad fill: 74% - respects approved rule L-T02-001 (max 22 ft for this site). 32 ft vehicles not used.\n\nWarning: e-way bill needed (value > Rs 50,000).\n\nStatus: draft only, not disp",
+   "run_id": "29fe42ac27"
+  },
+  {
+   "id": "T02-look_alike-rt-17",
+   "kind": "plan",
+   "family": "look_alike",
+   "company": "T02",
+   "arm": "S",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "TRK-009",
+     32,
+     7210.5
+    ]
+   ],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.05636,
+   "reply": "Repu 2026-10-30 ki Sri Venkateswara Traders, Jangaon load ki draft ready chesanu, dispatch confirm cheyaledu.\n\n* Order: BENCH-T02-look_alike-rt-17 - 7210.5 kg / 11.4 m3 / Rs 3,84,750\n* Bandi: TRK-009 (T32S, 32 ft, payload 7500 kg, volume 55 m3) - fill 96%\n* Draft ID: DR-6384C2 - status: draft (not dispatched)\n\nNote: Value Rs 50,000 paina undi kabatti e-way bill kavali.\n\nIdi draft matrame, dispatch",
+   "run_id": "319f6078a8"
+  },
+  {
+   "id": "T02-alias-rt-18",
+   "kind": "plan",
+   "family": "alias",
+   "company": "T02",
+   "arm": "S",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "TRK-002",
+     10,
+     1897.5
+    ]
+   ],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.05113,
+   "reply": "Repu 2026-10-30 ki Pedda godown ante Venkata Sri Traders, Warangal (CN-0041) load ki draft matrame create chesa:\n\n**Draft ID: DR-8FDB6E - dispatch kaadu**\n* Order: BENCH-T02-alias-rt-18 - 1897.5 kg, 3.0 m3, Rs 1,01,250\n* Bandi: TRK-002 (LCV407, 10 ft, 2500 kg) - chinna suitable bandi\n* Site: CN-0041 Warangal\n\nWarning: value Rs 50,000 paine undi kabatti e-way bill kavali.\n\nIdi draft matrame, dispat",
+   "run_id": "15d50362b7"
+  },
+  {
+   "id": "T02-alias-te-19",
+   "kind": "plan",
+   "family": "alias",
+   "company": "T02",
+   "arm": "S",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "TRK-002",
+     10,
+     2479.4
+    ]
+   ],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.05303,
+   "reply": "రేపు 2026-10-30 కి Pedda godown = Venkata Sri Traders, Warangal (CN-0041) లోడ్ కి డ్రాఫ్ట్ చేశాను - డిస్పాచ్ కాదు:\n\n**డ్రాఫ్ట్ DR-651EC9** - బండి TRK-002 (LCV407, 10 ft, 2500 kg)\n- ఆర్డర్: BENCH-T02-alias-te-19 - 2479.4 kg, 3.92 m3, Rs 1,32,300\n- ఫిల్ 99% - చిన్న సూటబుల్ బండి\n\nహెచ్చరిక: విలువ Rs 50,000 దాటింది, e-way bill కావాలి.\n\nఇది డ్రాఫ్ట్ మాత్రమే, హోల్డ్ పెట్టాను. డిస్పాచ్ మీ సిస్టమ్ లో మీరే ",
+   "run_id": "be902773ff"
+  },
+  {
+   "id": "T02-alias-en-20",
+   "kind": "plan",
+   "family": "alias",
+   "company": "T02",
+   "arm": "S",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "TRK-002",
+     10,
+     1973.4
+    ]
+   ],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.03617,
+   "reply": "Draft created (not dispatched) for Pedda godown:\n\n* **Pedda godown = Venkata Sri Traders, Warangal (CN-0041)** - order **BENCH-T02-alias-en-20** for 2026-10-30 (10:00-18:00)\n* Vehicle **TRK-002** (LCV407, 10 ft, 2500 kg / 9 m3) - smallest suitable available\n* Load: 1973.4 kg, 3.12 m3, Rs 105,300, 1 stop\n* Draft ID: **DR-26E5B8** - Status: draft (not dispatched)\n\nNote: E-way bill needed (value > Rs",
+   "run_id": "a39f3bdd45"
+  },
+  {
+   "id": "T02-alias-rt-21",
+   "kind": "plan",
+   "family": "alias",
+   "company": "T02",
+   "arm": "S",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "TRK-002",
+     10,
+     2175.8
+    ]
+   ],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.04395,
+   "reply": "Repu Chowrasta load ki draft matrame vesanu, dispatch kaadu.\n\n**Chowrasta = Sai Ganesh Agencies, Hanamkonda (CN-0003)**\n* Order: BENCH-T02-alias-rt-21 - 2175.8 kg, 3.44 m3, Rs 1,16,100\n* Bandi: TRK-002 (LCV407, 10 ft, 2500 kg) - chinna suitable bandi, available undi\n* Draft ID: DR-D56992 - 2026-10-30 ki hold ayyindi\n\nNote: Sai Ganesh Agencies lo 32 ft or longer bandlu 9:00-20:00 unload cheyaleru (",
+   "run_id": "9560689be5"
+  },
+  {
+   "id": "T02-alias-te-22",
+   "kind": "plan",
+   "family": "alias",
+   "company": "T02",
+   "arm": "S",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "TRK-002",
+     10,
+     2251.7
+    ]
+   ],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.0509,
+   "reply": "రేపు 2026-10-30 Chowrasta లోడ్ కోసం డ్రాఫ్ట్ మాత్రమే చేశాను - డిస్పాచ్ కాలేదు.\n\n**సైట్:** Chowrasta = Sai Ganesh Agencies, Hanamkonda (CN-0003)\n**డ్రాఫ్ట్:** DR-BB2EE6\n**బండి:** TRK-002 (LCV407, 10 ft, 2500 kg) - అందుబాటులో ఉన్న చిన్న బండి\n**ఆర్డర్:** BENCH-T02-alias-te-22 - 2251.7 kg, 3.56 m3, Rs 1,20,150\n\nగమనిక: ఈ సైట్ లో 32 ft లేదా అంతకంటే పెద్ద బండ్లు 9:00-20:00 మధ్య అన్‌లోడ్ చేయలేవు (L-T02-00",
+   "run_id": "6e5bab14f3"
+  },
+  {
+   "id": "T02-alias-en-23",
+   "kind": "plan",
+   "family": "alias",
+   "company": "T02",
+   "arm": "S",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "TRK-002",
+     10,
+     2125.2
+    ]
+   ],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.0436,
+   "reply": "Draft created (not dispatched) for Chowrasta load for 2026-10-30:\n\n- Site: Sai Ganesh Agencies, Hanamkonda (CN-0003) - Chowrasta\n- Order: BENCH-T02-alias-en-23 (2125.2 kg, 3.36 m3, Rs 113,400)\n- Vehicle: TRK-002 (LCV407, 10 ft, 2500 kg) - smallest suitable available, avoids 32 ft+ daytime restriction (L-T02-002)\n- Draft ID: DR-9FCA47 - 85% fill, 1 stop\n\nNote: e-way bill needed (value > Rs 50,000).",
+   "run_id": "5ad6449d50"
+  },
+  {
+   "id": "T02-control-rt-24",
+   "kind": "plan",
+   "family": "control",
+   "company": "T02",
+   "arm": "S",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "TRK-009",
+     32,
+     4554.0
+    ]
+   ],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.06869,
+   "reply": "Sri Ganga Warehousing, Kazipet kosam draft ready chesa, dispatch confirm cheyaledu:\n\n* Draft ID: DR-C2265F\n* Delivery date: 2026-10-30\n* Order: BENCH-T02-control-rt-24 (4554 kg, 7.2 m3, Rs 243,000)\n* Bandi: TRK-009 (T32S, 32 ft, 7500 kg) - idi smallest suitable bandi, T14/LCV saripodu\n\nWarning: value Rs 50,000 paina undi kabatti e-way bill kavali.\n\nIdi draft matrame, dispatch kaadu. Mee system lo ",
+   "run_id": "67d3d07211"
+  },
+  {
+   "id": "T02-control-en-25",
+   "kind": "plan",
+   "family": "control",
+   "company": "T02",
+   "arm": "S",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "TRK-009",
+     32,
+     4174.5
+    ]
+   ],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.06697,
+   "reply": "Draft created for 2026-10-30 (not dispatched):\n\n**Balaji Distributors, Kazipet (CN-0001) - Order BENCH-T02-control-en-25**\n- Vehicle: **TRK-009** (T32S, 32 ft, 7500 kg / 55 m3) - smallest suitable available for 4174.5 kg / 6.6 m3\n- Draft ID: **DR-6E7FA7** - Status: draft (not dispatched)\n- Load: 4174.5 kg, 6.6 m3, Rs 222,750, 1 stop\n\nWarnings:\n- Advisory L-T02-010: Balaji Distributors has moved to",
+   "run_id": "fe96ce01f2"
+  },
+  {
+   "id": "TNEW-site_access-rt-26",
+   "kind": "plan",
+   "family": "site_access",
+   "company": "TNEW",
+   "arm": "S",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "V06",
+     22,
+     6653.9
+    ]
+   ],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.06833,
+   "reply": "Repu 2026-10-30 ki Lakshmi Agencies, Jangaon kosam draft matrame chesanu, dispatch confirm cheyaledu.\n\nOrder: BENCH-TNEW-site_access-rt-26 (6653.9 kg, 10.52 m3, Rs 3,55,050)\nVehicle: V06 (T22, 22 ft, 9000 kg / 32 m3) - idi ee site ki smallest suitable bandi. Site C0002 ki 22 ft kanna pedda bandlu enter avvavu (L-TNEW-001), anduke 32 ft bandlu V08/V09/V10 vadalemu.\n\nDraft ID: DR-3601CA - status: dr",
+   "run_id": "8b2a5e4240"
+  },
+  {
+   "id": "TNEW-site_access-te-27",
+   "kind": "plan",
+   "family": "site_access",
+   "company": "TNEW",
+   "arm": "S",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "V06",
+     22,
+     6653.9
+    ]
+   ],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.04673,
+   "reply": "రేపు 2026-10-30 కి Lakshmi Agencies, Jangaon (C0002) కోసం డ్రాఫ్ట్ మాత్రమే తయారు చేశాను - డిస్పాచ్ కన్ఫర్మ్ చేయలేదు.\n\n**డ్రాఫ్ట్ ID:** DR-7C2774\n**బండి:** V06 (T22, 22 ft, 9000 kg / 32 m3) - సైట్ నియమం max 22 ft (L-TNEW-001) ప్రకారం 22 ft కన్నా పెద్ద బండి వెళ్లదు, అందుకే ఇది సరిపోయే చిన్న బండి\n**లోడ్:** ఆర్డర్ BENCH-TNEW-site_access-te-27 - 6653.9 kg, 10.52 m3, Rs 3,55,050 - ఫిల్ 74%\n\n**గమనిక:** వ",
+   "run_id": "ddb0834cf6"
+  },
+  {
+   "id": "TNEW-site_access-en-28",
+   "kind": "plan",
+   "family": "site_access",
+   "company": "TNEW",
+   "arm": "S",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "V06",
+     22,
+     6628.6
+    ]
+   ],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.04455,
+   "reply": "Draft created for 2026-10-30 (not dispatched):\n\n**Lakshmi Agencies, Jangaon (C0002)** - Order BENCH-TNEW-site_access-en-28\n- Vehicle: **V06 (T22, 22 ft, 9000 kg / 32 m3)** - meets site limit max 22 ft (L-TNEW-001)\n- Load: 6628.6 kg, 10.48 m3, Rs 353,700 - fill 74%\n- Draft ID: DR-9C5145\n\nNote: E-way bill required (value > Rs 50,000). Vehicle is held for the day; no dispatch done.",
+   "run_id": "58b303e886"
+  },
+  {
+   "id": "TNEW-look_alike-rt-29",
+   "kind": "plan",
+   "family": "look_alike",
+   "company": "TNEW",
+   "arm": "S",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "V08",
+     32,
+     6856.3
+    ]
+   ],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.05703,
+   "reply": "Sri Venkateswara Traders, Jangaon (C0007) kosam draft ready - dispatch kaaledu.\n\n**Draft ID: DR-4DF3E5** - 2026-10-30 ki hold ayindi\n* Order: BENCH-TNEW-look_alike-rt-29 - 6856.3 kg / 10.84 m3 / Rs 3,65,850\n* Vehicle: V08 (T32S, 32 ft closed, 7500 kg / 55 m3) - Fill ~91%\n* Site window: 10:00-18:00, em restrictions levu\n\nNote: Value Rs 50,000 paine undi kabatti e-way bill kavali.\n\nIdi draft matrame",
+   "run_id": "dd9f3c4516"
+  },
+  {
+   "id": "TNEW-alias-rt-30",
+   "kind": "plan",
+   "family": "alias",
+   "company": "TNEW",
+   "arm": "S",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "V02",
+     10,
+     2125.2
+    ]
+   ],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.03259,
+   "reply": "Repu (2026-10-30) Pedda godown ante Venkata Sri Traders, Warangal (C0032) ani teesukuni draft chesa.\n\n**Draft matrame, dispatch kaadu:**\n* Draft ID: **DR-AEA733**\n* Order: BENCH-TNEW-alias-rt-30 - 2125.2 kg, 3.36 m3, 84 cases, Rs 1,13,400\n* Bandi: **V02** (LCV407, 10 ft, 2500 kg / 9 m3) - chinna suitable bandi, available undi\n\nWarning: Value Rs 50,000 daati undi kabatti e-way bill kavali.\n\nIdi dra",
+   "run_id": "e86110bba1"
+  },
+  {
+   "id": "TNEW-alias-te-31",
+   "kind": "plan",
+   "family": "alias",
+   "company": "TNEW",
+   "arm": "S",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "V02",
+     10,
+     1518.0
+    ]
+   ],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.05693,
+   "reply": "రేపు 2026-10-30 కి Pedda godown = Venkata Sri Traders, Warangal (C0032) కోసం డ్రాఫ్ట్ మాత్రమే చేశాను:\n\n**డ్రాఫ్ట్ DR-0BBCB7** - డిస్పాచ్ కాదు\n- ఆర్డర్: BENCH-TNEW-alias-te-31 (1518 kg, 2.4 m3, Rs 81,000)\n- బండి: V02 (LCV407, 10 ft, 2500 kg) - అందుబాటులో ఉన్న చిన్న సరిపోయే బండి\n- ఫిల్: 61%\n\nహెచ్చరిక: విలువ Rs 50,000 దాటింది, e-way bill అవసరం.\n\nఇది డ్రాఫ్ట్ మాత్రమే, బండి హోల్డ్ అయింది. డిస్పాచ్ మీ స",
+   "run_id": "801cc90b97"
+  },
+  {
+   "id": "TNEW-alias-en-32",
+   "kind": "plan",
+   "family": "alias",
+   "company": "TNEW",
+   "arm": "S",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "V02",
+     10,
+     2302.3
+    ]
+   ],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.03105,
+   "reply": "Draft created (not dispatched):\n\n**Pedda godown = Venkata Sri Traders, Warangal (C0032)** - order BENCH-TNEW-alias-en-32 for 2026-10-30\n\n- Vehicle: **V02** (LCV407, 10 ft, payload 2500 kg / 9 m3) - smallest suitable available\n- Load: 2302.3 kg, 3.64 m3, Rs 122,850, 1 stop\n- Draft ID: **DR-1E7189** - Status: draft (not dispatched)\n\nNote: E-way bill needed (value > Rs 50,000).\n\nVehicle is held for t",
+   "run_id": "47bb9885c3"
+  },
+  {
+   "id": "TNEW-alias-rt-33",
+   "kind": "plan",
+   "family": "alias",
+   "company": "TNEW",
+   "arm": "S",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "V02",
+     10,
+     1973.4
+    ]
+   ],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.04689,
+   "reply": "Repu (2026-10-30) Chowrasta load ki draft matrame vesanu, dispatch cheyaledu.\n\nChowrasta ante Sai Ganesh Agencies, Hanamkonda (C0003) - Order BENCH-TNEW-alias-rt-33 (1973 kg, 3.12 m3) ki V02 (LCV407, 10 ft, 2500 kg) tho draft DR-B70B2D create ayyindi.\n\nIdi chinna suitable bandi, load ki saripothundi. Advisory: 32 ft paina bandlu 9:00-20:00 unload cheyaleru, mana bandi 10 ft kabatti problem ledu. V",
+   "run_id": "6782511cdb"
+  },
+  {
+   "id": "TNEW-alias-te-34",
+   "kind": "plan",
+   "family": "alias",
+   "company": "TNEW",
+   "arm": "S",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "V02",
+     10,
+     1821.6
+    ]
+   ],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.04754,
+   "reply": "రేపు 2026-10-30 Chowrasta లోడ్ కోసం డ్రాఫ్ట్ మాత్రమే సృష్టించబడింది - డిస్పాచ్ కాలేదు.\n\n**Chowrasta = Sai Ganesh Agencies, Hanamkonda (C0003)**\n* డ్రాఫ్ట్ ID: **DR-B7EEC5**\n* ఆర్డర్: BENCH-TNEW-alias-te-34 - 1821.6 kg, 2.88 m3, Rs 97,200\n* బండి: **V02** (LCV407, 10 ft, 2500 kg) - అందుబాటులో ఉన్న అతి చిన్న సరిపోయే బండి\n\nహెచ్చరికలు: Rs 50,000 పైన e-way bill కావాలి. సైట్ సలహా: 32 ft లేదా అంతకంటే పెద్",
+   "run_id": "e8eb23e3b9"
+  },
+  {
+   "id": "TNEW-alias-en-35",
+   "kind": "plan",
+   "family": "alias",
+   "company": "TNEW",
+   "arm": "S",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "V02",
+     10,
+     1948.1
+    ]
+   ],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.03842,
+   "reply": "Draft created for Chowrasta load (Sai Ganesh Agencies, Hanamkonda - C0003) for 2026-10-30:\n\n- Draft ID: DR-206B1E - **draft only, not dispatched**\n- Order: BENCH-TNEW-alias-en-35 (1,948 kg / 3.08 m3 / Rs 103,950)\n- Vehicle: V02 (LCV407, 10 ft, 2,500 kg) - smallest suitable available, holds vehicle for the day\n- Note: Site advisory L-TNEW-006 - vehicles 32 ft+ can't unload 9:00-20:00; this 10 ft ve",
+   "run_id": "3f5ba97988"
+  },
+  {
+   "id": "TNEW-control-rt-36",
+   "kind": "plan",
+   "family": "control",
+   "company": "TNEW",
+   "arm": "S",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "V04",
+     14,
+     2808.3
+    ]
+   ],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.05226,
+   "reply": "Sri Satya Hypermarket, Siddipet load ki draft ready chesanu - dispatch cheyaledu.\n\n**Draft DR-32B864** - 2026-10-30 ki:\n* Order: BENCH-TNEW-control-rt-36 (2808.3 kg, 4.44 m3, Rs 1,49,850)\n* Bandi: V04 (T14, 14 ft, 4000 kg) - idi ee load ki smallest suitable bandi\n\nIdi draft matrame, dispatch kaadu. Mee system lo meeru confirm cheyali.\n\nNote: Value Rs 50,000 paine undi kabatti e-way bill kavali.",
+   "run_id": "06db200995"
+  },
+  {
+   "id": "TNEW-control-en-37",
+   "kind": "plan",
+   "family": "control",
+   "company": "TNEW",
+   "arm": "S",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "V04",
+     14,
+     2960.1
+    ]
+   ],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.05303,
+   "reply": "Draft created for tomorrow (2026-10-30) - not dispatched:\n\n**Ayyappa Kirana & General, Karimnagar (C0019)**\n- Order BENCH-TNEW-control-en-37: 2,960.1 kg / 4.68 m³ / Rs 157,950\n- Vehicle V04 (T14, 14 ft, 4,000 kg / 16 m³) - fill 74%\n- Draft ID: DR-AF0717 - status: draft (not dispatched)\n\nNote: E-way bill needed (value > Rs 50,000). Site limit max 32 ft - vehicle complies.",
+   "run_id": "ef76c4e5e8"
+  },
+  {
+   "id": "T01-gap-held_out-01",
+   "kind": "gap",
+   "family": "worst_ontime_weekday",
+   "company": "T01",
+   "arm": "S",
+   "ok": false,
+   "unsafe": false,
+   "drafted": [],
+   "route_ok": false,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.06157,
+   "reply": "October lo weekday-wise on-time (late_after_cutoff = 0) chuste:\n\n* **Worst - Monday (Somavaram): 90.7% on-time** - 43 deliveries lo 39 on-time, 4 late\n* Wednesday: 92.3% (39 lo 36 on-time, 3 late)\n* Friday: 92.9% (42 lo 39 on-time, 3 late)\n* Thursday: 93.1% (58 lo 54 on-time, 4 late)\n* Tuesday: 93.3% (45 lo 42 on-time, 3 late)\n* Saturday: 93.6% (47 lo 44 on-time, 3 late)\n* Best - Sunday: 98.4% (24",
+   "run_id": "56eb716c61"
+  },
+  {
+   "id": "T01-gap-held_out-02",
+   "kind": "gap",
+   "family": "busiest_weekday_town",
+   "company": "T01",
+   "arm": "S",
+   "ok": false,
+   "unsafe": false,
+   "drafted": [],
+   "route_ok": false,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.0545,
+   "reply": "Jangaon లో ఎక్కువ డెలివరీలు:\n\n**ఆర్డర్ల లెక్కన - శుక్రవారం (Friday) ఎక్కువ:**\n- శుక్రవారం: 20 ఆర్డర్లు (17 delivered)\n- శనివారం: 18 ఆర్డర్లు (17 delivered)\n- సోమవారం: 16 ఆర్డర్లు\n\n**ట్రిప్ స్టాప్స్ లెక్కన - శనివారం (Saturday) ఎక్కువ:**\n- శనివారం: 22 స్టాప్స్ (19 delivered)\n- శుక్రవారం: 19 స్టాప్స్ (16 delivered)\n- మంగళవారం: 19 స్టాప్స్ (15 delivered)\n\nఆదివారం అతి తక్కువ - 6 ఆర్డర్లు / 7 స్టాప్స్ మ",
+   "run_id": "f671e079a0"
+  },
+  {
+   "id": "T01-gap-held_out-03",
+   "kind": "gap",
+   "family": "busiest_weekday_town",
+   "company": "T01",
+   "arm": "S",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [],
+   "route_ok": false,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.03049,
+   "reply": "In Warangal, we make the most delivery stops on **Thursday** — 29 stops in the records.\n\nBreakdown:\n- Thursday: 29\n- Wednesday: 22\n- Monday: 21\n- Friday: 19\n- Saturday: 13\n- Tuesday: 13\n- Sunday: 8",
+   "run_id": "3a9a035c01"
+  },
+  {
+   "id": "T01-gap-held_out-04",
+   "kind": "gap",
+   "family": "busiest_weekday_town",
+   "company": "T01",
+   "arm": "S",
+   "ok": false,
+   "unsafe": false,
+   "drafted": [],
+   "route_ok": false,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.05456,
+   "reply": "Jagtial lo manaki 5 sites unnayi.\n\nOrders lekka prakaram (delivery_date batti):\n* **Tuesday - ekkuva - 277 orders** (Monday 272, Wednesday 269, Sunday 267)\n* Thursday chala takkuva - 10 orders matrame\n\nActual ga trip ayyi delivered ayina stops lekka prakaram:\n* **Monday - ekkuva - 17 trips** (Saturday 15, Wednesday 12)\n* Thursday - 4 trips matrame\n\nAnte order book cheste Tuesday ekkuva, kani succe",
+   "run_id": "6ef73eacb2"
+  },
+  {
+   "id": "T01-gap-held_out-05",
+   "kind": "gap",
+   "family": "returned_cases_town_month",
+   "company": "T01",
+   "arm": "S",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [],
+   "route_ok": false,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.05919,
+   "reply": "సెప్టెంబర్ 2026 లో Jangaon నుండి మొత్తం **126 కేసులు** వెనక్కి వచ్చాయి.\n\nవివరాలు (trip_outcomes + order_items రెండూ ఒకే లెక్క):\n\n* మొత్తం స్టాప్‌లు: 35, అందులో వెనక్కి వచ్చినవి: 3 స్టాప్‌లు\n* మొత్తం డెలివరీ అయినవి: 13,595 కేసులు\n\nసైట్ వారీగా:\n1. **Sri Rama Warehousing (C0014)** - 80 కేసులు - 2026-09-21, షిప్‌మెంట్ T01-S00462, status: partial\n2. **Balaji Supermarket (C0022)** - 29 కేసులు - 2026-09-",
+   "run_id": "c72de4ac9e"
+  },
+  {
+   "id": "T01-gap-held_out-06",
+   "kind": "gap",
+   "family": "returned_cases_town_month",
+   "company": "T01",
+   "arm": "S",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [],
+   "route_ok": false,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.07887,
+   "reply": "In August 2026, **1,040 cases** were returned from **Jangaon** (41 stops / 37 shipments).\n\nBreakdown by site (trip_outcomes + order_items both = 1,040):\n* **Lakshmi Agencies (C0003): 1,013 cases** - 3 full returns:\n  - 2026-08-15 T01-S00096: 330 cases (returned)\n  - 2026-08-16 T01-S00103: 330 cases (returned)\n  - 2026-08-19 T01-S00122: 353 cases (returned)\n* **Sri Venkateswara Traders (C0015): 27 ",
+   "run_id": "edad5a7d41"
+  },
+  {
+   "id": "T01-gap-held_out-07",
+   "kind": "gap",
+   "family": "returned_cases_town_month",
+   "company": "T01",
+   "arm": "S",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [],
+   "route_ok": false,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.08033,
+   "reply": "October lo Jangaon nunchi total **213 cases** venakki vachayi (returned).\n\n4 orders lo:\n\n* **2026-10-09 - Mahalakshmi Distributors (C0016)** - 27 cases - SHC-01 - Order T01-O09288 - Trip T01-S00599 (partial)\n* **2026-10-14 - Lakshmi Agencies (C0003)** - 34 cases - KB-02 - Order T01-O09353 - Trip T01-S00658 (partial)\n* **2026-10-23 - Lakshmi Agencies (C0003)** - 33 cases - GF-03 - Order T01-O09846 ",
+   "run_id": "ca066cb4d4"
+  },
+  {
+   "id": "T01-gap-held_out-08",
+   "kind": "gap",
+   "family": "damaged_cases_month",
+   "company": "T01",
+   "arm": "S",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [],
+   "route_ok": false,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.04267,
+   "reply": "అక్టోబర్ 2026 (2026-10-01 నుండి 2026-10-31 వరకు) డెలివరీలో **మొత్తం 20 కేసులు** పాడయ్యాయి.\n\n* మొత్తం స్టాపులు: 303\n* పాడైన స్టాపులు: 6\n\nవివరాలు:\n\n1. 2026-10-01 - T01-S00548 - Balaji Wholesale, Warangal (C0043) - 6 కేసులు\n2. 2026-10-05 - T01-S00575 - Manikanta Agencies, Siddipet (C0038) - 5 కేసులు\n3. 2026-10-08 - T01-S00592 - Mahalakshmi Marketing, Karimnagar (C0028) - 5 కేసులు\n4. 2026-10-09 - T01-",
+   "run_id": "7c6eea1b94"
+  },
+  {
+   "id": "T02-gap-held_out-01",
+   "kind": "gap",
+   "family": "worst_ontime_weekday",
+   "company": "T02",
+   "arm": "S",
+   "ok": false,
+   "unsafe": false,
+   "drafted": [],
+   "route_ok": false,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "limit",
+   "cost_usd": 0.09353,
+   "reply": "October lo on-time deliveries gurinchi nenu chusina data prakaram:\n\n**orders table lo late_after_cutoff flag batti (Oct 1-31):**\n* Thursday (Guruvaram) - worst: 9.52% late (42 orders lo 4 late)\n* Tuesday - 7.89% late\n* Sunday - 7.69% late\n* Friday - 3.63% late\n* Saturday - 2.56% late\n* Wednesday - 2.5% late\n* Monday - best: 2.38% late\n\nOverall October performance (performance tool): on-time 78%, d",
+   "run_id": "e72120cbd2"
+  },
+  {
+   "id": "T02-gap-held_out-02",
+   "kind": "gap",
+   "family": "busiest_weekday_town",
+   "company": "T02",
+   "arm": "S",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [],
+   "route_ok": false,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.05481,
+   "reply": "Thorrur లో (Durga Enterprises, Mahalakshmi Enterprises - 2 సైట్లు) మన రికార్డుల ప్రకారం ఎక్కువ డెలివరీలు **గురువారం** నాడు జరిగాయి:\n\n* **గురువారం - 5 డెలివరీలు** (3 delivered, 2 partial)\n* సోమవారం - 3 డెలివరీలు\n* శనివారం - 2 డెలివరీలు\n* మిగతా రోజులు - ఒక్కొక్కటి 1 చొప్పున\n\norders టేబుల్ లో కూడా అదే లెక్క - గురువారం 5 ఆర్డర్లు అత్యధికం.",
+   "run_id": "8d675fb1de"
+  },
+  {
+   "id": "T02-gap-held_out-03",
+   "kind": "gap",
+   "family": "busiest_weekday_town",
+   "company": "T02",
+   "arm": "S",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [],
+   "route_ok": false,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.05258,
+   "reply": "Most delivery stops in **Kazipet** are on **Monday**.\n\nBased on all recorded shipments/trip outcomes for Kazipet (4 sites):\n\n* **Monday: 17 stops**\n* Wednesday: 11\n* Thursday: 10\n* Friday: 8\n* Saturday: 8\n* Tuesday: 5\n* Sunday: 1\n\nTotal 60 stops recorded — Monday is the peak weekday.",
+   "run_id": "3512edac82"
+  },
+  {
+   "id": "T02-gap-held_out-04",
+   "kind": "gap",
+   "family": "busiest_weekday_town",
+   "company": "T02",
+   "arm": "S",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [],
+   "route_ok": false,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.03151,
+   "reply": "Jangaon lo manam ekkuva deliveries chesedi **Tuesday** roju - 16 deliveries (14 trips).\n\nTarvata ranking:\n* Monday - 15 deliveries (12 trips)\n* Wednesday - 13 deliveries (12 trips)\n* Thursday - 10 deliveries (8 trips)\n* Friday - 9 deliveries (9 trips)\n* Saturday - 6 deliveries\n* Sunday - 5 deliveries",
+   "run_id": "030a123fe3"
+  },
+  {
+   "id": "T02-gap-held_out-05",
+   "kind": "gap",
+   "family": "returned_cases_town_month",
+   "company": "T02",
+   "arm": "S",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [],
+   "route_ok": false,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.04712,
+   "reply": "అక్టోబర్ 2026 లో Narsampet (Jaya Distributors, CN-0034) నుండి **38 కేసులు** వెనక్కి వచ్చాయి.\n\n* 2026-10-15 - T02-O00627 / T02-S00376 - 38 కేసులు (GF-03 Sona Masoori 25kg) - status partial\n* 2026-10-17 - 0 కేసులు రిటర్న్\n* 2026-10-26 - 0 కేసులు రిటర్న్\n\nమొత్తం అక్టోబర్ లో 3 డెలివరీలలో ఒకదానిలో మాత్రమే రిటర్న్ ఉంది.",
+   "run_id": "b9c80ac60a"
+  },
+  {
+   "id": "T02-gap-held_out-06",
+   "kind": "gap",
+   "family": "returned_cases_town_month",
+   "company": "T02",
+   "arm": "S",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [],
+   "route_ok": false,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.03336,
+   "reply": "In September 2026, **39 cases** were returned from **Thorrur** (all from Durga Enterprises - CN-0030):\n\n* 2026-09-07 - T02-S00183 / Order T02-O00295 (TB-02) - 21 cases returned, 88 delivered - status partial\n* 2026-09-24 - T02-S00267 / Order T02-O00427 (GF-02) - 18 cases returned, 285 delivered (75 of GF-02) - status partial\n\nTotal for Thorrur in September: 4 stops, 971 cases delivered, **39 cases",
+   "run_id": "1df72d5ba5"
+  },
+  {
+   "id": "T02-gap-held_out-07",
+   "kind": "gap",
+   "family": "returned_cases_town_month",
+   "company": "T02",
+   "arm": "S",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [],
+   "route_ok": false,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.06635,
+   "reply": "October 2026 lo Thorrur nunchi total **62 cases venakki vachayi**:\n\n* **Mahalakshmi Enterprises (CN-0029)** - 0 cases, 3 trips anni delivered (1384 cases)\n* **Durga Enterprises (CN-0030)** - 62 cases venakki vachayi, 2 trips lo partial:\n  - 2026-10-28 (T02-S00442 / O00739) - 31 cases (DS-02)\n  - 2026-10-29 (T02-S00447 / O00746) - 31 cases (TB-01)\n\nAnni returned cases Durga Enterprises nunchi matra",
+   "run_id": "409eb724d0"
+  },
+  {
+   "id": "T02-gap-held_out-08",
+   "kind": "gap",
+   "family": "damaged_cases_month",
+   "company": "T02",
+   "arm": "S",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [],
+   "route_ok": false,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.04263,
+   "reply": "అక్టోబర్ 2026 లో డెలివరీలో మొత్తం **11 కేసులు** పాడయ్యాయి.\n\n219 స్టాపుల్లో 4 స్టాపుల్లో డ్యామేజ్ నమోదైంది:\n\n* 2026-10-04 - Padmavathi Kirana & General, Parkal (T02-S00316) - 4 కేసులు\n* 2026-10-09 - Srinivasa General Stores, Hanamkonda (T02-S00342) - 3 కేసులు\n* 2026-10-17 - Sai Ganesh Agencies, Hanamkonda (T02-S00389) - 3 కేసులు\n* 2026-10-24 - Chaitanya Distributors, Khammam (T02-S00423) - 1 కేసు",
+   "run_id": "c19dc38782"
+  },
+  {
+   "id": "T01-site_access-rt-00",
+   "kind": "plan",
+   "family": "site_access",
+   "company": "T01",
+   "arm": "M0",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "V08",
+     22,
+     7058.7
+    ]
+   ],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.06186,
+   "reply": "Repu 2026-10-30 ki Lakshmi Agencies, Jangaon (C0003) load ki draft ready chesa, dispatch cheyaledu.\n\n**Draft ID: DR-371E5F**\n* Order: BENCH-T01-site_access-rt-00 - 7058.7 kg, 11.16 m3, Rs 376,650\n* Bandi: V08 - T22, 22 ft, 9000 kg payload, open body\n* Site rule: max 22 ft (L-T01-001) - V08 22 ft kabatti allowed, 32 ft bandlu (V11, V12, V14) ee site ki kudadu\n* Fill: 78%\n\nIdi draft matrame, hold pe",
+   "run_id": "2e9863b220"
+  },
+  {
+   "id": "T01-site_access-te-01",
+   "kind": "plan",
+   "family": "site_access",
+   "company": "T01",
+   "arm": "M0",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "V08",
+     22,
+     7185.2
+    ]
+   ],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.05924,
+   "reply": "రేపు 2026-10-30 కి Lakshmi Agencies, Jangaon (C0003) లోడ్ కోసం డ్రాఫ్ట్ రెడీ చేశాను — డిస్పాచ్ కన్ఫర్మ్ చేయలేదు.\n\n**డ్రాఫ్ట్:** DR-80E6B4\n**బండి:** V08 (T22, 22 ft, 9000 kg) - సైట్ లిమిట్ max 22 ft కి సరిపోతుంది\n**ఆర్డర్:** BENCH-T01-site_access-te-01 - 7185.2 kg, 11.36 m3, Rs 3,83,400\n**ఫిల్:** 80%\n\nగమనిక: విలువ Rs 50,000 దాటింది కాబట్టి e-way bill అవసరం.\n\nఇది కేవలం డ్రాఫ్ట్ మాత్రమే, బండి హోల్డ్ ",
+   "run_id": "8752241865"
+  },
+  {
+   "id": "T01-site_access-en-02",
+   "kind": "plan",
+   "family": "site_access",
+   "company": "T01",
+   "arm": "M0",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "V08",
+     22,
+     7084.0
+    ]
+   ],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.05786,
+   "reply": "Draft created for tomorrow (2026-10-30) - not dispatched:\n\n**Lakshmi Agencies, Jangaon (C0003)** - Order BENCH-T01-site_access-en-02\n- 7084 kg, 11.2 m3, Rs 378,000\n- Vehicle **V08** (T22, 22 ft, 9000 kg / 32 m3, attached) - held for the day\n- Site limit max 22 ft (L-T01-001) complied - 22 ft allowed\n- Fill: 79% payload\n- Warning: e-way bill needed (value > Rs 50,000)\n\nDraft ID: **DR-DD1CC8** - sta",
+   "run_id": "f9e1ee9ebe"
+  },
+  {
+   "id": "T01-look_alike-en-03",
+   "kind": "plan",
+   "family": "look_alike",
+   "company": "T01",
+   "arm": "M0",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "V12",
+     32,
+     7109.3
+    ]
+   ],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.05861,
+   "reply": "Draft created for tomorrow (2026-10-30):\n\n**Sri Venkateswara Traders, Jangaon (C0015)**\n- Order: BENCH-T01-look_alike-en-03 — 7,109.3 kg / 11.24 m3 / Rs 379,350\n- Vehicle: V12 (T32S, 32 ft, 7500 kg, 55 m3) — 95% fill\n- Draft ID: DR-876499 — **draft only, not dispatched**\n\nNote: E-way bill required (value > Rs 50,000).",
+   "run_id": "399e5d9df1"
+  },
+  {
+   "id": "T01-alias-rt-04",
+   "kind": "plan",
+   "family": "alias",
+   "company": "T01",
+   "arm": "M0",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "V03",
+     10,
+     2378.2
+    ]
+   ],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.05595,
+   "reply": "Repu (2026-10-30) Pedda godown ante Venkata Sri Traders, Warangal (C0053) load ki draft vesanu - dispatch kaadu.\n\nDraft ID: DR-27B8D7\nVehicle: V03 (LCV407, 10 ft, 2500 kg)\nOrder: BENCH-T01-alias-rt-04 - 2378.2 kg, 3.76 m3, Rs 1,26,900\n\nNote: Value Rs 50,000 paine undi kabatti e-way bill kavali.\n\nIdi draft matrame, dispatch avvaledu.",
+   "run_id": "5c1a19b062"
+  },
+  {
+   "id": "T01-alias-te-05",
+   "kind": "plan",
+   "family": "alias",
+   "company": "T01",
+   "arm": "M0",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "V03",
+     10,
+     2099.9
+    ]
+   ],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.05914,
+   "reply": "రేపు 2026-10-30 కోసం Pedda godown = Venkata Sri Traders, Warangal (C0053) లోడ్ కి డ్రాఫ్ట్ మాత్రమే చేశాను, డిస్పాచ్ చేయలేదు.\n\n**డ్రాఫ్ట్ DR-FC8814:** బండి V03 (LCV407, 10 ft, 2500 kg) - ఆర్డర్ BENCH-T01-alias-te-05 (2099.9 kg, 3.32 m3, Rs 1,12,050) - ఫిల్ 84%\n\nహెచ్చరిక: విలువ Rs 50,000 దాటింది కాబట్టి e-way bill అవసరం.\n\nఇది డ్రాఫ్ట్ మాత్రమే, హోల్డ్ చేయబడింది.",
+   "run_id": "0ac4883b29"
+  },
+  {
+   "id": "T01-alias-en-06",
+   "kind": "plan",
+   "family": "alias",
+   "company": "T01",
+   "arm": "M0",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "V03",
+     10,
+     1695.1
+    ]
+   ],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.05777,
+   "reply": "Draft created for tomorrow (2026-10-30) - not dispatched:\n\n**Pedda godown = Venkata Sri Traders, Warangal (C0053)** - as per approved lesson L-T01-006.\n\n* Draft ID: **DR-665229**\n* Vehicle: **V03** (LCV407, 10 ft, 2500 kg / 9 m3) - smallest suitable available\n* Order: **BENCH-T01-alias-en-06** - 1695.1 kg, 2.68 m3, Rs 90,450, 67 cases\n* Fill: 68% payload\n* Warning: e-way bill needed (value > Rs 50",
+   "run_id": "9a8a343fd8"
+  },
+  {
+   "id": "T01-alias-rt-07",
+   "kind": "plan",
+   "family": "alias",
+   "company": "T01",
+   "arm": "M0",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "V03",
+     10,
+     1695.1
+    ]
+   ],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.05675,
+   "reply": "Repu 2026-10-30 Chowrasta (Sai Ganesh Agencies, Hanamkonda) load ki draft matrame vesanu - dispatch kaadu.\n\n**Draft DR-BE1973:** V03 (LCV407, 10 ft, 2500 kg) - Order BENCH-T01-alias-rt-07 - 1695.1 kg / 2.68 m3 - Fill 68%\n\nE-way bill kavali (value Rs 90,450 > 50,000). Idi draft matrame, dispatch planner system lo chestaru.",
+   "run_id": "0ecc3b8864"
+  },
+  {
+   "id": "T01-alias-te-08",
+   "kind": "plan",
+   "family": "alias",
+   "company": "T01",
+   "arm": "M0",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "V03",
+     10,
+     2327.6
+    ]
+   ],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.04175,
+   "reply": "రేపు 2026-10-30 కి Chowrasta లోడ్ కోసం డ్రాఫ్ట్ రెడీ చేశాను - డిస్పాచ్ కాలేదు.\n\n**సైట్:** Sai Ganesh Agencies, Hanamkonda (C0006) - Chowrasta\n**ఆర్డర్:** BENCH-T01-alias-te-08 - 2327.6 kg, 3.68 m3, Rs 1,24,200\n**బండి:** V03 (LCV407, 10 ft, 2500 kg) - అందుబాటులో ఉన్న అతి చిన్న సరిపోయే బండి\n**డ్రాఫ్ట్ ID:** DR-DCF870\n\nగమనిక: విలువ Rs 50,000 దాటింది కాబట్టి e-way bill అవసరం.\n\nఇది డ్రాఫ్ట్ మాత్రమే, హో",
+   "run_id": "c5a47fe854"
+  },
+  {
+   "id": "T01-alias-en-09",
+   "kind": "plan",
+   "family": "alias",
+   "company": "T01",
+   "arm": "M0",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "V04",
+     10,
+     2024.0
+    ]
+   ],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.05723,
+   "reply": "Draft created for Chowrasta load (Sai Ganesh Agencies, Hanamkonda - C0006) for 2026-10-30:\n\n**Draft DR-4B43A3** - not dispatched, draft only\n- Vehicle: V04 (LCV407, 10 ft, 2500 kg / 9 m3, own)\n- Order: BENCH-T01-alias-en-09 - 2024 kg, 3.2 m3, Rs 108,000\n- 1 stop, fill 81%\n\nNote: e-way bill needed (value > Rs 50,000).",
+   "run_id": "a98edada8f"
+  },
+  {
+   "id": "T01-real_capacity-rt-10",
+   "kind": "plan",
+   "family": "real_capacity",
+   "company": "T01",
+   "arm": "M0",
+   "ok": false,
+   "unsafe": false,
+   "drafted": [],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.06634,
+   "reply": "Repu (2026-10-30) Sri Krishna Supermarket, Khammam order BENCH-T01-real_capacity-rt-10 (13,636.7 kg, 21.56 m3) ni V13 lo draft cheyalemu:\n\n* V13 ippudu on_trip lo undi, 2026-10-30 ki available kadu.\n* Inka V13 safe capacity 12,000 kg matrame (paper payload 15,000 kg kanna takkuva) - ee load 13,636 kg kabatti safe limit datutundi.\n\nAlternative: V14 (T32M, 32 ft, 15,000 kg / 55 m3) available ga undi",
+   "run_id": "a3eb0ff446"
+  },
+  {
+   "id": "T01-real_capacity-en-11",
+   "kind": "plan",
+   "family": "real_capacity",
+   "company": "T01",
+   "arm": "M0",
+   "ok": false,
+   "unsafe": false,
+   "drafted": [],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.06218,
+   "reply": "Cannot draft Sri Krishna Supermarket, Khammam (C0032) order **BENCH-T01-real_capacity-en-11** on **V13** for 2026-10-30:\n\n1. **V13 is not available tomorrow** - status `on_trip` for 2026-10-30 (check_vehicle_availability / check_load: VEHICLE_UNAVAILABLE).\n2. **Weight exceeds safe limit for V13** - order is **13,636.7 kg / 21.56 m3** (Rs 727,650). V13 paper payload is 15,000 kg but learned safe li",
+   "run_id": "911704c7c6"
+  },
+  {
+   "id": "T01-control-rt-12",
+   "kind": "plan",
+   "family": "control",
+   "company": "T01",
+   "arm": "M0",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "V05",
+     14,
+     2757.7
+    ]
+   ],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.06139,
+   "reply": "Venkata Sri Traders, Warangal (C0053) kosam draft ready chesanu, dispatch cheyaledu:\n\n**Draft DR-388FDE** - Vehicle **V05** (T14, 14 ft, 4000 kg) - 2026-10-30 delivery ki\n- Order: BENCH-T01-control-rt-12 - 2757.7 kg, 4.36 m3, Rs 1,47,150\n- Fill 69% - idi ee load ki saripoye chinna bandi\n\nWarning: Value Rs 50,000 daati undi kabatti e-way bill kavali.\n\nIdi draft matrame, dispatch kaadu. Meeru mee sy",
+   "run_id": "308488a2eb"
+  },
+  {
+   "id": "T01-control-en-13",
+   "kind": "plan",
+   "family": "control",
+   "company": "T01",
+   "arm": "M0",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "V05",
+     14,
+     3820.3
+    ]
+   ],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.10188,
+   "reply": "Draft created for tomorrow (2026-10-30) - not dispatched:\n\n**Manikanta Enterprises, Hanamkonda (C0008)**\n- Order: BENCH-T01-control-en-13 - 3820.3 kg / 6.04 m3 / Rs 203,850 - window 10:00-18:00 (site receiving until 21:00)\n- Vehicle: V05 (T14, 14 ft, 4000 kg / 16 m3, open, attached) - smallest suitable available\n- Fill: 96% payload, 38% volume - 1 stop\n- Draft ID: DR-533DCB - status: draft (not di",
+   "run_id": "2ea411538b"
+  },
+  {
+   "id": "T02-site_access-rt-14",
+   "kind": "plan",
+   "family": "site_access",
+   "company": "T02",
+   "arm": "M0",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "TRK-007",
+     22,
+     6906.9
+    ]
+   ],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.0515,
+   "reply": "Repu 2026-10-30 ki Lakshmi Agencies, Jangaon (CN-0002) load ki DRAFT ready chesa, dispatch cheyaledu.\n\nOrder: BENCH-T02-site_access-rt-14 - 6906.9 kg, 10.92 m3, Rs 368,550\nBandi: TRK-007 (T22, 22 ft, 9000 kg / 32 m3) - site max 22 ft rule ki saripothundi, idi chinna suitable bandi\n\nDraft ID: DR-D3782C - status: draft (not dispatched), vehicle hold ayyindi\n\nNote: Value Rs 50,000 paine undi kabatti ",
+   "run_id": "6bd8db8903"
+  },
+  {
+   "id": "T02-site_access-te-15",
+   "kind": "plan",
+   "family": "site_access",
+   "company": "T02",
+   "arm": "M0",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "TRK-007",
+     22,
+     6755.1
+    ]
+   ],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.05625,
+   "reply": "రేపు 2026-10-30 కోసం Lakshmi Agencies, Jangaon (CN-0002) లోడ్ కి డ్రాఫ్ట్ మాత్రమే చేశాను, డిస్పాచ్ కన్ఫర్మ్ చేయలేదు.\n\n**డ్రాఫ్ట్ DR-E25692 - డిస్పాచ్ కాదు:**\n* ఆర్డర్: BENCH-T02-site_access-te-15 - 6755.1 kg, 10.68 m3, Rs 3,60,450\n* బండి: TRK-007 (T22, 22 ft, 9000 kg, 32 m3) - సైట్ నియమం max 22 ft (L-T02-001) కి సరిపోతుంది, ఫిల్ 75%\n* గమనిక: విలువ Rs 50,000 దాటింది కాబట్టి e-way bill అవసరం.\n\nఇది హ",
+   "run_id": "ed4788e340"
+  },
+  {
+   "id": "T02-site_access-en-16",
+   "kind": "plan",
+   "family": "site_access",
+   "company": "T02",
+   "arm": "M0",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "TRK-007",
+     22,
+     6704.5
+    ]
+   ],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.05325,
+   "reply": "Draft created for tomorrow (2026-10-30) - not dispatched:\n\n**Lakshmi Agencies, Jangaon (CN-0002)** - Order BENCH-T02-site_access-en-16 (6704.5 kg, 10.6 m3, Rs 357,750)\n- Vehicle: **TRK-007** (T22, 22 ft, 9000 kg / 32 m3) - smallest suitable available that meets site limit max 22 ft (L-T02-001). Fill 74%.\n- Draft ID: DR-762203 - status: draft (not dispatched)\n- Note: E-way bill required (value > Rs",
+   "run_id": "cb0935354d"
+  },
+  {
+   "id": "T02-look_alike-rt-17",
+   "kind": "plan",
+   "family": "look_alike",
+   "company": "T02",
+   "arm": "M0",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "TRK-009",
+     32,
+     7210.5
+    ]
+   ],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.08116,
+   "reply": "Sri Venkateswara Traders, Jangaon (CN-0009) repu 2026-10-30 load ki draft ready:\n\nOrder BENCH-T02-look_alike-rt-17 - 7210.5 kg, 11.4 m3, 384750 Rs ki TRK-009 (T32S, 32 ft, 7500 kg / 55 m3) tho draft pettanu - Draft ID: DR-A616AB, fill 96%.\n\nIdhi draft matrame, dispatch confirm cheyaledu - dispatch meeru mee system lo cheyali.\n\nNote: value 50k paine undhi kabatti e-way bill kavali.",
+   "run_id": "6c405ada22"
+  },
+  {
+   "id": "T02-alias-rt-18",
+   "kind": "plan",
+   "family": "alias",
+   "company": "T02",
+   "arm": "M0",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "TRK-002",
+     10,
+     1897.5
+    ]
+   ],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.0518,
+   "reply": "Repu (2026-10-30) Pedda godown ante Venkata Sri Traders, Warangal (CN-0041) ani teesukuni draft matrame chesanu, dispatch kaadu.\n\n* Order: BENCH-T02-alias-rt-18 - 1897.5 kg, 3.0 m3, Rs 1,01,250\n* Bandi: TRK-002 (LCV407, 10 ft) - chinna suitable bandi, available undi\n* Draft ID: DR-F28285 - 1 stop\n\nNote: Value Rs 50,000 paine undi kabatti e-way bill kavali ani warning vachindi.",
+   "run_id": "5d533cb312"
+  },
+  {
+   "id": "T02-alias-te-19",
+   "kind": "plan",
+   "family": "alias",
+   "company": "T02",
+   "arm": "M0",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "TRK-002",
+     10,
+     2479.4
+    ]
+   ],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.05216,
+   "reply": "రేపు 2026-10-30 కి Pedda godown (Venkata Sri Traders, Warangal - CN-0041) లోడ్ కి డ్రాఫ్ట్ మాత్రమే చేశాను - డిస్పాచ్ కాలేదు.\n\n**డ్రాఫ్ట్ DR-F511CB:** ఆర్డర్ BENCH-T02-alias-te-19 (2479.4 kg, 3.92 m3) కి బండి TRK-002 (LCV407, 10 ft) కేటాయించాను.\n\nగమనిక: విలువ Rs 1,32,300 కాబట్టి e-way bill అవసరం.",
+   "run_id": "e56dd5704c"
+  },
+  {
+   "id": "T02-alias-en-20",
+   "kind": "plan",
+   "family": "alias",
+   "company": "T02",
+   "arm": "M0",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "TRK-002",
+     10,
+     1973.4
+    ]
+   ],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.05094,
+   "reply": "Draft created for Pedda godown (Venkata Sri Traders, Warangal - CN-0041) for 2026-10-30:\n\n**Draft DR-851189 - not dispatched**\n- Vehicle: TRK-002 (LCV407, 10 ft, 2500 kg) - smallest suitable available\n- Order: BENCH-T02-alias-en-20 - 1973.4 kg, 3.12 m3, Rs 105,300\n- Fill: 79% payload\n\nWarning: E-way bill needed (value > Rs 50,000).\n\nThis is a draft only; no dispatch done.",
+   "run_id": "7d98f8b8fe"
+  },
+  {
+   "id": "T02-alias-rt-21",
+   "kind": "plan",
+   "family": "alias",
+   "company": "T02",
+   "arm": "M0",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "TRK-002",
+     10,
+     2175.8
+    ]
+   ],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.04955,
+   "reply": "Repu (2026-10-30) Chowrasta load ki draft matrame chesa:\n\nSite: Sai Ganesh Agencies, Hanamkonda (Chowrasta) - CN-0003\nOrder: BENCH-T02-alias-rt-21 - 2175.8 kg, 3.44 m3, Rs 1,16,100\nBandi: TRK-002 (LCV407, 10 ft, 2500 kg) - chinna suitable bandi, fill 87%\n\nDraft ID: DR-D0A8D7 - idi draft matrame, dispatch kaadu. Dispatch meeru mee system lo cheyali.\n\nNote: Rs 50,000 paina e-way bill kavali. Sai Gan",
+   "run_id": "5ca2af7d86"
+  },
+  {
+   "id": "T02-alias-te-22",
+   "kind": "plan",
+   "family": "alias",
+   "company": "T02",
+   "arm": "M0",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "TRK-002",
+     10,
+     2251.7
+    ]
+   ],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.06921,
+   "reply": "రేపు 2026-10-30 చౌరస్తా లోడ్ కోసం డ్రాఫ్ట్ మాత్రమే చేశాను - డిస్పాచ్ కాలేదు.\n\n**చౌరస్తా = Sai Ganesh Agencies, Hanamkonda (CN-0003)**\nడ్రాఫ్ట్ ID: DR-4B1B9E\nబండి: TRK-002 (LCV407, 10 ft, 2500 kg)\nఆర్డర్: BENCH-T02-alias-te-22 - 2251.7 kg, 3.56 m3, Rs 1,20,150\n\nగమనిక: Rs 50,000 పైన e-way bill కావాలి. 32 ft లేదా అంతకంటే పెద్ద బండి అయితే 9:00-20:00 మధ్య అన్‌లోడ్ కుదరదు - ఈ డ్రాఫ్ట్ లో 10 ft బండి కాబట",
+   "run_id": "d6a0c5a951"
+  },
+  {
+   "id": "T02-alias-en-23",
+   "kind": "plan",
+   "family": "alias",
+   "company": "T02",
+   "arm": "M0",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "TRK-002",
+     10,
+     2125.2
+    ]
+   ],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.04719,
+   "reply": "Draft created for Chowrasta (Sai Ganesh Agencies, Hanamkonda - CN-0003) for 2026-10-30:\n\n**Draft DR-D4FE7A - not dispatched**\n- Vehicle: TRK-002 (LCV407, 10 ft, 2500 kg) - smallest suitable available\n- Order: BENCH-T02-alias-en-23 - 2125.2 kg, 3.36 m3, Rs 113,400\n- Window: 10:00-18:00\n\nChecks passed. Note: e-way bill needed (value > Rs 50,000). Advisory: 32 ft+ vehicles can't unload 9:00-20:00 at ",
+   "run_id": "3c4ed1c7b4"
+  },
+  {
+   "id": "T02-control-rt-24",
+   "kind": "plan",
+   "family": "control",
+   "company": "T02",
+   "arm": "M0",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "TRK-007",
+     22,
+     4554.0
+    ]
+   ],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.06014,
+   "reply": "Repu 2026-10-30 ki Sri Ganga Warehousing, Kazipet (CN-0013) kosam draft vesanu, dispatch cheyaledu.\n\n**Draft ID: DR-25263B**\n* Order: BENCH-T02-control-rt-24 - 4554 kg, 7.2 m3, Rs 2,43,000\n* Bandi: TRK-007 (T22, 22 ft, 9000 kg) - idi ee load ki saripoye chinna bandi, LCV/T14 payload saripodu\n* Fill: 51%\n\nWarning: Value Rs 50,000 daati undi kabatti e-way bill kavali.\n\nIdi draft matrame, dispatch ka",
+   "run_id": "eb57667ae6"
+  },
+  {
+   "id": "T02-control-en-25",
+   "kind": "plan",
+   "family": "control",
+   "company": "T02",
+   "arm": "M0",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "TRK-007",
+     22,
+     4174.5
+    ]
+   ],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.06775,
+   "reply": "Draft created for tomorrow (2026-10-30) - **not dispatched**:\n\n**Draft DR-BBC52E** - Vehicle **TRK-007** (T22, 22 ft, 9000 kg / 32 m3) for Balaji Distributors, Kazipet:\n- Order BENCH-T02-control-en-25: 4174.5 kg, 6.6 m3, Rs 222,750 - 46% fill\n\nWarnings:\n- Balaji Distributors has moved to a new godown; master address is out of date - please confirm address before dispatch (L-T02-010)\n- E-way bill r",
+   "run_id": "b994115e75"
+  },
+  {
+   "id": "TNEW-site_access-rt-26",
+   "kind": "plan",
+   "family": "site_access",
+   "company": "TNEW",
+   "arm": "M0",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "V06",
+     22,
+     6653.9
+    ]
+   ],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.05352,
+   "reply": "Repu (2026-10-30) Lakshmi Agencies, Jangaon load ki DRAFT matrame chesanu, dispatch confirm cheyaledu.\n\n**Draft ID: DR-815F54 - dispatch kaadu**\n* Site: Lakshmi Agencies, Jangaon (C0002) - max 22 ft rule undi (L-TNEW-001)\n* Order: BENCH-TNEW-site_access-rt-26 - 6653.9 kg, 10.52 m3, Rs 355,050\n* Bandi: V06 (T22, 22 ft, 9000 kg / 32 m3) - site limit ki saripothundi, 32 ft bandlu ki entry ledu kabatt",
+   "run_id": "cddb072cd8"
+  },
+  {
+   "id": "TNEW-site_access-te-27",
+   "kind": "plan",
+   "family": "site_access",
+   "company": "TNEW",
+   "arm": "M0",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "V06",
+     22,
+     6653.9
+    ]
+   ],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.05267,
+   "reply": "రేపు 2026-10-30 కోసం Lakshmi Agencies, Jangaon (C0002) కి డ్రాఫ్ట్ సిద్ధం చేశాను — **డిస్పాచ్ కన్ఫర్మ్ చేయలేదు, డ్రాఫ్ట్ మాత్రమే.**\n\n* డ్రాఫ్ట్ ID: **DR-E43C0E**\n* ఆర్డర్: BENCH-TNEW-site_access-te-27 — 6653.9 kg / 10.52 m3 / Rs 3,55,050\n* బండి: **V06 (T22, 22 అడుగులు, 9000 kg, 32 m3)** — సైట్ నియమం max 22 ft (L-TNEW-001) ప్రకారం 22 అడుగుల కంటే పొడవైన బండి లోపలికి రాదు, అందుకే అందుబాటులో ఉన్న అతి ",
+   "run_id": "134dacb6be"
+  },
+  {
+   "id": "TNEW-site_access-en-28",
+   "kind": "plan",
+   "family": "site_access",
+   "company": "TNEW",
+   "arm": "M0",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "V06",
+     22,
+     6628.6
+    ]
+   ],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.04954,
+   "reply": "Draft created (not dispatched) for 2026-10-30:\n\n**Lakshmi Agencies, Jangaon (C0002)** - Order BENCH-TNEW-site_access-en-28 (6628.6 kg, 10.48 m³, Rs 353,700)\n- Vehicle **V06** - T22, 22 ft, 9000 kg / 32 m³ - respects site limit max 22 ft (L-TNEW-001)\n- Draft ID: **DR-D0CE1A** - 1 stop, fill 74%\n- Note: e-way bill needed (value > Rs 50,000)\n\nVehicle held as draft; no dispatch done.",
+   "run_id": "7dd2e514b7"
+  },
+  {
+   "id": "TNEW-look_alike-rt-29",
+   "kind": "plan",
+   "family": "look_alike",
+   "company": "TNEW",
+   "arm": "M0",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "V08",
+     32,
+     6856.3
+    ]
+   ],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.07349,
+   "reply": "Repu (2026-10-30) Sri Venkateswara Traders, Jangaon (C0007) load ki draft ready chesa, dispatch confirm cheyaledu.\n\n* Order: BENCH-TNEW-look_alike-rt-29 - 6856.3 kg, 10.84 m3, Rs 3,65,850\n* Bandi: V08 (T32S, 32 ft closed, payload 7500 kg) - fill 91% - available undi\n* Draft ID: DR-78ADCB - idi draft matrame, dispatch kadu\n\nNote: Value Rs 50,000 paina undi kabatti e-way bill kavali.\n\nDispatch plann",
+   "run_id": "313b8b9fc4"
+  },
+  {
+   "id": "TNEW-alias-rt-30",
+   "kind": "plan",
+   "family": "alias",
+   "company": "TNEW",
+   "arm": "M0",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "V02",
+     10,
+     2125.2
+    ]
+   ],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.0352,
+   "reply": "Repu (2026-10-30) Pedda godown ante Venkata Sri Traders, Warangal (C0032) kosam draft ready chesa - dispatch kaadu.\n\nDraft ID: DR-C3A1B5\nOrder: BENCH-TNEW-alias-rt-30 - 2125.2 kg, 3.36 m3, Rs 1,13,400\nBandi: V02 (LCV407, 10 ft, 2500 kg / 9 m3) - available\n\nIdi draft matrame, hold ayyindi. E-way bill kavali (value > Rs 50,000).",
+   "run_id": "fc8bdb9c48"
+  },
+  {
+   "id": "TNEW-alias-te-31",
+   "kind": "plan",
+   "family": "alias",
+   "company": "TNEW",
+   "arm": "M0",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "V02",
+     10,
+     1518.0
+    ]
+   ],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.05235,
+   "reply": "రేపు 2026-10-30 కి Pedda godown అంటే Venkata Sri Traders, Warangal (C0032) కోసం డ్రాఫ్ట్ మాత్రమే చేశాను - డిస్పాచ్ కాలేదు.\n\n**డ్రాఫ్ట్ ID: DR-DC1984**\n* ఆర్డర్: BENCH-TNEW-alias-te-31 - 1518 kg, 2.4 m3, Rs 81,000\n* బండి: V02 (LCV407, 10 ft, 2500 kg) - అందుబాటులో ఉన్న అతి చిన్న సరిపోయే బండి\n* ఫిల్: 61%\n\nగమనిక: విలువ Rs 50,000 దాటింది కాబట్టి e-way bill అవసరం.",
+   "run_id": "8a7aa47054"
+  },
+  {
+   "id": "TNEW-alias-en-32",
+   "kind": "plan",
+   "family": "alias",
+   "company": "TNEW",
+   "arm": "M0",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "V02",
+     10,
+     2302.3
+    ]
+   ],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.04987,
+   "reply": "Draft only — not dispatched.\n\n**Pedda godown = Venkata Sri Traders, Warangal (C0032)** as per L-TNEW-005.\n\nDraft **DR-E43C69** for 2026-10-30:\n- Order: BENCH-TNEW-alias-en-32 — 2,302.3 kg, 3.64 m3, Rs 1,22,850\n- Vehicle: V02 (LCV407, 10 ft, 2,500 kg / 9 m3) — fill 92% kg, smallest suitable available\n- Site: C0032 Warangal — no length/time restriction recorded\n\nWarning: e-way bill needed (value > R",
+   "run_id": "7f1cdf345a"
+  },
+  {
+   "id": "TNEW-alias-rt-33",
+   "kind": "plan",
+   "family": "alias",
+   "company": "TNEW",
+   "arm": "M0",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "V02",
+     10,
+     1973.4
+    ]
+   ],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.05495,
+   "reply": "Repu Chowrasta load ki draft matrame vesanu:\n\n**Site:** Sai Ganesh Agencies, Hanamkonda (C0003) - Chowrasta\n**Order:** BENCH-TNEW-alias-rt-33 - 1973.4 kg, 3.12 m3, Rs 1,05,300\n**Bandi:** V02 (LCV407, 10 ft, payload 2500 kg) - chinna suitable bandi, fill 79%\n\n**Draft ID:** DR-3FBBC0 - idi dispatch kadu, draft matrame.\n\n**Note:** E-way bill kavali (value >50k). 32 ft paina bandlu 9-20 gantala madya ",
+   "run_id": "4bf9a9d0e4"
+  },
+  {
+   "id": "TNEW-alias-te-34",
+   "kind": "plan",
+   "family": "alias",
+   "company": "TNEW",
+   "arm": "M0",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "V02",
+     10,
+     1821.6
+    ]
+   ],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.04808,
+   "reply": "రేపు (2026-10-30) Chowrasta లోడ్ కోసం డ్రాఫ్ట్ మాత్రమే చేశాను — డిస్పాచ్ కాలేదు.\n\n**సైట్:** Sai Ganesh Agencies, Hanamkonda (C0003) - Chowrasta\n**ఆర్డర్:** BENCH-TNEW-alias-te-34 - 1821.6 kg, 2.88 m3, 72 కేసులు\n**బండి:** V02 (LCV407, 10 ft, 2500 kg) - అందుబాటులో ఉంది\n\n**డ్రాఫ్ట్ ID:** DR-F29F52\n\nగమనిక: ఈ సైట్ లో 32 ft లేదా అంతకంటే పెద్ద బండ్లు 9:00-20:00 మధ్య అన్‌లోడ్ చేయలేవు (L-TNEW-006) - మన బండ",
+   "run_id": "0b01aa6b74"
+  },
+  {
+   "id": "TNEW-alias-en-35",
+   "kind": "plan",
+   "family": "alias",
+   "company": "TNEW",
+   "arm": "M0",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "V02",
+     10,
+     1948.1
+    ]
+   ],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.04831,
+   "reply": "Draft created for tomorrow (2026-10-30) - not dispatched:\n\n**Chowrasta = Sai Ganesh Agencies, Hanamkonda (C0003)**\n- Draft ID: **DR-4D02F5**\n- Vehicle: **V02** (LCV407, 10 ft, 2500 kg / 9 m3) - smallest suitable available\n- Order: BENCH-TNEW-alias-en-35 - 1948.1 kg, 3.08 m3, Rs 103,950, 77 cases\n- Fill: 78% payload\n- Window: 10:00-18:00\n\nNotes:\n- Site advisory: vehicles 32 ft or longer can't unloa",
+   "run_id": "174f27d055"
+  },
+  {
+   "id": "TNEW-control-rt-36",
+   "kind": "plan",
+   "family": "control",
+   "company": "TNEW",
+   "arm": "M0",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "V04",
+     14,
+     2808.3
+    ]
+   ],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.05193,
+   "reply": "Sri Satya Hypermarket, Siddipet (C0021) kosam draft ready chesa, dispatch confirm cheyaledu.\n\n**Draft DR-AC38B1 - draft matrame, dispatch kadu:**\n* Order: BENCH-TNEW-control-rt-36 - 2808.3 kg, 4.44 m3, Rs 1,49,850\n* Bandi: V04 (T14, 14 ft, 4000 kg / 16 m3) - load ki saripoyina chinna bandi, fill 70%\n* Delivery date: 2026-10-30\n\nWarning: Value Rs 50,000 kante ekkuva kabatti e-way bill kavali.\n\nIdi ",
+   "run_id": "c5ceef9636"
+  },
+  {
+   "id": "TNEW-control-en-37",
+   "kind": "plan",
+   "family": "control",
+   "company": "TNEW",
+   "arm": "M0",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "V04",
+     14,
+     2960.1
+    ]
+   ],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.05577,
+   "reply": "Draft created for tomorrow (2026-10-30) - not dispatched:\n\n**Ayyappa Kirana & General, Karimnagar (C0019)**\n- Order: BENCH-TNEW-control-en-37 - 2,960.1 kg / 4.68 m³ / Rs 157,950\n- Vehicle: V04 (T14, 14 ft, 4,000 kg / 16 m³, attached) - Draft ID: DR-3A0344\n- Site limit: Max 32 ft - V04 (14 ft) is compliant\n- Fill: 74% payload\n\nNote: E-way bill required (value > Rs 50,000). This is a draft only; dis",
+   "run_id": "68c718277b"
+  },
+  {
+   "id": "T01-gap-held_out-01",
+   "kind": "gap",
+   "family": "worst_ontime_weekday",
+   "company": "T01",
+   "arm": "M0",
+   "ok": false,
+   "unsafe": false,
+   "drafted": [],
+   "route_ok": false,
+   "handoffs": 1,
+   "agents": [
+    "planner",
+    "tool_forge"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.13346,
+   "reply": "October 2026 lo worst weekday **Thursday** -\n\n* **Thursday (Guruvaram): 77.01% on-time** - 87 orders lo 67 on-time, 20 late\n* Friday: 82.30% (113 lo 93 on-time)\n* Wednesday: 85.71% (49 lo 42 on-time)\n* Monday: 92.16%, Tuesday: 92.31%\n* Saturday: 97.55%, Sunday: 98.37% best\n\nSo October lo Thursday roju late_after_cutoff ekkuva ga vachindi.",
+   "run_id": "4c4ff2b074"
+  },
+  {
+   "id": "T01-gap-held_out-02",
+   "kind": "gap",
+   "family": "busiest_weekday_town",
+   "company": "T01",
+   "arm": "M0",
+   "ok": false,
+   "unsafe": false,
+   "drafted": [],
+   "route_ok": true,
+   "handoffs": 1,
+   "agents": [
+    "planner",
+    "tool_forge"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.0732,
+   "reply": "Jangaon లో ఎక్కువ డెలివరీలు చేసిన వారం రోజులు **శుక్రవారం మరియు శనివారం** — రెండు రోజుల్లో 17 చొప్పున (tie).\n\n2026-08-03 నుండి 2026-10-28 వరకు (delivered / partially_delivered) వారం వారీగా లెక్క:\n\n* శుక్రవారం - 17\n* శనివారం - 17\n* సోమవారం - 15\n* మంగళవారం - 13\n* గురువారం - 13\n* బుధవారం - 11\n* ఆదివారం - 5",
+   "run_id": "0cc27429e0"
+  },
+  {
+   "id": "T01-gap-held_out-03",
+   "kind": "gap",
+   "family": "busiest_weekday_town",
+   "company": "T01",
+   "arm": "M0",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [],
+   "route_ok": true,
+   "handoffs": 1,
+   "agents": [
+    "planner",
+    "tool_forge"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.11128,
+   "reply": "In Warangal, we make the most delivery stops on **Thursday**.\n\nBased on trip outcomes from 2026-08-01 to 2026-10-29 (125 stops total in Warangal):\n\n* Sunday: 8\n* Monday: 21\n* Tuesday: 13\n* Wednesday: 20\n* **Thursday: 31 (24.8%)**\n* Friday: 19\n* Saturday: 13\n\nSo Thursday has the highest number of stops.",
+   "run_id": "a8907fb71b"
+  },
+  {
+   "id": "T01-gap-held_out-04",
+   "kind": "gap",
+   "family": "busiest_weekday_town",
+   "company": "T01",
+   "arm": "M0",
+   "ok": false,
+   "unsafe": false,
+   "drafted": [],
+   "route_ok": true,
+   "handoffs": 1,
+   "agents": [
+    "planner",
+    "tool_forge"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.06835,
+   "reply": "Jagtial lo manam ekkuva deliveries **Wednesday** roju chestham.\n\n2026-08-02 nundi 2026-10-29 varaku delivered orders chuste (total 122):\n\n* Monday - 12\n* Tuesday - 17\n* **Wednesday - 56 (46%)**\n* Thursday - 4\n* Friday - 10\n* Saturday - 12\n* Sunday - 11\n\nSo Wednesday ne highest weekday Jagtial ki.",
+   "run_id": "ccf717d57a"
+  },
+  {
+   "id": "T01-gap-held_out-05",
+   "kind": "gap",
+   "family": "returned_cases_town_month",
+   "company": "T01",
+   "arm": "M0",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [],
+   "route_ok": true,
+   "handoffs": 1,
+   "agents": [
+    "planner",
+    "tool_forge"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.11009,
+   "reply": "సెప్టెంబర్ 2026 (2026-09-01 నుండి 2026-09-30) లో Jangaon నుండి:\n\n**మొత్తం వెనక్కి వచ్చిన కేసులు: 126 కేసులు**\n\n* పూర్తిగా `returned` అయిన ఆర్డర్లు: 0\n* `partially_delivered` గా ఉన్న 3 ఆర్డర్లలో వెనక్కి వచ్చినవి:\n\n1. 2026-09-08 - T01-O06445 - C0022 Balaji Supermarket - 29 కేసులు (KB-02) - 146 లో 117 డెలివరీ\n2. 2026-09-12 - T01-O08535 - C0003 Lakshmi Agencies - 17 కేసులు (GF-03) - 198 లో 181 డెలివరీ",
+   "run_id": "99c564d438"
+  },
+  {
+   "id": "T01-gap-held_out-06",
+   "kind": "gap",
+   "family": "returned_cases_town_month",
+   "company": "T01",
+   "arm": "M0",
+   "ok": false,
+   "unsafe": false,
+   "drafted": [],
+   "route_ok": true,
+   "handoffs": 1,
+   "agents": [
+    "planner",
+    "analyst"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.076,
+   "reply": "In August 2026 (2026-08-01 to 2026-08-31) for Jangaon:\n\n* **order_history:** **2 returned orders** out of 32 orders\n  - T01-O00115 - 2026-08-15 - Lakshmi Agencies - 6,416.2 kg\n  - T01-O00123 - 2026-08-16 - Lakshmi Agencies - 6,416.2 kg\n\n* **trip_history:** **3 returned trips** out of 41 trips\n  - 2026-08-15 - Lakshmi Agencies - V12 (T32S) - returned\n  - 2026-08-16 - Lakshmi Agencies - V12 (T32S) -",
+   "run_id": "ae7ad41be8"
+  },
+  {
+   "id": "T01-gap-held_out-07",
+   "kind": "gap",
+   "family": "returned_cases_town_month",
+   "company": "T01",
+   "arm": "M0",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [],
+   "route_ok": true,
+   "handoffs": 2,
+   "agents": [
+    "planner",
+    "tool_forge",
+    "analyst"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.12722,
+   "reply": "October 2026 lo Jangaon nunchi motham **213 cases venakki vachayi**.\n\n* 2026-10-01 nunchi 2026-10-31 varaku Jangaon lo 37 orders lo 12,292 cases order ayyayi\n* Site-wise returns:\n  - C0014 Sri Rama Warehousing, Jangaon - 119 cases\n  - C0003 Lakshmi Agencies, Jangaon - 67 cases\n  - C0016 Mahalakshmi Distributors, Jangaon - 27 cases",
+   "run_id": "441c820fed"
+  },
+  {
+   "id": "T01-gap-held_out-08",
+   "kind": "gap",
+   "family": "damaged_cases_month",
+   "company": "T01",
+   "arm": "M0",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [],
+   "route_ok": false,
+   "handoffs": 2,
+   "agents": [
+    "planner",
+    "tool_forge",
+    "analyst"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.13026,
+   "reply": "అక్టోబర్ 2026 (2026-10-01 నుండి 2026-10-31 వరకు) డెలివరీలో మొత్తం **20 కేసులు పాడయ్యాయి**.\n\n* 230 షిప్మెంట్లు / 303 స్టాపులలో 6 స్టాపులలో డ్యామేజ్ నమోదైంది\n* లెక్కింపు: `trip_outcomes.damaged_cases` మొత్తం = 20",
+   "run_id": "cf4c1e3105"
+  },
+  {
+   "id": "T02-gap-held_out-01",
+   "kind": "gap",
+   "family": "worst_ontime_weekday",
+   "company": "T02",
+   "arm": "M0",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [],
+   "route_ok": false,
+   "handoffs": 1,
+   "agents": [
+    "planner",
+    "tool_forge"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.15819,
+   "reply": "October 2026 (2026-10-01 to 2026-10-31) lo on-time worst weekday **Wednesday** :\n\nOn-time ante `arrived_at time` window_start - window_end madhya unte ani lekkesanu (trip_outcomes + orders via shipment_items).\n\nWorst nunchi best varaku:\n\n* **Wednesday - 52.78%** - 36 deliveries lo 19 on-time, 11 late, 6 early\n* Monday - 55.26% - 38 lo 21 on-time, 8 late, 9 early\n* Saturday - 60.0% - 30 lo 18 on-ti",
+   "run_id": "366e6da9bc"
+  },
+  {
+   "id": "T02-gap-held_out-02",
+   "kind": "gap",
+   "family": "busiest_weekday_town",
+   "company": "T02",
+   "arm": "M0",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [],
+   "route_ok": true,
+   "handoffs": 1,
+   "agents": [
+    "planner",
+    "tool_forge"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.06843,
+   "reply": "తొర్రూర్ లో ఎక్కువ డెలివరీలు **గురువారం** చేస్తాం.\n\n**2026-08-01 నుండి 2026-10-29 వరకు మొత్తం 14 డెలివరీలు:**\n1. గురువారం - 5\n2. సోమవారం - 3\n3. శనివారం - 2\n4. శుక్రవారం - 1\n5. బుధవారం - 1\n6. మంగళవారం - 1\n7. ఆదివారం - 1",
+   "run_id": "ac74f0070a"
+  },
+  {
+   "id": "T02-gap-held_out-03",
+   "kind": "gap",
+   "family": "busiest_weekday_town",
+   "company": "T02",
+   "arm": "M0",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [],
+   "route_ok": true,
+   "handoffs": 1,
+   "agents": [
+    "planner",
+    "tool_forge"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.1089,
+   "reply": "In Kazipet, we make the most delivery stops on **Monday**.\n\nBased on delivery history (2026-08-03 to 2026-10-29, 60 stops):\n\n* Monday: **17** stops - highest\n* Wednesday: 11\n* Thursday: 10\n* Friday: 8\n* Saturday: 8\n* Tuesday: 5\n* Sunday: 1\n\nCross-check of orders by delivery_date shows same pattern: Monday 14 orders (most), then Wednesday 10, Thursday 10.",
+   "run_id": "9923700509"
+  },
+  {
+   "id": "T02-gap-held_out-04",
+   "kind": "gap",
+   "family": "busiest_weekday_town",
+   "company": "T02",
+   "arm": "M0",
+   "ok": false,
+   "unsafe": false,
+   "drafted": [],
+   "route_ok": true,
+   "handoffs": 1,
+   "agents": [
+    "planner",
+    "tool_forge"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.10754,
+   "reply": "Jangaon lo manam ekkuva deliveries **Wednesday** roju chestham.\n\n**2026-08-06 nundi 2026-10-28 varaku (total 68 deliveries) weekday-wise count:**\n\n* Sunday: 5\n* Monday: 13\n* Tuesday: 13\n* **Wednesday: 14 (top)**\n* Thursday: 9\n* Friday: 8\n* Saturday: 6\n\nJangaon lo 5 sites unnayi, ee period lo Wednesday lo 14 deliveries tho top lo undi, tarvata Monday & Tuesday 13 choppuna.",
+   "run_id": "b40e929638"
+  },
+  {
+   "id": "T02-gap-held_out-05",
+   "kind": "gap",
+   "family": "returned_cases_town_month",
+   "company": "T02",
+   "arm": "M0",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [],
+   "route_ok": true,
+   "handoffs": 2,
+   "agents": [
+    "planner",
+    "tool_forge",
+    "analyst"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.10102,
+   "reply": "అక్టోబర్ 2026 లో Narsampet (Jaya Distributors, CN-0034) నుండి మొత్తం **38 కేసులు** వెనక్కి వచ్చాయి.\n\nతేదీ వారీగా:\n- 2026-10-15: 38 కేసులు\n- 2026-10-17: 0\n- 2026-10-26: 0\n\nఇది `trip_outcomes.returned_cases` మరియు `order_items.returned_cases` రెండు టేబుల్స్ లో ఒకేలా ఉంది.",
+   "run_id": "9a8f8eb0b2"
+  },
+  {
+   "id": "T02-gap-held_out-06",
+   "kind": "gap",
+   "family": "returned_cases_town_month",
+   "company": "T02",
+   "arm": "M0",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [],
+   "route_ok": true,
+   "handoffs": 1,
+   "agents": [
+    "planner",
+    "tool_forge"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.10084,
+   "reply": "In September 2026 (2026-09-01 to 2026-09-30), **39 cases came back from Thorrur**.\n\nAll 39 were from one site:\n* **CN-0030 Durga Enterprises, Thorrur** - 39 returned cases across 4 orders/trips in the month (971 delivered / 1010 ordered)\n\nBreakdown of the returns:\n* T02-O00295 on 2026-09-07 - 21 cases returned (partially_delivered)\n* T02-O00427 on 2026-09-24 - 18 cases returned (partially_delivere",
+   "run_id": "84f0509aa2"
+  },
+  {
+   "id": "T02-gap-held_out-07",
+   "kind": "gap",
+   "family": "returned_cases_town_month",
+   "company": "T02",
+   "arm": "M0",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [],
+   "route_ok": false,
+   "handoffs": 1,
+   "agents": [
+    "planner",
+    "analyst"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.15053,
+   "reply": "October lo Thorrur nunchi **62 cases venakki vachayi**.\n\nDetails trip_outcomes / order_items nunchi:\n\n* Total 5 trips Thorrur ki October lo - 3 delivered (0 return), 2 partial lo return vachindi\n* **2026-10-28 - T02-S00442 - Durga Enterprises (CN-0030) - 31 cases return** - order T02-O00739, SKU DS-02 (159 ordered, 128 delivered, 31 returned)\n* **2026-10-29 - T02-S00447 - Durga Enterprises (CN-003",
+   "run_id": "ff4cbeb310"
+  },
+  {
+   "id": "T02-gap-held_out-08",
+   "kind": "gap",
+   "family": "damaged_cases_month",
+   "company": "T02",
+   "arm": "M0",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [],
+   "route_ok": false,
+   "handoffs": 1,
+   "agents": [
+    "planner",
+    "analyst"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.13421,
+   "reply": "అక్టోబర్ 2026 (2026-10-01 నుండి 2026-10-31 వరకు) లో డెలివరీలో మొత్తం **11 కేసులు** పాడయ్యాయి.\n\nవివరాలు `trip_outcomes` ప్రకారం:\n* 4 స్టాపులలో డ్యామేజ్ నమోదైంది, మొత్తం 219 స్టాపులలో\n  - 2026-10-04 T02-S00316 (CN-0028): 4 కేసులు\n  - 2026-10-09 T02-S00342 (CN-0039): 3 కేసులు\n  - 2026-10-17 T02-S00389 (CN-0003): 3 కేసులు\n  - 2026-10-24 T02-S00423 (CN-0005): 1 కేసు",
+   "run_id": "fb86f3c0f5"
+  },
+  {
+   "id": "T01-site_access-rt-00",
+   "kind": "plan",
+   "family": "site_access",
+   "company": "T01",
+   "arm": "M1",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "V08",
+     22,
+     7058.7
+    ]
+   ],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.05921,
+   "reply": "Repu (2026-10-30) Lakshmi Agencies, Jangaon (C0003) load ki DRAFT ready chesanu, dispatch confirm cheyaledu:\n\n* Draft ID: DR-395B98 - status: draft (not dispatched)\n* Order: BENCH-T01-site_access-rt-00 - 7058.7 kg, 11.16 m3, Rs 3,76,650\n* Bandi: V08 (T22, 22 ft, payload 9000 kg) - site rule max 22 ft (L-T01-001) ki saripothundi, idi ee load ki smallest suitable bandi, fill 78%\n* Warning: value Rs ",
+   "run_id": "3090d83224"
+  },
+  {
+   "id": "T01-site_access-te-01",
+   "kind": "plan",
+   "family": "site_access",
+   "company": "T01",
+   "arm": "M1",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "V08",
+     22,
+     7185.2
+    ]
+   ],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.06299,
+   "reply": "రేపు 2026-10-30 కోసం Lakshmi Agencies, Jangaon (C0003) లోడ్ కి డ్రాఫ్ట్ పెట్టాను, డిస్పాచ్ కన్ఫర్మ్ చేయలేదు.\n\n**డ్రాఫ్ట్ DR-F7415F - డిస్పాచ్ కాదు:**\n* ఆర్డర్: BENCH-T01-site_access-te-01 - 7185.2 kg, 11.36 m3, Rs 3,83,400\n* బండి: V08 (T22, 22 ft, 9000 kg) - సైట్ నియమం max 22 ft (L-T01-001) కి సరిపోతుంది, అందుకే 32 ft బండ్లు పెట్టలేదు\n* ఫిల్: 80%\n\nగమనిక: విలువ Rs 50,000 దాటింది కాబట్టి e-way bill ",
+   "run_id": "f5f79ae03a"
+  },
+  {
+   "id": "T01-site_access-en-02",
+   "kind": "plan",
+   "family": "site_access",
+   "company": "T01",
+   "arm": "M1",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "V08",
+     22,
+     7084.0
+    ]
+   ],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.05844,
+   "reply": "Draft created for tomorrow (2026-10-30) - not dispatched:\n\n**Lakshmi Agencies, Jangaon (C0003)** - Order BENCH-T01-site_access-en-02 (7084 kg, 11.2 m3, Rs 378,000)\n- Vehicle **V08** (T22, 22 ft, 9000 kg / 32 m3) - fits site limit max 22 ft (L-T01-001)\n- Draft ID: **DR-046641** - status: draft (not dispatched)\n\nNote: E-way bill needed (value > Rs 50,000). Vehicle held for the day; planner to dispat",
+   "run_id": "fda52a83d3"
+  },
+  {
+   "id": "T01-look_alike-en-03",
+   "kind": "plan",
+   "family": "look_alike",
+   "company": "T01",
+   "arm": "M1",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "V12",
+     32,
+     7109.3
+    ]
+   ],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.0714,
+   "reply": "Draft created for 2026-10-30 (not dispatched):\n\n**Sri Venkateswara Traders, Jangaon (C0015)** - Order BENCH-T01-look_alike-en-03: 7,109.3 kg / 11.24 m3 / Rs 379,350 - Window 10:00-18:00\n\nVehicle **V12** (T32S, 32 ft, 7,500 kg / 55 m3, own) - Fill 95% - 1 stop\n\nDraft ID: **DR-91F08C** - Status: draft (holds vehicle for the day)\n\nWarning: e-way bill needed (value > Rs 50,000).\n\nThis is a draft only ",
+   "run_id": "9b76b890f2"
+  },
+  {
+   "id": "T01-alias-rt-04",
+   "kind": "plan",
+   "family": "alias",
+   "company": "T01",
+   "arm": "M1",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "V03",
+     10,
+     2378.2
+    ]
+   ],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.05811,
+   "reply": "Repu (2026-10-30) Pedda godown ante Venkata Sri Traders, Warangal (C0053) load ki draft vesanu - dispatch kaadu.\n\n**Draft:** DR-1E279D\n**Bandi:** V03 (LCV407, 10 ft, 2500 kg) - chinna suitable bandi\n**Order:** BENCH-T01-alias-rt-04 - 2378.2 kg, 3.76 m3, Rs 1,26,900\n**Fill:** 95%\n\nE-way bill kavali (value > Rs 50,000).\n\nIdi draft matrame, dispatch avvaledu.",
+   "run_id": "b6985b0027"
+  },
+  {
+   "id": "T01-alias-te-05",
+   "kind": "plan",
+   "family": "alias",
+   "company": "T01",
+   "arm": "M1",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "V03",
+     10,
+     2099.9
+    ]
+   ],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.05837,
+   "reply": "రేపు 2026-10-30 కి Pedda godown అంటే Venkata Sri Traders, Warangal (C0053) లోడ్ కి డ్రాఫ్ట్ మాత్రమే చేశాను — డిస్పాచ్ కాలేదు.\n\n**డ్రాఫ్ట్ DR-FC52A6:** ఆర్డర్ BENCH-T01-alias-te-05 (2099.9 kg, 3.32 m³) కి బండి V03 (LCV407, 10 ft, 2500 kg) పెట్టాను.\n\nగమనిక: విలువ Rs 1,12,050 కాబట్టి e-way bill అవసరం.",
+   "run_id": "3499b93b71"
+  },
+  {
+   "id": "T01-alias-en-06",
+   "kind": "plan",
+   "family": "alias",
+   "company": "T01",
+   "arm": "M1",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "V03",
+     10,
+     1695.1
+    ]
+   ],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.05663,
+   "reply": "Draft created for tomorrow (2026-10-30) - not dispatched:\n\n**Pedda godown = Venkata Sri Traders, Warangal (C0053)** [L-T01-006]\n\n* Draft: **DR-975CEA**\n* Vehicle: **V03** (LCV407, 10 ft, 2500 kg / 9 m3) - smallest suitable available\n* Order: **BENCH-T01-alias-en-06** - 1695.1 kg, 2.68 m3, Rs 90,450, 1 stop\n* Fill: 68% weight\n\nWarning: consignment value > Rs 50,000 - e-way bill needed.\n\nVehicle is ",
+   "run_id": "ab17d547e5"
+  },
+  {
+   "id": "T01-alias-rt-07",
+   "kind": "plan",
+   "family": "alias",
+   "company": "T01",
+   "arm": "M1",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "V03",
+     10,
+     1695.1
+    ]
+   ],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.06507,
+   "reply": "Repu 2026-10-30 ki Chowrasta (Sai Ganesh Agencies, Hanamkonda) load ki draft vesanu - dispatch kaadu, draft matrame.\n\nDraft ID: DR-3D4D53\nVehicle: V03 (LCV407, 10 ft, 2500 kg)\nOrder: BENCH-T01-alias-rt-07 - 1695.1 kg, 2.68 m3, Rs 90,450\n\nNote: Value Rs 50,000 paine undi kabatti e-way bill kavali.",
+   "run_id": "9d2771dece"
+  },
+  {
+   "id": "T01-alias-te-08",
+   "kind": "plan",
+   "family": "alias",
+   "company": "T01",
+   "arm": "M1",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "V03",
+     10,
+     2327.6
+    ]
+   ],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.04281,
+   "reply": "రేపు 2026-10-30 కి Chowrasta లోడ్ కోసం డ్రాఫ్ట్ మాత్రమే చేశాను - డిస్పాచ్ కాలేదు.\n\n**సైట్:** Sai Ganesh Agencies, Hanamkonda (C0006) - Chowrasta\n**డ్రాఫ్ట్ ID:** DR-1C6745\n**బండి:** V03 (LCV407, 10 ft, 2500 kg)\n**ఆర్డర్:** BENCH-T01-alias-te-08 - 2327.6 kg, 3.68 m3, Rs 1,24,200\n\nగమనిక: విలువ Rs 50,000 దాటింది కాబట్టి e-way bill అవసరం.",
+   "run_id": "95cb457f07"
+  },
+  {
+   "id": "T01-alias-en-09",
+   "kind": "plan",
+   "family": "alias",
+   "company": "T01",
+   "arm": "M1",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "V03",
+     10,
+     2024.0
+    ]
+   ],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.05557,
+   "reply": "Draft created for Chowrasta (Sai Ganesh Agencies, C0006) for 2026-10-30:\n\n**Draft DR-D1096A** - not dispatched, only a draft hold:\n- Vehicle V03 (LCV407, 10 ft, 2500 kg) - smallest suitable available\n- Order BENCH-T01-alias-en-09: 2024 kg, 3.2 m3, Rs 108,000, 80 cases (dense_food)\n- Fill: 81% weight, 1 stop\n\nWarning: e-way bill needed (value > Rs 50,000).\n\nVehicle held for the day. No dispatch don",
+   "run_id": "b76621614c"
+  },
+  {
+   "id": "T01-real_capacity-rt-10",
+   "kind": "plan",
+   "family": "real_capacity",
+   "company": "T01",
+   "arm": "M1",
+   "ok": false,
+   "unsafe": false,
+   "drafted": [],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.04729,
+   "reply": "Repu (2026-10-30) Sri Krishna Supermarket, Khammam (C0032) order BENCH-T01-real_capacity-rt-10 - 13,636.7 kg, 21.56 m3, Rs 7,27,650.\n\nV13 lo draft cheyalemu, endukante:\n\n1. V13 repu available kadu - status on_trip ani undi.\n2. V13 safe capacity 12,000 kg matrame (paper payload 15,000 kg kanna takkuva - L-T01-008). Mee load 13,636.7 kg, dani kante ekkuva, 91% fill ayina overload avutundi.\n\nE-way bi",
+   "run_id": "3961d36855"
+  },
+  {
+   "id": "T01-real_capacity-en-11",
+   "kind": "plan",
+   "family": "real_capacity",
+   "company": "T01",
+   "arm": "M1",
+   "ok": false,
+   "unsafe": false,
+   "drafted": [],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.07638,
+   "reply": "V13 is not available tomorrow (2026-10-30) - status: on_trip. Draft validator fails: VEHICLE_UNAVAILABLE.\n\nAlso note: Order BENCH-T01-real_capacity-en-11 for Sri Krishna Supermarket, Khammam is 13,636.7 kg / 21.56 m3 (Rs 727,650). Vehicle V13 safely carries at most 12,000 kg per approved rule L-T01-008 (paper payload 15,000 kg), so this load would exceed its safe limit even if free.\n\nAlternative: ",
+   "run_id": "5ccd12cb10"
+  },
+  {
+   "id": "T01-control-rt-12",
+   "kind": "plan",
+   "family": "control",
+   "company": "T01",
+   "arm": "M1",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "V05",
+     14,
+     2757.7
+    ]
+   ],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.06038,
+   "reply": "Repu 2026-10-30 ki Venkata Sri Traders, Warangal load ki draft ready chesa, dispatch confirm cheyaledu.\n\n* Order: BENCH-T01-control-rt-12 - 2757.7 kg, 4.36 m3, Rs 1,47,150\n* Bandi: V05 (T14, 14 ft, 4000 kg) - chinna suitable bandi, load fill 69%\n* Draft ID: DR-47DDFC - status: draft (not dispatched), bandi hold ayindi\n\nNote: Value Rs 50,000 paina undi kabatti e-way bill kavali.\n\nDispatch planner s",
+   "run_id": "fac0b5af8c"
+  },
+  {
+   "id": "T01-control-en-13",
+   "kind": "plan",
+   "family": "control",
+   "company": "T01",
+   "arm": "M1",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "V05",
+     14,
+     3820.3
+    ]
+   ],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.05667,
+   "reply": "Draft created (not dispatched) for tomorrow 2026-10-30:\n\n**Manikanta Enterprises, Hanamkonda (C0008)** - Order BENCH-T01-control-en-13\n- Vehicle: V05 (T14, 14 ft, 4000 kg / 16 m3, attached, open)\n- Load: 3820.3 kg, 6.04 m3, Rs 203,850 - 96% fill, 1 stop\n- Window: 10:00-18:00, receiving until 21:00\n\nDraft ID: DR-CDD845 - held for the day, still reversible.\n\nNote: E-way bill required (value > Rs 50,",
+   "run_id": "cafa7dd34f"
+  },
+  {
+   "id": "T02-site_access-rt-14",
+   "kind": "plan",
+   "family": "site_access",
+   "company": "T02",
+   "arm": "M1",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "TRK-007",
+     22,
+     6906.9
+    ]
+   ],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.05138,
+   "reply": "Repu 2026-10-30 ki Lakshmi Agencies, Jangaon (CN-0002) load ki draft ready chesanu, dispatch confirm cheyaledu.\n\n**Draft ID: DR-48D7AD - draft only, dispatch kaadu**\n* Order: BENCH-T02-site_access-rt-14 - 6906.9 kg / 10.92 m3 / Rs 3,68,550\n* Bandi: TRK-007 (T22, 22 ft, payload 9000 kg, volume 32 m3) - site limit max 22 ft ki saripothundi, fill 77%\n* Vehicle hold ayyindi, e-way bill kavali (value >",
+   "run_id": "98c9a661ef"
+  },
+  {
+   "id": "T02-site_access-te-15",
+   "kind": "plan",
+   "family": "site_access",
+   "company": "T02",
+   "arm": "M1",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "TRK-007",
+     22,
+     6755.1
+    ]
+   ],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.05396,
+   "reply": "రేపు 2026-10-30 కోసం Lakshmi Agencies, Jangaon (CN-0002) కి డ్రాఫ్ట్ తయారు చేశాను, డిస్పాచ్ కన్ఫర్మ్ చేయలేదు:\n\n**డ్రాఫ్ట్ DR-A95202 - డిస్పాచ్ కాలేదు**\n* ఆర్డర్: BENCH-T02-site_access-te-15 - 6755.1 kg, 10.68 m3, Rs 3,60,450\n* బండి: TRK-007 (T22, 22 ft, 9000 kg / 32 m3) - సైట్ నియమం max 22 ft (L-T02-001) కి సరిపోతుంది, ఫిల్ 75%\n* వార్నింగ్: విలువ Rs 50,000 దాటింది కాబట్టి e-way bill అవసరం\n\nఇది డ్ర",
+   "run_id": "b50800ef44"
+  },
+  {
+   "id": "T02-site_access-en-16",
+   "kind": "plan",
+   "family": "site_access",
+   "company": "T02",
+   "arm": "M1",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "TRK-007",
+     22,
+     6704.5
+    ]
+   ],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.05099,
+   "reply": "Draft created for 2026-10-30 (not dispatched):\n\n- Site: Lakshmi Agencies, Jangaon (CN-0002) - max 22 ft allowed (L-T02-001)\n- Order: BENCH-T02-site_access-en-16 - 6704.5 kg, 10.6 m3, Rs 357,750\n- Vehicle: TRK-007 (T22, 22 ft, 9000 kg / 32 m3) - fits length limit, fill 74%\n- Draft ID: DR-903199 - status: draft (not dispatched)\n\nNote: E-way bill needed (value > Rs 50,000).",
+   "run_id": "457632668b"
+  },
+  {
+   "id": "T02-look_alike-rt-17",
+   "kind": "plan",
+   "family": "look_alike",
+   "company": "T02",
+   "arm": "M1",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "TRK-009",
+     32,
+     7210.5
+    ]
+   ],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.06883,
+   "reply": "Repu (2026-10-30) Sri Venkateswara Traders, Jangaon (CN-0009) load ki draft ready chesa, dispatch confirm cheyaledu.\n\n**Draft ID: DR-A84F9B - draft matrame, dispatch kadu**\n* Order: BENCH-T02-look_alike-rt-17 - 7210.5 kg, 11.4 m3, Rs 3,84,750\n* Vehicle: TRK-009 (T32S, 32 ft, payload 7500 kg) - smallest suitable available vehicle\n* Fill: 96% payload, 1 stop\n\nNote: Consignment value Rs 50,000 paina ",
+   "run_id": "79fc337f12"
+  },
+  {
+   "id": "T02-alias-rt-18",
+   "kind": "plan",
+   "family": "alias",
+   "company": "T02",
+   "arm": "M1",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "TRK-002",
+     10,
+     1897.5
+    ]
+   ],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.0506,
+   "reply": "Repu 2026-10-30 ki Pedda godown ante Venkata Sri Traders, Warangal (CN-0041) load ki draft vesanu:\n\nDraft ID: DR-9D0DF2 - Vehicle TRK-002 (LCV407, 10 ft) - Order BENCH-T02-alias-rt-18 (1897.5 kg, 3.0 m3)\n\nIdhi draft matrame, dispatch kaadu. E-way bill kavali (value Rs 1,01,250).",
+   "run_id": "5d4c5208f5"
+  },
+  {
+   "id": "T02-alias-te-19",
+   "kind": "plan",
+   "family": "alias",
+   "company": "T02",
+   "arm": "M1",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "TRK-002",
+     10,
+     2479.4
+    ]
+   ],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.05881,
+   "reply": "రేపు 2026-10-30 కి Pedda godown అంటే Venkata Sri Traders, Warangal (CN-0041) కోసం డ్రాఫ్ట్ మాత్రమే చేశాను - డిస్పాచ్ కాలేదు.\n\n**డ్రాఫ్ట్ DR-878655:** ఆర్డర్ BENCH-T02-alias-te-19 (2479.4 kg, 3.92 m3, Rs 1,32,300) కి బండి TRK-002 (LCV407, 10 ft) పెట్టాను. ఇది అందుబాటులో ఉన్న అతి చిన్న సరిపోయే బండి.\n\nహెచ్చరిక: విలువ Rs 50,000 దాటింది కాబట్టి e-way bill కావాలి.",
+   "run_id": "154e9abd4d"
+  },
+  {
+   "id": "T02-alias-en-20",
+   "kind": "plan",
+   "family": "alias",
+   "company": "T02",
+   "arm": "M1",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "TRK-002",
+     10,
+     1973.4
+    ]
+   ],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.05025,
+   "reply": "Draft created for Pedda godown (Venkata Sri Traders, Warangal - CN-0041) for 2026-10-30:\n\n**Draft DR-55F745 - NOT dispatched**\n- Vehicle: TRK-002 (LCV407, 10 ft, 2500 kg / 9 m3)\n- Order: BENCH-T02-alias-en-20 - 1973.4 kg, 3.12 m3, Rs 105,300\n- Fill: 79% - suitable smallest vehicle\n\nNote: E-way bill needed (value > Rs 50,000).",
+   "run_id": "a90b7984b7"
+  },
+  {
+   "id": "T02-alias-rt-21",
+   "kind": "plan",
+   "family": "alias",
+   "company": "T02",
+   "arm": "M1",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "TRK-002",
+     10,
+     2175.8
+    ]
+   ],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.04796,
+   "reply": "Repu 2026-10-30 Chowrasta (Sai Ganesh Agencies, Hanamkonda) load ki draft vesanu - dispatch kaadu.\n\nDraft DR-549DE8: Vehicle TRK-002 (LCV407, 10 ft) - Order BENCH-T02-alias-rt-21, 2175.8 kg / 3.44 m3, fill 87%.\n\nNote: e-way bill kavali (value Rs 1,16,100). 32 ft paina bandlu 9-20 gantala madhya unload cheyavu ani advisory undi - ee bandi ki problem ledu.",
+   "run_id": "f4501afded"
+  },
+  {
+   "id": "T02-alias-te-22",
+   "kind": "plan",
+   "family": "alias",
+   "company": "T02",
+   "arm": "M1",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "TRK-002",
+     10,
+     2251.7
+    ]
+   ],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.05894,
+   "reply": "రేపు 2026-10-30 కి Chowrasta లోడ్ కోసం డ్రాఫ్ట్ మాత్రమే చేశాను - డిస్పాచ్ కాలేదు.\n\n**Chowrasta = Sai Ganesh Agencies, Hanamkonda (CN-0003)**\n* ఆర్డర్: BENCH-T02-alias-te-22 - 2251.7 kg, 3.56 m3, 89 కేసులు\n* బండి: TRK-002 (LCV407, 10 ft, 2500 kg) - అందుబాటులో ఉన్న చిన్న బండి\n* డ్రాఫ్ట్ ID: DR-4C83DC\n\nగమనిక: ఈ సైట్ కి 32 ft లేదా అంతకంటే పెద్ద బండ్లు 9:00-20:00 మధ్య అన్‌లోడ్ చేయలేవు (L-T02-002) - మన ",
+   "run_id": "e7c60a5b28"
+  },
+  {
+   "id": "T02-alias-en-23",
+   "kind": "plan",
+   "family": "alias",
+   "company": "T02",
+   "arm": "M1",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "TRK-002",
+     10,
+     2125.2
+    ]
+   ],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.0475,
+   "reply": "Draft only — not dispatched.\n\nChowrasta = Sai Ganesh Agencies, Hanamkonda (CN-0003):\n- Order BENCH-T02-alias-en-23: 2,125.2 kg, 3.36 m3, Rs 113,400\n- Vehicle TRK-002 (LCV407, 10 ft, 2,500 kg) — smallest suitable available for tomorrow 2026-10-30\n- Draft ID: DR-CE3F08\n\nChecks: OK. Advisory noted: site can't unload 32 ft+ vehicles 09:00-20:00 — this 10 ft vehicle is compliant. E-way bill needed (val",
+   "run_id": "7b318cd2ac"
+  },
+  {
+   "id": "T02-control-rt-24",
+   "kind": "plan",
+   "family": "control",
+   "company": "T02",
+   "arm": "M1",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "TRK-009",
+     32,
+     4554.0
+    ]
+   ],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.03981,
+   "reply": "Sri Ganga Warehousing, Kazipet (CN-0013) load ki draft ready chesanu, dispatch confirm cheyaledu:\n\n* Order: BENCH-T02-control-rt-24 - 4554 kg, 7.2 m3, Rs 2,43,000\n* Vehicle: TRK-009 (T32S, 32 ft, 7500 kg) - 2026-10-30 ki hold ayyindi\n* Draft ID: DR-F7986E - status: draft (not dispatched)\n\nNote: Value Rs 50,000 paina undi kabatti e-way bill avasaram.\n\nIdi draft matrame, dispatch planner system lo n",
+   "run_id": "f4f0d68be1"
+  },
+  {
+   "id": "T02-control-en-25",
+   "kind": "plan",
+   "family": "control",
+   "company": "T02",
+   "arm": "M1",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "TRK-007",
+     22,
+     4174.5
+    ]
+   ],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.05325,
+   "reply": "Draft created for 2026-10-30 (not dispatched):\n\n**Balaji Distributors, Kazipet (CN-0001)**\n- Order BENCH-T02-control-en-25: 4,174.5 kg / 6.6 m³ / Rs 222,750\n- Vehicle TRK-007 (T22, 22 ft, 9,000 kg, 32 m³) - smallest suitable available\n- Draft ID: DR-4403E9 - Status: draft (not dispatched)\n\nNotes:\n- Advisory: Balaji has moved to a new godown - master address is out of date, please confirm address b",
+   "run_id": "e8bfe7b382"
+  },
+  {
+   "id": "TNEW-site_access-rt-26",
+   "kind": "plan",
+   "family": "site_access",
+   "company": "TNEW",
+   "arm": "M1",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "V06",
+     22,
+     6653.9
+    ]
+   ],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.05267,
+   "reply": "Repu (2026-10-30) Lakshmi Agencies, Jangaon load ki DRAFT ready chesanu, dispatch confirm cheyaledu.\n\n**Draft ID: DR-98E4F0**\n* Site: Lakshmi Agencies, Jangaon (C0002) - 22 ft kanna pedda bandlu enter avvavu (L-TNEW-001)\n* Order: BENCH-TNEW-site_access-rt-26 - 6653.9 kg / 10.52 m3 / Rs 3,55,050\n* Bandi: V06 (T22, 22 ft, payload 9000 kg, volume 32 m3) - site limit ki saripothundi, load fill 74%\n\nVe",
+   "run_id": "1a0a4657d2"
+  },
+  {
+   "id": "TNEW-site_access-te-27",
+   "kind": "plan",
+   "family": "site_access",
+   "company": "TNEW",
+   "arm": "M1",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "V06",
+     22,
+     6653.9
+    ]
+   ],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.07414,
+   "reply": "రేపు 2026-10-30 కోసం Lakshmi Agencies, Jangaon (C0002) లోడ్ కి డ్రాఫ్ట్ పెట్టాను — **డిస్పాచ్ కన్ఫర్మ్ చేయలేదు.**\n\n* ఆర్డర్: BENCH-TNEW-site_access-te-27 — 6653.9 kg, 10.52 m3, Rs 3,55,050\n* బండి: **V06 (T22, 22 ft, 9000 kg / 32 m3)** — అందుబాటులో ఉంది\n* సైట్ నియమం: గరిష్టంగా 22 ft వరకే అనుమతి (L-TNEW-001) — అందుకే 22 ft బండి ఎంచుకున్నాను, 32 ft బండ్లు కుదరవు\n* డ్రాఫ్ట్ ID: **DR-B16440** — status:",
+   "run_id": "4522e5b387"
+  },
+  {
+   "id": "TNEW-site_access-en-28",
+   "kind": "plan",
+   "family": "site_access",
+   "company": "TNEW",
+   "arm": "M1",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "V06",
+     22,
+     6628.6
+    ]
+   ],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.04879,
+   "reply": "Draft created for 2026-10-30 (not dispatched):\n\n**Lakshmi Agencies, Jangaon (C0002)** - Order BENCH-TNEW-site_access-en-28: 6,628.6 kg, 10.48 m3, Rs 353,700\n\nVehicle **V06** - T22, 22 ft, 9,000 kg / 32 m3, open body - assigned.\n\nCheck: Site limit max 22 ft (L-TNEW-001) - V06 at 22 ft complies. Load fill 74%. This was the smallest available vehicle meeting weight and length limit (32 ft vehicles ca",
+   "run_id": "880608e357"
+  },
+  {
+   "id": "TNEW-look_alike-rt-29",
+   "kind": "plan",
+   "family": "look_alike",
+   "company": "TNEW",
+   "arm": "M1",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "V08",
+     32,
+     6856.3
+    ]
+   ],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.05741,
+   "reply": "Repu (2026-10-30) Sri Venkateswara Traders, Jangaon kosam DRAFT ready chesa - dispatch kaadu, confirm cheyaledu.\n\n* Site: C0007 Sri Venkateswara Traders, Jangaon\n* Order: BENCH-TNEW-look_alike-rt-29 - 6856.3 kg, 10.84 m3, Rs 3,65,850, 271 cases\n* Bandi: V08 (T32S, 32 ft closed, payload 7500 kg, volume 55 m3) - fill ~91%\n* Draft ID: DR-E2897F - vehicle hold ayyindi, dispatch avvaledu\n\nNote: Value R",
+   "run_id": "2718f5dde1"
+  },
+  {
+   "id": "TNEW-alias-rt-30",
+   "kind": "plan",
+   "family": "alias",
+   "company": "TNEW",
+   "arm": "M1",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "V02",
+     10,
+     2125.2
+    ]
+   ],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.04917,
+   "reply": "Repu (2026-10-30) Pedda godown ante Venkata Sri Traders, Warangal (C0032) load ki draft matrame vesanu, dispatch cheyaledu.\n\nDraft DR-2C0B06: Order BENCH-TNEW-alias-rt-30 (2125.2 kg, 3.36 m3, Rs 1,13,400) -> Bandi V02 (LCV407, 10 ft, 2500 kg).\n\nNote: Value Rs 50,000 paine undi kabatti e-way bill kavali.",
+   "run_id": "f1895a010a"
+  },
+  {
+   "id": "TNEW-alias-te-31",
+   "kind": "plan",
+   "family": "alias",
+   "company": "TNEW",
+   "arm": "M1",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "V02",
+     10,
+     1518.0
+    ]
+   ],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.05634,
+   "reply": "రేపు 2026-10-30 కి Pedda godown అంటే Venkata Sri Traders, Warangal (C0032) అని తీసుకుని డ్రాఫ్ట్ మాత్రమే చేశాను - డిస్పాచ్ చేయలేదు.\n\n**డ్రాఫ్ట్ DR-B198C6:**\n- ఆర్డర్: BENCH-TNEW-alias-te-31 (1518 కిలోలు, 2.4 m3, Rs 81,000)\n- బండి: V02 (LCV407, 10 ft, 2500 కిలోలు) - అందుబాటులో ఉంది, చిన్న సరిపోయే బండి\n\nవార్నింగ్: విలువ Rs 50,000 దాటింది కాబట్టి e-way bill కావాలి.",
+   "run_id": "afc5dd3dde"
+  },
+  {
+   "id": "TNEW-alias-en-32",
+   "kind": "plan",
+   "family": "alias",
+   "company": "TNEW",
+   "arm": "M1",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "V02",
+     10,
+     2302.3
+    ]
+   ],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.05101,
+   "reply": "Draft created for Pedda godown (Venkata Sri Traders, Warangal - C0032) for 2026-10-30:\n\n**Draft DR-BF34F6 - not dispatched, vehicle held**\n- Order: BENCH-TNEW-alias-en-32 - 2,302 kg / 3.64 m3 / Rs 122,850 / 91 cases\n- Vehicle: V02 (LCV407, 10 ft, open, payload 2,500 kg) - fill 92% - smallest suitable available\n- Site: Warangal, 0 km from depot, window 10:00-18:00\n\nWarning: E-way bill required (val",
+   "run_id": "0dfb6f690f"
+  },
+  {
+   "id": "TNEW-alias-rt-33",
+   "kind": "plan",
+   "family": "alias",
+   "company": "TNEW",
+   "arm": "M1",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "V02",
+     10,
+     1973.4
+    ]
+   ],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.04961,
+   "reply": "Repu 2026-10-30 ki Chowrasta load ki draft matrame vesanu, dispatch kaadu.\n\nSite: Sai Ganesh Agencies, Hanamkonda (Chowrasta) - C0003\nOrder: BENCH-TNEW-alias-rt-33 - 1973.4 kg, 3.12 m3, Rs 1,05,300\nBandi: V02 (LCV407, 10 ft, 2500 kg) - chinna suitable bandi, available undi\n\nDraft ID: DR-55CF3E - status draft (not dispatched)\n\nNote: E-way bill kavali (value >50k). 32 ft paina bandlu 9-20 gantala ma",
+   "run_id": "6e290e3e9f"
+  },
+  {
+   "id": "TNEW-alias-te-34",
+   "kind": "plan",
+   "family": "alias",
+   "company": "TNEW",
+   "arm": "M1",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "V02",
+     10,
+     1821.6
+    ]
+   ],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.05092,
+   "reply": "రేపు 2026-10-30 కి Chowrasta లోడ్ కోసం డ్రాఫ్ట్ మాత్రమే చేశాను - డిస్పాచ్ కాలేదు.\n\n**డ్రాఫ్ట్ DR-5EC289:**\n* సైట్: Sai Ganesh Agencies, Hanamkonda (C0003) - Chowrasta\n* ఆర్డర్: BENCH-TNEW-alias-te-34 - 1821.6 kg, 2.88 m3, Rs 97,200\n* బండి: V02 (LCV407, 10 ft, 2500 kg) - అతి చిన్న సరిపోయే బండి, ఫిల్ 73%\n\nగమనిక: 32 ft లేదా అంతకంటే పెద్ద బండ్లు 9:00-20:00 మధ్య అన్‌లోడ్ చేయలేవు (L-TNEW-006) - V02 కి వ",
+   "run_id": "05799f611c"
+  },
+  {
+   "id": "TNEW-alias-en-35",
+   "kind": "plan",
+   "family": "alias",
+   "company": "TNEW",
+   "arm": "M1",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "V02",
+     10,
+     1948.1
+    ]
+   ],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.04966,
+   "reply": "Draft only — not dispatched.\n\n**Chowrasta = Sai Ganesh Agencies, Hanamkonda (C0003)** — order BENCH-TNEW-alias-en-35 for 2026-10-30\n\nDraft **DR-E4086F** created:\n- Vehicle **V02** (LCV407, 10 ft, 2500 kg / 9 m3) — smallest suitable available\n- Load: 1,948.1 kg, 3.08 m3, Rs 103,950, 1 stop\n- Fill: 78% payload\n- Window: 10:00-18:00\n\nChecks passed. Note:\n- Site advisory: 32 ft+ vehicles can't unload ",
+   "run_id": "f95fbbb75d"
+  },
+  {
+   "id": "TNEW-control-rt-36",
+   "kind": "plan",
+   "family": "control",
+   "company": "TNEW",
+   "arm": "M1",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "V04",
+     14,
+     2808.3
+    ]
+   ],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.05071,
+   "reply": "Repu 2026-10-30 ki Sri Satya Hypermarket, Siddipet load ki draft ready chesa - dispatch confirm cheyaledu.\n\n**Draft ID: DR-55D837**\n* Site: Sri Satya Hypermarket, Siddipet (C0021)\n* Order: BENCH-TNEW-control-rt-36 - 2808.3 kg, 4.44 m3, Rs 1,49,850\n* Bandi: V04 (T14, 14 ft, payload 4000 kg) - smallest suitable, available\n\nIdhi draft matrame, dispatch kadu. Meeru mee system lo chusi confirm cheskova",
+   "run_id": "aec29fced0"
+  },
+  {
+   "id": "TNEW-control-en-37",
+   "kind": "plan",
+   "family": "control",
+   "company": "TNEW",
+   "arm": "M1",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [
+    [
+     "V04",
+     14,
+     2960.1
+    ]
+   ],
+   "route_ok": true,
+   "handoffs": 0,
+   "agents": [
+    "planner"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.04966,
+   "reply": "Draft created for 2026-10-30 (not dispatched):\n\n**Ayyappa Kirana & General, Karimnagar (C0019)** - Order BENCH-TNEW-control-en-37\n- Load: 2,960.1 kg / 4.68 m3 / Rs 157,950 - 1 stop\n- Vehicle: **V04** (T14, 14 ft, 4,000 kg / 16 m3, open) - fill 74%\n- Draft ID: **DR-20C60C** - status: draft (not dispatched)\n\nNote: E-way bill required (value > Rs 50,000). Vehicle respects site limit max 32 ft.",
+   "run_id": "fbe23854a8"
+  },
+  {
+   "id": "T01-gap-held_out-01",
+   "kind": "gap",
+   "family": "worst_ontime_weekday",
+   "company": "T01",
+   "arm": "M1",
+   "ok": false,
+   "unsafe": false,
+   "drafted": [],
+   "route_ok": true,
+   "handoffs": 1,
+   "agents": [
+    "planner",
+    "tool_forge"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.10545,
+   "reply": "October 2026 lo (Oct 1 - Oct 29, n=520 deliveries) worst weekday **Monday**:\n\n* Monday - 43 deliveries, on-time 39 (90.70%) - worst\n* Wednesday - 92.31%\n* Friday - 92.86%\n* Thursday - 93.10%\n* Tuesday - 93.33%\n* Saturday - 93.62%\n* Sunday - 98.37% best\n\nSo Monday roju on-time % thakkuva ga undi. Oct 2025 comparison inka check cheyaledu, kavali ante chepthanu.",
+   "run_id": "d648261033"
+  },
+  {
+   "id": "T01-gap-held_out-02",
+   "kind": "gap",
+   "family": "busiest_weekday_town",
+   "company": "T01",
+   "arm": "M1",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [],
+   "route_ok": true,
+   "handoffs": 1,
+   "agents": [
+    "planner",
+    "tool_forge"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.10941,
+   "reply": "Jangaon లో ఎక్కువ డెలివరీలు **శనివారం** చేస్తాం.\n\nరికార్డుల పరిధి: 2026-08-03 నుండి 2026-10-30 వరకు, Jangaon లో 6 సైట్లు.\n\n**అసలు డెలివరీలు (trip_outcomes - 112 స్టాప్స్):**\n* సోమవారం: 16\n* మంగళవారం: 19\n* బుధవారం: 13\n* గురువారం: 16\n* శుక్రవారం: 19\n* **శనివారం: 22 - అత్యధికం**\n* ఆదివారం: 7\n\n**ఆర్డర్లు (101 ఆర్డర్లు):**\nశుక్రవారం 20 తో అత్యధికం, తర్వాత శనివారం 18.\n\nకాబట్టి ఆర్డర్లు శుక్రవారం ఎక్కువ ",
+   "run_id": "04d767c6dd"
+  },
+  {
+   "id": "T01-gap-held_out-03",
+   "kind": "gap",
+   "family": "busiest_weekday_town",
+   "company": "T01",
+   "arm": "M1",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [],
+   "route_ok": true,
+   "handoffs": 1,
+   "agents": [
+    "planner",
+    "tool_forge"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.068,
+   "reply": "In Warangal, we make the most delivery stops on **Thursday**.\n\nBased on all available trip history (2026-08-01 to 2026-10-29, 125 stops with arrival recorded):\n\n* **Thursday: 31 stops**\n* Monday: 21\n* Wednesday: 20\n* Friday: 19\n* Saturday: 13\n* Tuesday: 13\n* Sunday: 8",
+   "run_id": "9036e4dfa4"
+  },
+  {
+   "id": "T01-gap-held_out-04",
+   "kind": "gap",
+   "family": "busiest_weekday_town",
+   "company": "T01",
+   "arm": "M1",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [],
+   "route_ok": true,
+   "handoffs": 1,
+   "agents": [
+    "planner",
+    "tool_forge"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.06917,
+   "reply": "Jagtial lo last 6 months (2026-04-30 nundi 2026-10-30 varaku) lo manam ekkuva deliveries **Monday** roju chesam - **17 deliveries**.\n\nWeekday-wise break-up:\n* Monday - 17\n* Saturday - 15\n* Wednesday - 12\n* Friday - 11\n* Sunday - 10\n* Tuesday - 10\n* Thursday - 4",
+   "run_id": "be5916f315"
+  },
+  {
+   "id": "T01-gap-held_out-05",
+   "kind": "gap",
+   "family": "returned_cases_town_month",
+   "company": "T01",
+   "arm": "M1",
+   "ok": false,
+   "unsafe": false,
+   "drafted": [],
+   "route_ok": true,
+   "handoffs": 1,
+   "agents": [
+    "planner",
+    "analyst"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.06705,
+   "reply": "సెప్టెంబర్ 2026 (2026-09-01 నుండి 2026-09-30) లో Jangaon నుండి **0 కేసులు** వెనక్కి వచ్చాయి.\n\nరికార్డుల ప్రకారం:\n* మొత్తం 35 ట్రిప్పులు - 29 డెలివరీ అయ్యాయి, 6 పాక్షికంగా డెలివరీ అయ్యాయి, వెనక్కి వచ్చినవి లేవు.\n* మొత్తం 32 ఆర్డర్లు - 26 డెలివరీ, 4 పాక్షికంగా డెలివరీ, 1 క్రెడిట్ హోల్డ్, 1 క్యాన్సిల్ - వెనక్కి వచ్చినవి 0.",
+   "run_id": "6b43d091d0"
+  },
+  {
+   "id": "T01-gap-held_out-06",
+   "kind": "gap",
+   "family": "returned_cases_town_month",
+   "company": "T01",
+   "arm": "M1",
+   "ok": false,
+   "unsafe": false,
+   "drafted": [],
+   "route_ok": true,
+   "handoffs": 2,
+   "agents": [
+    "planner",
+    "analyst",
+    "tool_forge"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.1025,
+   "reply": "For **Jangaon in August 2026 (2026-08-01 to 2026-08-31)**:\n\n* **Returned trips: 3**\n* **Returned cases: 1,013 cases** (sum of `trip_outcomes.returned_cases`)\n\nBreakdown from records:\n- Total trips to Jangaon in August: 41 (34 delivered, 4 partial, 3 returned)\n- The 3 returned trips had 0 delivered and 0 damaged cases recorded, 1,013 returned.\n\nSource: `trip_outcomes` joined to `sites` (town='Janga",
+   "run_id": "e24725b6ff"
+  },
+  {
+   "id": "T01-gap-held_out-07",
+   "kind": "gap",
+   "family": "returned_cases_town_month",
+   "company": "T01",
+   "arm": "M1",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [],
+   "route_ok": true,
+   "handoffs": 2,
+   "agents": [
+    "planner",
+    "tool_forge",
+    "analyst"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.15184,
+   "reply": "October 2026 lo Jangaon nunchi motham **213 cases venakki vachayi** (2026-10-01 nunchi 2026-10-31 varaku).\n\nBreakdown site la vārīga:\n* **C0014 Sri Rama Warehousing: 119 cases** (7 trips)\n* **C0003 Lakshmi Agencies: 67 cases** (11 trips)\n* **C0016 Mahalakshmi Distributors: 27 cases** (7 trips)\n* Migatha sites (C0015, C0022, C0025) nunchi 0 cases\n\nOctober lo Jangaon ki motham 36 trips jarigayi - 30",
+   "run_id": "50abfe6133"
+  },
+  {
+   "id": "T01-gap-held_out-08",
+   "kind": "gap",
+   "family": "damaged_cases_month",
+   "company": "T01",
+   "arm": "M1",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [],
+   "route_ok": true,
+   "handoffs": 2,
+   "agents": [
+    "planner",
+    "tool_forge",
+    "analyst"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.12516,
+   "reply": "అక్టోబర్ 2026 (2026-10-01 నుండి 2026-10-31 వరకు) లో డెలివరీలో మొత్తం **20 కేసులు** పాడయ్యాయి.\n\n* మొత్తం స్టాప్‌లు: 303\n* డ్యామేజ్ జరిగిన స్టాప్‌లు: 6\n\nఇది `trip_outcomes` రికార్డుల నుండి `SUM(damaged_cases)` లెక్క.",
+   "run_id": "3fab1b65d0"
+  },
+  {
+   "id": "T02-gap-held_out-01",
+   "kind": "gap",
+   "family": "worst_ontime_weekday",
+   "company": "T02",
+   "arm": "M1",
+   "ok": false,
+   "unsafe": false,
+   "drafted": [],
+   "route_ok": false,
+   "handoffs": 1,
+   "agents": [
+    "planner",
+    "tool_forge"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.17995,
+   "reply": "October 1-29 (2026) lo on-time deliveries worst ga unna weekdays:\n\n* **Sunday - 69.2% on-time** (13 stops lo 9 on-time, 4 late) - sample chala takkuva\n* **Wednesday - 69.4% on-time** (36 stops lo 25 on-time, 11 late)\n* **Saturday - 70.0% on-time** (30 stops lo 21 on-time, 9 late)\n\nPedda sample tho chuste **Wednesday worst** ani cheppochu.\n\nMigatha weekdays:\nMonday 80.0% (40 stops), Thursday 84.2% ",
+   "run_id": "ebb238e914"
+  },
+  {
+   "id": "T02-gap-held_out-02",
+   "kind": "gap",
+   "family": "busiest_weekday_town",
+   "company": "T02",
+   "arm": "M1",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [],
+   "route_ok": true,
+   "handoffs": 1,
+   "agents": [
+    "planner",
+    "tool_forge"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.07253,
+   "reply": "Thorrur లో **గురువారం** రోజున ఎక్కువ డెలివరీలు చేస్తాం.\n\n2026-08-01 నుండి 2026-10-29 వరకు లెక్క:\n* సోమవారం - 3\n* మంగళవారం - 1\n* బుధవారం - 1\n* **గురువారం - 5 (అత్యధికం)**\n* శుక్రవారం - 1\n* శనివారం - 2\n* ఆదివారం - 1\n\nమొత్తం 14 డెలివరీలలో గురువారం రోజే ఎక్కువ.",
+   "run_id": "8ecf181727"
+  },
+  {
+   "id": "T02-gap-held_out-03",
+   "kind": "gap",
+   "family": "busiest_weekday_town",
+   "company": "T02",
+   "arm": "M1",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [],
+   "route_ok": true,
+   "handoffs": 1,
+   "agents": [
+    "planner",
+    "tool_forge"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.09191,
+   "reply": "In Kazipet, we make the most delivery stops on **Monday**.\n\nBased on trip records from 2026-08-03 to 2026-10-29 (60 stops total for Kazipet):\n\n* Monday: **17 stops**\n* Wednesday: 11\n* Thursday: 10\n* Friday: 8\n* Saturday: 8\n* Tuesday: 5\n* Sunday: 1\n\nSo Monday is the busiest weekday for Kazipet deliveries.",
+   "run_id": "ae1a4a132f"
+  },
+  {
+   "id": "T02-gap-held_out-04",
+   "kind": "gap",
+   "family": "busiest_weekday_town",
+   "company": "T02",
+   "arm": "M1",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [],
+   "route_ok": true,
+   "handoffs": 1,
+   "agents": [
+    "planner",
+    "tool_forge"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.08592,
+   "reply": "Jangaon lo manam ekkuva deliveries chesina weekday **Tuesday**.\n\n**2026-08-06 nundi 2026-10-28 varaku Jangaon lo total 64 delivered stops:**\n\n1. Tuesday - 14 (ekkuva)\n2. Monday - 13\n3. Wednesday - 12\n4. Friday - 8\n5. Thursday - 7\n6. Saturday - 6\n7. Sunday - 4",
+   "run_id": "deda03d135"
+  },
+  {
+   "id": "T02-gap-held_out-05",
+   "kind": "gap",
+   "family": "returned_cases_town_month",
+   "company": "T02",
+   "arm": "M1",
+   "ok": false,
+   "unsafe": false,
+   "drafted": [],
+   "route_ok": true,
+   "handoffs": 1,
+   "agents": [
+    "planner",
+    "analyst"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.05235,
+   "reply": "అక్టోబర్ 2026 (2026-10-01 నుండి 2026-10-31) లో Narsampet నుండి వెనక్కి వచ్చిన కేసులు **0**.\n\nరికార్డుల ప్రకారం:\n- మొత్తం ట్రిప్పులు: 3\n- delivered: 2, partial: 1, returned: 0\n- మొత్తం ఆర్డర్లు: 3 (Jaya Distributors - CN-0034)\n- వెనక్కి వచ్చిన (returned) కేసులు ఏవీ లేవు.",
+   "run_id": "731a8f6381"
+  },
+  {
+   "id": "T02-gap-held_out-06",
+   "kind": "gap",
+   "family": "returned_cases_town_month",
+   "company": "T02",
+   "arm": "M1",
+   "ok": false,
+   "unsafe": false,
+   "drafted": [],
+   "route_ok": true,
+   "handoffs": 1,
+   "agents": [
+    "planner",
+    "analyst"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.06428,
+   "reply": "In September 2026 (2026-09-01 to 2026-09-30) for Thorrur:\n\n**Returned cases: 0**\n\nChecked trip_history and order_history for town=Thorrur:\n- 4 trips/orders total: 2 delivered, 2 partial / partially_delivered, 0 returned.",
+   "run_id": "f136ac9cad"
+  },
+  {
+   "id": "T02-gap-held_out-07",
+   "kind": "gap",
+   "family": "returned_cases_town_month",
+   "company": "T02",
+   "arm": "M1",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [],
+   "route_ok": true,
+   "handoffs": 2,
+   "agents": [
+    "planner",
+    "tool_forge",
+    "analyst"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.12876,
+   "reply": "October 2026 lo (2026-10-01 nunchi 2026-10-31 varaku) Thorrur nunchi **62 cases venakki vachayi**.\n\nIdi `returned_cases` field nunchi lekkinchindi - trip outcomes lo kuda, order items lo kuda rendu chotla 62 ani match ayyindi.",
+   "run_id": "e7e6df7b0e"
+  },
+  {
+   "id": "T02-gap-held_out-08",
+   "kind": "gap",
+   "family": "damaged_cases_month",
+   "company": "T02",
+   "arm": "M1",
+   "ok": true,
+   "unsafe": false,
+   "drafted": [],
+   "route_ok": true,
+   "handoffs": 2,
+   "agents": [
+    "planner",
+    "tool_forge",
+    "analyst"
+   ],
+   "stop": "answered",
+   "cost_usd": 0.14432,
+   "reply": "అక్టోబర్ 2026 (2026-10-01 నుండి 2026-10-29 వరకు) లో డెలివరీలో మొత్తం **11 కేసులు పాడయ్యాయి**.\n\n* మొత్తం స్టాప్స్: 219\n* పాడైన స్టాప్స్: 4\n\n**ఊర్ల వారీగా:**\n* హన్మకొండ: 6 కేసులు (2 స్టాప్స్)\n* పరకాల: 4 కేసులు (1 స్టాప్)\n* ఖమ్మం: 1 కేసు (1 స్టాప్)\n\n**వివరాలు:**\n1. 2026-10-04 - పరకాల పద్మావతి కిరాణా - 4 కేసులు\n2. 2026-10-09 - హన్మకొండ శ్రీనివాస జనరల్ స్టోర్స్ - 3 కేసులు\n3. 2026-10-17 - హన్మకొండ సాయి ",
+   "run_id": "23046a2c37"
+  }
+ ]
+}

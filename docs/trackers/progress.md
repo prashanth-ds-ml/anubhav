@@ -3,7 +3,7 @@ tags: [tracker, progress]
 ---
 # Progress tracker
 
-**Overall:** ~90% (as of 2026-10-31: build, learning loops, new tools, nightly review, deploy and all measurements done; EXP-011R replicated 3/3. Left, all owner: dispatcher review, voice, video, README GIF, spend alerts, submit)
+**Overall (2026-10-31):** backend done: multi-agent team, FastAPI, per-agent learning, Docker; EXP-013 measured. Left: team replays and showing the team in a UI (React or Streamlit); owner: dispatcher review, voice, video, README GIF, spend alerts, Space deploy, submit
 Plan: [[build_plan]] · Status key: ⬜ pending · 🟨 in progress · ✅ done · ❌ blocked · ✂️ cut
 History before Oct 29 (order-desk plan): `archive/progress_order_desk.md`
 

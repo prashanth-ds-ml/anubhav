@@ -27,6 +27,10 @@ def results():
         if d:
             out.append({"id": eid, "file": f, "measured_on": "single Planner; tool candidates at the old threshold of 2 requests (now 3, D-045)",
                         "arms": d.get("arms"), "decision": d.get("decision")})
+    f, d = _latest(BENCH, "exp013_2*.json")
+    if d:
+        out.append({"id": "EXP-013", "file": f, "measured_on": "single Planner vs the team, one repeat, 54 cases; learning-round patches approved by a fixed rule in the experiment's own store",
+                    "decision": d["decision"], "learning_round": d["learning_round"], "cost_usd": d["cost_usd"]})
     for eid, pattern in (("EXP-009", "exp009_2*.json"), ("EXP-009b", "exp009b_2*.json")):
         f, d = _latest(LEARN, pattern)
         if d:

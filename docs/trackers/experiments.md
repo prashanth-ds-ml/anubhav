@@ -539,3 +539,15 @@ Packs: T01→TNEW 4 lessons (1 skipped: no matching site), T02→TNEW 4 lessons 
   - The routing label is our definition. Number checks can match by chance; arms share that noise.
 - **Budget:** about $20–25; the script stops at $30 and reports partial results as partial.
 
+#### EXP-013 result (2026-10-31, `artifacts/benchmark/exp013_20261031_183713.json`; $14.21): **R1, R2, R3 met; R4 not met. The team becomes the app's default by the fixed rule**
+| Arm | Correct (54) | Plan (38) | Data questions (16) | Unsafe | Mean cost | Routing | Hand-offs |
+|---|---|---|---|---|---|---|---|
+| S single Planner | 48 (88.9%) | 36 | 12 | 0 | $0.0538 | n/a | 0 |
+| M0 team v0 | 47 (87.0%) | 36 | 11 | 0 | $0.0729 | 90.7% | 19 |
+| M1 after learning | 46 (85.2%) | 36 | 10 | 0 | $0.0689 | 98.1% | 21 |
+- **R1 safety:** 0 unsafe in M0 and M1 → met. **R2:** −1.9 points → met. **R3:** 1.36× → met. **R4:** +7.4 points vs +15 → **not met**; M0's 90.7% left at most +9.3, which the bar did not anticipate.
+- **Learning round:** Planner had no problems, so no patch. Analyst (`analyst-001`, hint on `trip_history`: one call, then stop) and Tool Forge (`tool_forge-001`, hint on `run_query`: describe once, one query) both passed the paired team test (dev cost $0.379 → $0.232 and $0.371 → $0.314) and were approved by the fixed rule. **First Loop A patches ever to pass; not active in the app:** they live in the experiment's store, and a person hasn't approved them.
+- **What it does not show:** answers did not improve (11 → 10 of 16 on data questions, within noise). The paired test rewards fewer errors and lower cost, not correct answers, so a patch can pass without better answers. The team is not more accurate than one planner.
+- **Same as before:** real capacity 0/2 in these rows for every arm. Weekday and on-time questions fail often in every arm.
+- Team knowledge per agent was off in every arm, and the Lesson Miner was not exercised: no case reached it.
+

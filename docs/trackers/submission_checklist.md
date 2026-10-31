@@ -30,14 +30,14 @@ tags: [tracker, submission]
 
 ## README contents
 - [ ] One-line pitch, plus a GIF or screenshot
-- [ ] The problem and who benefits (with cited stats)
+- [x] The problem and who benefits (with cited stats)
 - [x] Meta models used, and how (3 roles)
 - [x] Architecture diagram
 - [x] Setup: one command, plus replay mode (no keys)
 - [x] How to reproduce the benchmark and replay
-- [ ] Results table (honest, with spread) — table in README with case counts; spread comes from EXP-011R (3 repeats, running)
+- [x] Results table (honest, with spread): EXP-011R (3 repeats) and EXP-013 in the README
 - [x] Limitations and next steps
-- [ ] Links: video, hosted demo
+- [ ] Links: video (hosted demo link is in)
 
 ## Post-submission
 - [ ] X post with demo clip (Most Viral window; check the rules in the guide)

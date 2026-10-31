@@ -47,7 +47,7 @@ def health():
 @api.get("/session")
 def session(ws: Workspace = Ws):
     keys = {name: ws.live_ready(key) for name, key in MODELS.items() if key}
-    return {"public": ws.public, "default_mode": "replay", "default_team": False, "models": {k: {"available": not why, "reason": why} for k, why in keys.items()},
+    return {"public": ws.public, "default_mode": "replay", "default_team": True, "models": {k: {"available": not why, "reason": why} for k, why in keys.items()},
             "live_runs_left": ws.live_runs_left(), "caps": {"per_session": LIVE_RUNS_PER_SESSION, "per_day": LIVE_CALLS_PER_DAY}}
 
 
@@ -129,7 +129,7 @@ class Chat(Body):
     mode: Literal["replay", "live"] = "replay"
     model: Literal["open", "spark"] = "open"
     use_lessons: bool = True
-    team: bool = False          # decided Oct 31: the single Planner stays the default until the team is measured
+    team: bool = True           # EXP-013: R1-R3 held, so by its pre-registered rule the team is the default
 
 
 def _history(ws, key):

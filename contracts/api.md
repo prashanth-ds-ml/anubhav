@@ -38,7 +38,7 @@ Built and tested (`tests/api/test_api.py`); the running API documents itself at 
 ## Chat (streamed)
 | Method | Path | Body / query | Returns |
 |---|---|---|---|
-| POST | `/api/chat` | `{company, message, mode: "replay" \| "live", model: "open" \| "spark", use_lessons: true, team: false}` | `{run_id, mode, reason?}` |
+| POST | `/api/chat` | `{company, message, mode: "replay" \| "live", model: "open" \| "spark", use_lessons: true, team: true}` | `{run_id, mode, reason?}` |
 | GET | `/api/chat/stream` | `?run_id=&after=-1` or `Last-Event-ID` | Server-sent events |
 | GET | `/api/runs/{run_id}` | | A whole saved run with teammate runs |
 | POST | `/api/runs/{run_id}/feedback` | `{rating: 0 \| 1, category, note}` | `{feedback_id}` |
