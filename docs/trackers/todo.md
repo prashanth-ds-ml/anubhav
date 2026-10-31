@@ -115,8 +115,22 @@ Owner and Claude in parallel. The single Planner stays the baseline and fallback
 | V1–V4 | React shell on the fixtures (Vite + TS, tokens, chat stream, Why this plan, roster) | ⬜ |
 | V5 | Take the Streamlit-free parts out of `ui/core.py` into a service module | ⬜ |
 
-**Sprint 2 (Nov 1–2):** P8 per-agent harness surfaces · P9 per-agent knowledge · P10 learned routing hints · P11 Tool Forge naming agent · P12 benchmark harness, frozen by hash · P13 live event streaming · V6–V10 FastAPI, SSE, ledger, agent cards, Docker Space ⬜
-**Sprint 3 (Nov 2–3):** P14 practice runs · P15 pre-registered benchmark (≤ $30) · P16 live recordings · P17 fallback check · V11–V15 Proof tab, Playwright, polish, final deploy ⬜
+**Owner's direction (Oct 31, evening): finish the whole backend first (every FastAPI endpoint the UI needs); React later.** Plan: [[backend_plan]] (proposed; 4 open decisions in its §6; B1 starts on the owner's go).
+
+| # | Backend item ([[backend_plan]] §3) | Status |
+|---|---|---|
+| B1 | Service layer out of `ui/core.py`; Streamlit keeps working on it | ⬜ next |
+| B2 | Live event streaming (hook in graph/broker → queue + event store; worker thread) | ⬜ |
+| API | ~45 endpoints in [[backend_plan]] §2 (session, dashboard, chat + SSE, agents, learning, tools, harness, packs, review, proof, ledger, logs, report) | ⬜ |
+| B3 | A learning loop per agent (versions by `agent_id`, rollback per agent, cross-agent gate) | ⬜ |
+| B4 | Knowledge per agent | ⬜ |
+| B5 | Learned routing hints | ⬜ |
+| B6 | Tool Forge agent (naming; code keeps the checks) | ⬜ |
+| B7 | Lesson Miner agent (evidence gate stays in code) | ⬜ |
+| B8 | `learning_event` events | ⬜ |
+| B9 | Benchmark S / M0 / M1 frozen by hash, then the run (~$30) | ⬜ |
+| B10 | Docker image + Hugging Face Space config | ⬜ |
+| Web | React app (V1–V4, V6–V9, V11–V15) | ⬜ later (owner's direction) |
 
 ## Cut
 - ✂️ Hospital and call-centre demos, React frontend, government-docs RAG (D-039; [[ideas_parking_lot]])
