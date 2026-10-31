@@ -21,7 +21,7 @@ from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field, ValidationError, field_validator
 
-from .company import CompanyData, Conflict
+from .company import LIVE_DRAFT, CompanyData, Conflict
 from .safety import rules, validate_draft
 
 ROLES = {"dispatcher": {"read", "draft", "append"}, "viewer": {"read"}, "reviewer": {"read"}}
@@ -369,7 +369,7 @@ def create_dispatch_draft(b, a: CreateDraft):
     d = b._date(a.delivery_date)
     key = a.idempotency_key or f"{d}:{a.vehicle_id}:{','.join(sorted(a.order_ids))}"
     prior = b.C.runtime.by_key(key)
-    if prior and prior["status"] != "draft":   # the earlier attempt was cancelled: this is a new request
+    if prior and prior["status"] not in LIVE_DRAFT:   # the earlier attempt was cancelled: this is a new request
         key, prior = f"{key}#{uuid.uuid4().hex[:6]}", None
     if prior and (prior["vehicle_id"], prior["delivery_date"], sorted(json.loads(prior["order_ids"]))) !=             (a.vehicle_id, d, sorted(a.order_ids)):
         raise ToolError("CONFLICT", f"idempotency key {a.idempotency_key} was already used for draft {prior['draft_id']} "
@@ -635,7 +635,7 @@ def plan_board(b, a: Day):
                "volume_m3": v["volume_m3"], "body": v["body"], "owner": v["owner"]}
         (busy.append({"vehicle_id": v["vehicle_id"], "why": why}) if why else free.append(row))
     orders = [o for s in sites for o in s["orders"]]
-    drafts = [r for r in b.C.runtime.drafts(d) if r["status"] == "draft"]
+    drafts = [r for r in b.C.runtime.drafts(d) if r["status"] in LIVE_DRAFT]
     return {"delivery_date": d, "weekday": WEEKDAYS[date.fromisoformat(d).weekday()],
             "summary": {"open_orders": len(orders), "not_in_a_draft": sum(not o["in_draft"] for o in orders),
                         "total_kg": round(sum(o["kg"] for o in orders)), "sites": len(sites),
@@ -703,7 +703,7 @@ class DraftList(Args):
 def list_dispatch_drafts(b, a: DraftList):
     """The drafts made for a day, and which open orders still have no vehicle."""
     d = b._date(a.delivery_date)
-    rows = [r for r in b.C.runtime.drafts(d) if a.include_cancelled or r["status"] == "draft"]
+    rows = [r for r in b.C.runtime.drafts(d) if a.include_cancelled or r["status"] in LIVE_DRAFT]
     taken = b.C.runtime.orders_in_drafts(d)
     left = [o["order_id"] for o in b.C.orders.values() if o["status"] == "open" and o["delivery_date"] == d and o["order_id"] not in taken]
     out = []

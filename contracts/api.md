@@ -32,6 +32,9 @@ Built and tested (`tests/api/test_api.py`); the running API documents itself at 
 | GET | `/api/dashboard/drafts?company=` | This visitor's drafts: `[{draft_id, status, vehicle_id, orders, load, warnings, stops, why: {run_id, lessons, lessons_in_prompt, agents, tools, checks}, source}]` |
 | GET | `/api/dashboard/drafts?company=&run_id=` | The drafts a saved run made (a replay creates nothing) |
 | POST | `/api/dashboard/drafts/{id}/cancel?company=` | Cancels a draft and releases its vehicle |
+| POST | `/api/dashboard/drafts/{id}/decide?company=` | `{decision: approve \| reject, notes, revise: true, model}`. Approve re-checks the plan first; approved is not dispatched. Reject needs notes, frees the vehicle and, with `revise`, sends the notes back to the agent: `{draft_id, status, revise_run_id, reason?}` |
+| GET | `/api/handoffs?company=` | Runs waiting for this person: `[{run_id, request, handoff: {rule: question \| tool_refused \| reply_refused, question, agent, drafts, tools_used}, saved_at}]` |
+| POST | `/api/runs/{id}/resume` | `{reply, model}`: continues a run stopped for a person, at a limit or on an error, as a new linked run (`resumed_from`). Follow it on `/api/chat/stream` |
 | GET | `/api/dashboard/company?company=` | `{facts, owner, owner_fields, agent_reads, version, versions, written_rules}` |
 | PUT | `/api/dashboard/company/profile?company=` | `{owner: {...}}`: saves a new version |
 

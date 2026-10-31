@@ -88,6 +88,12 @@ def main():
             query(STOPS_SQL, "weekday stops via shipments", "a3"),
             answer_from(busiest),
             answer_from(relay)])
+        asked = team.run(C, Session("T01", "dispatcher", "fixture"), MockClient([
+            mock_tool_call("list_sites", {}, call_id="s1"),
+            mock_tool_call("ask_person", {"question": "Warangal lo ae site ki load veltundi?"}, call_id="q1")], model=MODEL),
+            "Warangal load ki bandi pettu.", supervised=True)
+        asked.pop("checkpoint")
+        runs["needs_person"] = asked
     OUT.mkdir(parents=True, exist_ok=True)
     for name, run in runs.items():
         ev = events.from_run(run)
@@ -98,7 +104,7 @@ def main():
         print(f"{name}: {len(ev)} events, agents {sorted({e['agent_id'] for e in ev})}, "
               f"{', '.join(t for t in events.TYPES if t in types)}")
     must = {"handoff_analyst": {"handoff"}, "retry_tool_missing": {"handoff", "retry", "tool_missing"},
-            "plain_plan": {"draft_created", "lesson_used"}}
+            "plain_plan": {"draft_created", "lesson_used"}, "needs_person": {"needs_person"}}
     for name, need in must.items():
         got = {json.loads(x)["type"] for x in (OUT / f"{name}.jsonl").read_text(encoding="utf-8").splitlines()}
         assert need <= got, (name, need - got)

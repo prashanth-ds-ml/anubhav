@@ -30,8 +30,8 @@ LIVE_CALLS_PER_DAY = 60         # and for the whole app, across every visitor an
 PUBLIC = os.environ.get("ANUBHAV_PUBLIC") == "1"   # hosted for judges: each visitor gets their own drafts and lessons
 COMPANIES = {"T01": "Sri Kakatiya Logistics", "T02": "Ramappa Carriers", "T03": "Deccan Freight Services",
              "TNEW": "Bhadrakali Transport Co (new)"}
-AGENT_MODEL = "spark"           # live agent runs use the Meta API credits (owner, D-046); every measured result is Muse Spark Open
-MODELS = {"Replay (free)": None, "Muse Spark Open": "open", "Muse Spark 1.3": "spark"}
+AGENT_MODEL = "spark"           # the default for live runs (owner, D-046); people can switch to Muse Spark Open. Every measured result is on Open
+MODELS = {"Replay (free)": None, "Muse Spark 1.3": "spark", "Muse Spark Open": "open"}
 SUGGESTIONS = {
     "Roman Telugu": "Repu Jangaon Lakshmi Agencies load ki bandi pettu. Dispatch confirm cheyyaku.",
     "Telugu": "రేపు జనగామ లక్ష్మి ఏజెన్సీస్ లోడ్ కి బండి పెట్టు. డిస్పాచ్ కన్ఫర్మ్ చేయకు.",

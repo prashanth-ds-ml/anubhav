@@ -88,7 +88,7 @@ with left:
             other = [c for c in core.COMPANIES if c != cid and core.replayable(c, use)]
             st.info(f"No saved runs for {cid} with lessons {'on' if use else 'off'}. "
                     + (f"Try {', '.join(other)} in the sidebar" if other else "Try the other lessons setting")
-                    + (", or switch Model to a live option." if not core.live_ready("open") else "."),
+                    + (", or switch Model to a live option." if not core.live_ready(core.AGENT_MODEL) else "."),
                     icon=":material/history:")
     with st.container(border=True):
         audio = st.audio_input(":material/mic: Speak in Telugu, Roman Telugu or English", sample_rate=16000,

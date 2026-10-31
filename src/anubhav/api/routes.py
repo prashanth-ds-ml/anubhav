@@ -17,7 +17,7 @@ from ..learning.store import describe
 from ..runtime.broker import Broker, Session
 from ..runtime.company import CompanyData
 from ..runtime.query import sandbox
-from ..service import knowledge, proof as proof_files, runs, stream, views
+from ..service import checkpoints, knowledge, proof as proof_files, runs, stream, views
 from ..service.session import AGENT_MODEL, COMPANIES, LIVE_CALLS_PER_DAY, LIVE_RUNS_PER_SESSION, MODELS, SUGGESTIONS, Workspace, harness_store
 from ..ui import logs
 from .deps import ApiError, Cid, LocalOnly, Ws, live
@@ -102,6 +102,40 @@ def dash_cancel(draft_id: str, company: str = Cid, ws: Workspace = Ws):
     if not out["ok"]:
         raise ApiError(404 if out["error"]["code"] == "NOT_FOUND" else 409, out["error"]["code"], out["error"]["message"])
     return out["result"]
+
+
+class DraftDecision(Body):
+    decision: Literal["approve", "reject"]
+    notes: str = Field("", max_length=1000)
+    revise: bool = True         # reject: send the notes back to the agent (a live run)
+    model: Literal["open", "spark"] = AGENT_MODEL
+
+
+REVISE = "The planner rejected draft {draft}, and its vehicle hold is released. Their notes: {notes}\nMake a new draft that fixes this, or ask them if it can't be fixed."
+
+
+@api.post("/dashboard/drafts/{draft_id}/decide")
+def dash_decide(draft_id: str, body: DraftDecision, company: str = Cid, ws: Workspace = Ws):
+    if body.decision == "reject" and not body.notes.strip():
+        raise ApiError(422, "BAD_ARGS", "a rejection needs notes: they tell the agent what to fix")
+    if not ws.company(company).runtime.draft(draft_id):
+        raise ApiError(404, "NOT_FOUND", f"no draft {draft_id}")
+    ok, errors = runs.decide_draft(ws, company, draft_id, body.decision, body.notes.strip())
+    if not ok:
+        raise ApiError(409, "NOT_ALLOWED", "; ".join(str(e.get("message", e)) if isinstance(e, dict) else str(e) for e in errors), errors=errors)
+    out = {"draft_id": draft_id, "status": ws.company(company).runtime.draft(draft_id)["status"], "revise_run_id": None}
+    if body.decision == "approve" or not body.revise:
+        return out
+    cp = checkpoints.for_draft(ws.sid, company, draft_id)
+    if not cp:
+        return {**out, "reason": "no saved conversation for this plan, so the agent can't revise it"}
+    client, blocked = ws.live_client(body.model)
+    if blocked:
+        return {**out, "reason": blocked}
+    run_id = stream.start(ws, client, company, REVISE.format(draft=draft_id, notes=body.notes.strip()), cp["use_lessons"], (), cp["team"],
+                          resume={"run_id": cp["run_id"], "state": cp["state"]})
+    _remember(ws, f"{company}:{cp['use_lessons']}:{cp['team']}", run_id)
+    return {**out, "revise_run_id": run_id}
 
 
 @api.get("/dashboard/company")
@@ -190,6 +224,34 @@ def chat_stream(request: Request, run_id: str, after: int = -1, ws: Workspace = 
             yield ": keepalive\n\n" if e is None else _sse(e["type"], e["seq"], e)
         yield _sse("end", None, {"run_id": run_id, "stop": stream.status(run_id).get("stop"), "mode": "live"})
     return StreamingResponse(gen(), media_type="text/event-stream", headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"})
+
+
+@api.get("/handoffs")
+def handoffs(company: str = Cid, ws: Workspace = Ws):
+    return checkpoints.waiting(ws.sid, company)
+
+
+class Resume(Body):
+    reply: str = Field(min_length=1, max_length=2000)
+    model: Literal["open", "spark"] = AGENT_MODEL
+
+
+@api.post("/runs/{run_id}/resume")
+def run_resume(run_id: str, body: Resume, ws: Workspace = Ws):
+    """Continue a run that stopped for a person, at a limit or on an error. Nothing happens without a person's reply."""
+    cp = checkpoints.get(run_id, ws.sid)
+    if not cp:
+        raise ApiError(404, "NOT_FOUND", f"no resumable run {run_id}")
+    if cp["stop"] not in checkpoints.RESUMABLE:
+        raise ApiError(409, "NOT_WAITING", f"this run ended as {cp['stop']}: send a new message instead")
+    if cp["status"] != "open":
+        raise ApiError(409, "ALREADY_RESUMED", "this run was already resumed")
+    client = live(ws, body.model)
+    if not checkpoints.claim(run_id):
+        raise ApiError(409, "ALREADY_RESUMED", "this run was already resumed")
+    new_id = stream.start(ws, client, cp["company"], body.reply.strip(), cp["use_lessons"], (), cp["team"], resume={"run_id": run_id, "state": cp["state"]})
+    _remember(ws, f"{cp['company']}:{cp['use_lessons']}:{cp['team']}", new_id)
+    return {"run_id": new_id, "resumed_from": run_id, "mode": "live"}
 
 
 @api.get("/runs/{run_id}")

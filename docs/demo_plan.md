@@ -50,7 +50,9 @@ Replays are labelled "replay" on screen. Voice and video remain the owner's.
 | Top strip | Loop, agents, who is acting now | `/api/agents`, stream |
 | Chat and stream | Request, cards by event type, indented by depth, reply | `/api/suggestions`, `/api/chat`, `/api/chat/stream` |
 | Orders | Tomorrow's orders, in a draft or not | `/api/dashboard/orders` |
-| Plans | Drafts, ordered stops (labelled estimated), verdict, why this plan | `/api/dashboard/drafts` |
+| Plans | Drafts, ordered stops (labelled estimated), verdict, why this plan; approve, or reject with notes | `/api/dashboard/drafts`, `/decide` |
+| Waiting for you | Runs stopped for a person: the question, what was tried, a reply box | `/api/handoffs`, `/api/runs/{id}/resume` |
+| Model switch | Replay, Muse Spark 1.3 (default), Muse Spark Open; each live result labelled with its model | `/api/session`, `model` on `/api/chat` |
 | Fleet | Vehicles, free or why not | `/api/dashboard/fleet` |
 | Company | Profile, written rules | `/api/dashboard/company` |
 | Learning | Lessons, approve or reject, timeline | `/api/learning/*` |
@@ -60,9 +62,9 @@ Replays are labelled "replay" on screen. Voice and video remain the owner's.
 | Proof | Results, each with what it measured; limitations | `/api/proof` |
 | Logs | Runs, one run's timeline, ledger | `/api/logs/*`, `/api/ledger` |
 
-**Stream cards:** `agent_start`, `tool_call` + `tool_result` (one card), `retry` (attempt n of 3), `tool_missing` (alert), `handoff` (with the brief), `lesson_used`, `validator_check`, `draft_created`, `learning_event`, `agent_done`. Build on `web/fixtures/*.jsonl` first.
+**Stream cards:** `agent_start`, `tool_call` + `tool_result` (one card), `retry` (attempt n of 3), `tool_missing` (alert), `handoff` (with the brief), `lesson_used`, `validator_check` (including refused replies), `needs_person` (alert), `draft_created`, `learning_event`, `agent_done`. Build on `web/fixtures/*.jsonl` first.
 
-**Replay only on the host:** no keys there, so the demo costs $0. The 🔒 actions appear disabled with the reason.
+**Host:** with no keys it is replay only and costs $0, and judges can't try either model live. Saved replays are all on Muse Spark Open except any recorded later. To let judges switch models live, the host needs both keys, and the caps (8 runs a session, 60 a day, shared) are what limit spend. The 🔒 actions appear disabled with the reason.
 
 **Empty per-agent curves:** `scores` is empty until something measures them. Show "not measured yet", never a placeholder chart.
 
@@ -71,4 +73,4 @@ Replays are labelled "replay" on screen. Voice and video remain the owner's.
 ## Decisions for the owner
 1. **React + FastAPI, or Streamlit on the same service layer?** React matches the design and looks better; Streamlit is already hosted and is the safer path with the video still to record. Recommended: start React on the fixtures, and keep Streamlit as the hosted link until React passes in an incognito window.
 2. **Host:** a Hugging Face Docker Space ([[deploy]]), or keep only Streamlit.
-3. **Agent model:** the app's live default is now Muse Spark 1.3 (Meta credits). The measured results and the Best Open Weights pitch are on Muse Spark Open. Replays stay real Open runs, so the demo isn't affected unless someone runs live.
+3. **Keys on the host (owner wants judges to try both models):** add both keys to the host, with the existing caps? Worst case is 60 live runs a day; at the $0.40 a request ceiling that is at most $24 a day, typically far less. Results differ by model, and all measured numbers are on Muse Spark Open.

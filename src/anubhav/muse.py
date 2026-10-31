@@ -101,7 +101,7 @@ def open_weights_client(**defaults) -> MuseClient:
     return MuseClient(OPEN_MODEL, key_for("open"), BASETEN_URL, **defaults)
 
 
-def client(name: str = "open", **defaults):
+def client(name: str = "spark", **defaults):
     """'open' = Muse Spark Open on Baseten, 'spark' = Muse Spark 1.3 on the Meta API."""
     return open_weights_client(**defaults) if name == "open" else MuseClient(**defaults)
 

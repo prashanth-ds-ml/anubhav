@@ -15,7 +15,7 @@
     "depth": {"type": "integer", "minimum": 0, "maximum": 2, "description": "0 = lead; 1-2 = teammates reached by delegate."},
     "ts": {"type": ["string", "null"], "description": "When the run was saved (ISO 8601); null for a run not yet saved."},
     "type": {"enum": ["agent_start", "tool_call", "tool_result", "retry", "tool_missing", "handoff", "lesson_used",
-                      "validator_check", "draft_created", "agent_done", "learning_event"]},
+                      "validator_check", "draft_created", "agent_done", "learning_event", "needs_person"]},
     "payload": {"type": "object"}
   },
   "allOf": [
@@ -40,6 +40,8 @@
     {"if": {"properties": {"type": {"const": "agent_done"}}},
      "then": {"properties": {"payload": {"required": ["reply", "stop", "cost_usd", "tool_calls", "drafts"]}}}},
     {"if": {"properties": {"type": {"const": "learning_event"}}},
-     "then": {"properties": {"payload": {"required": ["kind", "agent", "decision"]}}}}
+     "then": {"properties": {"payload": {"required": ["kind", "agent", "decision"]}}}},
+    {"if": {"properties": {"type": {"const": "needs_person"}}},
+     "then": {"properties": {"payload": {"required": ["rule", "question", "agent", "drafts", "tools_used"]}}}}
   ]
 }

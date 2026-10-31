@@ -8,13 +8,13 @@ import streamlit as st
 from .. import muse
 from ..data.config import ROOT
 from ..service import runs
-from ..service.session import (COMPANIES, DEMO, EXP008, LIVE_CALLS_PER_DAY, LIVE_RUNS_PER_SESSION, MODELS, PUBLIC, SUGGESTIONS,
+from ..service.session import (AGENT_MODEL, COMPANIES, DEMO, EXP008, LIVE_CALLS_PER_DAY, LIVE_RUNS_PER_SESSION, MODELS, PUBLIC, SUGGESTIONS,
                                WORLD, Workspace, shared_company)
 from ..service.session import ensure_world as _ensure_world
 from ..service.session import harness_store as _harness_store
 from ..service.views import args_of, drafts, lessons_used, summarize, tool_steps  # noqa: F401  (the pages' names)
 
-__all__ = ["ROOT", "DEMO", "EXP008", "LIVE_CALLS_PER_DAY", "LIVE_RUNS_PER_SESSION", "COMPANIES", "MODELS", "SUGGESTIONS", "muse"]
+__all__ = ["AGENT_MODEL", "ROOT", "DEMO", "EXP008", "LIVE_CALLS_PER_DAY", "LIVE_RUNS_PER_SESSION", "COMPANIES", "MODELS", "SUGGESTIONS", "muse"]
 
 
 def _sid():

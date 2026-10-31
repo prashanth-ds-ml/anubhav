@@ -7,7 +7,7 @@ import time
 import uuid
 
 from .. import events, trace
-from . import runs
+from . import checkpoints, runs
 
 _LOCK = threading.Lock()
 _LIVE = {}          # run_id -> {"sid", "status": running | done | error, "stop", "error"}
@@ -33,7 +33,7 @@ def status(run_id):
         return dict(_LIVE.get(run_id) or {})
 
 
-def start(ws, client, cid, request, use_lessons, history=(), team=False, harness=None):
+def start(ws, client, cid, request, use_lessons, history=(), team=False, harness=None, resume=None):
     """Start one live request; returns its run_id at once. The caller has passed the spend guard."""
     run_id = uuid.uuid4().hex[:10]
     st = store()
@@ -42,9 +42,11 @@ def start(ws, client, cid, request, use_lessons, history=(), team=False, harness
 
     def work():
         try:
-            r = runs.run_with(ws, client, cid, request, use_lessons, history, team, harness, hooks=em, run_id=run_id)
+            r = runs.run_with(ws, client, cid, request, use_lessons, history, team, harness, hooks=em, run_id=run_id, resume=resume)
             _track(run_id, status="done", stop=r["stop"])
         except Exception as e:      # the reader must always get an end; keys never appear in these messages
+            if resume:
+                checkpoints.reopen(resume["run_id"])
             _track(run_id, status="error", stop="error", error=type(e).__name__)
     threading.Thread(target=work, daemon=True, name=f"run-{run_id}").start()
     return run_id

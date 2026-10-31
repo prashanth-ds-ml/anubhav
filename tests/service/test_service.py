@@ -10,7 +10,7 @@ from anubhav import events, muse, trace
 from anubhav.data import generate
 from anubhav.muse import MockClient, mock_final, mock_tool_call
 from anubhav.service import runs, session
-from anubhav.service.session import Workspace
+from anubhav.service.session import MODELS, Workspace
 
 
 @pytest.fixture(scope="module")
@@ -59,24 +59,24 @@ def test_locally_the_store_is_shared(ws):
 
 
 def test_spend_guard_counts_runs_and_stops_at_the_caps(ws, monkeypatch):
-    monkeypatch.setenv(muse.KEYS["open"], "test-key")
+    monkeypatch.setenv(muse.KEYS["spark"], "test-key")
     monkeypatch.setattr(muse, "client", lambda name: MockClient([]))
     w = ws()
     for _ in range(session.LIVE_RUNS_PER_SESSION):
-        client, blocked = w.live_client("open")
+        client, blocked = w.live_client("spark")
         assert client and not blocked
     assert w.live_runs_left() == 0
-    client, blocked = w.live_client("open")
+    client, blocked = w.live_client("spark")
     assert client is None and "used its" in blocked
     other = ws("b")
     monkeypatch.setattr(session, "LIVE_CALLS_PER_DAY", session.LIVE_RUNS_PER_SESSION)
-    assert "daily budget" in other.live_ready("open")                    # the day's cap is across visitors
+    assert "daily budget" in other.live_ready("spark")                    # the day's cap is across visitors
 
 
 def test_no_key_means_no_client_and_no_count(ws, monkeypatch):
-    monkeypatch.delenv(muse.KEYS["open"], raising=False)
+    monkeypatch.delenv(muse.KEYS["spark"], raising=False)
     w = ws()
-    client, blocked = w.live_client("open")
+    client, blocked = w.live_client("spark")
     assert client is None and "Live mode is off" in blocked and w.state.get("live_runs", 0) == 0
 
 
@@ -100,9 +100,9 @@ def test_a_team_run_goes_through_the_same_door_with_lessons_and_guards(ws, trace
 
 
 def test_blocked_run_live_raises_and_spends_nothing(ws, monkeypatch):
-    monkeypatch.delenv(muse.KEYS["open"], raising=False)
+    monkeypatch.delenv(muse.KEYS["spark"], raising=False)
     with pytest.raises(muse.MissingKeyError):
-        runs.run_live(ws(), "T01", "x", "open", False)
+        runs.run_live(ws(), "T01", "x", "spark", False)
 
 
 def test_replay_matching_finds_the_bundle_and_prefers_the_same_tool_state(ws, traces):
@@ -114,3 +114,15 @@ def test_replay_matching_finds_the_bundle_and_prefers_the_same_tool_state(ws, tr
     assert runs.find_replay(w, "T01", "something never asked", False) is None
     assert "New tool" in runs.replayable(w, "T01", False)
     assert runs.find_run(before["run_id"])["run_id"] == before["run_id"] and runs.find_run("nope") is None
+
+
+def test_both_models_can_be_picked_live_and_meta_is_the_default(monkeypatch, tmp_path):
+    """Judges can try either model; both go through the same spend guard."""
+    for key in muse.KEYS.values():
+        monkeypatch.setenv(key, "test-key")
+    w = Workspace(world=tmp_path)
+    assert session.AGENT_MODEL == "spark" and {"spark", "open"} <= set(MODELS.values())
+    assert w.live_ready("spark") is None and w.live_ready("open") is None
+    w.live_client("open")
+    w.live_client("spark")
+    assert w.state["live_runs"] == 2 and w.calls_today() == 2

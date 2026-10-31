@@ -113,7 +113,7 @@ def drafts_for(ws, cid, runs_seen=()):
         verdict = json.loads(row["verdict"]) if row.get("verdict") else {}
         out.append({"draft_id": row["draft_id"], "status": row["status"], "vehicle_id": row["vehicle_id"], "delivery_date": row["delivery_date"],
                     "orders": json.loads(row["order_ids"]), "load": verdict.get("load"), "warnings": verdict.get("warnings", []),
-                    "stops": _stops(b, draft_id=row["draft_id"]) if row["status"] == "draft" else None,
+                    "stops": _stops(b, draft_id=row["draft_id"]) if row["status"] in ("draft", "approved") else None, "decisions": b.C.runtime.decisions(row["draft_id"]),
                     "why": next((w for r in runs_seen if (w := why_plan(r, row["draft_id"]))), None), "source": "live"})
     return out
 

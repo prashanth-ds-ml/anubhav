@@ -81,10 +81,10 @@ for v in cands:
                        "origin": "regression (golden path)", "expects_draft": True},
                       {"request": core.SUGGESTIONS["Ambiguous"], "company": cid, "use_lessons": False,
                        "origin": "regression (ambiguity)", "expects_draft": False}]
-            st.caption(f"Paired test: {len(cases)} requests × old and new on Muse Spark Open (~${len(cases) * 0.1:.2f}).")
-            probe_off = core.live_ready("open") or core.live_ready("spark")
+            st.caption(f"Paired test: {len(cases)} requests × old and new on Muse Spark 1.3 (~${len(cases) * 0.1:.2f}).")
+            probe_off = core.live_ready(core.AGENT_MODEL)
             if st.button("Run paired test", key=f"probe:{v['version_id']}", icon=":material/science:",
-                         disabled=bool(probe_off), help=probe_off) and (agent := core.live_client("open")[0])                     and (judge := core.live_client("spark")[0]):
+                         disabled=bool(probe_off), help=probe_off) and (agent := core.live_client(core.AGENT_MODEL)[0])                     and (judge := core.live_client("spark")[0]):
                 fb_by_id = {f["feedback_id"]: {"note": f["note"], "category": CATEGORIES.get(f["category"])} for f in new_fb}
                 with st.spinner("Running old and new versions on the same requests…"):
                     C = CompanyData(core.WORLD, cid, core.WORLD / "runtime" / "probe")

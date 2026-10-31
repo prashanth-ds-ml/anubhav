@@ -45,6 +45,9 @@ class CompanyData:
                 "handling_classes": classes}
 
 
+LIVE_DRAFT = ("draft", "approved")      # holding a vehicle and its orders; approved by a person, still not a dispatch
+
+
 class Runtime:
     """Agent-written state. Exclusive holds rely on a UNIQUE constraint inside one transaction, so two concurrent
     drafts can never hold the same vehicle on the same day; an idempotency key makes retries return the same draft."""
@@ -60,6 +63,7 @@ class Runtime:
                     unique (vehicle_id, delivery_date));
                 create table if not exists added_notes (ts text, author text, shipment_id text, lang text, text text);
                 create table if not exists audit (ts text, user text, role text, tool text, args text, outcome text);
+                create table if not exists draft_decisions (ts text, draft_id text, decision text, notes text, decided_by text);
             """)
 
     def _con(self):
@@ -69,7 +73,7 @@ class Runtime:
 
     def reset(self):
         with self._con() as con:
-            for t in ("drafts", "holds", "added_notes", "audit"):
+            for t in ("drafts", "holds", "added_notes", "audit", "draft_decisions"):
                 con.execute(f"delete from {t}")
 
     def create_draft(self, draft_id, user, delivery_date, vehicle_id, order_ids, verdict, idempotency_key):
@@ -125,7 +129,7 @@ class Runtime:
     def orders_in_drafts(self, delivery_date):
         out = set()
         for d in self.drafts(delivery_date):
-            if d["status"] == "draft":
+            if d["status"] in LIVE_DRAFT:
                 out |= set(json.loads(d["order_ids"]))
         return out
 
@@ -134,11 +138,34 @@ class Runtime:
         try:
             con.execute("begin immediate")
             n = con.execute("update drafts set status = 'cancelled' where draft_id = ? and status = 'draft'", (draft_id,)).rowcount
-            con.execute("delete from holds where draft_id = ?", (draft_id,))
+            if n:                   # an approved plan keeps its truck: only the person who approved it can reject it
+                con.execute("delete from holds where draft_id = ?", (draft_id,))
             con.execute("commit")
             return n == 1
         finally:
             con.close()
+
+    def decide(self, draft_id, decision, notes, by):
+        """A person's sign-off. approve: draft -> approved, keeps the hold. reject: draft or approved -> rejected, frees the
+        vehicle and orders. False if the plan isn't in a state that allows it."""
+        status, allowed = ("approved", ("draft",)) if decision == "approve" else ("rejected", LIVE_DRAFT)
+        con = self._con()
+        try:
+            con.execute("begin immediate")
+            n = con.execute(f"update drafts set status = ? where draft_id = ? and status in ({','.join('?' * len(allowed))})",
+                            (status, draft_id, *allowed)).rowcount
+            if n:
+                if status == "rejected":
+                    con.execute("delete from holds where draft_id = ?", (draft_id,))
+                con.execute("insert into draft_decisions values (?, ?, ?, ?, ?)", (datetime.now().isoformat(timespec="seconds"), draft_id, decision, notes, by))
+            con.execute("commit")
+            return n == 1
+        finally:
+            con.close()
+
+    def decisions(self, draft_id):
+        with self._con() as con:
+            return [dict(r) for r in con.execute("select * from draft_decisions where draft_id = ? order by rowid", (draft_id,))]
 
     def add_note(self, author, shipment_id, lang, text):
         with self._con() as con:

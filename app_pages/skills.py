@@ -15,13 +15,13 @@ st.caption("The agent practises on questions generated from the company's own re
 
 rows = H.practice()
 with st.container(horizontal=True, vertical_alignment="center"):
-    off = core.live_ready("open")
+    off = core.live_ready(core.AGENT_MODEL)
     if st.button("Practice now (active version)", icon=":material/fitness_center:", type="primary", disabled=bool(off), help=off):
-        client, off = core.live_client("open")
+        client, off = core.live_client(core.AGENT_MODEL)
         if client:
             C = core.company(cid)
             qs = practice.build(C, split="dev")
-            with st.spinner(f"Answering {len(qs)} practice questions with Muse Spark Open…"):
+            with st.spinner(f"Answering {len(qs)} practice questions with Muse Spark 1.3…"):
                 res = practice.run(C, client, qs, core.active_harness())
             H.add_practice(f"UI-{cid}", H.active()["version_id"], res)
             st.rerun()

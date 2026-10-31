@@ -14,7 +14,7 @@ from .data.config import ROOT
 
 PATH = ROOT / "data" / "events.sqlite"
 TYPES = ("agent_start", "tool_call", "tool_result", "retry", "tool_missing", "handoff", "lesson_used",
-         "validator_check", "draft_created", "agent_done", "learning_event")
+         "validator_check", "draft_created", "agent_done", "learning_event", "needs_person")
 DRAFT_TOOLS = ("create_dispatch_draft", "create_dispatch_drafts", "check_load")
 LESSON_KEYS = ("approved_policies", "advisories", "approved_rules", "advice")
 
@@ -101,7 +101,13 @@ class Emitter:
         for c in s.get("draft_checks", []):
             self.emit("validator_check", {"tool": "final_recheck", "pass": c["still_valid"], "draft_id": c["draft_id"], "errors": c["errors"]})
 
+    def reply_refused(self, s):
+        self.emit("validator_check", {"tool": "reply_check", "pass": False, "attempt": s["attempt"], "of": s["of"],
+                                      "unknown_ids": s["unknown_ids"], "claims": s["claims"]})
+
     def agent_done(self, r):
+        if r.get("handoff"):
+            self.emit("needs_person", r["handoff"])
         self.emit("agent_done", {"reply": r.get("reply", ""), "stop": r.get("stop"), "cost_usd": r.get("cost_usd"),
                                  "tool_calls": r.get("tool_calls"), "drafts": r.get("drafts", []), "reply_check": r.get("reply_check")})
         self.stack.pop()
@@ -125,6 +131,8 @@ def from_run(run: dict) -> list[dict]:
                     if res.get("run_id") in children:
                         walk(children[res["run_id"]])
                 em.tool_result(s)
+            elif s["type"] == "reply_refused":
+                em.reply_refused(s)
             elif s["type"] == "finish":
                 em.finish(s)
         em.agent_done(r)

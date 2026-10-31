@@ -48,8 +48,8 @@ class Stops(Args):
 
 class Team:
     def __init__(self, roster: registry.Roster, client, knowledge=(), harness=None, about="", knowledge_by_agent=None,
-                 max_usd=None, hooks=None, harnesses=None, lesson_store=None):
-        self.roster, self.client, self.hooks = roster, client, hooks
+                 max_usd=None, hooks=None, harnesses=None, lesson_store=None, supervised=False):
+        self.roster, self.client, self.hooks, self.supervised = roster, client, hooks, supervised
         self.harnesses, self.lesson_store = harnesses or {}, lesson_store     # each agent's active version; where proposals go
         self.knowledge, self.harness, self.about = list(knowledge), harness, about
         self.knowledge_by_agent = knowledge_by_agent or {}      # each teammate's own knowledge (Sprint 2)
@@ -105,12 +105,14 @@ class Team:
             self.hooks.handoff(target.agent_id, a.brief)
         r = graph.run(child, self.client, a.brief, self.knowledge if target.voice else self.knowledge_by_agent.get(target.agent_id, ()),
                       Limits(lim.max_turns, lim.max_tool_calls, min(lim.max_usd, left)),
-                      harness=self.harnesses.get(target.agent_id) or (self.harness if target.voice else None), about=self.about if target.voice else "", agent=target, hooks=self.hooks)
+                      harness=self.harnesses.get(target.agent_id) or (self.harness if target.voice else None), about=self.about if target.voice else "", agent=target, hooks=self.hooks, supervised=self.supervised)
         r["caller"] = b.s.agent
         self.children.append(r)
         self.spent += r["cost_usd"]
         out = {"agent": target.agent_id, "run_id": r["run_id"], "reply": r["reply"], "drafts": r["drafts"],
                "stop": r["stop"], "tool_calls": r["tool_calls"], "cost_usd": r["cost_usd"]}
+        if r.get("handoff"):
+            out["handoff"] = r["handoff"]
         if r["stop"] != "answered":
             out["note"] = f"the teammate stopped early ({r['stop']}); this answer may be partial: say what wasn't checked"
         return out
@@ -202,11 +204,11 @@ MINE_BRIEF = "Read the company's records and propose the unwritten rules they su
 
 # ---------- one request in multi-agent mode
 def run(C, session: Session, client, request, roster=None, knowledge=(), harness=None, about="", history=(), hooks=None,
-        run_id=None, harnesses=None, knowledge_by_agent=None, lesson_store=None, lead_agent=None, **broker_kw):
+        run_id=None, harnesses=None, knowledge_by_agent=None, lesson_store=None, lead_agent=None, supervised=False, resume=None, **broker_kw):
     """The lead agent answers the request with the team behind it. Returns the lead's run with every teammate run
     (`children`), so the whole request can be saved, replayed and turned into events."""
     roster = roster or registry.load()
-    team = Team(roster, client, knowledge, harness, about, knowledge_by_agent, hooks=hooks, harnesses=harnesses, lesson_store=lesson_store)
+    team = Team(roster, client, knowledge, harness, about, knowledge_by_agent, hooks=hooks, harnesses=harnesses, lesson_store=lesson_store, supervised=supervised)
     lead = roster.get(lead_agent) if lead_agent else roster.lead()      # lead_agent: one agent on its own kind of work
     if lead_agent:
         knowledge = knowledge or (knowledge_by_agent or {}).get(lead_agent, ())
@@ -215,5 +217,5 @@ def run(C, session: Session, client, request, roster=None, knowledge=(), harness
                **({"analysis": True} | broker_kw))
     lim = lead.limits
     r = graph.run(b, client, request, knowledge, Limits(lim.max_turns, lim.max_tool_calls, min(lim.max_usd, team.max_usd)),
-                  history, harness, about, agent=lead, hooks=hooks, run_id=run_id)
+                  history, harness, about, agent=lead, hooks=hooks, run_id=run_id, supervised=supervised, resume=resume)
     return {**r, "mode": "team", "children": team.children}

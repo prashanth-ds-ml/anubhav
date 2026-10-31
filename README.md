@@ -147,7 +147,7 @@ Things to try in the app:
 
 **Other commands**
 ```bash
-uv run pytest -q                                              # 520 tests (392 Anubhav + 128 archived prototype), no model calls
+uv run pytest -q                                              # 535 tests (407 Anubhav + 128 archived prototype), no model calls
 uv run uvicorn anubhav.api.app:app --port 7860                # the API for the web app; docs at /docs
 uv run python scripts/exp013_team.py                          # the team vs one planner (~$14)
 uv run python -m anubhav.data.generate --full --seed 4242     # a new world with your own seed

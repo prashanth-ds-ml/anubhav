@@ -6,6 +6,8 @@ from .. import muse, trace
 from ..agent import graph
 from ..agents import team as team_mode
 from ..runtime.broker import Session
+from ..runtime.company import LIVE_DRAFT
+from . import checkpoints
 from . import knowledge as agent_knowledge
 from .session import DEMO, SUGGESTIONS, Workspace, harness_store
 
@@ -70,9 +72,14 @@ def history_turns(history):
     return turns
 
 
-def run_with(ws: Workspace, client, cid, request, use_lessons, history=(), team=False, harness=None, hooks=None, run_id=None):
+def run_with(ws: Workspace, client, cid, request, use_lessons, history=(), team=False, harness=None, hooks=None, run_id=None, resume=None):
     """One request with a given model client, saved with its events. Single Planner, or the team (D-044). The caller has
-    already passed the spend guard."""
+    already passed the spend guard. `resume` ({run_id, state} of an earlier run) continues it, with `request` as the person's
+    reply. These runs are supervised: their checks stop for a person (agent/graph.py)."""
+    state = None
+    if resume:          # a draft cancelled or rejected since is no longer this run's to re-check
+        state = {**resume["state"], "drafts": [d for d in resume["state"]["drafts"]
+                                               if (row := ws.company(cid).runtime.draft(d)) and row["status"] in LIVE_DRAFT]}
     harness = harness_store().active()["surfaces"] if harness is None else harness
     turns = history_turns(history)
     label = f"ui:{cid}:{'lessons' if use_lessons else 'cold'}" + (":team" if team else "")
@@ -81,16 +88,36 @@ def run_with(ws: Workspace, client, cid, request, use_lessons, history=(), team=
         r = team_mode.run(ws.company(cid), Session(cid, "dispatcher", "demo"), client, request, knowledge=knowledge,
                           harness=harness, about=ws.about(cid), history=turns, policies=policies, advisories=advisories,
                           lessons=lessons, learned_tools=learned, hooks=hooks, run_id=run_id, harnesses=harness_store().active_all(),
-                          knowledge_by_agent=agent_knowledge.for_team(ws, cid), lesson_store=ws.store())
+                          knowledge_by_agent=agent_knowledge.for_team(ws, cid), lesson_store=ws.store(), supervised=True, resume=state)
         r["learned_tools"] = [t["name"] for t in learned]
     else:
         b, knowledge = ws.broker(cid, use_lessons)
-        r = graph.run(b, client, request, knowledge=knowledge, harness=harness, history=turns, about=ws.about(cid), hooks=hooks, run_id=run_id)
+        r = graph.run(b, client, request, knowledge=knowledge, harness=harness, history=turns, about=ws.about(cid), hooks=hooks, run_id=run_id, supervised=True, resume=state)
         r["learned_tools"] = [t.name for t in b.list_tools() if t.category == "learned_tools"]
     if ws.public:
         r["visitor"] = ws.sid
+    if resume:
+        r["resumed_from"] = resume["run_id"]
+    state = r.pop("checkpoint")
+    checkpoints.save(r, state, ws.sid, use_lessons, team)
     trace.save(r, label=label)
     return r
+
+
+def decide_draft(ws: Workspace, cid, draft_id, decision, notes=""):
+    """A person signs a plan off, or rejects it. Approving re-checks it first, because things may have changed since it
+    was made. Returns (ok, errors); neither one dispatches anything."""
+    from ..agent.graph import _Without
+    from ..runtime.safety import validate_draft
+    b, _ = ws.broker(cid, True)
+    row = b.C.runtime.draft(draft_id)
+    if decision == "approve" and row and row["status"] == "draft":
+        v = validate_draft(_Without(b.C, draft_id), json.loads(row["order_ids"]), row["vehicle_id"], row["delivery_date"], b.policies, b.advisories)
+        if not v.ok:
+            return False, v.errors
+    if not b.C.runtime.decide(draft_id, decision, notes, "reviewer"):
+        return False, [f"this plan is {row['status']}"]
+    return True, []
 
 
 def mine_with_agent(ws: Workspace, client, cid):

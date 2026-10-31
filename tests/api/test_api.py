@@ -78,7 +78,7 @@ def test_the_route_list_above_is_complete(env):
     other = {"/api/session/reset-drafts", "/api/dashboard/drafts/{draft_id}/cancel", "/api/dashboard/company/profile", "/api/chat", "/api/chat/stream",
              "/api/runs/{run_id}", "/api/runs/{run_id}/feedback", "/api/learning/lessons/{lesson_id}/decide", "/api/tools/candidates/{key}/check",
              "/api/tools/{tool_id}/decide", "/api/tools/{tool_id}/retire", "/api/packs/publish", "/api/packs/revoke", "/api/review/run",
-             "/api/compare", "/api/agents/{agent_id}", "/api/harness/{version_id}/probe", "/api/harness/{version_id}/decide", "/api/logs/runs/{run_id}"}
+             "/api/dashboard/drafts/{draft_id}/decide", "/api/handoffs", "/api/runs/{run_id}/resume", "/api/compare", "/api/agents/{agent_id}", "/api/harness/{version_id}/probe", "/api/harness/{version_id}/decide", "/api/logs/runs/{run_id}"}
     normal = {p.replace("/analyst", "/{agent_id}").replace("/h-001/", "/{version_id}/") for p in tested}
     assert paths <= normal | other, paths - normal - other
 
@@ -109,8 +109,8 @@ def test_shared_and_paid_actions_are_refused_on_the_public_host(env, method, pat
 def test_session_says_live_is_off_without_keys_and_never_shows_a_key(env, monkeypatch):
     body = client(env).get("/api/session").json()
     assert body["public"] and body["default_mode"] == "replay" and body["default_team"]
-    assert not body["models"]["Muse Spark Open"]["available"] and "Use Replay" in body["models"]["Muse Spark Open"]["reason"]
-    monkeypatch.setenv(muse.KEYS["open"], "sk-secret-value")
+    assert not body["models"]["Muse Spark 1.3"]["available"] and "Use Replay" in body["models"]["Muse Spark 1.3"]["reason"]
+    monkeypatch.setenv(muse.KEYS["spark"], "sk-secret-value")
     assert "sk-secret-value" not in client(env).get("/api/session").text
 
 
