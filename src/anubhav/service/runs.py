@@ -59,8 +59,7 @@ def history_turns(history):
     return turns
 
 
-def run_with(ws: Workspace, client, cid, request, use_lessons, history=(), team=False, harness=None, on_step=None, run_id=None,
-             save=True):
+def run_with(ws: Workspace, client, cid, request, use_lessons, history=(), team=False, harness=None, hooks=None, run_id=None):
     """One request with a given model client, saved with its events. Single Planner, or the team (D-044). The caller has
     already passed the spend guard."""
     harness = harness_store().active()["surfaces"] if harness is None else harness
@@ -70,14 +69,13 @@ def run_with(ws: Workspace, client, cid, request, use_lessons, history=(), team=
         knowledge, policies, advisories, lessons, learned = ws.broker_args(cid, use_lessons)
         r = team_mode.run(ws.company(cid), Session(cid, "dispatcher", "demo"), client, request, knowledge=knowledge,
                           harness=harness, about=ws.about(cid), history=turns, policies=policies, advisories=advisories,
-                          lessons=lessons, learned_tools=learned)
+                          lessons=lessons, learned_tools=learned, hooks=hooks, run_id=run_id)
         r["learned_tools"] = [t["name"] for t in learned]
     else:
         b, knowledge = ws.broker(cid, use_lessons)
-        r = graph.run(b, client, request, knowledge=knowledge, harness=harness, history=turns, about=ws.about(cid))
+        r = graph.run(b, client, request, knowledge=knowledge, harness=harness, history=turns, about=ws.about(cid), hooks=hooks, run_id=run_id)
         r["learned_tools"] = [t.name for t in b.list_tools() if t.category == "learned_tools"]
-    if save:
-        trace.save(r, label=label)
+    trace.save(r, label=label)
     return r
 
 
