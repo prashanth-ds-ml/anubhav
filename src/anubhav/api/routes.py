@@ -18,7 +18,7 @@ from ..runtime.broker import Broker, Session
 from ..runtime.company import CompanyData
 from ..runtime.query import sandbox
 from ..service import knowledge, proof as proof_files, runs, stream, views
-from ..service.session import COMPANIES, LIVE_CALLS_PER_DAY, LIVE_RUNS_PER_SESSION, MODELS, SUGGESTIONS, Workspace, harness_store
+from ..service.session import AGENT_MODEL, COMPANIES, LIVE_CALLS_PER_DAY, LIVE_RUNS_PER_SESSION, MODELS, SUGGESTIONS, Workspace, harness_store
 from ..ui import logs
 from .deps import ApiError, Cid, LocalOnly, Ws, live
 
@@ -127,7 +127,7 @@ class Chat(Body):
     company: str = "T01"
     message: str = Field(min_length=1, max_length=2000)
     mode: Literal["replay", "live"] = "replay"
-    model: Literal["open", "spark"] = "open"
+    model: Literal["open", "spark"] = AGENT_MODEL
     use_lessons: bool = True
     team: bool = True           # EXP-013: R1-R3 held, so by its pre-registered rule the team is the default
 
@@ -287,7 +287,7 @@ def learning_timeline(company: str = Cid, agent: str | None = None, ws: Workspac
 def mine(company: str = Cid, by: Literal["agent", "offline"] = "agent", ws: Workspace = Ws):
     """The Lesson Miner agent (Muse Spark Open), or the offline miner the measured results used (Muse Spark 1.3)."""
     if by == "agent":
-        r = runs.mine_with_agent(ws, live(ws, "open"), company)
+        r = runs.mine_with_agent(ws, live(ws, AGENT_MODEL), company)
         made = [s["result"] for s in r["trace"] if s["type"] == "tool" and s["name"] == "propose_lesson" and s["ok"] and s["result"].get("lesson_id")]
         return {"new": [m["lesson_id"] for m in made], "cost_usd": r["cost_usd"], "run_id": r["run_id"], "stop": r["stop"]}
     client = live(ws, "spark")
@@ -335,7 +335,7 @@ def tool_check(key: str, body: ToolCheck, company: str = Cid, ws: Workspace = Ws
         raise ApiError(404, "NOT_FOUND", f"no query group {key}")
     named = {"name": body.name, "description": body.description, "named_by": "person"} if body.name else None
     if not named:           # Tool Forge names it when a live model is allowed here; otherwise code does, for free
-        client = None if ws.public or ws.live_ready("open") else ws.live_client("open")[0]
+        client = None if ws.public or ws.live_ready(AGENT_MODEL) else ws.live_client(AGENT_MODEL)[0]
         named = forge.name_tool(client, ws.company(company), g, knowledge=knowledge.tool_forge([], ws.company(company), ws.store()))
     tid = nt.propose(ws.store(), company, g, nt.check(g, sb), named["name"], body.description or named["description"] or nt.describe(g))
     return {**next(t for t in nt.tools(ws.store(), company) if t["tool_id"] == tid), "named_by": named["named_by"]}
@@ -425,7 +425,7 @@ def harness_probe(version_id: str, company: str = Cid, ws: Workspace = Ws):
               "feedback_id": f["feedback_id"], "expects_draft": False} for f in new_fb[:3]]
     cases += [{"request": SUGGESTIONS["Roman Telugu"], "company": company, "use_lessons": False, "origin": "regression (golden path)", "expects_draft": True},
               {"request": SUGGESTIONS["Ambiguous"], "company": company, "use_lessons": False, "origin": "regression (ambiguity)", "expects_draft": False}]
-    agent, judge = live(ws, "open"), live(ws, "spark")
+    agent, judge = live(ws, AGENT_MODEL), live(ws, "spark")
     fb = {f["feedback_id"]: {"note": f["note"], "category": CATEGORIES.get(f["category"])} for f in new_fb}
     C = CompanyData(ws.world, company, ws.world / "runtime" / "probe")
     # dev questions with answers from the records: a change must not lose right answers to pass
@@ -470,7 +470,7 @@ def practice_view():
 def practice_run(company: str = Cid, agent: str | None = None, ws: Workspace = Ws):
     """A practice set, by the single Planner, or by one agent of the team on its own kind of question; its score is kept."""
     H = harness_store()
-    client = live(ws, "open")
+    client = live(ws, AGENT_MODEL)
     C = ws.company(company)
     if agent is None:
         res = practice.run(C, client, practice.build(C, split="dev"), H.active()["surfaces"])

@@ -159,7 +159,7 @@ def test_live_without_a_key_falls_back_to_replay_and_says_why(env):
 
 
 def live_env(monkeypatch, script):
-    monkeypatch.setenv(muse.KEYS["open"], "test")
+    monkeypatch.setenv(muse.KEYS[session.AGENT_MODEL], "test")
     monkeypatch.setattr(muse, "client", lambda name: MockClient(script))
 
 

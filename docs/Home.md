@@ -11,7 +11,8 @@ tags: [home, index]
 
 ## Plan
 - [[Anubhav_MultiAgent_Design_v1]]: **Oct 31 design (from another assistant's session, merged Oct 31):** orchestrated multi-agent system (Planner, Analyst, Tool Forge, Lesson Miner) with per-agent learning, and a React + FastAPI app on a Hugging Face Space. Decisions #1–16, delivery plan §4.9 (D-044). In progress: contract in `contracts/`, Python Sprint 1 done Oct 31; backend next ([[backend_plan]]); status in [[todo]]
-- [[backend_plan]]: **resume here.** FastAPI endpoints (~45) and the remaining backend work B1–B10, with 4 open decisions (§6)
+- [[demo_plan]]: **resume here.** What we can honestly show, the 3-minute story, the UI plan, and the owner's decisions
+- [[backend_plan]]: FastAPI endpoints and backend work (built; status in [[todo]])
 - [[React_UI_Brainstorm]]: the discussion that led to it (superseded, kept as history)
 - `Implementation_Plan_Sprints.md`: sprint plan for the design; local only, not in git (it names people)
 - [[implementation_plan]]: plan from Oct 30. Audit of the to-do list, demo story, workstreams A–G to submission, cut order

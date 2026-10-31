@@ -6,8 +6,8 @@ tags: [tracker, cost]
 | Credit | Total $ | Spent $ | Left $ | Used for |
 |---|---|---|---|---|
 | Meta Model API | 150.00 | ~16.1 | ~133.9 | Muse Spark + Voice Transcribe runtime, evals |
-| Baseten | 100.00 (+2M TPM) | ~64.2 | ~35.8 | The agent (Muse Spark Open): all benchmarks and live checks |
-| **Total** | **250.00** | **~80.3** | **~169.7** | Totals are summed from our per-run costs at list prices; the billing pages have not been checked yet |
+| Baseten | 100.00 (+2M TPM) | ~64.7 | ~35.3 | The agent (Muse Spark Open): all benchmarks and live checks |
+| **Total** | **250.00** | **~80.8** | **~169.2** | Totals are summed from our per-run costs at list prices; the billing pages have not been checked yet |
 
 **Forecast to submission (Oct 31):** EXP-011R 3 repeats ~$15 · EXP-012 ~$3 · recorded demo runs ~$2 · nightly review (Spark 1.3) ~$1 · remaining live checks ~$3 · video takes ~$2 → **~$26 more, ~$65 total**, about $185 left. **Actual by Oct 31: ~$65.3 used** (EXP-011R $18.59, EXP-012 + 012b $7.27, live checks ~$0.6); left to spend: recordings and video takes, ~$2–4. Hosted demo: $0 (no keys).
 
@@ -78,6 +78,7 @@ tags: [tracker, cost]
 | 2026-10-31 | muse-spark-open-1026 (Model API) | EXP-011R: EXP-011 ×3 on the shipped version (306 runs; replicated 3/3) | | | | 18.59 | ~49.2 | ⬜ |
 | 2026-10-31 | muse-spark-open-1026 (Model API) | Team smoke runs on the demo world, 3 rounds of 3 requests | | | | 0.84 | ~50.0 | ⬜ |
 | 2026-10-31 | muse-spark-open-1026, Spark 1.3 for 2 proposals | EXP-013: team vs one planner, learning round | | | | 14.21 | ~64.2 | ⬜ |
+| 2026-10-31 | muse-spark-open-1026 (Model API) | Team runs recorded for the demo bundle, 6 runs (last Baseten use, D-046) | | | | 0.46 | ~64.7 | ⬜ |
 
 ### Prices
 Model: always `meta-models/muse-spark-open-1026` (the hackathon override of `meta-models/muse-spark-open` in Baseten's docs), via the per-token Model API at `https://inference.baseten.co/v1`. Fill in per-token prices from Baseten.

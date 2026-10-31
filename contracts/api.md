@@ -38,7 +38,7 @@ Built and tested (`tests/api/test_api.py`); the running API documents itself at 
 ## Chat (streamed)
 | Method | Path | Body / query | Returns |
 |---|---|---|---|
-| POST | `/api/chat` | `{company, message, mode: "replay" \| "live", model: "open" \| "spark", use_lessons: true, team: true}` | `{run_id, mode, reason?}` |
+| POST | `/api/chat` | `{company, message, mode: "replay" \| "live", model: "spark" (default) \| "open", use_lessons: true, team: true}` | `{run_id, mode, reason?}` |
 | GET | `/api/chat/stream` | `?run_id=&after=-1` or `Last-Event-ID` | Server-sent events |
 | GET | `/api/runs/{run_id}` | | A whole saved run with teammate runs |
 | POST | `/api/runs/{run_id}/feedback` | `{rating: 0 \| 1, category, note}` | `{feedback_id}` |
@@ -58,7 +58,8 @@ The stream:
 | GET | `/api/agents/{id}` | Adds instructions and limits |
 | GET | `/api/learning/lessons?company=&state=` | Lessons with `what`, evidence, gate verdict, `events` |
 | POST | `/api/learning/lessons/{id}/decide?company=` | `{decision: approve \| reject \| retire \| rollback, effect, verified, why}` |
-| POST 🔒 | `/api/learning/mine?company=` | Mines the records with Muse Spark 1.3 |
+| GET | `/api/learning/timeline?company=&agent=` | Every learning decision, newest first |
+| POST 🔒 | `/api/learning/mine?company=&by=agent\|offline` | The Lesson Miner agent, or the offline miner |
 | GET | `/api/tools?company=&status=` | Candidate, active, rejected and retired tools |
 | GET | `/api/tools/candidates?company=` | Queries written, grouped: `requests, agents, params, reached_threshold, threshold, suggested_name` |
 | POST | `/api/tools/candidates/{key}/check?company=` | `{name?, description?}`: runs the checks and records a candidate |
@@ -75,7 +76,7 @@ The stream:
 | POST 🔒 | `/api/harness/{v}/decide` | `{approve, note}` |
 | POST 🔒 | `/api/harness/rollback` | Back to the previous version |
 | GET | `/api/practice` | Results per round, version and split |
-| POST 🔒 | `/api/practice?company=` | One practice set |
+| POST 🔒 | `/api/practice?company=&agent=` | A practice set, by the single Planner or one agent; an agent's score is kept |
 
 ## Sharing, review, proof, logs
 | Method | Path | Returns |
@@ -86,11 +87,15 @@ The stream:
 | POST | `/api/review/run?company=` | Nightly review report; free on the public host |
 | GET | `/api/review/history?company=` | Past reports |
 | GET | `/api/proof` | Result files, each with `measured_on` |
+| GET | `/api/proof/curve` | EXP-014's stages and agent scores, or `{measured: false}` (it has not run) |
+| GET | `/api/compare?company=&request=` | One request from saved runs: cold, with lessons, with learned tools |
 | GET | `/api/ledger?company=&agent=&type=&limit=` | Hand-offs, drafts, checks, lessons used, missing tools |
 | GET | `/api/logs/events?company=&stream_name=` | Everything done and learned, newest first |
 | GET | `/api/logs/runs?company=&limit=` | Run list: agents, tool calls, cost, issues |
 | GET | `/api/logs/runs/{id}` | One run as a timeline, teammates in place |
 | GET | `/api/logs/tools?company=` | Tool tracking: `{usage: [{agent, tool, calls, failed, last_used}], missing}` |
+| GET | `/api/logs/agents?company=` | Each agent's runs, calls, errors and own cost |
+| GET | `/api/logs/routing?company=` | Who handled which kind of task, how it went |
 | GET | `/api/logs/models?company=` | What each Meta model did |
 | GET | `/api/report/weekly?company=` | `{markdown}` |
 

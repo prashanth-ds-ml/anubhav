@@ -551,7 +551,7 @@ Packs: T01→TNEW 4 lessons (1 skipped: no matching site), T02→TNEW 4 lessons 
 - **Same as before:** real capacity 0/2 in these rows for every arm. Weekday and on-time questions fail often in every arm.
 - Team knowledge per agent was off in every arm, and the Lesson Miner was not exercised: no case reached it.
 
-### EXP-014: does the whole team improve as it learns, and does each agent? (frozen 2026-10-31 before any model call on its world; **not run yet: waits for the owner's go, about $18-25**)
+### EXP-014: does the whole team improve as it learns, and does each agent? (frozen 2026-10-31 before any model call on its world; **not run: the owner stopped experiments and credit use on Oct 31 (D-046)**)
 - **Question:** Adding learning one step at a time, does the team's score rise? Does each agent's own score rise between v0 and its final version?
 - **Frozen files (sha256 prefix, line endings normalized; `artifacts/benchmark/exp014_frozen.json`; the script refuses to run if one changes):** `exp014_curve.py` `a364ca1bafbee24f` · `agents.yaml` `721c791a5b65a5b7` · `graph.py` `93fa8a480c36da7e` · `team.py` `70992e0b652615f5` · `forge.py` `e6139270178adaee` · `registry.py` `9332944832057d33` · `broker.py` `11f3edc4d42406da` · `loop.py` `aab83765f58085ed` · `store.py` `f74d63f2ae1d543d` · `practice.py` `a9795619de8cdcaa` · `bench.py` `64baa74ac3c0f33e` · `newtools.py` `e0382aef2871bcbf` · `knowledge.py` `0d91ae71124874bf`.
 - **Setup:**
@@ -569,4 +569,6 @@ Packs: T01→TNEW 4 lessons (1 skipped: no matching site), T02→TNEW 4 lessons 
   - Every agent's score is reported whichever way it goes. An agent with no gain is said to have no gain.
 - **Caveats stated now:** one repeat, so small differences mean little. s4 changes two things at once (changes and knowledge). Fixed rules stand in for a person's approval. Cases and hidden rules come from our own generator. A stage's carried results are from an earlier stage.
 - **Budget:** about 294 runs, about $18-25; the script stops at $25 and can resume without paying twice.
+- **Status (D-046):** not run. After the freeze, `agents.yaml` changed (model, Lesson Miner wording), so the script now refuses to run until it is frozen again and the protocol re-checked.
+- **Lesson Miner's first real run (demo world, not an experiment, 2026-10-31):** proposed 0 lessons: it spent its calls on queries and hit its limit (`demo:team:miner`, Muse Spark Open). Its instructions were then changed to propose right after reading; that change is untested on a real model.
 
