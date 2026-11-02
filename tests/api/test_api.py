@@ -78,7 +78,7 @@ def test_the_route_list_above_is_complete(env):
     other = {"/api/session/reset-drafts", "/api/dashboard/drafts/{draft_id}/cancel", "/api/dashboard/company/profile", "/api/chat", "/api/chat/stream",
              "/api/runs/{run_id}", "/api/runs/{run_id}/feedback", "/api/learning/lessons/{lesson_id}/decide", "/api/tools/candidates/{key}/check",
              "/api/tools/{tool_id}/decide", "/api/tools/{tool_id}/retire", "/api/packs/publish", "/api/packs/revoke", "/api/review/run",
-             "/api/dashboard/drafts/{draft_id}/decide", "/api/handoffs", "/api/runs/{run_id}/resume", "/api/compare", "/api/agents/{agent_id}", "/api/harness/{version_id}/probe", "/api/harness/{version_id}/decide", "/api/logs/runs/{run_id}"}
+             "/api/dashboard/drafts/{draft_id}/decide", "/api/handoffs", "/api/runs/{run_id}/resume", "/api/compare", "/api/agents/{agent_id}", "/api/harness/{version_id}/probe", "/api/harness/{version_id}/decide", "/api/logs/runs/{run_id}", "/api/voice"}
     normal = {p.replace("/analyst", "/{agent_id}").replace("/h-001/", "/{version_id}/") for p in tested}
     assert paths <= normal | other, paths - normal - other
 
@@ -377,3 +377,82 @@ def test_the_api_never_loads_streamlit():
     import sys
     code = "import sys, anubhav.api.routes; sys.exit('streamlit' in sys.modules)"
     assert subprocess.run([sys.executable, "-c", code], capture_output=True).returncode == 0
+
+
+# ---------- voice (transcription is mocked: no credits)
+def wav_bytes(seconds=0.2):
+    import io
+    import wave
+    buf = io.BytesIO()
+    with wave.open(buf, "wb") as w:
+        w.setnchannels(1)
+        w.setsampwidth(2)
+        w.setframerate(16000)
+        w.writeframes(b"\x00\x00" * int(16000 * seconds))
+    return buf.getvalue()
+
+
+def post_voice(c, body):
+    return c.post("/api/voice", content=body, headers={"Content-Type": "audio/wav"})
+
+
+@pytest.fixture
+def voice_env(env, monkeypatch):
+    from anubhav.api import routes
+    calls = []
+    monkeypatch.setattr(routes, "transcribe", lambda p, kw: calls.append(kw) or {"transcript": "repu jangaon load", "audio_ms": 3200, "cost_usd": 0.0004})
+    return env, calls, routes
+
+
+def test_session_says_why_voice_is_off(voice_env):
+    world, _, _ = voice_env
+    v = client(world).get("/api/session").json()["voice"]
+    assert v["available"] is False and muse.KEYS["spark"] in v["reason"] and "Replay" not in v["reason"] and v["reason"].startswith("Voice is off here")
+
+
+def test_voice_is_refused_without_a_key(voice_env):
+    world, calls, _ = voice_env
+    r = post_voice(client(world), wav_bytes())
+    assert r.status_code == 403 and r.json()["error"]["code"] == "LIVE_OFF" and calls == []
+
+
+def test_voice_returns_transcript_and_meta(voice_env, monkeypatch):
+    world, calls, _ = voice_env
+    monkeypatch.setenv(muse.KEYS["spark"], "test-key")
+    c = client(world)
+    assert c.get("/api/session").json()["voice"]["available"] is True
+    r = post_voice(c, wav_bytes())
+    assert r.status_code == 200 and r.json() == {"transcript": "repu jangaon load", "audio_ms": 3200, "cost_usd": 0.0004}
+    assert "Warangal" in calls[0]       # town names go to the service as hints
+
+
+@pytest.mark.parametrize("body,status,code", [
+    pytest.param(b"", 400, "EMPTY_AUDIO", id="empty"),
+    pytest.param(b"not a wav file", 415, "NOT_WAV", id="not-wav"),
+    pytest.param(b"RIFF" + b"\x00" * (2 * 1024 * 1024 + 1), 413, "AUDIO_TOO_LARGE", id="too-large"),
+])
+def test_bad_audio_is_rejected(voice_env, monkeypatch, body, status, code):
+    world, calls, _ = voice_env
+    monkeypatch.setenv(muse.KEYS["spark"], "test-key")
+    r = post_voice(client(world), body)
+    assert r.status_code == status and r.json()["error"]["code"] == code and calls == []
+
+
+def test_silent_recording_gives_no_speech(voice_env, monkeypatch):
+    world, _, routes = voice_env
+    monkeypatch.setenv(muse.KEYS["spark"], "test-key")
+    monkeypatch.setattr(routes, "transcribe", lambda p, kw: {"transcript": "  ", "audio_ms": 1000, "cost_usd": 0.0001})
+    r = post_voice(client(world), wav_bytes())
+    assert r.status_code == 422 and r.json()["error"]["code"] == "NO_SPEECH"
+
+
+def test_transcription_failure_is_a_502_and_the_session_is_still_usable(voice_env, monkeypatch):
+    world, _, routes = voice_env
+    monkeypatch.setenv(muse.KEYS["spark"], "test-key")
+    def boom(p, kw):
+        raise ConnectionError("down")
+    monkeypatch.setattr(routes, "transcribe", boom)
+    c = client(world)
+    r = post_voice(c, wav_bytes())
+    assert r.status_code == 502 and r.json()["error"]["code"] == "TRANSCRIBE_FAILED"
+    assert c.get("/api/health").status_code == 200

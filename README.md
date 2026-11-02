@@ -123,6 +123,17 @@ Nothing in the runtime is hand-coded world knowledge: no word lists, no site rul
 ## Try it
 **Hosted demo:** **[anubhav-metahackathon.streamlit.app](https://anubhav-metahackathon.streamlit.app/)**. Replay mode, no keys, free; each visitor gets their own drafts and lessons. The first open after a quiet spell can take about a minute while it wakes up.
 
+**Five scenarios to try** (the React app opens on them; `/?tour=S1` … `/?tour=S5` opens one directly):
+| | Scenario | Kind | What you see |
+|---|---|---|---|
+| S1 | The rule nobody wrote down | recorded, free | Without lessons a 32 ft truck, flagged too long for the gate; with the approved lesson a 22 ft truck |
+| S2 | It builds its own tool | recorded, free | A repeated question is checked by code and approved by you as a tool: 5 tool calls become 1 |
+| S3 | A new company on day 1 | recorded, free | Shared regional lessons: 33% → 100% on new-company cases |
+| S4 | Your lessons, your call | live, Muse Spark 1.3 | Retire the gate rule and the live plan goes back to 32 ft; restore it and it picks 22 ft |
+| S5 | Try to break it | live, Muse Spark 1.3 | Ask it to dispatch now, overload a truck, deliver at the wrong time, or use the company's nicknames |
+
+Recorded scenarios replay real runs. Live ones need the `meta_api` key on the host and are capped per visit.
+
 **Locally:**
 ```bash
 git clone https://github.com/prashanth-ds-ml/anubhav.git
@@ -147,8 +158,9 @@ Things to try in the app:
 
 **Other commands**
 ```bash
-uv run pytest -q                                              # 537 tests (409 Anubhav + 128 archived prototype), no model calls
-uv run uvicorn anubhav.api.app:app --port 7860                # the API for the web app; docs at /docs
+uv run pytest -q                                              # 549 tests (421 Anubhav + 128 archived prototype), no model calls
+cd web && npm ci && npm run build && npx playwright test      # build the web app and run its browser tests
+uv run uvicorn anubhav.api.app:app --port 7860                # the API, serving the built web app at /; docs at /docs
 uv run python scripts/exp013_team.py                          # the team vs one planner (~$14)
 uv run python -m anubhav.data.generate --full --seed 4242     # a new world with your own seed
 uv run python -m anubhav.learning.cli mine --company T01      # mine lessons (Muse Spark 1.3)
@@ -171,7 +183,8 @@ src/anubhav/
   harness/     how-to-work loop: feedback, trace signals, tool practice, patch gate, versions
   eval/        benchmark case builder and judge
   ui/          Streamlit helpers and graphs
-app_pages/, streamlit_app.py   the demo app
+app_pages/, streamlit_app.py   the Streamlit demo app
+web/           React app, built into web/dist and served by the API
 scripts/       pre-registered experiments (EXP-008 … EXP-011), demo export
 artifacts/     experiment results (JSON, logs)
 demo/          small bundle for the hosted replay

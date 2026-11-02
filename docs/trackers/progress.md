@@ -4,8 +4,8 @@ tags: [tracker, progress]
 # Progress tracker
 
 **Overall (2026-10-31):** backend done: multi-agent team, FastAPI, per-agent learning, Docker; EXP-013 measured. Left: team replays and showing the team in a UI (React or Streamlit); owner: dispatcher review, voice, video, README GIF, spend alerts, Space deploy, submit
-Plan: [[build_plan]] · Status key: ⬜ pending · 🟨 in progress · ✅ done · ❌ blocked · ✂️ cut
-History before Oct 29 (order-desk plan): `archive/progress_order_desk.md`
+Plan: [[demo_plan]] · Status key: ⬜ pending · 🟨 in progress · ✅ done · ❌ blocked · ✂️ cut
+History before Oct 29 (order-desk plan): `docs/archive/progress_order_desk.md` (git history)
 
 ## Layers
 | Layer | Dates (IST) | Focus | Gate | Status | Evidence |
@@ -60,7 +60,7 @@ History before Oct 29 (order-desk plan): `archive/progress_order_desk.md`
 | Prompt-injection policy bypass | ✅ 0 in adversarial suite (injected driver notes) |
 | Unreviewed harness patch activated | ✅ 0 (activation needs a passing test + a person; tests) |
 
-## Next (plan of Oct 30, [[implementation_plan]])
+## Next (plan of Oct 30, `implementation_plan.md` (git history))
 | Workstream | Days | Status |
 |---|---|---|
 | P0 commit step 1 | Oct 30 | ✅ |

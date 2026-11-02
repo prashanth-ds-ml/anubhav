@@ -2,12 +2,13 @@
 
 import re
 import threading
+import time
 import uuid
 from collections import OrderedDict
 
 from fastapi import Depends, Request, Response
 
-from ..service.session import COMPANIES, Workspace
+from ..service.session import COMPANIES, Workspace, prune_visitors
 
 COOKIE = "anubhav_sid"
 SID = re.compile(r"[0-9a-f]{12}")       # a sid names files on disk: only this exact shape is ever accepted
@@ -23,8 +24,19 @@ class ApiError(Exception):
 class Visitors:
     """Per-visitor state, kept in memory (their drafts and lessons are on disk and survive a restart)."""
 
+    PRUNE_EVERY_S = 3600
+
     def __init__(self):
         self.lock, self.states = threading.Lock(), OrderedDict()
+        self.pruned_at = 0.0
+
+    def prune(self, world, force=False):
+        """At most hourly, remove idle visitors' files so a long-running Space doesn't fill its disk."""
+        with self.lock:
+            if not force and time.time() - self.pruned_at < self.PRUNE_EVERY_S:
+                return 0
+            self.pruned_at, keep = time.time(), set(self.states)
+        return prune_visitors(world, keep=keep)
 
     def state(self, sid):
         with self.lock:
@@ -43,6 +55,7 @@ def workspace(request: Request, response: Response) -> Workspace:
     if not SID.fullmatch(sid):
         sid = uuid.uuid4().hex[:12]
         response.set_cookie(COOKIE, sid, httponly=True, samesite="lax", max_age=7 * 24 * 3600)
+        cfg.visitors.prune(cfg.world)
     return Workspace(sid, True, cfg.visitors.state(sid), cfg.world)
 
 

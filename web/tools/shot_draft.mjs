@@ -1,0 +1,12 @@
+import { chromium } from "@playwright/test";
+const [out, width = "1440", height = "900"] = process.argv.slice(2);
+const b = await chromium.launch();
+const p = await (await b.newContext({ viewport: { width: +width, height: +height }, reducedMotion: "reduce" })).newPage();
+await p.goto("http://localhost:7860/");
+await p.locator(".starter").first().waitFor({ timeout: 30000 });
+await p.screenshot({ path: `${out}_first.png` });
+await p.locator(".starter").first().click();
+await p.locator(".bubble.answer").waitFor({ timeout: 30000 });
+await p.waitForTimeout(600);
+await p.screenshot({ path: `${out}_draft.png` });
+await b.close();

@@ -1,14 +1,17 @@
 """Every endpoint in contracts/api.md, grouped as the UI groups them. A route translates HTTP to the service and back."""
 
 import json
+import tempfile
 import time
+from pathlib import Path
 from typing import Literal
 
 from fastapi import APIRouter, Header, Request
+from fastapi.concurrency import run_in_threadpool
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, ConfigDict, Field
 
-from .. import review as nightly
+from .. import muse, review as nightly
 from ..agents import forge, registry
 from ..harness import loop, practice
 from ..harness.store import CATEGORIES, PatchError, diff
@@ -38,6 +41,57 @@ def _run_or_404(run_id, ws):
     return r
 
 
+# ---------- voice
+MAX_AUDIO_BYTES = 2 * 1024 * 1024       # 30 s of 16 kHz mono 16-bit is about 960 kB
+
+
+def voice_words(reason):
+    """The service's reasons are written for the Replay switch; say them in terms of voice."""
+    if reason is None:
+        return None
+    return reason.replace("Live mode is off here", "Voice is off here").replace(" Use Replay, or run it locally.", "").replace(" Use Replay.", "")
+
+
+def transcribe(wav_path, keywords):
+    """The one place that calls the transcription API (tests replace it)."""
+    return muse.transcribe(wav_path, keywords=keywords)
+
+
+@api.post("/voice")
+async def voice(request: Request, ws: Workspace = Ws):
+    """Muse Voice Transcribe on a raw 16 kHz mono WAV body. The transcript goes back to the person to edit: nothing is sent to an agent."""
+    data = await request.body()
+    if not data:
+        raise ApiError(400, "EMPTY_AUDIO", "No audio was received.")
+    if len(data) > MAX_AUDIO_BYTES:
+        raise ApiError(413, "AUDIO_TOO_LARGE", "That recording is too long. Keep it under 30 seconds.")
+    if data[:4] != b"RIFF":
+        raise ApiError(415, "NOT_WAV", "Send a WAV recording.")
+
+    def work():
+        _, blocked = ws.live_client("spark")        # checks the key and both budgets, then counts this call
+        if blocked:
+            raise ApiError(403, "LIVE_OFF", voice_words(blocked))
+        try:
+            towns = sorted({s["town"] for s in ws.company("T01").sites.values()})
+        except Exception:
+            towns = []
+        with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as f:
+            f.write(data)
+        try:
+            t = transcribe(Path(f.name), towns)
+        except Exception as e:                      # network or service failure: the browser keeps the recording for a retry
+            raise ApiError(502, "TRANSCRIBE_FAILED", f"Transcription failed ({type(e).__name__}). Try again.")
+        finally:
+            Path(f.name).unlink(missing_ok=True)
+        text = (t.get("transcript") or "").strip()
+        if not text:
+            raise ApiError(422, "NO_SPEECH", "We could not hear any speech. Try again, closer to the microphone.")
+        return {"transcript": text, "audio_ms": t.get("audio_ms", 0), "cost_usd": t.get("cost_usd", 0)}
+
+    return await run_in_threadpool(work)
+
+
 # ---------- meta and session
 @api.get("/health")
 def health():
@@ -47,7 +101,9 @@ def health():
 @api.get("/session")
 def session(ws: Workspace = Ws):
     keys = {name: ws.live_ready(key) for name, key in MODELS.items() if key}
+    why_voice = voice_words(ws.live_ready("spark"))
     return {"public": ws.public, "default_mode": "replay", "default_team": True, "models": {k: {"available": not why, "reason": why} for k, why in keys.items()},
+            "voice": {"available": why_voice is None, "reason": why_voice},
             "live_runs_left": ws.live_runs_left(), "caps": {"per_session": LIVE_RUNS_PER_SESSION, "per_day": LIVE_CALLS_PER_DAY}}
 
 

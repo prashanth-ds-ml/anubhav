@@ -10,19 +10,19 @@ tags: [home, index]
 **Deadline:** Wed Nov 4, 9:00 PM ET = **Thu Nov 5, 7:30 AM IST** (target: submit Nov 4 IST)
 
 ## Plan
-- [[Anubhav_MultiAgent_Design_v1]]: **Oct 31 design (from another assistant's session, merged Oct 31):** orchestrated multi-agent system (Planner, Analyst, Tool Forge, Lesson Miner) with per-agent learning, and a React + FastAPI app on a Hugging Face Space. Decisions #1–16, delivery plan §4.9 (D-044). In progress: contract in `contracts/`, Python Sprint 1 done Oct 31; backend next ([[backend_plan]]); status in [[todo]]
+- [[Anubhav_MultiAgent_Design_v1]]: **Oct 31 design (from another assistant's session, merged Oct 31):** orchestrated multi-agent system (Planner, Analyst, Tool Forge, Lesson Miner) with per-agent learning, and a React + FastAPI app on a Hugging Face Space. Decisions #1–16, delivery plan §4.9 (D-044). In progress: contract in `contracts/`, Python Sprint 1 done Oct 31; status in [[todo]]
 - [[demo_plan]]: **resume here.** What we can honestly show, the 3-minute story, the UI plan, and the owner's decisions
-- [[backend_plan]]: FastAPI endpoints and backend work (built; status in [[todo]])
-- [[React_UI_Brainstorm]]: the discussion that led to it (superseded, kept as history)
+- [[Design_Doc_Demo_v1]]: **proposed Nov 2.** Audit of the backend and React app, and the design of the judge-ready demo (six main tabs, six scenarios, evidence charts, benchmarks, claim trail)
+- [[Backend_Report]]: what the backend does, for the UI work
+- [[Handoff_Web_to_AI_Engineer]]: the React app merged onto the backend (Nov 2): test status, findings, what is still open
+- [[UX_Revision_Plan_v1]]: the judge-ready UX plan the React app implements
 - `Implementation_Plan_Sprints.md`: sprint plan for the design; local only, not in git (it names people)
-- [[implementation_plan]]: plan from Oct 30. Audit of the to-do list, demo story, workstreams A–G to submission, cut order
-- [[build_plan]]: layers, dates, done-criteria, cut order (Oct 29 plan)
 - [[PRD_v3.1]]: product requirements (source of truth), scaled per D-027
 - [[Data_Benchmark_Blueprint_v1.0]]: data generator, 100-case benchmark, review procedure
 - [[Data_Spec_v1]]: the demo world: references, scale, companies, vehicles, schema, **hidden rules (H-01…H-32)**, notes, generator steps
 - [[Anubhav_overview]]: the idea, an 18-step walkthrough, experiment findings, hackathon fit
 - `diagrams/anubhav_flow.excalidraw`: flow diagram (open at excalidraw.com)
-- `archive/`: superseded docs (PRD v1 and v1.1, old day plan); prior experiment files are in the repo's `archive/prototype_experiments/`
+- Prior experiment files are in the repo's `archive/prototype_experiments/`. Older plans and PRDs were removed on Nov 2 and remain in git history
 
 ## Trackers
 | Tracker | Use it for |
@@ -53,7 +53,7 @@ tags: [home, index]
 - `templates/`: daily, decision, error, experiment, session, run
 
 ## Session routine
-**Start:** read [[progress]] and [[build_plan]] → pick the next unchecked task → check [[risks]].
+**Start:** read [[progress]] and [[demo_plan]] → pick the next unchecked task → check [[risks]].
 **During:** every bug → [[errors_and_fixes]] · every decision → [[decisions]] · every paid run → [[cost_ledger]] + [[run_logs]].
 **End:** daily note → [[progress]] → [[risks]] → commit and push.
 

@@ -33,6 +33,13 @@ Summary table first, details below. Newest at the bottom.
 | E-023 | 2026-10-30 | learning | Revoking a pack retired the recipient's own lesson; pack ids collided within a second; pack text went into the prompt unfiltered | high | fixed (own lessons only lose the confirmation; date + uuid ids; per-kind allow-list, 40-char plain text; tests) | step-1 commit |
 | E-024 | 2026-10-30 | agent | A failed model call (timeout, 5xx) crashed the run and lost its drafts; the client had no timeout or retries | medium | fixed (90 s timeout, 3 retries, `stop="error"` keeps drafts; offline httpx test) | step-1 commit |
 | E-025 | 2026-10-30 | agent | World facts left in code (D-034): `"repu" = tomorrow` and "Telangana, 3PL" in the prompt; e-way-bill limit, max stops and 38 km/h in code; a `bandi/lorry/truck` list in the gate | medium | fixed (`configs/operating_rules.yaml`, speed from the world config, generic vehicle words learned per company) | step-1 commit |
+| E-026 | 2026-11-02 | api | Hosted visitors saw the host's own development runs: tool candidates and their names differed per machine, so 6 browser tests failed on one machine only | med | fixed (visitors see demo runs and their own; a demo run is found past its local copy) | uncommitted |
+| E-027 | 2026-11-02 | api | "Why this plan" listed lessons for other sites, because plan_board returns every site's advice | low | fixed (limited to the draft's sites) | uncommitted |
+| E-028 | 2026-11-02 | api | A new visitor's parallel first requests could fail (UNIQUE constraint) or read an empty lesson store | med | fixed (seeding under a lock with a marker file) | uncommitted |
+| E-029 | 2026-11-02 | web | A scenario step queued before saved requests loaded used a stale list and silently did nothing | low | fixed (queue the request, run it on the fresh list) | uncommitted |
+| E-030 | 2026-11-02 | web | "Why this plan" listed empty lesson rows: the server sends lessons as text, the card expected objects | low | fixed (both shapes) | uncommitted |
+| E-031 | 2026-11-02 | web | The Fleet tab blanked the page: a vehicle's reason is a list, the new formatter expected a string | high | fixed before release (lists joined) | uncommitted |
+| E-032 | 2026-11-02 | web | Acting on a tool candidate collapsed the panel and lost the scroll (data blanked while reloading) | low | fixed (keep data while reloading) | uncommitted |
 
 **Areas:** model API · MCP · tools · agent · retrieval · verifier · voice · UI · infra · data · cost
 

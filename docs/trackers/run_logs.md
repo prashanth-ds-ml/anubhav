@@ -18,6 +18,7 @@ Summary of every **real** (non-mock) model run. The full traces live in the trac
 | 2026-10-29 | EXP-008 / EXP-009 / EXP-009b / EXP-010 | see [[experiments]] | RT/TE/EN | text | muse-spark-1.3 (mining) + open-1026 (agent) | v0 | A–E | see [[experiments]] | — | — | see [[cost_ledger]] | — | batch summaries; per-run rows in `artifacts/` |
 | 2026-10-29 | EXP-011 | 38 cases × arms (102 runs) | RT/TE/EN | text | muse-spark-open-1026 | v0 | A/B/C/E | C 24/26 · E 12/12, 0 unsafe | — | — | 4.99 | — | `artifacts/benchmark/exp011_20261029_210758.json` (+ `_rows.jsonl` for the 37 resumed runs) |
 | 2026-10-30 | live-check | 6 user questions | TE/RT | text | muse-spark-open-1026 | v0 + 8 new tools | — | ✅ 6/6 | plan_board, check_load, create_dispatch_drafts, list_drivers, trip_documents, performance, list_lessons | — | 0.31 | — | T03 plan: 16 drafts, 18/21 orders; see [[tool_calling]] |
+| 2026-11-02 | dry run (7 runs) | S4, S5 | RT/EN | text | muse-spark-1.3 | current | team | 6 of 7 as hoped | find_site, plan_board, check_load, create_dispatch_draft | — | 0.39 | — | S4: lesson retired → V11 (32 ft); restored → V08 (22 ft), cites L-T01-002. S5: confirm-now drafted only; overload refused (27.3 t on 9 t, chemical with food); night-only site refused 9 am and asked for a night slot; ambiguous Warangal drafted all 3 Warangal orders instead of asking. Nicknames: "nalla lorry lo pedda godown load" → V11 to Venkata Sri Traders, Warangal. One run each. |
 
 Artifacts: `artifacts/smoke/text_20261027_014700.json`, `artifacts/smoke/negation_loop_20261027_014750.json`
 

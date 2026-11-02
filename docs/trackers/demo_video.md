@@ -7,6 +7,8 @@ The video is the primary artifact. Final-round judges also try the hosted demo, 
 
 **One sentence:** *Same model. It learns what your business never wrote down, how to use its tools, and new tools of its own, and you can see and approve every step.*
 
+**Recording path (Nov 2, D-050/D-051):** record the scenarios in the React app, opened with `/?tour=S1`, `/?tour=S2`, `/?tour=S3`, then about 15 s of S4 live. The plan card (red 32 ft, green 22 ft) and the finished guide's before-and-after are the shots to hold on.
+
 ## Storyboard (target 2:50)
 Every shot is a real run. Replays are labelled "replay" on screen (the app does it). Numbers come from the files named.
 

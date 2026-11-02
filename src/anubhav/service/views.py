@@ -87,12 +87,59 @@ def fleet(ws, cid):
                                                      for v in list_vehicles(b, ListVehicles())["vehicles"]]}
 
 
+def _results(run):
+    for r in walk(run):
+        for s in r.get("trace", []):
+            if isinstance(s.get("result"), (dict, list)):
+                yield s["result"]
+
+
+def _find(o, test):
+    """Every dict inside a tool result that passes test."""
+    if isinstance(o, dict):
+        if test(o):
+            yield o
+        for v in o.values():
+            yield from _find(v, test)
+    elif isinstance(o, list):
+        for v in o:
+            yield from _find(v, test)
+
+
+def _key(lesson):
+    """Lessons arrive as text or as small objects: one hashable key for either."""
+    return lesson if isinstance(lesson, str) else json.dumps(lesson, sort_keys=True, ensure_ascii=False)
+
+
+def _lesson_sites(run):
+    """Which site each site-scoped lesson came with: tools like plan_board return every site's advice, so a lesson
+    seen during a run is not necessarily about the sites a draft serves."""
+    out = {}
+    for res in _results(run):
+        for d in _find(res, lambda d: d.get("site_id") and any(d.get(k) for k in events.LESSON_KEYS)):
+            for k in events.LESSON_KEYS:
+                for x in d.get(k) or []:
+                    out.setdefault(_key(x), set()).add(d["site_id"])
+    return out
+
+
+def _draft_sites(run, draft_id):
+    for res in _results(run):
+        for d in _find(res, lambda d: d.get("draft_id") == draft_id and isinstance(d.get("load"), dict)):
+            return set(d["load"].get("sites") or [])
+    return None
+
+
 def why_plan(run, draft_id):
-    """Why this draft: the lessons, agents and tools of the run that made it, from that run's events."""
+    """Why this draft: the lessons, agents and tools of the run that made it, from that run's events. A lesson tied to
+    a site is listed only when the draft serves that site."""
     ev = events.from_run(run)
     if not any(e["type"] == "draft_created" and e["payload"]["draft_id"] == draft_id for e in ev):
         return None
-    return {"run_id": run["run_id"], "request": run["request"], "lessons": [x for e in ev if e["type"] == "lesson_used" for x in e["payload"]["lessons"]],
+    seen = list({_key(x): x for e in ev if e["type"] == "lesson_used" for x in e["payload"]["lessons"]}.items())
+    scoped, sites = _lesson_sites(run), _draft_sites(run, draft_id)
+    lessons = [x for k, x in seen if sites is None or k not in scoped or scoped[k] & sites]
+    return {"run_id": run["run_id"], "request": run["request"], "lessons": lessons,
             "lessons_in_prompt": len(run.get("knowledge") or []), "agents": sorted({e["agent_id"] for e in ev}),
             "tools": list(dict.fromkeys(e["payload"]["tool"] for e in ev if e["type"] == "tool_call")),
             "checks": [e["payload"] for e in ev if e["type"] == "validator_check" and e["payload"].get("draft_id") == draft_id]}

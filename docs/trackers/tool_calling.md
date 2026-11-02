@@ -4,7 +4,7 @@ tags: [tracker, tools]
 # Tool-calling tracker
 
 The 3PL MCP tools (PRD v3.1 §6.3) and how well Muse uses them. Failure patterns here feed Loop A in [[harness_versions]].
-Old order-desk registry (40 tools): `archive/tool_calling_order_desk.md`
+Old order-desk registry (40 tools): `docs/archive/tool_calling_order_desk.md` (git history)
 
 ## 1. Tool registry
 Every tool does real fixture-backed work. No dummy tools to inflate the count.

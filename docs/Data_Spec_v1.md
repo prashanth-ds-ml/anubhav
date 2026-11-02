@@ -4,7 +4,7 @@ date: 2026-10-29
 ---
 # Data spec v1: the Anubhav demo world
 
-What the generator builds, and why. It implements [[Data_Benchmark_Blueprint_v1.0]] at the D-027 scale (3 history companies + 1 new company). Status of each run: [[data_and_benchmark]]. Plan: [[build_plan]] Layer 1.
+What the generator builds, and why. It implements [[Data_Benchmark_Blueprint_v1.0]] at the D-027 scale (3 history companies + 1 new company). Status of each run: [[data_and_benchmark]]. Plan: [[demo_plan]] Layer 1.
 
 **Who we are modelling:** a **medium-sized regional 3PL** (third-party logistics company) in Telangana. It moves FMCG goods from brands' CFA depots (Carrying & Forwarding Agent warehouses) to distributors and stores. Its staff work in **Roman Telugu first, then Telugu script, then English**. It is not a national giant: no fancy TMS, plans live in a basic system plus people's heads and WhatsApp.
 

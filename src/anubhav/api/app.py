@@ -27,6 +27,8 @@ def create_app(public=None, world=None, replay_pace=0.05) -> FastAPI:
     app.state.public = session.PUBLIC if public is None else public
     app.state.world = session.ensure_world(world or session.WORLD)
     app.state.visitors = Visitors()
+    if app.state.public:
+        app.state.visitors.prune(app.state.world, force=True)     # leftovers from before a restart
     app.state.replay_pace = replay_pace
 
     @app.exception_handler(ApiError)

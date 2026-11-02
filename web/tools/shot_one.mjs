@@ -1,0 +1,13 @@
+import { chromium } from "@playwright/test";
+const [out, width = "1440", height = "900", scheme = "light"] = process.argv.slice(2);
+const b = await chromium.launch();
+const c = await b.newContext({ viewport: { width: +width, height: +height }, colorScheme: scheme, reducedMotion: "reduce" });
+const p = await c.newPage();
+await p.goto("http://localhost:7860/");
+await p.getByRole("row").nth(1).waitFor({ timeout: 30000 });
+await p.screenshot({ path: `${out}_first.png` });
+await p.getByRole("button", { name: /Hanamkonda lo ae weekday/ }).click();
+await p.locator(".bubble.answer").waitFor({ timeout: 30000 });
+await p.waitForTimeout(500);
+await p.screenshot({ path: `${out}_run.png` });
+await b.close();

@@ -2,11 +2,11 @@
 tags: [design, multi-agent, ui, benchmark]
 status: FINAL (all sections and decisions #1-16 confirmed by owner, Oct 31; delivery plan 4.9 confirmed)
 date: 2026-10-31
-supersedes: React_UI_Brainstorm (kept as history)
+supersedes: React_UI_Brainstorm (removed Nov 2, in git history)
 ---
 # Anubhav multi-agent system and React platform: design v1
 
-History and discussion trail: [[React_UI_Brainstorm]]. Related: [[Home]], [[submission_checklist]], [[decisions]], [[risks]].
+History and discussion trail: `React_UI_Brainstorm.md` (git history). Related: [[Home]], [[submission_checklist]], [[decisions]], [[risks]].
 Deadline: Thu Nov 5, 7:30 AM IST (Nov 4, 9 PM ET). Target submit: Nov 4.
 
 ## 1. Understanding summary

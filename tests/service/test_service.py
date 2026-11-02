@@ -53,6 +53,62 @@ def test_visitors_never_see_each_others_drafts_or_lessons(ws):
     assert a.store().list("T01") == [] and b.store().list("T01") != []
 
 
+def test_a_visitor_sees_demo_runs_and_their_own_never_the_hosts_development_runs(traces, tmp_path, monkeypatch, ws):
+    import json
+    demo = tmp_path / "demo_runs.jsonl"
+    monkeypatch.setattr(runs, "DEMO_RUNS", demo)
+    row = lambda rid, **kw: {"run_id": rid, "company": "T01", "request": "q", "knowledge": True, **kw}
+    traces.mkdir()
+    (traces / "local.jsonl").write_text("\n".join(json.dumps(r) for r in [row("dev"), row("shared"), row("mine", visitor="a"), row("theirs", visitor="b")]), encoding="utf-8")
+    demo.write_text(json.dumps(row("shared")), encoding="utf-8")
+    a = ws("a")
+    assert runs.find_run("dev", a) is None and runs.find_run("theirs", a) is None
+    assert runs.find_run("mine", a) and runs.find_run("shared", a)             # a demo run is found past its local copy
+    assert {r["run_id"] for r in runs.recent_runs(ws=a)} == {"shared", "mine"}
+    assert runs.find_run("dev", ws("x", public=False))                         # locally, everything is visible
+
+
+def test_a_new_visitors_parallel_first_requests_all_see_the_full_seeded_lessons(ws):
+    from concurrent.futures import ThreadPoolExecutor
+    expected = len(ws("ref").store().list("T01"))
+    assert expected > 0
+    a = ws("n1")
+    with ThreadPoolExecutor(8) as pool:
+        counts = list(pool.map(lambda _: len(a.store().list("T01")), range(16)))
+    assert counts == [expected] * 16                       # never an error, never an empty or half-filled store
+    assert a.store_path().with_name(a.store_path().name + ".seeded").exists()
+
+
+def test_idle_visitors_files_are_pruned_but_active_ones_stay(ws):
+    import os
+    import time
+    old, recent, held = ws("o1"), ws("r1"), ws("h1")
+    for w in (old, recent, held):
+        w.store()
+    world = old.world
+    past = time.time() - 3 * 24 * 3600
+    for sid in ("o1", "h1"):
+        for p in (world / "learning" / "sessions").glob(f"{sid}.*"):
+            if p.exists():
+                os.utime(p, (past, past))
+    import gc
+    gc.collect()                                            # Windows: close the stores' connections first
+    assert session.prune_visitors(world, keep={"h1"}) >= 1
+    assert not old.store_path().exists() and recent.store_path().exists() and held.store_path().exists()
+
+
+def test_why_this_plan_lists_only_lessons_for_the_sites_the_draft_serves():
+    from anubhav.service import views
+    tool = lambda name, result: {"type": "tool", "name": name, "arguments": {}, "ok": True, "result": result}
+    run = {"run_id": "r1", "request": "q", "knowledge": [], "trace": [
+        tool("plan_board", {"sites": [{"site_id": "C1", "advice": ["night only (L-1)"]}, {"site_id": "C2", "advice": ["max 22 ft (L-2)"]},
+                                      {"site_id": "C3", "approved_policies": [{"rule": "no trucks", "id": "L-4"}]}],
+                            "advisories": ["vendor X is late (L-3)"]}),
+        tool("create_dispatch_draft", {"draft_id": "D1", "vehicle_id": "V1", "load": {"sites": ["C2"]}}),
+        {"type": "finish", "reply": "ok"}]}
+    assert views.why_plan(run, "D1")["lessons"] == ["max 22 ft (L-2)", "vendor X is late (L-3)"]
+
+
 def test_locally_the_store_is_shared(ws):
     a, b = ws("x", public=False), ws("y", public=False)
     assert a.store_path() == b.store_path() and a.company("T01").runtime is b.company("T01").runtime

@@ -10,7 +10,7 @@ Sources:
 
 > **Dates:** the Day column is the plan's schedule. All items marked done so far were done on **2026-10-30** (the real date), ahead of plan.
 
-**How and why: [[implementation_plan]]** (D-039, D-040). Related: [[progress]], [[submission_checklist]], [[risks]].
+**How and why: `implementation_plan.md` (git history)** (D-039, D-040). Related: [[progress]], [[submission_checklist]], [[risks]].
 **Audit of this list on Oct 30 (evening):**
 - Step 1 is done and re-tested (147 passed) but **not committed**.
 - Of step 1b, W3 and W4 are not started; W5 is partial (it becomes the Logs page).
@@ -115,9 +115,9 @@ Owner and Claude in parallel. The single Planner stays the baseline and fallback
 | V1–V4 | React shell on the fixtures (Vite + TS, tokens, chat stream, Why this plan, roster) | ⬜ |
 | V5 | Take the Streamlit-free parts out of `ui/core.py` into a service module | ⬜ |
 
-**Owner's direction (Oct 31, evening): finish the whole backend first (every FastAPI endpoint the UI needs); React later.** Plan: [[backend_plan]] (proposed; 4 open decisions in its §6; B1 starts on the owner's go).
+**Owner's direction (Oct 31, evening): finish the whole backend first (every FastAPI endpoint the UI needs); React later.** Plan: `backend_plan.md` (git history) (proposed; 4 open decisions in its §6; B1 starts on the owner's go).
 
-| # | Backend item ([[backend_plan]] §3) | Status |
+| # | Backend item (`backend_plan.md` (git history) §3) | Status |
 |---|---|---|
 | L0 | **Logs are the base (owner):** team runs saved whole with their events; every reader of runs sees teammates; `tool_usage`, `missing_tools` | ✅ Oct 31 |
 | T1 | **Tool creation (owner's decisions):** candidate at 3+ different requests (`MIN_USES = 3`), any agent's query counts; `tool_missing` → Tool Forge (now active) writes the first read-only query; Forge suggests names, code falls back; a person approves; approved tools on the MCP server | ✅ Oct 31 (scripted model only; no live run yet) |
@@ -138,7 +138,11 @@ Owner and Claude in parallel. The single Planner stays the baseline and fallback
 | B14 | EXP-014 whole-team curve: written and tested on a scripted model, **not run** (D-046) | ✂️ |
 | B12 | Show team runs in Streamlit, so the work is visible if React slips | ⬜ |
 | B10 | Dockerfile built and checked locally (no keys in the image, non-root, replay works, paid routes refused); deploying the Space is the owner's step ([[deploy]]) | ✅ Oct 31 |
-| Web | UI: plan in [[demo_plan]] | ⬜ next (decisions in its last section) |
+| Web | React app merged (D-049): [[Handoff_Web_to_AI_Engineer]] | ✅ Nov 2 |
+| H1 | Server fixes from the handoff: lesson seeding race (4c) fixed with a lock and a seeded marker; idle visitor files pruned (4); hidden dev runs no longer reach visitors; plan lessons limited to the draft's sites. 4b (one workspace per cookieless request) is mitigated by the web app's session-first start plus pruning; slow reads (1, 4d) measured under 0.5 s warm | ✅ Nov 2 |
+| H3 | Judge scenarios S1–S5 in the React app, live mode on Muse Spark 1.3 (D-050) | ✅ Nov 2 |
+| H4 | UX polish pass: 16 audit findings (D-051, [[UX_Revision_Plan_v1]] §9) | ✅ Nov 2 |
+| H2 | Real voice recording with the key set (tests mock it); 60-second test with an outsider; push to a Space (needs the owner's go-ahead) | ⬜ |
 
 ## Cut
 - ✂️ Hospital and call-centre demos, React frontend, government-docs RAG (D-039; [[ideas_parking_lot]])

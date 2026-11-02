@@ -11,7 +11,13 @@ data
 voice
 docs
 tests
-web
+web/node_modules
+web/dist
+web/test-results
+web/playwright-report
+web/readme-assets
+web/e2e
+web/tools
 **/__pycache__
 artifacts/**/*.sqlite
 artifacts/**/rt

@@ -19,10 +19,16 @@ Built and tested (`tests/api/test_api.py`); the running API documents itself at 
 | Method | Path | Returns |
 |---|---|---|
 | GET | `/api/health` | `{ok}` |
-| GET | `/api/session` | `{public, default_mode, default_team, models: {name: {available, reason}}, live_runs_left, caps}` |
+| GET | `/api/session` | `{public, default_mode, default_team, models: {name: {available, reason}}, voice: {available, reason}, live_runs_left, caps}` |
 | GET | `/api/companies` | `[{company, name, sites, vehicles, towns, plan_date}]` |
 | GET | `/api/suggestions?company=&use_lessons=` | `[{label, request, has_replay}]` |
 | POST | `/api/session/reset-drafts?company=` | Clears this visitor's drafts, holds and conversation |
+| POST | `/api/voice` | Body: raw `audio/wav` (16 kHz mono, at most 2 MB, about 30 s). Returns `{transcript, audio_ms, cost_usd}` |
+
+Voice (`POST /api/voice`):
+- The transcript goes back to the person to edit. Nothing is sent to an agent until they send it in the chat.
+- It uses Muse Voice Transcribe, so it needs the `meta_api` key and counts as one live run against the session and daily caps. `session.voice` says whether it is available and why not.
+- Errors use the one error shape: `EMPTY_AUDIO` 400, `NOT_WAV` 415, `AUDIO_TOO_LARGE` 413, `LIVE_OFF` 403 (no key, or a cap reached), `NO_SPEECH` 422, `TRANSCRIBE_FAILED` 502.
 
 ## Dashboard
 | Method | Path | Returns |

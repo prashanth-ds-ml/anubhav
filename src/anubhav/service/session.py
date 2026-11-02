@@ -45,6 +45,7 @@ SUGGESTIONS = {
 
 _WORLD_LOCK = threading.Lock()
 _SPEND_LOCK = threading.Lock()
+_SEED_LOCK = threading.Lock()      # one new visitor's first requests arrive together; only one may seed their lessons
 
 
 def ensure_world(world=WORLD):
@@ -54,6 +55,33 @@ def ensure_world(world=WORLD):
             from ..data import generate
             generate.main(["--full"])
     return world
+
+
+VISITOR_MAX_IDLE_S = 2 * 24 * 3600       # a hosted visitor's drafts and lessons are removed after 2 days without a change
+
+
+def prune_visitors(world=WORLD, keep=(), max_idle_s=VISITOR_MAX_IDLE_S, now=None) -> int:
+    """Remove hosted visitors' files (drafts, holds, lesson stores) untouched for max_idle_s, except visitors in keep
+    (still in this server's memory). Their run records in data/traces stay. Returns how many visitors' files went."""
+    import time
+    now = time.time() if now is None else now
+    gone = set()
+    for root in (Path(world) / "runtime" / "sessions", Path(world) / "learning" / "sessions"):
+        if not root.is_dir():
+            continue
+        for p in root.iterdir():
+            sid = p.name.split(".")[0]
+            if sid in keep:
+                continue
+            files = [p] + (list(p.rglob("*")) if p.is_dir() else [])
+            if now - max(f.stat().st_mtime for f in files) < max_idle_s:
+                continue
+            try:
+                shutil.rmtree(p) if p.is_dir() else p.unlink()
+                gone.add(sid)
+            except OSError:         # in use (Windows keeps open files): try again next time
+                pass
+    return len(gone)
 
 
 @functools.lru_cache(maxsize=8)
@@ -110,14 +138,19 @@ class Workspace:
 
     def store(self) -> LessonStore:
         path = self.store_path()
-        if self.public and not path.exists():    # a new visitor starts with the EXP-008 lessons, as in the video
-            LessonStore(path)
-            self.load_exp008_lessons()
+        seeded = path.with_name(path.name + ".seeded")
+        if self.public and not seeded.exists():  # a new visitor starts with the EXP-008 lessons, as in the video
+            with _SEED_LOCK:                     # everyone without the marker waits here, so nobody reads a half-filled store
+                if not seeded.exists():
+                    if not path.exists():        # a store from before the marker existed is kept as it is
+                        LessonStore(path)
+                        self.load_exp008_lessons()
+                    seeded.touch()
         return LessonStore(path)
 
-    def load_exp008_lessons(self):
+    def load_exp008_lessons(self, dst=None):
         """Copy the EXP-008 lesson store (mined by Muse, approved by the fixed review rule) into this demo store."""
-        dst = self.store_path()
+        dst = dst or self.store_path()
         if EXP008:
             shutil.copy(EXP008[-1], dst)
             return True

@@ -33,9 +33,9 @@ Live mode and voice need keys. Without them, the app says so and stays on replay
 After new real runs locally: `uv run python scripts/export_demo.py`, then check the bundle for secrets and commit `demo/`.
 
 ## FastAPI on a Hugging Face Docker Space (D-044)
-The Streamlit link stays the hosted demo until the web app is ready. The API image is built and checked locally.
+The Streamlit link stays the hosted demo until the web app is on a Space. The API image, with the web app inside it, is built and checked locally.
 
-1. Check it locally: `docker build -t anubhav-api .` then `docker run --rm -p 7860:7860 anubhav-api`, and open http://localhost:7860/docs.
+1. Check it locally: `docker build -t anubhav-api .` then `docker run --rm -p 7860:7860 anubhav-api`, and open http://localhost:7860/ (the web app) and http://localhost:7860/docs. The build has a Node stage that runs `npm ci` and `npm run build` in `web/` and copies `web/dist` into the image, so the API serves the web app at `/`. The first build took about 7 minutes and the image is about 2.2 GB. Checked on Nov 1 with no keys: `/api/health` answers after about 30 s, `/api/session` shows replay mode with live and voice off, the page and its script load, a saved request plays, and the app runs as a non-root user.
 2. Create a new Space with the **Docker** SDK and **Public** visibility. Its README needs this front matter (don't add it to this repo's README, which GitHub shows):
    ```yaml
    ---
@@ -45,7 +45,7 @@ The Streamlit link stays the hosted demo until the web app is ready. The API ima
    ---
    ```
 3. Push this repo's files to the Space. For replay-only hosting, add no secrets: live mode stays off and costs $0.
-4. For live mode, add `baseten_api_key` and `meta_api` as Space **secrets**, never in a file. Caps apply: 8 runs per session, 60 per day.
-5. Space storage resets on a restart unless persistent storage is attached. The demo world is in the image, so only visitors' drafts and saved live runs are lost.
+4. For live mode (scenarios S4 and S5), add only `meta_api` as a Space **secret**, never in a file: live runs use Muse Spark 1.3 on Meta's API (D-050). Leave `baseten_api_key` unset. Caps apply: 8 runs per session, 60 per day.
+5. Space storage resets on a restart unless persistent storage is attached. The demo world is in the image, so only visitors' drafts and saved live runs are lost. A visitor's drafts and lessons are removed after 2 days without a change (checked at start and at most hourly); their run records stay.
 6. Check in an incognito window: `/api/health`, `/docs`, and a replay through `/api/chat` and `/api/chat/stream`.
 
