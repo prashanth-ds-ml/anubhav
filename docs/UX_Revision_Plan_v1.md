@@ -5,6 +5,8 @@ date: 2026-11-01
 ---
 # UX revision plan v1: judge-ready React app
 
+> **Nov 2:** the layout here (one Desk with nine tabs) was replaced by [[Design_Doc_Demo_v1]] and built in sprints 1–7 ([[Build_Plan_Demo_v1]]): six main tabs with addresses, a guide that stays across tabs, evidence charts, Runs, Agents and Proof & audit. The audit findings and principles below still hold.
+
 Source: UX audit of the running app (Nov 1) played as a first-time judge. Builds on [[Anubhav_MultiAgent_Design_v1]] (section 4.8 visual system) and [[Implementation_Plan_Sprints]] (this becomes "Sprint 3b", between Sprint 3 and the Sprint 4 freeze). Deadline: Thu Nov 5, 7:30 AM IST; nothing new after Nov 3 evening.
 
 ## 1. Understanding summary

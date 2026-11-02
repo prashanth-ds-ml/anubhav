@@ -1,6 +1,6 @@
 ---
 tags: [plan, demo, ui]
-status: PROPOSED (Oct 31). The UI work starts next; decisions in the last section are the owner's.
+status: BUILT (Nov 2). Scenarios and story below follow the build sprints ([[Build_Plan_Demo_v1]]); the UI plan section is kept as history and superseded by [[Design_Doc_Demo_v1]].
 date: 2026-10-31
 ---
 # Demo and UI plan
@@ -10,15 +10,16 @@ Related: `backend_plan.md` (git history), [[demo_video]], [[Anubhav_MultiAgent_D
 **Ground rule (owner, Oct 31):** build the backend and plan the UI. No experiments and no credits spent. Live use goes on the Meta API, not Baseten. So everything below uses saved runs and results we already have.
 
 ## Judge scenarios (D-050, Nov 2)
-The app opens on five cards; each opens a step-by-step guide with a "Check it yourself" list.
+The app opens on six cards; each opens a step-by-step guide that stays on screen across tabs, with a "Check it yourself" list.
 | # | Scenario | Kind | What it proves |
 |---|---|---|---|
 | S1 | The rule nobody wrote down | Recorded, free | Learned from records, approved by a person, the next plan changes (32 ft → 22 ft) |
 | S2 | It builds its own tool | Recorded, free | Repeated work becomes a checked tool after approval (5 calls → 1) |
 | S3 | A new company on day 1 | Recorded, free | Shared regional lessons work on day 1 (33% → 100%) |
+| S6 | Roads change: the Kazipet bridge | Recorded data, free | Route knowledge from drivers' notes; 45 delays inside the closure and none after; a lesson that expires |
 | S4 | Your lessons, your call | Live, Muse Spark 1.3 | Retire the rule → 32 ft; restore it → 22 ft. The judge controls the cause |
 | S5 | Try to break it | Live, Muse Spark 1.3 | Confirm-now, overload, wrong time, nicknames, or anything typed |
-Dry run on Nov 2: 6 of 7 as hoped ([[run_logs]]). The video records S1–S3 plus a short live S4. Each scenario opens directly with `/?tour=S1` … `/?tour=S5`; the guide is a stepper, every plan gets a card with the gate check, and finished scenarios show the before and after (D-051).
+Dry run on Nov 2: 6 of 7 as hoped ([[run_logs]]). The video records S1–S3 plus a short live S4. Each scenario opens directly with `/?tour=S1` … `/?tour=S6`; the guide is a stepper, every plan gets a card with the gate check, and finished scenarios show the before and after (D-051).
 
 ## What we can honestly show today
 | Claim | Evidence | Show as |
@@ -38,6 +39,8 @@ Dry run on Nov 2: 6 of 7 as hoped ([[run_logs]]). The video records S1–S3 plus
 - that any of the measured numbers apply to Muse Spark 1.3 as the agent. They were all measured on Muse Spark Open.
 
 ## Demo story (3 minutes, all saved runs)
+Superseded: the current storyboard, for the build-sprint screens, is in [[demo_video]]. The table below is the Oct 31 version.
+
 | Time | Beat | Screen | Data |
 |---|---|---|---|
 | 0:00 | The problem: rules live in people's heads | Title, one statistic | README |
@@ -54,6 +57,8 @@ Dry run on Nov 2: 6 of 7 as hoped ([[run_logs]]). The video records S1–S3 plus
 Replays are labelled "replay" on screen. Voice and video remain the owner's.
 
 ## UI plan
+Superseded by [[Design_Doc_Demo_v1]] (D-052): six main tabs (Dispatch Desk, Learning, Tools, Agents, Runs, Proof & audit), each with an address. Kept as history.
+
 **Layout (design decision #6):** one screen. Top strip: the loop and the agent roster. Centre: tabs. Right, about 35%: chat and event stream.
 
 | Area | Shows | Endpoints |

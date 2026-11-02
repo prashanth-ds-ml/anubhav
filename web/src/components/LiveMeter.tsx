@@ -19,7 +19,7 @@ export function LiveMeter({ compact = false }: { compact?: boolean }) {
   if (!b) {
     return (
       <p className="mode-pill" title="No model key on this host, so answers replay runs recorded earlier on Muse Spark Open. Nothing is simulated.">
-        Replay mode: recorded runs
+        Replay mode<span className="replay-more">: recorded runs</span>
       </p>
     );
   }

@@ -50,8 +50,8 @@ export default function App() {
   const chatActions = useRef<ScenarioActions | null>(null);
   const toDesk = () => { if (route.main !== "desk") go("desk"); };
   const actions: ScenarioActions = {
-    runSaved: (label, lessons) => { toDesk(); chatActions.current?.runSaved(label, lessons); },
-    runLive: (text) => { toDesk(); chatActions.current?.runLive(text); },
+    runSaved: (label, lessons) => { toDesk(); return chatActions.current?.runSaved(label, lessons) ?? Promise.resolve(); },
+    runLive: (text) => { toDesk(); return chatActions.current?.runLive(text) ?? Promise.resolve(); },
     openTab: (slug, focus) => chatActions.current?.openTab(slug, focus),
     setCompany: (c) => chatActions.current?.setCompany(c),
     gateRule: (d) => chatActions.current!.gateRule(d),
@@ -118,7 +118,7 @@ export default function App() {
           {narrow && companyEl}
           <MainNav current={route.main} narrow={narrow} />
           <LiveMeter compact={narrow} />
-          <button type="button" className="aboutbtn" onClick={() => setAboutOpen(true)}><Info size={16} aria-hidden /> About</button>
+          <button type="button" className="aboutbtn" onClick={() => setAboutOpen(true)}><Info size={16} aria-hidden /> <span className="about-label">About</span></button>
           <ThemeToggle />
         </div>
         {narrow ? (

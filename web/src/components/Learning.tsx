@@ -100,6 +100,11 @@ export function Learning({ item }: { item?: string | null }) {
   const byKind = asked ? lessons.find((x) => x.kind === asked) : undefined;
   const selected = byKind ?? lessons.find((x) => x.lesson_id === item) ?? lessons.find((x) => x.state.startsWith("ACTIVE")) ?? lessons[0];
   useEffect(() => { if (byKind) { setAsked(null); go(`learning/${byKind.lesson_id}`); } }, [byKind?.lesson_id]); // eslint-disable-line react-hooks/exhaustive-deps
+  // On a narrow screen the lesson opens below the list: bring it into view when one is chosen by address.
+  const ready = !!l.data;
+  useEffect(() => {
+    if (item && ready && window.matchMedia("(max-width: 900px)").matches) document.querySelector(".lesson-detail")?.scrollIntoView({ block: "start" });
+  }, [item, ready]);
   const groups: [string, typeof lessons][] = [
     ["Waiting for a person", lessons.filter((x) => WAITING.has(x.state))],
     ["Active", lessons.filter((x) => x.state.startsWith("ACTIVE"))],

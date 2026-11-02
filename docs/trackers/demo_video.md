@@ -7,40 +7,38 @@ The video is the primary artifact. Final-round judges also try the hosted demo, 
 
 **One sentence:** *Same model. It learns what your business never wrote down, how to use its tools, and new tools of its own, and you can see and approve every step.*
 
-**Recording path (Nov 2, D-050/D-051):** record the scenarios in the React app, opened with `/?tour=S1`, `/?tour=S2`, `/?tour=S3`, then about 15 s of S4 live. The plan card (red 32 ft, green 22 ft) and the finished guide's before-and-after are the shots to hold on.
+**Recording path (rewritten Nov 2 for the build-sprint screens, D-052):** record in the React app, opening each scenario with `/?tour=S1`, `/?tour=S2`, `/?tour=S6`, then the Proof tab and about 15 s of S4 live. Shots to hold on: the truck drawn past the gate line, S1's finish with both trucks on one scale, the Runs swimlane with the mistake and its fix, the Kazipet weekly bars, and the Proof scoreboard with its ✕ marks.
 
 ## Storyboard (target 2:50)
-Every shot is a real run. Replays are labelled "replay" on screen (the app does it). Numbers come from the files named.
+Every shot is a real run or a committed file. Recorded runs say "Recorded" on screen (the app does it). Numbers come from the files named.
 
-| Time | Beat | On screen (page → action) | Narration (draft) | Source |
+| Time | Beat | On screen (tab → action) | Narration (draft) | Source |
 |---|---|---|---|---|
-| 0:00–0:15 | The problem | A 32 ft truck and the Jangaon godown gate; one line: 75% of India's truck operators run fewer than five trucks | "Your best dispatcher knows a 32-foot truck can't get into this godown. No system does. 75% of India's truck operators run fewer than five trucks: their rules live in notes and in people's heads." | Redseer, Dec 2024 (README) |
-| 0:15–0:35 | Session 0: it learns the business | **Business profile**: facts counted from the records (45 sites, 18 vehicles, ~10 orders a day…) | "Anubhav runs on Meta's open-weights Muse Spark Open. First it learns what the business is, from its own records." | Business profile page |
-| 0:35–1:00 | Session 1, failure 1: a fact nobody wrote | **Workbench**, lessons off, voice in Roman Telugu: "Repu Jangaon Lakshmi Agencies load ki bandi pettu" → it drafts the 32 ft truck | "I ask in Telugu, by voice. It plans with its tools, and gets it wrong: the system says the truck fits." | replay (T01, cold); Muse Voice Transcribe live if keys |
-| 1:00–1:25 | It learns from the records | **What it learned**: the 22 ft lesson, its evidence (3 trucks turned back), the gate's verdict; approve | "Muse Spark 1.3 reads 90 days of records and proposes a rule. Code checks the evidence. I approve it. A habit that only looks like a rule is rejected." | EXP-008 lessons |
-| 1:25–1:40 | Fixed | Workbench, lessons on: same request → the 22 ft truck, the lesson cited | "Same request, same model: now it's safe." | replay (T01, lessons) |
-| 1:40–2:15 | Failure 2 → a tool it made itself | Workbench "New tool": "Hanamkonda lo ae weekday lo ekkuva deliveries?" → 5 calls, writes SQL, hedges. **New tools**: the query it reused for other towns, checks pass (same answers, 5 held-out towns) → Approve. Ask again → **1 call, Saturday** | "No tool answers this, so it writes a read-only query. It has needed that query before, so code checks it on towns it never saw, and I approve it as a tool. Next time: one call, a quarter of the cost, and the right answer." | replays: `demo:new-tool-before` ($0.066, 5 calls) and `live:c5-learned-tool` ($0.016, 1 call) |
-| 2:15–2:30 | The nightly review | **Logs**: "Run the nightly review" → tool use → Tuning, reused queries → New tools, stated facts → lesson proposals; then one run as Plan / Act / Observe / Code check | "Every night it reads its own runs and sends each problem to the right fix. Nothing changes without a person. And every step is in the logs." | Logs page |
-| 2:30–2:45 | Proof | **Proof & audit**: EXP-011 chart; one line for EXP-011R and EXP-012 | "On a world it had never seen, run three times on this exact version: lessons beat searching raw notes, 48 to 90 percent; a brand-new company goes from 33 to 100 with a shared pack, zero unsafe drafts, zero private details leaked. And the tools it learns: used in 14 of 16 new questions, a quarter cheaper." | `artifacts/benchmark/exp011_*.json`, EXP-011R, EXP-012 |
+| 0:00–0:15 | The problem | **Dispatch Desk**, first screen: the problem card, the impact line, "Built on Meta Muse" | "Your best dispatcher knows a 32-foot truck can't get into this godown. No system does. 75% of India's truck operators run fewer than five trucks: their rules live in notes and in people's heads." | Redseer, Dec 2024 (README) |
+| 0:15–0:40 | It gets it wrong | `/?tour=S1`, step 1: the Roman Telugu request → the plan card: 32 ft drawn past the 22 ft gate line, "The code checks passed. Only the learned rule says no." Point at the language chips | "I ask in Telugu. It plans with its tools on Muse Spark Open, the open-weights model, and every code check passes. But this truck won't fit the gate, and nothing in the data says so." | replay (T01, lessons off) |
+| 0:40–1:05 | It learns from the records | **Learning**, the gate lesson: every trip to the site by truck length, 3 turned back, "limit it learned: 22 ft"; the life of the lesson; Undo and approve | "Muse Spark 1.3 read the company's records and proposed a rule. Code checked the evidence: three long trucks turned back. A person approves it, and can undo it." | `/api/learning/lessons/L-T01-002/evidence`, EXP-008 lessons |
+| 1:05–1:20 | Fixed | S1 step 4 → the finish: both trucks on one scale, "Same model, same request…"; Approve ✓ and Improve ✓ light up | "Same request, same model. The only difference is one lesson it learned and a person approved." | replay (T01, lessons on) |
+| 1:20–1:55 | A tool it made itself, and a mistake it fixed | `/?tour=S2`: the team run → **Runs**: Planner hands off to Tool Forge (2 and 4 calls); "Busiest weekday, before the tool": step 4 failed "no such column", step 5 corrected. **Tools**: checks pass on towns it never saw → Approve → ask again: 1 call | "No tool answers this, so Tool Forge writes read-only queries. When the database refused one, it read the error and fixed it itself. The query kept coming back, so code checked it on new towns and I approved it as a tool. Next time: one call." | `demo:team:new-tool`, `demo:new-tool-before`, `live:c5-learned-tool` |
+| 1:55–2:15 | Roads change | `/?tour=S6`: the Kazipet bridge: drivers' notes in Telugu and English, 45 delays all inside the closure and none after, "Expired on arrival" | "Route knowledge comes from drivers. When the road reopened, the delays stopped, so this lesson was stored as expired and is never given to the agent." | `/api/learning/lessons/L-T01-011/evidence` |
+| 2:15–2:35 | Proof, including what failed | **Proof & audit**: the per-company chart (unsafe drafts 2→0, 1→0, 6→0), the scoreboard with its ✕ marks, then **Check our claims**: plan commit before result commit | "On a world it had never seen, run three times: lessons took unwritten rules from 48 to 90 percent, a new company from 33 to 100 on day one, with no unsafe drafts and nothing private leaked. Every experiment was fixed in advance, and the ones that missed their bar are here too." | EXP-011R, `artifacts/experiments_index.json` |
+| 2:35–2:45 | Your call (live) | `/?tour=S4`: retire the rule → the "You retired a lesson" card → live run, 32 ft → Undo → 22 ft; runs left shown in the header | "And it's your call: switch the rule off and the live plan follows. Live on Muse Spark 1.3." | live run (label the clip "live") |
 | 2:45–2:50 | Close | Repo + hosted link; "Same model. Verified experience. Safer plans." | "Built during the hackathon on Muse Spark Open, Muse Spark 1.3 and Muse Voice Transcribe." | README |
 
-**Also say once, honestly:** the data is synthetic (allowed; it's how we can score against hidden truth), and the app is newer than the EXP-011 measurement (EXP-011R covers that).
+**Also say once, honestly:** the data is synthetic (allowed; it's how we can score against hidden truth), the team of agents is not more accurate than one Planner (EXP-013), and whether each agent improves over versions is not measured yet (EXP-014).
 
 ## Shot list and assets
 - [ ] Voice request recorded in Roman Telugu (owner), with English subtitles
-- [x] Golden-path replays (T01 cold and with lessons) in `demo/replay_runs.jsonl`
-- [x] A genuine failure: the cold 32 ft draft; the 5-call hedged answer before the tool existed (real, not staged)
-- [x] New-tool before/after replays in the hosted bundle (app test covers the flow)
-- [x] Logs page with "Meta models at work", run timeline, nightly review
-- [x] EXP-011R and EXP-012b lines for the proof beat
-- [x] Architecture diagram (README mermaid)
+- [x] S1 replays (T01 cold and with lessons) in `demo/replay_runs.jsonl`
+- [x] A genuine failure: the cold 32 ft draft, and the real SQL error fixed by the agent (`demo:new-tool-before`)
+- [x] New-tool before/after replays in the hosted bundle (browser tests cover the flow)
+- [x] Runs swimlane, Learning evidence charts, Proof scoreboard and chain of custody (screens in `web/readme-assets/`)
 - [ ] English subtitles for every Telugu line
-- [ ] Every replayed segment labelled "replay" (the app shows it on the run header)
+- [ ] S4 live clip labelled "live"; recorded segments show "Recorded" in the app
 
 ## Recording checklist
 - [ ] Screen at 1080p, browser zoom fixed, notifications off, incognito window
-- [ ] Hosted demo: open it once a few minutes before (first start builds the world, up to a minute)
-- [ ] Sidebar: company T01; "Reset today's drafts" before each take
+- [ ] Hosted demo: open it once a few minutes before
+- [ ] Company: Sri Kakatiya Logistics (T01); a fresh visit for each take, so the lessons start as recorded
 - [ ] Spoken script timed under 2:55
 - [ ] Uploaded; link works in incognito
 

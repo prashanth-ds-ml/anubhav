@@ -13,8 +13,10 @@ const JANGAON = "Roman Telugu"; // the saved request "Repu Jangaon Lakshmi Agenc
 const JANGAON_TEXT = "Repu Jangaon Lakshmi Agencies load ki bandi pettu. Dispatch confirm cheyyaku.";
 
 export interface ScenarioActions {
-  runSaved: (label: string, lessons?: boolean) => void;
-  runLive: (text: string) => void;
+  /** Play a saved request; settles when the run has ended. */
+  runSaved: (label: string, lessons?: boolean) => Promise<void>;
+  /** Send a request live; settles when the run has ended. */
+  runLive: (text: string) => Promise<void>;
   /** Open a tab; with a focus target, scroll to that item there and highlight it. */
   openTab: (slug: string, focus?: string) => void;
   setCompany: (c: string) => void;
@@ -220,7 +222,8 @@ export function ScenarioGuide({ id, actions, runId, onClose, onLoop, onStart }: 
     setBusy(i);
     setNote(null);
     try {
-      const msg = await s.steps[i].act(actions);
+      // A step that plays a run ticks when the run has ended, not when its button is pressed (at most 5 minutes).
+      const msg = await Promise.race([s.steps[i].act(actions), new Promise<void>((r) => setTimeout(r, 300_000))]);
       if (msg) setNote(msg);
       if (s.steps[i].until) setWaiting((w) => new Set(w).add(i));
       else setDone((d) => new Set(d).add(i));

@@ -123,42 +123,49 @@ Nothing in the runtime is hand-coded world knowledge: no word lists, no site rul
 ## Try it
 **Hosted demo:** **[anubhav-metahackathon.streamlit.app](https://anubhav-metahackathon.streamlit.app/)**. Replay mode, no keys, free; each visitor gets their own drafts and lessons. The first open after a quiet spell can take about a minute while it wakes up.
 
-**Five scenarios to try** (the React app opens on them; `/?tour=S1` … `/?tour=S5` opens one directly):
+**Six scenarios to try.** The web app opens on them; add `/?tour=S1` … `/?tour=S6` to its address to open one directly.
+
 | | Scenario | Kind | What you see |
 |---|---|---|---|
-| S1 | The rule nobody wrote down | recorded, free | Without lessons a 32 ft truck, flagged too long for the gate; with the approved lesson a 22 ft truck |
+| S1 | The rule nobody wrote down | recorded, free | Without lessons a 32 ft truck, drawn past the gate's 22 ft line ("the code checks passed; only the learned rule says no"); with the approved lesson a 22 ft truck. Also recorded in Telugu, English and mixed |
 | S2 | It builds its own tool | recorded, free | A repeated question is checked by code and approved by you as a tool: 5 tool calls become 1 |
-| S3 | A new company on day 1 | recorded, free | Shared regional lessons: 33% → 100% on new-company cases |
-| S4 | Your lessons, your call | live, Muse Spark 1.3 | Retire the gate rule and the live plan goes back to 32 ft; restore it and it picks 22 ft |
+| S3 | A new company on day 1 | recorded, free | Shared regional lessons: 33% → 100% on new-company cases, nothing private leaked |
+| S6 | Roads change: the Kazipet bridge | recorded data, free | Drivers' notes in Telugu and English, 45 closure delays all inside the closure and none after it, and a lesson that expired on arrival |
+| S4 | Your lessons, your call | live, Muse Spark 1.3 | Retire the gate rule and the live plan goes back to 32 ft; Undo, and it picks 22 ft. Approve or reject the live draft |
 | S5 | Try to break it | live, Muse Spark 1.3 | Ask it to dispatch now, overload a truck, deliver at the wrong time, or use the company's nicknames |
 
-Recorded scenarios replay real runs. Live ones need the `meta_api` key on the host and are capped per visit.
+Recorded scenarios replay real runs. Live ones need the `meta_api` key on the host; the header shows how many live runs are left.
+
+![S1 finished: the same request without and with the approved lesson, both trucks drawn against the gate's 22 ft limit](web/readme-assets/s1-done.png)
+
+**The main tabs:**
+- **Dispatch Desk:** the chat and the scenarios, with the company's orders, route plans, fleet, profile and ledger beside them.
+- **Learning:** every lesson with the evidence from the records (each trip to the site, or the delays week by week with the drivers' notes), who approved it, and when it ends.
+- **Tools:** repeated questions that could become tools, the code checks, and what approving one changes.
+- **Agents:** how each agent learns, what has been measured, and what has not yet.
+- **Runs:** every run step by step, one lane per agent, with a real mistake the agent fixed itself and the raw record.
+- **Proof & audit:** the benchmarks, and every pre-registered experiment from plan to result commit, the failed ones included.
+
+![Runs: the team run as one lane per agent, with the work each agent did](web/readme-assets/runs.png)
 
 **Locally:**
 ```bash
 git clone https://github.com/prashanth-ds-ml/anubhav.git
 cd anubhav
 uv sync
-uv run streamlit run streamlit_app.py     # builds the demo world from its seed on first start
+cd web && npm ci && npm run build && cd ..                     # the web app
+ANUBHAV_PUBLIC=1 uv run uvicorn anubhav.api.app:app --port 7860   # serves it at http://localhost:7860, replay mode
 ```
 Replay works with no keys. For live runs and voice, add a `.env`:
 ```
 meta_api=<Meta Model API key>
 baseten_api_key=<Baseten key>
 ```
-
-Things to try in the app:
-- **Workbench:** pick a suggestion and compare *Use approved lessons* off vs on. Open **Show as a graph** to see which tools the agent used.
-- **What it learned:** each lesson, its evidence, and how it was learned day by day.
-- **Share:** publish a pack to the new company and see what arrives.
-- **Business profile:** what the agent knows about the company, counted from its records, plus what the owner adds.
-- **Logs:** every run as plan → act → observe → code checks, and every lesson, patch, new tool, nightly review and piece of feedback on one timeline. Press "Run the nightly review".
-- **New tools:** on the Workbench pick "New tool" (5 calls), then approve the reused query on this page and ask again (1 call).
-- **Proof & audit:** the benchmark and every traced run.
+The earlier Streamlit app still runs with `uv run streamlit run streamlit_app.py`.
 
 **Other commands**
 ```bash
-uv run pytest -q                                              # 549 tests (421 Anubhav + 128 archived prototype), no model calls
+uv run pytest -q                                              # 563 tests, no model calls
 cd web && npm ci && npm run build && npx playwright test      # build the web app and run its browser tests
 uv run uvicorn anubhav.api.app:app --port 7860                # the API, serving the built web app at /; docs at /docs
 uv run python scripts/exp013_team.py                          # the team vs one planner (~$14)

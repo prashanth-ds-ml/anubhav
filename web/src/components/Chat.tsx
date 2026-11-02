@@ -100,7 +100,7 @@ export function Chat({ onEvents, prefill, ask, scenario, onStartScenario, action
   scenario: string | null; onStartScenario: (id: string) => void; actionsRef: MutableRefObject<ScenarioActions | null>;
 }) {
   const { company, setCompany, useLessons, setUseLessons, requests, session, ready, live, refreshSession, bumpData } = useSettings();
-  const pending = useRef<{ label: string; lessons?: boolean } | null>(null); // a saved request a scenario asked for before the list loaded
+  const pending = useRef<{ label: string; lessons?: boolean; done: () => void } | null>(null); // a saved request a scenario asked for before the list loaded
   const waiting = useRef<string | null>(null); // text sent before the saved requests loaded
   const [msgs, setMsgs] = useState<Msg[]>([]);
   const [draft, setDraft] = useState("");
@@ -127,7 +127,7 @@ export function Chat({ onEvents, prefill, ask, scenario, onStartScenario, action
   useEffect(() => () => stop.current(), []);
 
   useEffect(() => {
-    if (ready && pending.current) { const p = pending.current; pending.current = null; pick(p.label, p.lessons); } // this render's list, not the one from the click
+    if (ready && pending.current) { const p = pending.current; pending.current = null; void pick(p.label, p.lessons).then(p.done); } // this render's list, not the one from the click
     if (!ready || waiting.current === null) return;
     const t = waiting.current;
     waiting.current = null;
@@ -175,32 +175,38 @@ export function Chat({ onEvents, prefill, ask, scenario, onStartScenario, action
   const patch = (id: number, f: (m: Extract<Msg, { kind: "run" }>) => Extract<Msg, { kind: "run" }>) =>
     setMsgs((m) => m.map((x) => (x.kind === "run" && x.id === id ? f(x) : x)));
 
-  function run(request: string, lessons: boolean, extra?: string, liveRun = false, label?: string) {
+  /** Start a run; the promise settles when it ends (or is replaced, or has no recording), so a scenario step can wait for it. */
+  function run(request: string, lessons: boolean, extra?: string, liveRun = false, label?: string): Promise<void> {
     stop.current();
+    let finish = () => {};
+    const ended = new Promise<void>((r) => { finish = r; });
     const id = nextId.current++;
     setMsgs((m) => [...m, { kind: "user", text: request }, ...(extra ? [{ kind: "note" as const, text: extra }] : []), { kind: "run", id, events: [], ended: false, useLessons: lessons, live: liveRun, label }]);
-    stop.current = startRun(request, { company, useLessons: lessons, team: session?.default_team ?? true, live: liveRun }, {
+    const halt = startRun(request, { company, useLessons: lessons, team: session?.default_team ?? true, live: liveRun }, {
       onEvent: (e) => patch(id, (x) => ({ ...x, events: [...x.events, e] })),
       onRun: (info) => patch(id, (x) => ({ ...x, info, live: info.mode === "live" })),
       onNote: setBanner,
-      onEnd: () => { patch(id, (x) => ({ ...x, ended: true })); if (liveRun) refreshSession(); },
+      onEnd: () => { patch(id, (x) => ({ ...x, ended: true })); if (liveRun) refreshSession(); finish(); },
       onNoReplay: (message) => {
+        finish();
         setMsgs((m) => [...m.filter((x) => !(x.kind === "run" && x.id === id)), { kind: "note", text: `${message} Pick a saved request below.` }]);
       },
     });
+    stop.current = () => { halt(); finish(); };
+    return ended;
   }
 
   /** Run a saved request. If its recording only exists with the other lessons setting, switch to it and say so.
    * A scenario can ask for one setting; the toggle then shows it. */
-  function pick(label: string, lessons?: boolean) {
+  function pick(label: string, lessons?: boolean): Promise<void> {
     const r = requests.find((x) => x.label === label);
-    if (!r) return;
+    if (!r) return Promise.resolve();
     if (lessons !== undefined && (lessons ? r.on : r.off)) { setUseLessons(lessons); return run(r.request, lessons, undefined, false, label); }
     const ok = useLessons ? r.on : r.off;
     if (ok) return run(r.request, useLessons, undefined, false, label);
     const flip = !useLessons;
     setUseLessons(flip);
-    run(r.request, flip, `The saved run for this request is with lessons ${flip ? "on" : "off"}, so I switched that setting.`, false, label);
+    return run(r.request, flip, `The saved run for this request is with lessons ${flip ? "on" : "off"}, so I switched that setting.`, false, label);
   }
 
   function submit(text: string) {
@@ -246,7 +252,7 @@ export function Chat({ onEvents, prefill, ask, scenario, onStartScenario, action
   }
 
   const actions: ScenarioActions = {
-    runSaved: (label, lessons) => { if (ready) pick(label, lessons); else pending.current = { label, lessons }; },
+    runSaved: (label, lessons) => (ready ? pick(label, lessons) : new Promise<void>((done) => { pending.current = { label, lessons, done }; })),
     runLive: (text) => run(text, useLessons, undefined, true),
     openTab: (slug, focus) => { go(slug); if (focus) focusOn(focus); },
     setCompany: (c) => { if (c !== company) setCompany(c); },

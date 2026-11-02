@@ -4,6 +4,9 @@ const PLAN = "Plan a truck for tomorrow's Lakshmi Agencies, Jangaon order. Draft
 const on = { available: true, reason: null };
 const off = { available: false, reason: "Voice is off here (no `meta_api` set)." };
 
+// A session refresh can still be in flight when a test ends; drop it quietly.
+test.afterEach(async ({ page }) => { await page.unrouteAll({ behavior: "ignoreErrors" }); });
+
 /** Ask the real server for the session, then say what voice looks like. */
 async function caps(page: Page, voice: object) {
   await page.route("**/api/session", async (r) => {
