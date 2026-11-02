@@ -29,6 +29,7 @@ test("real data carries no sample badge; a draft rebuilt from a recording says s
     await page.getByRole("tab", { name: tab }).click();
     await expect(page.getByRole("note")).toHaveCount(0);
   }
+  await page.getByRole("tab", { name: "Dispatch Desk" }).click();
   await page.getByRole("button", { name: PLAN }).click();
   await expect(page.locator(".bubble.answer")).toBeVisible();
   await page.getByRole("tab", { name: "Route plans and drafts" }).click();

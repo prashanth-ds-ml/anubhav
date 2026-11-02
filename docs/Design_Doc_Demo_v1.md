@@ -1,6 +1,6 @@
 ---
 tags: [design, ux, react, api, audit]
-status: PROPOSED (Nov 2, evening). Needs the owner's approval before the build doc is written.
+status: APPROVED by the owner (Nov 2, evening; D-052). Build plan: [[Build_Plan_Demo_v1]].
 date: 2026-11-02
 ---
 # Design doc: the judge-ready demo (React app and API)
@@ -175,7 +175,14 @@ Six main tabs, each with its own address, so a link can open any of them.
   - the scoreboard lists 17 experiments
 - The full suites stay green before each commit.
 
-## 4. Open decisions for the owner
+## 4. Decisions (owner, Nov 2, D-052)
+1. Design approved.
+2. EXP-014: run after the build is complete (re-frozen, Meta API, cap $40).
+3. Today's work committed before the build (`e63472f`).
+4. Deploy (Space name, `meta_api` secret): after the build.
+5. Daily live cap stays 60. **New requirement:** a demo always shows clearly how many live runs are left.
+
+### Open decisions as first proposed
 1. **Approve this design** (the six main tabs, S6, the two read-only routes, the registry file).
 2. **EXP-014 tonight on the Meta API** (re-frozen with the model change recorded, cap $40), or not.
 3. **Commit today's work now**, before the build starts. Recommended.

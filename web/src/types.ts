@@ -47,5 +47,8 @@ export interface Session {
   public: boolean; default_mode: string; default_team: boolean;
   models: Record<string, { available: boolean; reason: string | null }>;
   voice: { available: boolean; reason: string | null };
-  live_runs_left: number; caps: { per_session: number; per_day: number };
+  /** The smaller of this visit's and today's runs left. */
+  live_runs_left: number;
+  live_runs_used?: number; live_runs_left_today?: number;
+  caps: { per_session: number; per_day: number };
 }

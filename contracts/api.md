@@ -19,7 +19,7 @@ Built and tested (`tests/api/test_api.py`); the running API documents itself at 
 | Method | Path | Returns |
 |---|---|---|
 | GET | `/api/health` | `{ok}` |
-| GET | `/api/session` | `{public, default_mode, default_team, models: {name: {available, reason}}, voice: {available, reason}, live_runs_left, caps}` |
+| GET | `/api/session` | `{public, default_mode, default_team, models: {name: {available, reason}}, voice: {available, reason}, live_runs_left, live_runs_used, live_runs_left_today, caps}`. `live_runs_left` is the smaller of this visit's and today's runs left; the page shows both |
 | GET | `/api/companies` | `[{company, name, sites, vehicles, towns, plan_date}]` |
 | GET | `/api/suggestions?company=&use_lessons=` | `[{label, request, has_replay}]` |
 | POST | `/api/session/reset-drafts?company=` | Clears this visitor's drafts, holds and conversation |

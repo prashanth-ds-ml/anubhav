@@ -1,12 +1,21 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Dashboard } from "./components/Dashboard";
 import { Chat } from "./components/Chat";
 import { Roster } from "./components/Roster";
 import { ThemeToggle } from "./components/ThemeToggle";
 import { About } from "./components/About";
+import { Learning } from "./components/Learning";
+import { NewTools } from "./components/NewTools";
+import { AgentCards } from "./components/AgentCards";
+import { Proof } from "./components/Proof";
+import { RunsList } from "./components/RunsList";
+import { LiveMeter } from "./components/LiveMeter";
+import { MainNav, MAIN_LABEL } from "./components/MainNav";
+import { ScenarioGuide, SCENARIOS, type ScenarioActions } from "./components/Scenarios";
 import { Info } from "lucide-react";
 import { useNarrow } from "./lib/useNarrow";
 import { useSettings } from "./lib/ctx";
+import { go, useRoute } from "./lib/route";
 import type { RunEvent } from "./types";
 
 // Each step says what it means. Approve and Improve happen outside a run (a person approves what was learned),
@@ -29,84 +38,123 @@ const STEP: Record<string, string> = {
 export default function App() {
   const [events, setEvents] = useState<RunEvent[]>([]);
   const [runId, setRunId] = useState<string | null>(null);
-  const { company, setCompany, companies, session } = useSettings();
-  const live = !!session && Object.values(session.models).some((m) => m.available);
+  const { company, setCompany, companies } = useSettings();
+  const route = useRoute();
   const [prefill, setPrefill] = useState({ text: "", n: 0 });
-  const [ask, setAsk] = useState({ label: "", n: 0 }); // the Learning tab asks the chat to run a saved request
+  const [ask, setAsk] = useState({ label: "", n: 0 }); // a tab asks the chat to run a saved request
   const narrow = useNarrow();
   const [aboutOpen, setAboutOpen] = useState(false);
+
+  // The scenario guide belongs to the whole app, so it stays on screen when a step opens another main tab.
+  const [scenario, setScenario] = useState<string | null>(null);
+  const chatActions = useRef<ScenarioActions | null>(null);
+  const toDesk = () => { if (route.main !== "desk") go("desk"); };
+  const actions: ScenarioActions = {
+    runSaved: (label, lessons) => { toDesk(); chatActions.current?.runSaved(label, lessons); },
+    runLive: (text) => { toDesk(); chatActions.current?.runLive(text); },
+    openTab: (slug, focus) => chatActions.current?.openTab(slug, focus),
+    setCompany: (c) => chatActions.current?.setCompany(c),
+    gateRule: (d) => chatActions.current!.gateRule(d),
+    focusBox: () => { toDesk(); chatActions.current?.focusBox(); },
+    toolApproved: () => chatActions.current!.toolApproved(),
+  };
+  function startScenario(id: string) {
+    const s = SCENARIOS.find((x) => x.id === id);
+    if (!s) return;
+    setScenario(id);
+    toDesk();
+    if (s.id !== "S3" && s.company !== company) setCompany(s.company); // S3 switches company as its first step
+  }
+  // A link can open a scenario directly (/?tour=S1), for the README and the video.
+  useEffect(() => {
+    const id = new URLSearchParams(window.location.search).get("tour")?.toUpperCase();
+    if (id) startScenario(id);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
   const last = events[events.length - 1];
   const finished = last?.type === "agent_done" && last.depth === 0;
   const acting = last && !finished ? last.agent_id : null;
   const current = last && !finished ? STEP[last.type] : undefined;
-  const factsEl = (
-    <ul className="facts" aria-label="Key facts">
-      <li>Drafts only</li>
-      <li>A person approves what is learned</li>
-      <li>{live ? "Live mode available" : "Replay mode: recorded runs"}</li>
-    </ul>
+  const companyEl = companies.length > 1 && (
+    <label className="company-pick">
+      <span className="sr-only">Company</span>
+      <select aria-label="Company" value={company} onChange={(e) => { setCompany(e.target.value); setEvents([]); setRunId(null); }}>
+        {companies.filter((c) => ["T01", "TNEW"].includes(c.company)).map((c) => <option key={c.company} value={c.company}>{c.name}</option>)}
+      </select>
+    </label>
   );
   const stripsEl = (
-    <>
-      <div className="strips">
-        <ol className="loop" aria-label="Closed loop">
-          {LOOP.map((l) => (
-            <li
-              key={l.step}
-              title={l.hint}
-              className={`${current === l.step ? "on" : ""} ${l.outsideRun ? "later" : ""}`}
-              aria-current={current === l.step ? "step" : undefined}
-            >
-              {l.step}
-              <span className="sr-only">: {l.hint}</span>
-            </li>
-          ))}
-        </ol>
-        <Roster acting={acting} />
-      </div>
-    </>
+    <div className="strips">
+      {!narrow && companyEl}
+      <ol className="loop" aria-label="Closed loop">
+        {LOOP.map((l) => (
+          <li
+            key={l.step}
+            title={l.hint}
+            className={`${current === l.step ? "on" : ""} ${l.outsideRun ? "later" : ""}`}
+            aria-current={current === l.step ? "step" : undefined}
+          >
+            {l.step}
+            <span className="sr-only">: {l.hint}</span>
+          </li>
+        ))}
+      </ol>
+      <Roster acting={acting} />
+    </div>
   );
+  const onDesk = route.main === "desk";
   return (
     <div className="shell">
       <About open={aboutOpen} onClose={() => setAboutOpen(false)} />
       <header className="top">
         <div className="brand">
           <h1>Anubhav</h1>
+          {narrow && companyEl}
+          <MainNav current={route.main} narrow={narrow} />
+          <LiveMeter compact={narrow} />
           <button type="button" className="aboutbtn" onClick={() => setAboutOpen(true)}><Info size={16} aria-hidden /> About</button>
           <ThemeToggle />
-          {companies.length > 1 && (
-            <label className="company-pick">
-              <span className="sr-only">Company</span>
-              <select aria-label="Company" value={company} onChange={(e) => { setCompany(e.target.value); setEvents([]); setRunId(null); }}>
-                {companies.filter((c) => ["T01", "TNEW"].includes(c.company)).map((c) => <option key={c.company} value={c.company}>{c.name}</option>)}
-              </select>
-            </label>
-          )}
-          <p className="pitch">
-            An AI team that plans truck loads for a logistics company, learns its unwritten rules, and never dispatches without a person.
-          </p>
-          {!narrow && (
-            <ul className="facts" aria-label="Mode">
-              <li title={live ? "Muse Spark 1.3 answers live, within a few runs per visit. Saved requests still replay their recordings." : "No model keys here, so answers replay runs recorded earlier on Muse Spark Open. Nothing is simulated."}>{live ? "Live mode available" : "Replay mode: recorded runs"}</li>
-            </ul>
-          )}
         </div>
         {narrow ? (
           <details className="about">
             <summary>How it works</summary>
-            {factsEl}
+            <ul className="facts" aria-label="Key facts"><li>Drafts only</li><li>A person approves what is learned</li></ul>
             {stripsEl}
           </details>
         ) : (
           stripsEl
         )}
       </header>
-      <main className="center">
-        <Chat onEvents={(e, id) => { setEvents(e); setRunId(id); }} prefill={prefill} ask={ask} />
-      </main>
-      <aside className="right" aria-label="Company data">
-        <Dashboard refreshKey={events.length} runId={runId} onPlan={(text) => setPrefill((p) => ({ text, n: p.n + 1 }))} onAsk={(label) => setAsk((a) => ({ label, n: a.n + 1 }))} />
-      </aside>
+      {scenario && <ScenarioGuide key={scenario} id={scenario} actions={actions} runId={runId} onClose={() => setScenario(null)} />}
+      <div className={`body ${onDesk ? "" : "full"}`} id="page">
+        {/* The chat stays mounted on every tab, so a conversation and a scenario's runs survive a visit to Learning. */}
+        <main className="center" hidden={!onDesk}>
+          <Chat
+            onEvents={(e, id) => { setEvents(e); setRunId(id); }}
+            prefill={prefill}
+            ask={ask}
+            scenario={scenario}
+            onStartScenario={startScenario}
+            actionsRef={chatActions}
+          />
+        </main>
+        {onDesk ? (
+          <aside className="right" aria-label="Company data">
+            <Dashboard panel={route.desk} refreshKey={events.length} runId={runId} onPlan={(text) => setPrefill((p) => ({ text, n: p.n + 1 }))} />
+          </aside>
+        ) : (
+          <main className="page">
+            <section role="tabpanel" aria-labelledby={`main-tab-${route.main}`}>
+            <h2 className="sr-only">{MAIN_LABEL[route.main]}</h2>
+            {route.main === "learning" && <Learning />}
+            {route.main === "tools" && <NewTools onAsk={(label) => { go("desk"); setAsk((a) => ({ label, n: a.n + 1 })); }} />}
+            {route.main === "agents" && <AgentCards />}
+            {route.main === "runs" && <RunsList />}
+            {route.main === "proof" && <Proof />}
+            </section>
+          </main>
+        )}
+      </div>
     </div>
   );
 }

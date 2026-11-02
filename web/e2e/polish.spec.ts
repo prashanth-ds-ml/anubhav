@@ -10,12 +10,13 @@ test("tabs follow the keyboard pattern: arrows, Home and End, one tab stop", asy
   await expect(page.getByRole("tab", { name: "Route plans and drafts" })).toBeFocused();
   await expect(page.getByRole("tab", { name: "Route plans and drafts" })).toHaveAttribute("aria-selected", "true");
   await page.keyboard.press("End");
-  await expect(page.getByRole("tab", { name: "Proof" })).toBeFocused();
+  await expect(page.getByRole("tab", { name: "Ledger" })).toBeFocused();
   await page.keyboard.press("ArrowRight"); // wraps around
   await expect(orders).toBeFocused();
   await page.keyboard.press("ArrowLeft");
-  await expect(page.getByRole("tab", { name: "Proof" })).toHaveAttribute("aria-selected", "true");
-  expect(await page.locator('[role="tab"][tabindex="0"]').count()).toBe(1);
+  await expect(page.getByRole("tab", { name: "Ledger" })).toHaveAttribute("aria-selected", "true");
+  expect(await page.getByRole("tablist", { name: "Company data" }).locator('[role="tab"][tabindex="0"]').count()).toBe(1);
+  expect(await page.getByRole("tablist", { name: "Main" }).locator('[role="tab"][tabindex="0"]').count()).toBe(1);
   await expect(page.getByRole("tabpanel")).toHaveAttribute("aria-labelledby", /tab-/);
 });
 

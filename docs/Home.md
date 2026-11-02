@@ -12,7 +12,8 @@ tags: [home, index]
 ## Plan
 - [[Anubhav_MultiAgent_Design_v1]]: **Oct 31 design (from another assistant's session, merged Oct 31):** orchestrated multi-agent system (Planner, Analyst, Tool Forge, Lesson Miner) with per-agent learning, and a React + FastAPI app on a Hugging Face Space. Decisions #1–16, delivery plan §4.9 (D-044). In progress: contract in `contracts/`, Python Sprint 1 done Oct 31; status in [[todo]]
 - [[demo_plan]]: **resume here.** What we can honestly show, the 3-minute story, the UI plan, and the owner's decisions
-- [[Design_Doc_Demo_v1]]: **proposed Nov 2.** Audit of the backend and React app, and the design of the judge-ready demo (six main tabs, six scenarios, evidence charts, benchmarks, claim trail)
+- [[Design_Doc_Demo_v1]]: **approved Nov 2 (D-052).** Audit of the backend and React app, and the design of the judge-ready demo (six main tabs, six scenarios, evidence charts, benchmarks, claim trail)
+- [[Build_Plan_Demo_v1]]: **proposed Nov 2.** Sprints 1-7 to build the approved design, then EXP-014, deploy, video, submit
 - [[Backend_Report]]: what the backend does, for the UI work
 - [[Handoff_Web_to_AI_Engineer]]: the React app merged onto the backend (Nov 2): test status, findings, what is still open
 - [[UX_Revision_Plan_v1]]: the judge-ready UX plan the React app implements

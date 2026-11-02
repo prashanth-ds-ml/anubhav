@@ -7,7 +7,7 @@ const NAME = "wnum_weekday_by_town";
 
 async function openTools(page: Page) {
   await page.goto("/");
-  await page.getByRole("tab", { name: "New tools", exact: true }).click();
+  await page.getByRole("tab", { name: "Tools", exact: true }).click();
   await expect(page.getByRole("heading", { name: "Repeated questions that could become tools" })).toBeVisible();
 }
 

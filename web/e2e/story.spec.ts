@@ -117,7 +117,7 @@ for (const width of [1024, 1440]) {
     const m = await wrap.evaluate((e) => ({ scroll: e.scrollWidth, client: e.clientWidth }));
     expect(m.scroll).toBeLessThanOrEqual(m.client + 1);
     const cell = (await wrap.getByRole("columnheader", { name: "With approved lessons" }).boundingBox())!;
-    const panel = (await page.locator("aside.right").boundingBox())!;
+    const panel = (await page.locator("main.page").boundingBox())!;
     expect(cell.x + cell.width).toBeLessThanOrEqual(panel.x + panel.width);
   });
 }

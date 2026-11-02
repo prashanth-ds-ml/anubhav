@@ -114,6 +114,19 @@ def test_session_says_live_is_off_without_keys_and_never_shows_a_key(env, monkey
     assert "sk-secret-value" not in client(env).get("/api/session").text
 
 
+def test_session_reports_live_runs_used_and_left_for_the_visit_and_the_day(voice_env, monkeypatch):
+    world, _, _ = voice_env
+    monkeypatch.setenv(muse.KEYS["spark"], "test-key")
+    c = client(world)
+    before = c.get("/api/session").json()
+    assert before["live_runs_used"] == 0 and before["live_runs_left"] == before["caps"]["per_session"]
+    assert before["live_runs_left_today"] <= before["caps"]["per_day"]
+    assert post_voice(c, wav_bytes()).status_code == 200            # a transcription counts as one live run
+    after = c.get("/api/session").json()
+    assert after["live_runs_used"] == 1 and after["live_runs_left"] == before["live_runs_left"] - 1
+    assert after["live_runs_left_today"] == before["live_runs_left_today"] - 1
+
+
 def test_a_bad_cookie_is_replaced_never_used_as_a_path(env):
     c = client(env)
     c.cookies.set(deps.COOKIE, "../../etc")

@@ -144,7 +144,7 @@ test("S2's approve step ticks only once a tool is approved, and New tools leads 
   const guide = page.getByRole("region", { name: /Scenario S2/ });
   await guide.getByRole("button", { name: "Ask the Telugu data question" }).click();
   await guide.getByRole("button", { name: "Check and approve the query as a tool" }).click();
-  await expect(page.getByRole("tab", { name: "New tools", exact: true })).toHaveAttribute("aria-selected", "true");
+  await expect(page.getByRole("tab", { name: "Tools", exact: true })).toHaveAttribute("aria-selected", "true");
   await expect(guide.getByText(/Waiting for you to approve a tool/)).toBeVisible();
   await expect(guide.getByLabel("Step 2 done")).toHaveCount(0);
   const first = page.locator("article[aria-label^='Candidate']").first();

@@ -2,6 +2,7 @@ import { CheckCircle2, ChevronDown, ChevronUp, Circle, Film, Play, X } from "luc
 import { useEffect, useState } from "react";
 import { useSettings } from "../lib/ctx";
 import { plainReason } from "../lib/text";
+import { liveBudget } from "./LiveMeter";
 import { ComparePair } from "./PlanCard";
 
 // The demo script for judges. These are the demo world's saved requests and steps, written for people to follow; the
@@ -109,6 +110,7 @@ export const SCENARIOS: Scenario[] = [
 
 export function ScenarioCards({ onStart }: { onStart: (id: string) => void }) {
   const { live, session } = useSettings();
+  const budget = liveBudget(session);
   return (
     <section className="scenarios" aria-labelledby="sc-title">
       <h2 id="sc-title">Try it: five scenarios</h2>
@@ -125,7 +127,8 @@ export function ScenarioCards({ onStart }: { onStart: (id: string) => void }) {
                 <h3><span className="sc-id">{s.id}</span> {s.title}</h3>
                 <p>{s.proves}</p>
                 <p className="small muted">
-                  About {s.minutes} min · {s.kind === "recorded" ? "free" : `uses up to ${s.steps.filter((x) => x.live).length} of your ${session?.caps.per_session ?? 8} live runs`}
+                  About {s.minutes} min · {s.kind === "recorded" ? "free" : `uses up to ${s.steps.filter((x) => x.live).length} live runs`}
+                  {s.kind === "live" && budget && <strong className="runs-left"> · {budget.left} of {budget.perVisit} left</strong>}
                 </p>
                 {off ? (
                   <p className="small sc-off">{plainReason(live.reason)} Try S1 to S3, which replay the same kinds of runs.</p>

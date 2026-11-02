@@ -1,25 +1,21 @@
-import { useEffect, useState } from "react";
 import { api } from "../lib/api";
 import { useApi } from "../lib/useApi";
 import { useSettings } from "../lib/ctx";
 import { Ledger } from "./Ledger";
-import { AgentCards } from "./AgentCards";
-import { Proof } from "./Proof";
-import { Learning } from "./Learning";
 import { Sample } from "./Sample";
 import { Verdict } from "./Badges";
 import { WhyCard } from "./WhyCard";
-import { NewTools } from "./NewTools";
 import { gateCheck, GateLine } from "./PlanCard";
 import { humanName } from "../lib/text";
+import { go, type Desk } from "../lib/route";
 
 const day = (d: string) => (d ? new Date(d + "T00:00").toLocaleDateString("en-IN", { day: "numeric", month: "short" }) : "");
 const kg = (n: number) => `${Math.round(n).toLocaleString("en-IN")} kg`;
 
-const TABS = ["Orders", "Route plans and drafts", "Fleet", "Company", "Ledger", "Agents", "Learning", "New tools", "Proof"] as const;
+const TABS = ["Orders", "Route plans and drafts", "Fleet", "Company", "Ledger"] as const;
 
 // Each tab has a short address (#plans, #ledger ...) so a link can open it directly.
-const SLUGS = ["orders", "plans", "fleet", "company", "ledger", "agents", "learning", "tools", "proof"];
+const SLUGS: Desk[] = ["orders", "plans", "fleet", "company", "ledger"];
 
 /** "expired: insurance_until" → "Insurance expired"; other reasons lose their underscores. */
 const vehicleReason = (r: unknown): string => {
@@ -28,7 +24,6 @@ const vehicleReason = (r: unknown): string => {
   const m = s.match(/^expired:\s*(\w+?)_until$/);
   return m ? `${humanName(m[1] === "puc" ? "PUC certificate" : m[1])} expired` : humanName(s);
 };
-const fromHash = () => TABS[Math.max(0, SLUGS.indexOf(window.location.hash.replace("#", "")))];
 
 const FACTS: [string, (f: any) => string | undefined][] = [
   ["Service area", (f) => f.service_area && `${f.service_area.sites} sites in ${f.service_area.towns} towns, mostly ${f.service_area.most_sites_in.join(", ")}`],
@@ -39,18 +34,10 @@ const FACTS: [string, (f: any) => string | undefined][] = [
   ["Busiest day", (f) => f.busiest_days && `${f.busiest_days.top.join(", ")} (quietest ${f.busiest_days.quietest})`],
 ];
 
-export function Dashboard({ refreshKey, runId, onPlan, onAsk }: { refreshKey: number; runId: string | null; onPlan: (text: string) => void; onAsk: (label: string) => void }) {
+export function Dashboard({ panel, refreshKey, runId, onPlan }: { panel: Desk; refreshKey: number; runId: string | null; onPlan: (text: string) => void }) {
   const { company, companies, dataVersion } = useSettings();
-  const [tab, setTabState] = useState<(typeof TABS)[number]>(fromHash);
-  useEffect(() => {
-    const on = () => setTabState(fromHash());
-    window.addEventListener("hashchange", on);
-    return () => window.removeEventListener("hashchange", on);
-  }, []);
-  const setTab = (t: (typeof TABS)[number]) => {
-    setTabState(t);
-    window.history.replaceState(null, "", `#${SLUGS[TABS.indexOf(t)]}`);
-  };
+  const tab = TABS[SLUGS.indexOf(panel)] ?? "Orders";
+  const setTab = (t: (typeof TABS)[number]) => go(SLUGS[TABS.indexOf(t)]);
   const o = useApi(() => api.orders(company), [company]);
   const f = useApi(() => api.fleet(company), [company]);
   const d = useApi(() => api.drafts(company, runId ?? undefined), [company, runId, refreshKey]);
@@ -163,10 +150,6 @@ export function Dashboard({ refreshKey, runId, onPlan, onAsk }: { refreshKey: nu
             <ul>{c.data.written_rules.map((r) => <li key={r.id}>{r.text}</li>)}</ul>
           </div>
         ))}
-        {tab === "Learning" && <Learning />}
-        {tab === "New tools" && <NewTools onAsk={onAsk} />}
-        {tab === "Proof" && <Proof />}
-        {tab === "Agents" && <AgentCards />}
         {tab === "Ledger" && <Ledger refreshKey={refreshKey} />}
       </div>
     </section>

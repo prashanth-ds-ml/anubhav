@@ -43,7 +43,10 @@ const q = (company: string, extra: Record<string, string | boolean | undefined> 
   return p.toString();
 };
 
+export interface RunRow { run_id: string; saved_at: string; label: string; company: string; model: string; request: string; mode: string; agents: string[]; tool_calls: number; drafts: string[]; stop: string; cost_usd: number; issues: string }
+
 export const api = {
+  runs: (c: string) => read<RunRow[]>(`/api/logs/runs?${q(c)}`, []),
   session: () => read<Session | null>("/api/session", null),
   companies: () => read<CompanyRow[]>("/api/companies", []),
   suggestions: (company: string, useLessons: boolean) => read<Suggestion[]>(`/api/suggestions?${q(company, { use_lessons: useLessons })}`, []),

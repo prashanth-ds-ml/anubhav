@@ -104,7 +104,9 @@ def session(ws: Workspace = Ws):
     why_voice = voice_words(ws.live_ready("spark"))
     return {"public": ws.public, "default_mode": "replay", "default_team": True, "models": {k: {"available": not why, "reason": why} for k, why in keys.items()},
             "voice": {"available": why_voice is None, "reason": why_voice},
-            "live_runs_left": ws.live_runs_left(), "caps": {"per_session": LIVE_RUNS_PER_SESSION, "per_day": LIVE_CALLS_PER_DAY}}
+            "live_runs_left": ws.live_runs_left(), "live_runs_used": ws.state.get("live_runs", 0),
+            "live_runs_left_today": max(0, LIVE_CALLS_PER_DAY - ws.calls_today()),
+            "caps": {"per_session": LIVE_RUNS_PER_SESSION, "per_day": LIVE_CALLS_PER_DAY}}
 
 
 @api.get("/companies")

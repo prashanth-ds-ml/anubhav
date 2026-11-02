@@ -10,7 +10,9 @@ import { Mic } from "./Mic";
 import { closest } from "../lib/match";
 import type { RunEvent } from "../types";
 import { Timeline } from "./Timeline";
-import { ScenarioCards, ScenarioGuide, SCENARIOS, type ScenarioActions } from "./Scenarios";
+import { ScenarioCards, type ScenarioActions } from "./Scenarios";
+import { go } from "../lib/route";
+import type { MutableRefObject } from "react";
 
 interface RunInfo { run_id: string; mode: string; bundled?: boolean }
 type Msg =
@@ -63,9 +65,13 @@ function Starters({ compact, onPick }: { compact: boolean; onPick: (label: strin
   );
 }
 
-export function Chat({ onEvents, prefill, ask }: { onEvents: (e: RunEvent[], runId: string | null) => void; prefill: { text: string; n: number }; ask: { label: string; n: number } }) {
+/** The scenario guide lives in the App (it stays on screen across main tabs); the chat lends it the actions that need
+ * the conversation (play a saved request, send a live one), through `actionsRef`. */
+export function Chat({ onEvents, prefill, ask, scenario, onStartScenario, actionsRef }: {
+  onEvents: (e: RunEvent[], runId: string | null) => void; prefill: { text: string; n: number }; ask: { label: string; n: number };
+  scenario: string | null; onStartScenario: (id: string) => void; actionsRef: MutableRefObject<ScenarioActions | null>;
+}) {
   const { company, setCompany, useLessons, setUseLessons, requests, session, ready, live, refreshSession, bumpData } = useSettings();
-  const [scenario, setScenario] = useState<string | null>(null);
   const pending = useRef<{ label: string; lessons?: boolean } | null>(null); // a saved request a scenario asked for before the list loaded
   const waiting = useRef<string | null>(null); // text sent before the saved requests loaded
   const [msgs, setMsgs] = useState<Msg[]>([]);
@@ -194,7 +200,7 @@ export function Chat({ onEvents, prefill, ask }: { onEvents: (e: RunEvent[], run
   const actions: ScenarioActions = {
     runSaved: (label, lessons) => { if (ready) pick(label, lessons); else pending.current = { label, lessons }; },
     runLive: (text) => run(text, useLessons, undefined, true),
-    openTab: (slug, focus) => { window.location.hash = slug; if (focus) focusOn(focus); },
+    openTab: (slug, focus) => { go(slug); if (focus) focusOn(focus); },
     setCompany: (c) => { if (c !== company) setCompany(c); },
     gateRule: async (decision) => {
       const all = await api.lessons(company);
@@ -207,25 +213,14 @@ export function Chat({ onEvents, prefill, ask }: { onEvents: (e: RunEvent[], run
     focusBox: () => field.current?.focus(),
     toolApproved: async () => (await api.tools(company)).some((t) => t.status === "active"),
   };
-  // A link can open a scenario directly (/?tour=S1), for the README and the video.
-  useEffect(() => {
-    const id = new URLSearchParams(window.location.search).get("tour")?.toUpperCase();
-    if (id && SCENARIOS.some((x) => x.id === id)) startScenario(id);
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  actionsRef.current = actions; // the latest closures, for the guide in the App
 
   // During a scenario the company panel follows the story: a new plan opens Route plans.
   const drafted = !!lastRun?.ended && lastRun.events.some((e) => e.type === "draft_created");
-  useEffect(() => { if (scenario && drafted) window.location.hash = "plans"; }, [drafted, lastRun?.id]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  function startScenario(id: string) {
-    const s = SCENARIOS.find((x) => x.id === id)!;
-    setScenario(id);
-    if (s.id !== "S3" && s.company !== company) setCompany(s.company); // S3 switches company as its first step
-  }
+  useEffect(() => { if (scenario && drafted) go("plans"); }, [drafted, lastRun?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <section className="chat" aria-label="Agent chat">
-      {scenario && <ScenarioGuide key={scenario} id={scenario} actions={actions} runId={lastRun?.info?.run_id ?? null} onClose={() => setScenario(null)} />}
       <div
         className="chat-log"
         ref={log}
@@ -237,7 +232,7 @@ export function Chat({ onEvents, prefill, ask }: { onEvents: (e: RunEvent[], run
             <section className="problem" aria-label="The problem and the idea">
               <p>
                 <strong>Every business has rules nobody wrote down.</strong> Anubhav learns them from the company's own records,
-                shows the evidence, and a person approves each one before it changes a plan.
+                shows the evidence, and a person approves each one before it changes a plan. It never dispatches without a person.
               </p>
               <details>
                 <summary className="small">Read more</summary>
@@ -252,7 +247,7 @@ export function Chat({ onEvents, prefill, ask }: { onEvents: (e: RunEvent[], run
                 </p>
               </details>
             </section>
-            <ScenarioCards onStart={startScenario} />
+            <ScenarioCards onStart={onStartScenario} />
             <h2>Or play a single saved request</h2>
             <p>You will see who acts, what they try, what fails, and what is learned. Or type your own below.</p>
             <Starters compact={false} onPick={pick} />
@@ -325,6 +320,7 @@ export function Chat({ onEvents, prefill, ask }: { onEvents: (e: RunEvent[], run
               available={voice.data?.available ?? false}
               reason={voice.loading ? "checking…" : plainReason(voice.data!.reason, "Voice")}
               onTranscript={(text, meta) => {
+                refreshSession(); // a transcription counts as a live run
                 setDraft((d) => (d.trim() ? `${d.trim()} ${text}` : text));
                 setHeard(meta);
                 field.current?.focus();

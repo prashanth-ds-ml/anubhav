@@ -142,6 +142,8 @@ Owner and Claude in parallel. The single Planner stays the baseline and fallback
 | H1 | Server fixes from the handoff: lesson seeding race (4c) fixed with a lock and a seeded marker; idle visitor files pruned (4); hidden dev runs no longer reach visitors; plan lessons limited to the draft's sites. 4b (one workspace per cookieless request) is mitigated by the web app's session-first start plus pruning; slow reads (1, 4d) measured under 0.5 s warm | ✅ Nov 2 |
 | H3 | Judge scenarios S1–S5 in the React app, live mode on Muse Spark 1.3 (D-050) | ✅ Nov 2 |
 | H4 | UX polish pass: 16 audit findings (D-051, [[UX_Revision_Plan_v1]] §9) | ✅ Nov 2 |
+| B-S1 | Build sprint 1 ([[Build_Plan_Demo_v1]]): six main tabs with addresses, guide across tabs, Runs list, live runs meter (session reports runs used and left today) | ✅ built and tested Nov 2; awaiting the owner's approval to commit |
+| B-S2…S7 | Build sprints 2–7 | ⬜ |
 | H2 | Real voice recording with the key set (tests mock it); 60-second test with an outsider; push to a Space (needs the owner's go-ahead) | ⬜ |
 
 ## Cut
