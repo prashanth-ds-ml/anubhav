@@ -8,6 +8,9 @@ Agents, directly on their own kind of question, before and after: Analyst, Tool 
 
   uv run python scripts/exp014_curve.py --freeze
   uv run python scripts/exp014_curve.py [--resume STAMP]    # refuses if a frozen file changed; stops at the budget
+
+Re-registered Nov 3 (D-054): the agents run on Muse Spark 1.3 on the Meta API (--model spark, the default now; no Baseten),
+the cap is $35, and every file is frozen again before the first call.
 """
 
 import argparse
@@ -320,6 +323,8 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--freeze", action="store_true")
     ap.add_argument("--resume")
+    ap.add_argument("--model", choices=("open", "spark"), default="spark", help="the agents' model: spark = Muse Spark 1.3 (Meta), open = Muse Spark Open (Baseten)")
+    ap.add_argument("--budget", type=float, default=35.0)
     a = ap.parse_args()
     if a.freeze:
         FROZEN.write_text(json.dumps(hashes(), indent=1), encoding="utf-8")
@@ -332,7 +337,7 @@ def main():
     world = ROOT / "data" / "worlds" / f"full_seed{SEED}"
     if not (world / "manifest.json").exists():
         assert generate.main(["--full", "--seed", str(SEED)]) == 0
-    experiment(world, OUT, muse.client("open"), muse.client("spark"), a.resume or datetime.now().strftime("%Y%m%d_%H%M%S"))
+    experiment(world, OUT, muse.client(a.model), muse.client("spark"), a.resume or datetime.now().strftime("%Y%m%d_%H%M%S"), budget=a.budget)
     return 0
 
 

@@ -8,6 +8,11 @@ that contains a value it was built from. Everything else is EXP-012's protocol: 
 gap questions, learn on dev with the query tools, the same checks, the same fixed approval rule.
 Test arms (held-out): Q (+ query tools) and T (Q + learned tools). Arm N is not re-run (EXP-012 reported it).
   uv run python scripts/exp012b_new_tools.py        # ~52 runs, ~$3 Baseten
+
+The same protocol on another model, as its own pre-registered experiment (EXP-016: Muse Spark 1.3 on the Meta API):
+  uv run python scripts/exp012b_new_tools.py --model spark --tag exp016 --freeze
+  uv run python scripts/exp012b_new_tools.py --model spark --tag exp016 --budget 6
+A tagged run refuses to start if a frozen file changed and stops at its budget with what it has (marked incomplete).
 """
 
 import json
@@ -16,6 +21,7 @@ import tempfile
 from datetime import datetime
 from pathlib import Path
 
+import exp_freeze
 from anubhav import muse
 from anubhav.agent import graph
 from anubhav.data.config import ROOT
@@ -51,13 +57,25 @@ def main():
     ap.add_argument("--companies", default="T01,T02")
     ap.add_argument("--keep", help="rows.jsonl of an interrupted run whose test rows are kept (amendment, logged)")
     ap.add_argument("--keep-tools", help="tools sqlite of the kept company, for the learned-tool list")
+    ap.add_argument("--model", choices=("open", "spark"), default="open", help="open = Muse Spark Open (Baseten), spark = Muse Spark 1.3 (Meta)")
+    ap.add_argument("--tag", default="exp012b", help="the experiment's name: its files are <tag>_*")
+    ap.add_argument("--budget", type=float, default=0.0, help="stop once this many dollars are spent (0 = no limit)")
+    ap.add_argument("--freeze", action="store_true", help="write <tag>_frozen.json and exit (before any model call)")
     a = ap.parse_args()
+    script = "scripts/exp012b_new_tools.py"
+    if a.freeze:
+        print(json.dumps(exp_freeze.freeze(a.tag, script), indent=1))
+        return
+    if a.tag != "exp012b":
+        exp_freeze.check(a.tag, script)
     stamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     out = ROOT / "artifacts" / "benchmark"
     out.mkdir(parents=True, exist_ok=True)
-    live = out / f"exp012b_{stamp}_rows.jsonl"
-    client, tmp = muse.client("open"), Path(tempfile.mkdtemp())
+    live = out / f"{a.tag}_{stamp}_rows.jsonl"
+    client, tmp = muse.client(a.model), Path(tempfile.mkdtemp())
     rows, learned_all = [], {}
+    over = lambda: bool(a.budget) and sum(x["cost_usd"] for x in rows) >= a.budget
+    stopped = False
     if a.keep:
         kept = [json.loads(x) for x in Path(a.keep).read_text(encoding="utf-8").splitlines() if x.strip()]
         rows += [dict(x, phase="test", kept_from=Path(a.keep).name) for x in kept]
@@ -68,10 +86,15 @@ def main():
                                   for t in nt.tools(LessonStore(a.keep_tools), c, "active")]
         print(f"kept {len(kept)} test rows of {kc} from {a.keep}", flush=True)
     for cid in a.companies.split(","):
+        if stopped:
+            break
         C = CompanyData(WORLD, cid, tmp / cid)
         sb, S = sandbox(C), LessonStore(out / f"exp012b_{stamp}_{cid}_tools.sqlite")
         learn_runs = []
         for q in practice.build_gaps(C, split="dev"):
+            if over():
+                stopped = True
+                break
             r, row = ask(C, client, q, True)
             learn_runs.append(r)
             rows.append({**row, "phase": "learn", "arm": "Q"})
@@ -89,6 +112,9 @@ def main():
         learned_all[cid] = [{"name": t["name"], "params": [p["name"] for p in t["params"]], "from_requests": len(t["source"])} for t in learned]
         print(f"{cid}: {len(learned)} tools approved by the fixed rule: {[t['name'] for t in learned]}", flush=True)
         for q in practice.build_gaps(C, split="held_out"):
+            if stopped or over():
+                stopped = True
+                break
             for arm, analysis, tools in (("Q", True, ()), ("T", True, learned)):
                 r, row = ask(C, client, q, analysis, tools)
                 row |= {"phase": "test", "arm": arm, "used_learned": [t for t in row["tools"] if t in {x["name"] for x in learned}]}
@@ -106,7 +132,10 @@ def main():
     result = {"world": WORLD.name, "learned": learned_all, "learn": stats([x for x in rows if x["phase"] == "learn"]),
               "arms": arms, "by_company": {f"{c}:{a}": stats([x for x in test if x["company"] == c and x["arm"] == a]) for c in ("T01", "T02") for a in "QT"},
               "decision": rule, "cost_usd": round(sum(x["cost_usd"] for x in rows), 3), "rows": rows}
-    p = out / f"exp012b_{stamp}.json"
+    if stopped:
+        print(f"budget of ${a.budget} reached: results are partial", flush=True)
+    result = {"model": client.model, "tag": a.tag, "complete": not stopped, **result}
+    p = out / f"{a.tag}_{stamp}.json"
     p.write_text(json.dumps(result, indent=1, ensure_ascii=False), encoding="utf-8")
     print(json.dumps({k: result[k] for k in ("learned", "learn", "arms", "decision", "cost_usd")}, indent=1, ensure_ascii=False))
     print("saved", p.relative_to(ROOT))

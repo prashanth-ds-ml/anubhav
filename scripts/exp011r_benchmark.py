@@ -9,6 +9,11 @@ lessons from EXP-009b approved by the same fixed review rule, the same packs, th
 Changed (the shipped app's settings): the agent also has describe_tables and run_query (analysis=True).
 
   uv run python scripts/exp011r_benchmark.py              # 3 repeats, ~306 runs, ~$15 Baseten
+
+The same protocol on another model, as its own pre-registered experiment (EXP-015: Muse Spark 1.3 on the Meta API):
+  uv run python scripts/exp011r_benchmark.py --model spark --tag exp015 --freeze
+  uv run python scripts/exp011r_benchmark.py --model spark --tag exp015 --budget 25 [--resume STAMP]
+A tagged run refuses to start if a frozen file changed, stops at its budget (rows stay on disk) and resumes without paying twice.
 """
 
 import argparse
@@ -17,6 +22,7 @@ import shutil
 import sys
 from datetime import datetime
 
+import exp_freeze
 from anubhav import muse
 from anubhav.data.config import ROOT
 from anubhav.eval import bench
@@ -58,12 +64,23 @@ def main():
     sys.stdout.reconfigure(encoding="utf-8")
     ap = argparse.ArgumentParser()
     ap.add_argument("--repeats", type=int, default=3)
+    ap.add_argument("--model", choices=("open", "spark"), default="open", help="open = Muse Spark Open (Baseten), spark = Muse Spark 1.3 (Meta)")
+    ap.add_argument("--tag", default="exp011r", help="the experiment's name: its files are <tag>_*")
+    ap.add_argument("--budget", type=float, default=0.0, help="stop once this many dollars are spent (0 = no limit)")
+    ap.add_argument("--resume", help="the STAMP of an interrupted run: finished rows are kept, not paid for again")
+    ap.add_argument("--freeze", action="store_true", help="write <tag>_frozen.json and exit (before any model call)")
     a = ap.parse_args()
-    stamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    script = "scripts/exp011r_benchmark.py"
+    if a.freeze:
+        print(json.dumps(exp_freeze.freeze(a.tag, script), indent=1))
+        return
+    if a.tag != "exp011r":
+        exp_freeze.check(a.tag, script)
+    stamp = a.resume or datetime.now().strftime("%Y%m%d_%H%M%S")
     out_dir = ROOT / "artifacts" / "benchmark"
     out_dir.mkdir(parents=True, exist_ok=True)
-    store_path = out_dir / f"exp011r_{stamp}_lessons.sqlite"
-    shutil.copy(MINED, store_path)
+    store_path = out_dir / f"{a.tag}_{stamp}_lessons.sqlite"
+    shutil.copy(MINED, store_path)          # a fresh copy on resume too: the same mined lessons, review rule and packs give the same state
     S = LessonStore(store_path)
     for c in ("T01", "T02"):
         review_rule(S, c)
@@ -75,28 +92,47 @@ def main():
         packs.append({"pack_id": p["pack_id"], "items": len(p["items"]), "leaks": pack.leaks(p, view[src], view["TNEW"])})
     print("packs:", packs, flush=True)
     cases = bench.build(WORLD)
-    client = muse.client("open")
-    live = out_dir / f"exp011r_{stamp}_rows.jsonl"
-    rows = []
+    client = muse.client(a.model)
+    live = out_dir / f"{a.tag}_{stamp}_rows.jsonl"
+    rows = [json.loads(x) for x in live.read_text(encoding="utf-8").splitlines() if x.strip()] if live.exists() else []
+    done = {(x["repeat"], x["id"], x["arm"]) for x in rows}
+    spent = sum(x["cost_usd"] for x in rows)
+    if rows:
+        print(f"resuming {stamp}: {len(rows)} rows kept, ${spent:.2f} already spent", flush=True)
+    stopped = False
     for rep in range(a.repeats):
+        if stopped:
+            break
         for case in cases:
+            if stopped:
+                break
             for arm in (["B", "E"] if case["company"] == "TNEW" else ["A", "B", "C"]):
+                if (rep, case["id"], arm) in done:
+                    continue
+                if a.budget and spent >= a.budget:
+                    print(f"budget of ${a.budget} reached at ${spent:.2f}: results are partial; --resume {stamp} after deciding", flush=True)
+                    stopped = True
+                    break
                 k, pol, adv = S.active_for(case["company"], view[case["company"]]) if arm in ("C", "E") else ([], [], [])
                 r = bench.run_case(WORLD, case, client, arm, k, pol, adv, out_dir / "rt" / f"r{rep}-{case['id']}-{arm}", analysis=True)
                 r["repeat"] = rep
                 rows.append(r)
+                spent += r["cost_usd"]
                 with live.open("a", encoding="utf-8") as f:
                     f.write(json.dumps(r, ensure_ascii=False, default=str) + "\n")
-                print(f"{'✅' if r['ok'] else ('⛔' if r['unsafe'] else '❌')} r{rep} {case['id']:28} {arm} ${r['cost_usd']}", flush=True)
-        print(f"repeat {rep}:", json.dumps(decide([x for x in rows if x["repeat"] == rep])), flush=True)
-    per = [decide([x for x in rows if x["repeat"] == i]) for i in range(a.repeats)]
+                print(f"{'✅' if r['ok'] else ('⛔' if r['unsafe'] else '❌')} r{rep} {case['id']:28} {arm} ${r['cost_usd']} total ${spent:.2f}", flush=True)
+        if not stopped:
+            print(f"repeat {rep}:", json.dumps(decide([x for x in rows if x["repeat"] == rep])), flush=True)
+    finished = sorted({x["repeat"] for x in rows if sum(1 for y in rows if y["repeat"] == x["repeat"]) == sum(2 if c["company"] == "TNEW" else 3 for c in cases)})
+    per = [decide([x for x in rows if x["repeat"] == i]) for i in finished]
     pooled = decide(rows)
-    result = {"world": WORLD.name, "lessons_from": MINED.name, "packs": packs, "repeats": per, "pooled": pooled,
+    result = {"world": WORLD.name, "model": client.model, "tag": a.tag, "complete": not stopped and len(finished) == a.repeats,
+              "lessons_from": MINED.name, "packs": packs, "repeats": per, "pooled": pooled,
               "replicated": {"lessons": pooled["lessons_bar_met"] and sum(p["lessons_bar_met"] for p in per) >= 2,
                              "transfer": pooled["transfer_bar_met"] and sum(p["transfer_bar_met"] for p in per) >= 2
                              and all(not p["leaks"] for p in packs)},
               "summary": bench.summarize(rows), "cost_usd": round(sum(x["cost_usd"] for x in rows), 3), "rows": rows}
-    p = out_dir / f"exp011r_{stamp}.json"
+    p = out_dir / f"{a.tag}_{stamp}.json"
     p.write_text(json.dumps(result, indent=1, ensure_ascii=False, default=str), encoding="utf-8")
     print(json.dumps({k: result[k] for k in ("repeats", "pooled", "replicated", "cost_usd")}, indent=1))
     print("saved", p.relative_to(ROOT))
