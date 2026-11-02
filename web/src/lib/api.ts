@@ -43,7 +43,7 @@ const q = (company: string, extra: Record<string, string | boolean | undefined> 
   return p.toString();
 };
 
-export interface RunRow { run_id: string; saved_at: string; label: string; company: string; model: string; request: string; mode: string; agents: string[]; tool_calls: number; drafts: string[]; stop: string; cost_usd: number; issues: string }
+export interface RunRow { run_id: string; saved_at: string; label: string; company: string; model: string; request: string; mode: string; agents: string[]; tool_calls: number; drafts: string[]; stop: string; cost_usd: number; issues: string; mistakes?: number; fixed?: number }
 
 export interface TripRow { date: string; hour: number; weekday: number; vehicle_id: string; vehicle_class: string; length_ft: number | null; status: string; status_seen: string | null; wait_min: number }
 export type Evidence =
@@ -77,6 +77,14 @@ export const api = {
   decideTool: (c: string, id: string, approve: boolean, note: string) => post<NewTool>(`/api/tools/${encodeURIComponent(id)}/decide?${q(c)}`, { approve, note }),
   retireTool: (c: string, id: string, note: string) => post<NewTool>(`/api/tools/${encodeURIComponent(id)}/retire?${q(c)}`, { note }),
   proof: () => read<ProofEntry[]>("/api/proof", []),
+  /** Every pre-registered experiment: question, verdict, plan and result commits. */
+  registry: () => read<{ experiments: RegistryRow[] }>("/api/proof/registry", { experiments: [] }),
+  /** EXP-014: the whole team at each learning stage and each agent's score, or { measured: false } until it has run. */
+  curve: () => read<{ measured: boolean; note?: string; [k: string]: unknown }>("/api/proof/curve", { measured: false }),
+  /** A run laid out for inspection: its events, each agent's work, and each mistake an agent fixed itself. */
+  steps: (runId: string) => read<RunSteps | null>(`/api/runs/${encodeURIComponent(runId)}/steps`, null),
+  /** Calls, errors and cost per agent over this company's runs. */
+  agentTotals: (c: string) => read<AgentTotal[]>(`/api/logs/agents?${q(c)}`, []),
   compare: (c: string, request: string) => read<Compare | null>(`/api/compare?${q(c, { request })}`, null),
 };
 
@@ -106,6 +114,21 @@ export interface NewTool {
 }
 export interface ProofEntry { id: string; measured_on: string; pooled?: Record<string, any>; arms?: Record<string, any>; decision?: Record<string, any>; replicated?: Record<string, boolean>; repeats?: any[]; learning_round?: any; cost_usd?: number; }
 export interface CompareSide { run_id: string; reply: string; drafts: { vehicle_id: string; orders: string[] }[]; tool_calls: number; cost_usd: number; lessons_in_prompt: number; }
+export interface RegistryRow {
+  id: string; question: string; verdict: "met" | "not_met" | "finding" | "not_run"; summary?: string; note?: string;
+  plan?: { commit: string; date: string }; result?: { commit: string; date: string; file: string }; custody?: string;
+}
+export interface AgentTurn { agent_run_id: string; agent: string; depth: number; caller: string | null; model: string | null; tool_calls: number; tool_errors: number; cost_usd: number; own_cost_usd: number; stop: string | null }
+export interface FixPair {
+  agent: string; tool: string;
+  failed: { seq: number; step: number; arguments: Record<string, unknown>; error: unknown };
+  fixed: { seq: number; step: number; arguments: Record<string, unknown>; result: unknown };
+}
+export interface RunSteps {
+  run_id: string; label: string | null; request: string; reply: string | null; model: string | null; saved_at: string | null; mode: string;
+  cost_usd: number | null; latency_s: number | null; events: RunEvent[]; agents: AgentTurn[]; fixes: FixPair[];
+}
+export interface AgentTotal { agent: string; runs: number; answered: number; stopped_early: number; tool_calls: number; tool_errors: number; cost_usd: number }
 export interface Compare { request: string; cold: CompareSide | null; with_lessons: CompareSide | null; with_learned_tools: CompareSide | null; }
 
 /** "meta-models/muse-spark-open-1026" -> "Muse Spark Open". Scripted test runs say so. */

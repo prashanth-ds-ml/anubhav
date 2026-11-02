@@ -25,6 +25,18 @@ function fieldsOf(raw: string): string {
   return out.length ? out.join(" · ") + (raw.length > 200 ? " …" : "") : "";
 }
 
+/** A query's rows in words: each row's first value with its first number ("Thursday 36 · Saturday 33"), when that reads. */
+function rowsText(rows: unknown[]): string {
+  const pairs = rows.map((r) => {
+    if (!Array.isArray(r) || r.length === 0) return null;
+    const n = r.slice(1).find((x) => typeof x === "number");
+    return n === undefined ? (r.length === 1 ? String(r[0]) : null) : `${r[0]} ${n}`;
+  });
+  if (rows.length === 0) return "no rows";
+  if (pairs.some((x) => x === null)) return `${rows.length} row${rows.length === 1 ? "" : "s"}`;
+  return clip(pairs.slice(0, 10).join(" · "), 220) + (rows.length > 10 ? ` · and ${rows.length - 10} more` : "");
+}
+
 function describeResult(v: any): string {
   if (!v || typeof v !== "object") return "";
   if (Array.isArray(v.matches)) return `${v.matches.length} match${v.matches.length === 1 ? "" : "es"}${v.matches[0]?.name ? `: ${v.matches[0].name}${v.matches[0].town ? `, ${v.matches[0].town}` : ""}` : ""}`;
@@ -32,7 +44,7 @@ function describeResult(v: any): string {
   if (Array.isArray(v.vehicles)) return `${v.vehicles.length} vehicles`;
   if (v.draft_id) return `Draft ${v.draft_id} on ${v.vehicle_id}${v.created === false ? " (not created)" : ""}`;
   if (v.agent && v.reply) return `${v.agent} replied: ${String(v.reply).slice(0, 140)}`;
-  if (Array.isArray(v.rows)) return `${v.rows.length} rows`;
+  if (Array.isArray(v.rows)) return rowsText(v.rows);
   if (typeof v.available === "boolean") return `${v.vehicle_id ?? "vehicle"}: ${v.available ? "available" : "not available"}`;
   if (v.tool_missing) return "No tool or teammate fits";
   if (v.question) return String(v.question);

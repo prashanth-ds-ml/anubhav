@@ -20,7 +20,7 @@ from ..learning.store import describe
 from ..runtime.broker import Broker, Session
 from ..runtime.company import CompanyData
 from ..runtime.query import sandbox
-from ..service import checkpoints, evidence, knowledge, proof as proof_files, runs, stream, views
+from ..service import checkpoints, evidence, knowledge, proof as proof_files, run_view, runs, stream, views
 from ..service.session import AGENT_MODEL, COMPANIES, LIVE_CALLS_PER_DAY, LIVE_RUNS_PER_SESSION, MODELS, SUGGESTIONS, Workspace, harness_store
 from ..ui import logs
 from .deps import ApiError, Cid, LocalOnly, Ws, live
@@ -316,6 +316,12 @@ def run_resume(run_id: str, body: Resume, ws: Workspace = Ws):
 @api.get("/runs/{run_id}")
 def run_detail(run_id: str, ws: Workspace = Ws):
     return _run_or_404(run_id, ws)
+
+
+@api.get("/runs/{run_id}/steps")
+def run_steps(run_id: str, ws: Workspace = Ws):
+    """A run laid out for inspection: its events, each agent's calls, errors and own cost, and each mistake it fixed itself."""
+    return run_view.run_view(_run_or_404(run_id, ws))
 
 
 class Feedback(Body):
@@ -732,7 +738,7 @@ def log_runs(company: str | None = None, limit: int = 60, ws: Workspace = Ws):
     rows = [r for r in runs.recent_runs(min(limit, 500), ws) if not company or r["company"] == company]
     return [{"run_id": r["run_id"], "saved_at": r.get("saved_at"), "label": r.get("label"), "company": r["company"], "model": r.get("model"), "request": r["request"],
              "mode": r.get("mode", "single"), **views.team_parts(r), "drafts": r.get("drafts", []), "stop": r.get("stop"), "cost_usd": r.get("cost_usd"),
-             "issues": logs.run_issues(r)} for r in rows]
+             "issues": logs.run_issues(r), **run_view.counts(r)} for r in rows]
 
 
 @api.get("/logs/runs/{run_id}")

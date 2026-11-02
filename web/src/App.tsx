@@ -8,7 +8,7 @@ import { Learning } from "./components/Learning";
 import { NewTools } from "./components/NewTools";
 import { AgentCards } from "./components/AgentCards";
 import { Proof } from "./components/Proof";
-import { RunsList } from "./components/RunsList";
+import { Runs } from "./components/Runs";
 import { LiveMeter } from "./components/LiveMeter";
 import { MainNav, MAIN_LABEL } from "./components/MainNav";
 import { ScenarioGuide, SCENARIOS, type LoopStep, type ScenarioActions } from "./components/Scenarios";
@@ -156,7 +156,7 @@ export default function App() {
             {route.main === "learning" && <Learning item={route.item} />}
             {route.main === "tools" && <NewTools onAsk={(label) => { go("desk"); setAsk((a) => ({ label, n: a.n + 1 })); }} />}
             {route.main === "agents" && <AgentCards />}
-            {route.main === "runs" && <RunsList />}
+            {route.main === "runs" && <Runs item={route.item} />}
             {route.main === "proof" && <Proof />}
             </section>
           </main>

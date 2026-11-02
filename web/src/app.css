@@ -488,3 +488,89 @@ ul.lessons { display: grid; gap: 8px; padding: 0; list-style: none; }
 .muse { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 6px; margin: 6px 0 2px; font-size: 0.8rem; }
 .muse li:not(.muse-head) { padding: 1px 8px; border: 1px solid var(--border); border-radius: 999px; background: var(--surface); }
 .muse-head { font-weight: 600; }
+
+/* ---------- Sprint 5: Runs, Agents, Tools */
+/* Runs: the list beside the open run */
+.runs-page { display: grid; grid-template-columns: minmax(220px, 300px) minmax(0, 1fr); gap: 16px; align-items: start; }
+.runs-list h2 { font-size: 1.1rem; margin: 0 0 8px; }
+.runs-list ul { display: grid; gap: 6px; margin: 0 0 8px; }
+.run-row { display: grid; gap: 2px; width: 100%; text-align: left; padding: 8px 10px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); color: var(--text); font: inherit; cursor: pointer; }
+.run-row:hover { border-color: var(--accent); }
+.run-row.on { border: 2px solid var(--accent); background: var(--bg); }
+.run-title { font-size: 0.95rem; }
+.runs-detail { min-width: 0; }
+.run-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; }
+.run-head h2 { font-size: 1.15rem; margin: 0; flex: 1 1 100%; overflow-wrap: anywhere; }
+.run-head p { margin: 0; flex: 1; }
+.run-body { display: grid; grid-template-columns: minmax(0, 1fr) minmax(220px, 280px); gap: 16px; align-items: start; margin-top: 10px; }
+.run-below { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 12px; }
+.answer-box { border: 2px solid var(--accent); border-radius: var(--radius); padding: 10px 14px; }
+
+/* The swimlane: one row per agent, steps left to right in time order */
+.sl-scroll { overflow-x: auto; border-radius: 8px; }
+.sl-scroll:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.sl { display: grid; gap: 6px; }
+.sl-lane { display: grid; align-items: center; gap: 6px; padding: 6px; border-radius: 8px; background: color-mix(in srgb, var(--lane, var(--muted)) 7%, transparent); }
+.sl-lane.person { background: none; }
+.sl-head { grid-column: 1; display: grid; }
+.sl-step { display: grid; gap: 2px; text-align: left; padding: 6px 8px; overflow-wrap: anywhere; min-width: 0; border: 1.5px solid var(--lane, var(--border)); border-radius: 8px; background: var(--surface); color: var(--text); font: inherit; font-size: 0.85rem; cursor: pointer; min-height: 44px; }
+.sl-step .small { color: var(--muted); }
+.sl-step.bad { border-color: var(--err); background: var(--err-bg); }
+.sl-step.bad .small { color: var(--err); font-weight: 600; }
+.sl-step.fixed { border-color: var(--ok); background: var(--ok-bg); }
+.sl-step.fixed .small { color: var(--ok); font-weight: 600; }
+.sl-step.handoff { border-style: dashed; }
+.sl-step.on { outline: 3px solid var(--accent); outline-offset: 1px; }
+.sl-say { justify-self: start; padding: 4px 12px; border-radius: 999px; background: var(--accent); color: var(--bg); font-weight: 600; font-size: 0.85rem; }
+.sl-detail { min-width: 0; }
+.run-body { border-top: 1px solid var(--border); padding-top: 10px; }
+.sl-args { margin: 0; font-family: var(--font-mono); font-size: 0.8rem; white-space: pre-wrap; overflow-wrap: anywhere; max-height: 12em; overflow: auto; }
+.work h3 { font-size: 1rem; margin: 0 0 6px; }
+.work-row { display: grid; grid-template-columns: 90px 1fr; gap: 2px 8px; align-items: center; margin-bottom: 6px; }
+.work-row > .small { grid-column: 2; }
+.work-name { font-weight: 600; font-size: 0.9rem; }
+.work-track { display: block; height: 14px; background: var(--bg); border-radius: 4px; }
+.work-bar { display: block; height: 100%; border-radius: 4px; }
+.fix-step { padding: 8px 12px; border: 2px solid; border-radius: var(--radius); }
+.fix-step p { margin: 2px 0; }
+.fix-step.bad { border-color: var(--err); background: var(--err-bg); }
+.fix-step.bad strong { color: var(--err); }
+.fix-step.good { border-color: var(--ok); background: var(--ok-bg); }
+.fix-step.good strong { color: var(--ok); }
+.fix-arrow { text-align: center; margin: 4px 0; font-size: 1.2rem; }
+
+/* Agents */
+.agents-head { display: flex; flex-wrap: wrap; gap: 12px 24px; justify-content: space-between; }
+.agents-head h2 { font-size: 1.25rem; margin: 0 0 4px; }
+.agents-head > div:first-child { flex: 1 1 380px; }
+.team-line { flex: 0 1 420px; border-left: 1px solid var(--border); padding-left: 16px; }
+.team-line p { margin: 0 0 2px; }
+.agent-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; margin-bottom: 12px; }
+.agent-card { border-top: 4px solid; margin: 0; }
+.agent-card h3 { font-size: 1.1rem; margin: 0; }
+.agent-card p { margin: 4px 0; }
+.eyebrow { font-size: 0.75rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); margin: 10px 0 2px; }
+.not-measured { border: 1.5px dashed var(--border); border-radius: 8px; padding: 8px 10px; color: var(--muted); margin: 4px 0; }
+.not-measured-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 8px; }
+.mbar { display: grid; grid-template-columns: minmax(80px, 1fr) auto; align-items: center; gap: 8px; margin: 3px 0; }
+.mbar-track { display: block; height: 14px; background: var(--bg); border-radius: 4px; min-width: 60px; }
+.mbar-fill { display: block; height: 100%; border-radius: 4px; }
+.mbar-fill.base { background: var(--muted); opacity: 0.55; }
+.mbar-fill.now { background: var(--accent); }
+
+/* Tools: the page beside the benchmark */
+.tools-page { display: grid; grid-template-columns: minmax(0, 1fr) minmax(240px, 340px); gap: 16px; align-items: start; }
+.tools-page > .panel { margin: 0; }
+.panel.with-side { display: grid; grid-template-columns: minmax(0, 1fr) minmax(220px, 300px); gap: 16px; align-items: start; }
+.what-changes { background: var(--bg); border-radius: var(--radius); padding: 10px 12px; }
+.what-changes p { margin: 0 0 4px; }
+.ba { margin: 6px 0; }
+.ba p { margin: 0 0 2px; }
+.ba-row { display: grid; grid-template-columns: 52px 1fr auto; align-items: center; gap: 8px; margin: 3px 0; }
+.bench .ba-row:only-of-type, .bench .ba > .ba-row:first-of-type:last-of-type { grid-template-columns: 1fr auto; }
+.bench p { margin: 4px 0; }
+
+@media (max-width: 900px) {
+  .runs-page, .run-body, .tools-page, .panel.with-side { grid-template-columns: 1fr; }
+  .team-line { border-left: 0; padding-left: 0; }
+}

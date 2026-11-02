@@ -39,7 +39,7 @@ test("six main tabs, each with an address; the Desk keeps only the company's dat
 
 test("the runs list opens each run's full record", async ({ page }) => {
   await page.goto("/#runs");
-  const link = page.getByRole("link", { name: "Record (JSON)" }).first();
+  const link = page.getByRole("link", { name: "Raw record (JSON)" });
   await expect(link).toBeVisible();
   const href = await link.getAttribute("href");
   const r = await page.request.get(href!);

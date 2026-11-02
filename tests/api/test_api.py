@@ -79,7 +79,8 @@ def test_the_route_list_above_is_complete(env):
     other = {"/api/session/reset-drafts", "/api/dashboard/drafts/{draft_id}/cancel", "/api/dashboard/company/profile", "/api/chat", "/api/chat/stream",
              "/api/runs/{run_id}", "/api/runs/{run_id}/feedback", "/api/learning/lessons/{lesson_id}/decide", "/api/tools/candidates/{key}/check",
              "/api/tools/{tool_id}/decide", "/api/tools/{tool_id}/retire", "/api/packs/publish", "/api/packs/revoke", "/api/review/run",
-             "/api/dashboard/drafts/{draft_id}/decide", "/api/handoffs", "/api/runs/{run_id}/resume", "/api/compare", "/api/agents/{agent_id}", "/api/harness/{version_id}/probe", "/api/harness/{version_id}/decide", "/api/logs/runs/{run_id}", "/api/voice", "/api/learning/lessons/{lesson_id}/evidence"}
+             "/api/dashboard/drafts/{draft_id}/decide", "/api/handoffs", "/api/runs/{run_id}/resume", "/api/compare", "/api/agents/{agent_id}", "/api/harness/{version_id}/probe", "/api/harness/{version_id}/decide", "/api/logs/runs/{run_id}", "/api/voice", "/api/learning/lessons/{lesson_id}/evidence",
+             "/api/runs/{run_id}/steps"}
     normal = {p.replace("/analyst", "/{agent_id}").replace("/h-001/", "/{version_id}/") for p in tested}
     assert paths <= normal | other, paths - normal - other
 
@@ -259,6 +260,19 @@ def test_a_replays_draft_shows_stops_and_why_without_creating_anything(env):
     assert draft["stops"]["stops"] and "not optimized" in draft["stops"]["method"] and draft["why"]["lessons_in_prompt"] > 0 and draft["why"]["tools"]
     assert c.get("/api/dashboard/drafts?company=T01").json()["drafts"] == []
     assert c.get(f"/api/dashboard/drafts?company=T02&run_id={run_id}").status_code == 404
+
+
+def test_a_runs_steps_lay_out_its_events_and_agents_and_the_list_counts_mistakes(env):
+    c = client(env)
+    run_id = c.post("/api/chat", json={"message": SUGGESTIONS["Roman Telugu"]}).json()["run_id"]
+    v = c.get(f"/api/runs/{run_id}/steps").json()
+    assert v["events"][0]["type"] == "agent_start" and v["events"][-1]["type"] == "agent_done"
+    (planner,) = v["agents"]
+    assert planner["agent"] == "planner" and planner["tool_calls"] == sum(e["type"] == "tool_call" for e in v["events"]) and planner["own_cost_usd"] == planner["cost_usd"]
+    assert v["fixes"] == [] or all(f["failed"]["step"] < f["fixed"]["step"] for f in v["fixes"])
+    row = next(r for r in c.get("/api/logs/runs?company=T01").json() if r["run_id"] == run_id)
+    assert {"mistakes", "fixed"} <= set(row) and row["fixed"] <= row["mistakes"]
+    assert c.get("/api/runs/NOPE/steps").status_code == 404
 
 
 def test_a_live_draft_appears_with_why_and_can_be_cancelled(env, monkeypatch):

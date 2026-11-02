@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { api, ApiError, type CompareSide, type NewTool, type ToolCandidate } from "../lib/api";
+import { api, ApiError, type Compare, type CompareSide, type NewTool, type ToolCandidate } from "../lib/api";
+import { go } from "../lib/route";
 import { useApi } from "../lib/useApi";
 import { useSettings } from "../lib/ctx";
 import { humanName, Reply } from "../lib/text";
@@ -42,6 +43,67 @@ function Checks({ t }: { t: NewTool }) {
   );
 }
 
+/** Bars for one measure, before and after: the longer value fills the track. */
+function Pair({ title, before, after, fmt }: { title: string; before: number; after: number; fmt: (x: number) => string }) {
+  const top = Math.max(before, after, 1e-9);
+  return (
+    <div className="ba">
+      <p className="small muted">{title}</p>
+      {([["Before", before, "base"], ["After", after, "now"]] as const).map(([k, v, tone]) => (
+        <div key={k} className="ba-row">
+          <span className="small">{k}</span>
+          <span className="mbar-track"><span className={`mbar-fill ${tone}`} style={{ width: `${(100 * v) / top}%` }} /></span>
+          <span className="small">{fmt(v)}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+/** What approving changed for the same question, from the two recorded runs (one example; the benchmark is beside it). */
+function WhatChanges({ cmp }: { cmp: Compare }) {
+  const a = cmp.cold, b = cmp.with_learned_tools;
+  if (!a || !b) return null;
+  return (
+    <aside className="what-changes" aria-label="What approving changes, from recorded runs">
+      <p><strong>What approving changes (recorded runs)</strong></p>
+      <Pair title="Tool calls for the same question" before={a.tool_calls} after={b.tool_calls} fmt={(x) => String(x)} />
+      <Pair title="Cost of the question" before={a.cost_usd} after={b.cost_usd} fmt={(x) => `$${x.toFixed(3)}`} />
+      <p className="small muted">Both are recorded runs of Muse Spark Open; their replies are below once the tool is approved.</p>
+    </aside>
+  );
+}
+
+/** EXP-012b across its held-out questions, with the bar it set itself in advance and its verdict. */
+function Benchmark() {
+  const proof = useApi(() => api.proof(), []);
+  const reg = useApi(() => api.registry(), []);
+  const e = proof.data?.find((x) => x.id === "EXP-012b");
+  const r = reg.data?.experiments.find((x) => x.id === "EXP-012b");
+  if (proof.loading) return <div className="skeleton" aria-busy="true" />;
+  if (!e?.arms) return <p className="small muted">The benchmark result file is not available here.</p>;
+  const { Q, T } = e.arms as Record<string, { n: number; answer_ok: number; mean_tool_calls: number }>;
+  const used = String(e.decision?.learned_tool_used_in ?? "");
+  const [u, n] = used.split("/").map(Number);
+  return (
+    <section className="panel bench" aria-labelledby="bench-title">
+      <h3 id="bench-title">Across the benchmark</h3>
+      <p className="small muted">EXP-012b · {Q.n} held-out questions · {e.measured_on}</p>
+      {n > 0 && (
+        <div className="ba">
+          <p className="small muted">Learned tool used</p>
+          <div className="ba-row"><span className="mbar-track"><span className="mbar-fill now" style={{ width: `${(100 * u) / n}%` }} /></span><strong>{u} of {n}</strong></div>
+        </div>
+      )}
+      <Pair title="Tool calls per question" before={Q.mean_tool_calls} after={T.mean_tool_calls} fmt={(x) => String(x)} />
+      <p className="small">{Math.round(100 * (1 - T.mean_tool_calls / Q.mean_tool_calls))}% fewer calls.</p>
+      {r && <p className={`small ${r.verdict === "met" ? "ok-text" : r.verdict === "not_met" ? "err-text" : ""}`}>{r.verdict === "met" ? "✓ Bar met" : r.verdict === "not_met" ? "✕ Bar not met" : r.verdict}{r.summary ? `: ${r.summary}.` : "."}</p>}
+      <p className="small">Answers were {T.answer_ok >= Q.answer_ok ? "not worse" : "worse"} ({Math.round(100 * T.answer_ok)}% against {Math.round(100 * Q.answer_ok)}%).</p>
+      <button type="button" className="link-btn small" onClick={() => go("proof")}>Its plan and result file are in Proof &amp; audit →</button>
+    </section>
+  );
+}
+
 /** Repeated questions, how one becomes a tool, and what changed once a person approved it. */
 export function NewTools({ onAsk }: { onAsk: (label: string) => void }) {
   const { company, requests, bumpData } = useSettings();
@@ -51,8 +113,8 @@ export function NewTools({ onAsk }: { onAsk: (label: string) => void }) {
   const cands = useApi(() => api.toolCandidates(company), [company, version], { keep: true });
   const tools = useApi(() => api.tools(company), [company, version], { keep: true });
   const story = requests.find((r) => r.label === "New tool");
-  const used = (tools.data ?? []).some(IN_USE);
-  const cmp = useApi(() => (story && used ? api.compare(company, story.request) : Promise.resolve(null)), [company, story?.request, used]);
+  const cmp = useApi(() => (story ? api.compare(company, story.request) : Promise.resolve(null)), [company, story?.request]);
+  const isStory = (t: NewTool) => !!story && t.checks.same_rows.some((r) => r.request === story.request);
 
   async function act(key: string, f: () => Promise<unknown>) {
     setBusy(key);
@@ -72,7 +134,8 @@ export function NewTools({ onAsk }: { onAsk: (label: string) => void }) {
   const focusRef = useFocusTarget<HTMLDivElement>("tool:story", !loading);
 
   return (
-    <section aria-labelledby="nt-title">
+    <div className="tools-page">
+    <section className="panel" aria-labelledby="nt-title">
       <h3 id="nt-title">Repeated questions that could become tools</h3>
       <p className="small muted">
         When no tool fits, the agent writes one read-only query. If it needs the same query for other requests, code can check it on
@@ -95,7 +158,8 @@ export function NewTools({ onAsk }: { onAsk: (label: string) => void }) {
           ))}
 
           {waiting.map((t) => (
-            <article key={t.tool_id} className="panel" aria-label={`Checked ${t.name}`}>
+            <article key={t.tool_id} className={`panel ${isStory(t) ? "story with-side" : ""}`} aria-label={`Checked ${t.name}`}>
+              <div>
               <div className="card-head"><strong>{toolTitle(t)}</strong> <span className="mono small muted">{t.name}</span><span className={`pill ${t.checks.pass ? "ok" : "err"}`}>{t.checks.pass ? "Checks passed" : "Checks failed"}</span></div>
               <p>{t.description}</p>
               <Checks t={t} />
@@ -106,6 +170,8 @@ export function NewTools({ onAsk }: { onAsk: (label: string) => void }) {
                 </button>
                 <button type="button" className="chip" disabled={busy !== null} onClick={() => act(t.tool_id, () => api.decideTool(company, t.tool_id, false, "Not approved in the web app."))}>Don't approve</button>
               </div>
+              </div>
+              {isStory(t) && cmp.data && <WhatChanges cmp={cmp.data} />}
             </article>
           ))}
 
@@ -122,7 +188,7 @@ export function NewTools({ onAsk }: { onAsk: (label: string) => void }) {
                   </div>
                 </article>
               ))}
-              {cmp.data && (cmp.data.cold || cmp.data.with_learned_tools) && (
+              {cmp.data && active.some(isStory) && (cmp.data.cold || cmp.data.with_learned_tools) && (
                 <section className="panel" aria-label="Before and after the tool">
                   <h4>The same question, before and after the tool</h4>
                   <p className="small muted">Both are recorded runs of Muse Spark Open. One example; the benchmark is under Proof.</p>
@@ -144,5 +210,7 @@ export function NewTools({ onAsk }: { onAsk: (label: string) => void }) {
         </div>
       )}
     </section>
+    <Benchmark />
+    </div>
   );
 }

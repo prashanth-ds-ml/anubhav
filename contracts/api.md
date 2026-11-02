@@ -50,6 +50,7 @@ Voice (`POST /api/voice`):
 | POST | `/api/chat` | `{company, message, mode: "replay" \| "live", model: "spark" (default) \| "open", use_lessons: true, team: true}` | `{run_id, mode, reason?}` |
 | GET | `/api/chat/stream` | `?run_id=&after=-1` or `Last-Event-ID` | Server-sent events |
 | GET | `/api/runs/{run_id}` | | A whole saved run with teammate runs |
+| GET | `/api/runs/{run_id}/steps` | | The run laid out for inspection: `{run_id, label, request, reply, model, saved_at, mode, cost_usd, latency_s, events, agents: [{agent_run_id, agent, depth, caller, model, tool_calls, tool_errors, cost_usd, own_cost_usd, stop}], fixes: [{agent, tool, failed: {seq, step, arguments, error}, fixed: {seq, step, arguments, result}}]}`. A fix is a failed tool call followed by a working call to the same tool by the same agent turn; `own_cost_usd` leaves out teammates' costs |
 | POST | `/api/runs/{run_id}/feedback` | `{rating: 0 \| 1, category, note}` | `{feedback_id}` |
 
 The stream:
@@ -102,7 +103,7 @@ The stream:
 | GET | `/api/compare?company=&request=` | One request from saved runs: cold, with lessons, with learned tools |
 | GET | `/api/ledger?company=&agent=&type=&limit=` | Hand-offs, drafts, checks, lessons used, missing tools |
 | GET | `/api/logs/events?company=&stream_name=` | Everything done and learned, newest first |
-| GET | `/api/logs/runs?company=&limit=` | Run list: agents, tool calls, cost, issues |
+| GET | `/api/logs/runs?company=&limit=` | Run list: agents, tool calls, cost, issues, `mistakes` (failed tool calls) and `fixed` (of those, fixed by the agent itself) |
 | GET | `/api/logs/runs/{id}` | One run as a timeline, teammates in place |
 | GET | `/api/logs/tools?company=` | Tool tracking: `{usage: [{agent, tool, calls, failed, last_used}], missing}` |
 | GET | `/api/logs/agents?company=` | Each agent's runs, calls, errors and own cost |
