@@ -91,7 +91,7 @@ export const SCENARIOS: Scenario[] = [
       { label: "Switch to the new company", caption: "Bhadrakali Transport Co has no history with Anubhav.", act: (a) => a.setCompany("TNEW") },
       { label: "Play the request without shared lessons", caption: "A recorded run: a 32 ft truck again.", act: (a) => a.runSaved(JANGAON, false) },
       { label: "Play it with shared lessons", caption: "The regional lesson about this gate arrives with the shared pack, so it drafts a 22 ft truck on day 1.", act: (a) => a.runSaved(JANGAON, true), loop: "Improve" },
-      { label: "See the measured result", caption: "In Proof: on new-company cases the score went from 33% to 100%, with no private rule leaking across companies.", act: (a) => a.openTab("proof", "proof:transfer") },
+      { label: "See the measured result", caption: "In Proof: on new-company cases the score went from 33% to 100%, with no private rule leaking across companies.", act: (a) => a.openTab("proof/claims", "proof:transfer") },
     ],
     evidence: [
       { label: "EXP-011R: the benchmark, 3 repeats", href: `${REPO}artifacts/benchmark/exp011r_20261030_230811.json` },

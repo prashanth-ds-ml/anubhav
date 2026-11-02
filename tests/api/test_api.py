@@ -563,6 +563,14 @@ def test_the_experiment_registry_points_at_real_files_and_commits():
                 assert r["plan"]["commit"] == r["result"]["commit"], r["id"]
 
 
+def test_the_registry_keeps_each_bar_and_the_proof_route_gives_per_company_totals(env):
+    reg = client_free_registry()["experiments"]
+    by = {r["id"]: r for r in reg}
+    assert by["EXP-009b"]["bar"]["precision"] == 0.85 and by["EXP-008"]["verdict"] == "not_met"   # the mining bar was missed (0.73)
+    r11 = next(x for x in client(env).get("/api/proof").json() if x["id"] == "EXP-011R")
+    assert r11["summary"] and all(k.split(":")[0] in {"T01", "T02", "TNEW"} for k in r11["summary"]) and r11["runs"] > 0
+
+
 def client_free_registry():
     from anubhav.service import proof
     return proof.registry()

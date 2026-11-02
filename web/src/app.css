@@ -574,3 +574,50 @@ ul.lessons { display: grid; gap: 8px; padding: 0; list-style: none; }
   .runs-page, .run-body, .tools-page, .panel.with-side { grid-template-columns: 1fr; }
   .team-line { border-left: 0; padding-left: 0; }
 }
+
+/* ---------- Sprint 6: Proof & audit */
+.proof-page .subtabs { display: inline-flex; gap: 4px; padding: 3px; border: 1px solid var(--border); border-radius: 999px; margin-bottom: 12px; }
+.subtab { font: inherit; border: 0; background: none; color: var(--text); padding: 6px 16px; border-radius: 999px; cursor: pointer; min-height: 40px; }
+.subtab.on { background: var(--accent); color: var(--bg); font-weight: 600; }
+.proof-top { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 12px; align-items: start; }
+.proof-top.even { grid-template-columns: 1fr 1fr; }
+.proof-page h3 { font-size: 1.05rem; margin: 0 0 4px; }
+.proof-page .ev-figure { margin: 8px 0; }
+.proof-page .legend { display: flex; flex-wrap: wrap; gap: 4px 16px; align-items: center; }
+.proof-page .legend li { display: inline-flex; align-items: center; gap: 6px; }
+svg.chart { width: 100%; height: auto; min-width: 520px; display: block; }
+svg.chart.slope { min-width: 300px; max-width: 460px; }
+svg.chart .grid { stroke: var(--border); stroke-width: 1; }
+svg.chart .axis { fill: var(--muted); font-size: 12px; }
+svg.chart .row-label { fill: var(--text); font-size: 14px; font-weight: 600; }
+svg.chart .val { fill: var(--text); font-size: 13px; }
+svg.chart .val.strong { font-weight: 700; fill: var(--chart-ok); }
+.dumb-line, .slope-line { stroke: var(--chart-ok); stroke-width: 3; fill: none; }
+.slope-line { stroke-width: 2.5; opacity: 0.85; }
+.dot-before { fill: var(--surface); stroke: var(--muted); stroke-width: 2.5; }
+.dot-after { fill: var(--chart-ok); }
+.slope-wrap { display: grid; grid-template-columns: minmax(0, 1fr) minmax(120px, 34%); gap: 8px; align-items: center; }
+.slope-side p { margin: 2px 0; }
+.mine-rows { display: grid; gap: 8px; margin: 8px 0; }
+.mine-row { display: grid; grid-template-columns: minmax(120px, 30%) 1fr minmax(150px, auto); gap: 8px; align-items: center; }
+.mine-track { position: relative; height: 16px; }
+.mine-bar { position: absolute; top: -4px; bottom: -4px; border-left: 2px dashed var(--text); }
+.score-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 6px 16px; }
+.score-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 8px; margin-top: 8px; }
+.score-card { border: 1.5px solid var(--border); border-radius: 8px; padding: 8px 10px; height: 100%; box-sizing: border-box; font-size: 0.9rem; }
+.score-card summary { cursor: pointer; }
+.score-card p { margin: 4px 0 0; }
+.score-card.v-met { border-color: var(--ok); }
+.score-card.v-not-met { border-color: var(--err); }
+.score-card.v-not-run { border-style: dashed; color: var(--muted); }
+.score-card.seed { background: var(--bg); border-color: var(--accent); }
+.score-card.seed code { overflow-wrap: anywhere; }
+.v-met > summary > span:first-child, .legend .v-met span, td.v-met span { color: var(--ok); font-weight: 700; }
+.v-not-met > summary > span:first-child, .legend .v-not-met span, td.v-not-met span { color: var(--err); font-weight: 700; }
+td.v-not-met { color: var(--err); }
+td.v-met { color: var(--ok); }
+table.custody td, table.custody th { vertical-align: top; text-align: left; }
+.proof-notes { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 8px; margin: 12px 0; }
+.proof-top > *, .slope-wrap > *, .proof-page .panel { min-width: 0; }
+@media (max-width: 900px) { .proof-top, .proof-top.even, .slope-wrap { grid-template-columns: minmax(0, 1fr); } .mine-row { grid-template-columns: minmax(0, 1fr); } }
+.proof-page .legend svg { flex-shrink: 0; }

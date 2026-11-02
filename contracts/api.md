@@ -97,9 +97,9 @@ The stream:
 | POST | `/api/packs/revoke?target=` | Revokes everything received |
 | POST | `/api/review/run?company=` | Nightly review report; free on the public host |
 | GET | `/api/review/history?company=` | Past reports |
-| GET | `/api/proof` | Result files, each with `measured_on` |
+| GET | `/api/proof` | Result files, each with `measured_on`. EXP-011R also has `summary` (per company and arm: `ok` as "n/m", `unsafe`, `by_family`), `world`, `runs`, `cost_usd` and `pack_leaks` |
 | GET | `/api/proof/curve` | EXP-014's stages and agent scores, or `{measured: false}` (it has not run) |
-| GET | `/api/proof/registry` | `{about, experiments:[{id, question, verdict: met / not_met / finding / not_run, summary, plan:{commit, date}, result:{commit, date, file} or null, custody: plan_first / same_commit / not_run, runs?, cost_usd?, note?}]}` |
+| GET | `/api/proof/registry` | `{about, experiments:[{id, question, verdict: met / not_met / finding / not_run, summary, plan:{commit, date}, result:{commit, date, file} or null, custody: plan_first / same_commit / not_run, runs?, cost_usd?, note?, bar?: {text, precision?, gain_pts?, call_ratio?}}]}`. `bar` is the decision rule as fixed in advance, copied from the experiments log |
 | GET | `/api/compare?company=&request=` | One request from saved runs: cold, with lessons, with learned tools |
 | GET | `/api/ledger?company=&agent=&type=&limit=` | Hand-offs, drafts, checks, lessons used, missing tools |
 | GET | `/api/logs/events?company=&stream_name=` | Everything done and learned, newest first |

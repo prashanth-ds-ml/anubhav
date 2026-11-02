@@ -71,7 +71,8 @@ def results():
     f, d = _latest(BENCH, "exp011r_2*.json")
     if d:
         out.append({"id": "EXP-011R", "file": f, "measured_on": "single Planner on the shipped version, 3 repeats", "repeats": d["repeats"],
-                    "pooled": d["pooled"], "replicated": d["replicated"]})
+                    "pooled": d["pooled"], "replicated": d["replicated"], "summary": d.get("summary"), "world": d.get("world"),
+                    "cost_usd": d.get("cost_usd"), "runs": len(d.get("rows", [])), "pack_leaks": sum(len(k.get("leaks", [])) for k in d.get("packs", []))})
     for eid, pattern in (("EXP-012", "exp012_2*.json"), ("EXP-012b", "exp012b_2*.json")):
         f, d = _latest(BENCH, pattern)
         if d:

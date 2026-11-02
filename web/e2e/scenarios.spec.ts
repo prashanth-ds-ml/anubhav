@@ -157,13 +157,11 @@ test("S2's approve step ticks only once a tool is approved, and New tools leads 
   await expect(guide.getByLabel("Step 2 done")).toBeVisible();
 });
 
-test("Proof leads with three headline figures, each linked to its result file", async ({ page }) => {
+test("Proof opens on its benchmarks, and the per-company chart links its result file", async ({ page }) => {
   await page.goto("/#proof");
-  const tiles = page.getByRole("region", { name: "Headline results" }).locator(".tile");
-  await expect(tiles).toHaveCount(3);
-  await expect(tiles.nth(0)).toContainText("90%");
-  await expect(tiles.nth(1)).toContainText("100%");
-  await expect(tiles.nth(2).getByRole("link", { name: "Result file" })).toHaveAttribute("href", /exp011r/);
+  await expect(page.getByRole("tab", { name: "Benchmarks" })).toHaveAttribute("aria-selected", "true");
+  const chart = page.getByRole("region", { name: /learning made every company's plans correct more often/ });
+  await expect(chart.getByRole("link", { name: "Result file" })).toHaveAttribute("href", /exp011r/);
 });
 
 test("fleet reasons and agent versions are in plain words", async ({ page }) => {

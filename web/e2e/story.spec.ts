@@ -64,22 +64,18 @@ test("recorded runs say they are recorded; the page never calls a recording an e
 });
 
 test("Proof shows the measured results, labelled as what they are, with what was not improved", async ({ page }) => {
-  await page.goto("/#proof");
-  const panel = page.getByRole("tabpanel");
-  await expect(panel).toContainText("Does it learn rules nobody wrote down?");
-  const rows = panel.locator("table.fit").first().locator("tbody tr");
-  await expect(rows).toHaveCount(2);
-  await expect(rows.nth(0)).toContainText("48%");
-  await expect(rows.nth(0)).toContainText("90%");
-  await expect(rows.nth(1)).toContainText("33%");
-  await expect(rows.nth(1)).toContainText("100%");
-  await expect(panel).toContainText("Unsafe drafts with lessons: 0");
-  await expect(panel).toContainText("Not improved:");
-  await expect(panel).toContainText("Team of agents against one Planner");
-  await expect(panel).toContainText("The team is not more accurate or cheaper than one planner.");
-  await expect(panel).toContainText("The bar was not met");
+  await page.goto("/#proof/claims");
+  const panel = page.locator("#proof-panel");
+  await expect(panel).toContainText("Approved lessons lifted unwritten-rule accuracy from 48% to 90%");
+  await expect(panel).toContainText("A new company went from 33% to 100% on day 1");
+  await expect(panel).toContainText("0 unsafe drafts with lessons");
+  await expect(panel).toContainText("Not improved, and said so");
   await expect(panel).toContainText("Not measured yet");
   await expect(panel).toContainText("every measured planning run used Muse Spark Open");
+  await page.getByRole("tab", { name: "Benchmarks" }).click();
+  await expect(panel).toContainText("The team of agents is safe, but not more accurate than one Planner");
+  await expect(panel).toContainText("Not improved:");
+  await expect(panel).toContainText("including the ones that failed");
 });
 
 test("Proof's headline numbers are the README's", async ({ page }) => {
@@ -88,11 +84,11 @@ test("Proof's headline numbers are the README's", async ({ page }) => {
   expect(readme).toContain("33% → 100%");
   expect(readme).toMatch(/Single Planner \| 48\/54/);
   expect(readme).toMatch(/Team \| 47\/54/);
+  await page.goto("/#proof/claims");
+  const panel = page.locator("#proof-panel");
+  await expect(panel).toContainText("from 48% to 90%");
   await page.goto("/#proof");
-  const panel = page.getByRole("tabpanel");
-  await expect(panel).toContainText("48%");
-  await expect(panel).toContainText("90%");
-  const team = panel.locator("table.fit").nth(1).locator("tbody tr");
+  const team = page.getByRole("region", { name: /not more accurate than one Planner/ }).locator("tbody tr");
   await expect(team.nth(0)).toContainText("48/54");
   await expect(team.nth(1)).toContainText("47/54");
   await expect(team.nth(2)).toContainText("46/54");
@@ -116,11 +112,11 @@ for (const width of [1024, 1440]) {
   test(`the benchmark table fits its panel at ${width}px (nothing hidden off to the right)`, async ({ page }) => {
     await page.setViewportSize({ width, height: 900 });
     await page.goto("/#proof");
-    const wrap = page.getByRole("tabpanel").locator(".tablewrap").first();
-    await expect(wrap.getByRole("columnheader", { name: "With approved lessons" })).toBeVisible();
+    const wrap = page.getByRole("region", { name: /not more accurate than one Planner/ }).locator(".tablewrap");
+    await expect(wrap.getByRole("columnheader", { name: "Right agent chosen" })).toBeVisible();
     const m = await wrap.evaluate((e) => ({ scroll: e.scrollWidth, client: e.clientWidth }));
     expect(m.scroll).toBeLessThanOrEqual(m.client + 1);
-    const cell = (await wrap.getByRole("columnheader", { name: "With approved lessons" }).boundingBox())!;
+    const cell = (await wrap.getByRole("columnheader", { name: "Right agent chosen" }).boundingBox())!;
     const panel = (await page.locator("main.page").boundingBox())!;
     expect(cell.x + cell.width).toBeLessThanOrEqual(panel.x + panel.width);
   });
@@ -128,7 +124,7 @@ for (const width of [1024, 1440]) {
 
 test("table cells wrap instead of running into their neighbours (Proof and About)", async ({ page }) => {
   await page.goto("/#proof");
-  const row = page.getByRole("tabpanel").locator("table.fit").nth(1).locator("tbody tr").nth(2);
+  const row = page.getByRole("region", { name: /not more accurate than one Planner/ }).locator("tbody tr").nth(2);
   await expect(row.locator("td").first()).toContainText("Team after one learning round");
   const cells = await row.locator("td").evaluateAll((tds) => tds.map((t) => ({ sw: t.scrollWidth, cw: t.clientWidth })));
   for (const c of cells) expect(c.sw).toBeLessThanOrEqual(c.cw + 1); // each cell's text stays inside it

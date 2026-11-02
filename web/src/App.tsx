@@ -157,7 +157,7 @@ export default function App() {
             {route.main === "tools" && <NewTools onAsk={(label) => { go("desk"); setAsk((a) => ({ label, n: a.n + 1 })); }} />}
             {route.main === "agents" && <AgentCards />}
             {route.main === "runs" && <Runs item={route.item} />}
-            {route.main === "proof" && <Proof />}
+            {route.main === "proof" && <Proof item={route.item} />}
             </section>
           </main>
         )}

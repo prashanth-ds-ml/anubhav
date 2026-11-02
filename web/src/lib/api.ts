@@ -112,10 +112,15 @@ export interface NewTool {
     reasons: string[];
   };
 }
-export interface ProofEntry { id: string; measured_on: string; pooled?: Record<string, any>; arms?: Record<string, any>; decision?: Record<string, any>; replicated?: Record<string, boolean>; repeats?: any[]; learning_round?: any; cost_usd?: number; }
+export interface ProofEntry {
+  id: string; measured_on: string; file?: string; pooled?: Record<string, any>; arms?: any; decision?: Record<string, any>; replicated?: Record<string, boolean>;
+  repeats?: any[]; learning_round?: any; cost_usd?: number; world?: string; runs?: number; pack_leaks?: number;
+  summary?: Record<string, { ok: string; unsafe: number; by_family?: Record<string, string>; cost_usd?: number }>;
+}
 export interface CompareSide { run_id: string; reply: string; drafts: { vehicle_id: string; orders: string[] }[]; tool_calls: number; cost_usd: number; lessons_in_prompt: number; }
 export interface RegistryRow {
-  id: string; question: string; verdict: "met" | "not_met" | "finding" | "not_run"; summary?: string; note?: string;
+  id: string; question: string; verdict: "met" | "not_met" | "finding" | "not_run"; summary?: string; note?: string; runs?: number; cost_usd?: number;
+  bar?: { text: string; precision?: number; gain_pts?: number; call_ratio?: number };
   plan?: { commit: string; date: string }; result?: { commit: string; date: string; file: string }; custody?: string;
 }
 export interface AgentTurn { agent_run_id: string; agent: string; depth: number; caller: string | null; model: string | null; tool_calls: number; tool_errors: number; cost_usd: number; own_cost_usd: number; stop: string | null }
