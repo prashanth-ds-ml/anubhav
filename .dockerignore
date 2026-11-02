@@ -24,6 +24,7 @@ artifacts/**/rt
 artifacts/**/rt9
 artifacts/**/rt9f
 archive/prototype_experiments/artifacts
+!archive/prototype_experiments/artifacts/baseline
 archive/prototype_experiments/data
 archive/prototype_experiments/datasets
 archive/prototype_experiments/tests

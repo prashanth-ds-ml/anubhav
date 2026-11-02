@@ -97,6 +97,7 @@ Implements [[Design_Doc_Demo_v1]] (approved, D-052). Mock screens: https://claud
 | 4.5 | S4: the "You retired a lesson [Undo]" card in the chat; the live plan card |
 | 4.6 | **Live draft decisions:** Approve (re-checked in code) and Reject with a note, on live drafts only, via `/dashboard/drafts/{id}/decide`; recorded drafts keep the neutral note |
 | 4.7 | First screen: six scenario cards (S6 added), the "Built on Meta Muse" strip, the impact line with its source; it still fits 1280×720 |
+| 4.8 | **Local Docker check (owner, Nov 2):** build the image (`docker build -t anubhav .`), run it with no keys, and check: `/api/health` and `/api/session` answer, the main tabs load, S1 plays, `/api/proof` has EXP-004, the lesson evidence route answers, and the app runs as a non-root user. Needs Docker Desktop running. No deploy |
 
 **Done when:** S1–S5 run end to end with the new visuals. **Tests:** truck scale widths follow the lengths; approve and reject on a mocked live draft; first-screen fit at 1280×720; **full browser suite**.
 
@@ -132,7 +133,8 @@ Implements [[Design_Doc_Demo_v1]] (approved, D-052). Mock screens: https://claud
 | 7.3 | Regenerate `web/readme-assets/`; README "Try it" lists the six scenarios with `/?tour=` links and the main tabs |
 | 7.4 | Docs: the UX plan, the demo plan and the video storyboard follow the new screens; trackers and the daily note updated |
 | 7.5 | Remove dead code from the old nine-tab layout; check the bundle size |
-| 7.6 | Commit; the build is done |
+| 7.6 | **Final local Docker check before deploying:** build the image (`docker build -t anubhav .`), run it with no keys, and check: `/api/health` and `/api/session` answer, the main tabs load, S1 plays, `/api/proof` has EXP-004, the lesson evidence route answers, and the app runs as a non-root user. Needs Docker Desktop running. |
+| 7.7 | Commit; the build is done |
 
 ## 4. After the build (owner's order)
 1. **EXP-014, overnight (Nov 3 → 4).** Re-freeze with the model change recorded (agents on Muse Spark 1.3, Meta API), cap $40, and commit the re-freeze before the first call. Run in the background with resume. In the morning, read the result, apply its fixed rules and fill the Agents and Benchmarks frames from `/api/proof/curve`. A flat result is published as flat.

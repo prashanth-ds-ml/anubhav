@@ -66,6 +66,7 @@ The stream:
 | GET | `/api/agents` | Roster: `[{agent, name, purpose, status, voice, model, handles}]` |
 | GET | `/api/agents/{id}` | Adds instructions and limits |
 | GET | `/api/learning/lessons?company=&state=` | Lessons with `what`, evidence, gate verdict, `events` |
+| GET | `/api/learning/lessons/{id}/evidence?company=` | The records behind a lesson, as the gate saw them. Site lessons: `{kind:"trips", site, limit, window, rows:[{date, hour, weekday, vehicle_id, vehicle_class, length_ft, status, status_seen, wait_min}]}`. Closures: `{kind:"closure", place, what, window, today, delays, weeks:[{week, delays}], notes:[{ts, lang, source, text}]}` (notes from the same trip and stop as a delay). Shared-pack lessons: `{kind:"imported", note}` (the evidence stays with its company). Others: `{kind:"none"}` |
 | POST | `/api/learning/lessons/{id}/decide?company=` | `{decision: approve \| reject \| retire \| rollback, effect, verified, why}` |
 | GET | `/api/learning/timeline?company=&agent=` | Every learning decision, newest first |
 | POST 🔒 | `/api/learning/mine?company=&by=agent\|offline` | The Lesson Miner agent, or the offline miner |
@@ -97,6 +98,7 @@ The stream:
 | GET | `/api/review/history?company=` | Past reports |
 | GET | `/api/proof` | Result files, each with `measured_on` |
 | GET | `/api/proof/curve` | EXP-014's stages and agent scores, or `{measured: false}` (it has not run) |
+| GET | `/api/proof/registry` | `{about, experiments:[{id, question, verdict: met / not_met / finding / not_run, summary, plan:{commit, date}, result:{commit, date, file} or null, custody: plan_first / same_commit / not_run, runs?, cost_usd?, note?}]}` |
 | GET | `/api/compare?company=&request=` | One request from saved runs: cold, with lessons, with learned tools |
 | GET | `/api/ledger?company=&agent=&type=&limit=` | Hand-offs, drafts, checks, lessons used, missing tools |
 | GET | `/api/logs/events?company=&stream_name=` | Everything done and learned, newest first |

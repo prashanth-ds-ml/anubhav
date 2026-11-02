@@ -20,7 +20,7 @@ from ..learning.store import describe
 from ..runtime.broker import Broker, Session
 from ..runtime.company import CompanyData
 from ..runtime.query import sandbox
-from ..service import checkpoints, knowledge, proof as proof_files, runs, stream, views
+from ..service import checkpoints, evidence, knowledge, proof as proof_files, runs, stream, views
 from ..service.session import AGENT_MODEL, COMPANIES, LIVE_CALLS_PER_DAY, LIVE_RUNS_PER_SESSION, MODELS, SUGGESTIONS, Workspace, harness_store
 from ..ui import logs
 from .deps import ApiError, Cid, LocalOnly, Ws, live
@@ -372,6 +372,17 @@ def lessons(company: str = Cid, state: str | None = None, ws: Workspace = Ws):
     return [dict(l, what=describe(l, C), events=S.events(l["lesson_id"])) for l in S.list(company, {state} if state else None)]
 
 
+@api.get("/learning/lessons/{lesson_id}/evidence")
+def lesson_evidence(lesson_id: str, company: str = Cid, ws: Workspace = Ws):
+    """The records behind a lesson, as the gate saw them: every trip to its site, or a closure's delays by week and
+    the drivers' notes on those trips. Read-only; a shared lesson's evidence stays with the company it came from."""
+    S = ws.store()
+    lesson = next((l for l in S.list(company) if l["lesson_id"] == lesson_id), None)
+    if not lesson:
+        raise ApiError(404, "NOT_FOUND", f"{company} has no lesson {lesson_id}")
+    return evidence.lesson_evidence(ws.company(company), lesson)
+
+
 class LessonDecision(Body):
     decision: Literal["approve", "reject", "retire", "rollback"]
     effect: Literal["advisory", "policy"] = "advisory"
@@ -662,6 +673,12 @@ def review_history(company: str = Cid, ws: Workspace = Ws):
 @api.get("/proof")
 def proof():
     return proof_files.results()
+
+
+@api.get("/proof/registry")
+def proof_registry():
+    """Every pre-registered experiment with its plan and result commits (artifacts/experiments_index.json)."""
+    return proof_files.registry()
 
 
 @api.get("/proof/curve")

@@ -3,6 +3,7 @@ user. Mock model only; no credits. Keys are removed so nothing can reach a real 
 
 import json
 import shutil
+import subprocess
 
 import jsonschema
 import pytest
@@ -23,7 +24,7 @@ ROUTES = [("GET", "/api/health"), ("GET", "/api/session"), ("GET", "/api/compani
           ("GET", "/api/agents"), ("GET", "/api/agents/analyst"), ("GET", "/api/learning/lessons"), ("GET", "/api/tools"), ("GET", "/api/tools/candidates"),
           ("GET", "/api/harness"), ("GET", "/api/harness/problems"), ("GET", "/api/practice"), ("GET", "/api/packs"), ("GET", "/api/review/history"),
           ("GET", "/api/proof"), ("GET", "/api/ledger"), ("GET", "/api/logs/events"), ("GET", "/api/logs/runs"), ("GET", "/api/logs/tools"),
-          ("GET", "/api/logs/models"), ("GET", "/api/logs/agents"), ("GET", "/api/proof/curve"), ("GET", "/api/logs/routing"), ("GET", "/api/learning/timeline"), ("GET", "/api/report/weekly")]
+          ("GET", "/api/logs/models"), ("GET", "/api/logs/agents"), ("GET", "/api/proof/curve"), ("GET", "/api/proof/registry"), ("GET", "/api/logs/routing"), ("GET", "/api/learning/timeline"), ("GET", "/api/report/weekly")]
 LOCKED = [("POST", "/api/learning/mine"), ("POST", "/api/harness/propose"), ("POST", "/api/harness/rollback"), ("POST", "/api/harness/h-001/probe"),
           ("POST", "/api/harness/h-001/decide"), ("POST", "/api/practice")]
 
@@ -78,7 +79,7 @@ def test_the_route_list_above_is_complete(env):
     other = {"/api/session/reset-drafts", "/api/dashboard/drafts/{draft_id}/cancel", "/api/dashboard/company/profile", "/api/chat", "/api/chat/stream",
              "/api/runs/{run_id}", "/api/runs/{run_id}/feedback", "/api/learning/lessons/{lesson_id}/decide", "/api/tools/candidates/{key}/check",
              "/api/tools/{tool_id}/decide", "/api/tools/{tool_id}/retire", "/api/packs/publish", "/api/packs/revoke", "/api/review/run",
-             "/api/dashboard/drafts/{draft_id}/decide", "/api/handoffs", "/api/runs/{run_id}/resume", "/api/compare", "/api/agents/{agent_id}", "/api/harness/{version_id}/probe", "/api/harness/{version_id}/decide", "/api/logs/runs/{run_id}", "/api/voice"}
+             "/api/dashboard/drafts/{draft_id}/decide", "/api/handoffs", "/api/runs/{run_id}/resume", "/api/compare", "/api/agents/{agent_id}", "/api/harness/{version_id}/probe", "/api/harness/{version_id}/decide", "/api/logs/runs/{run_id}", "/api/voice", "/api/learning/lessons/{lesson_id}/evidence"}
     normal = {p.replace("/analyst", "/{agent_id}").replace("/h-001/", "/{version_id}/") for p in tested}
     assert paths <= normal | other, paths - normal - other
 
@@ -469,3 +470,91 @@ def test_transcription_failure_is_a_502_and_the_session_is_still_usable(voice_en
     r = post_voice(c, wav_bytes())
     assert r.status_code == 502 and r.json()["error"]["code"] == "TRANSCRIBE_FAILED"
     assert c.get("/api/health").status_code == 200
+
+
+# ---------- evidence behind a lesson, and the experiment registry (build sprint 2; no model calls)
+def evidence(c, lid, company="T01"):
+    return c.get(f"/api/learning/lessons/{lid}/evidence", params={"company": company})
+
+
+def lesson_of(c, kind, company="T01"):
+    return next(l for l in c.get("/api/learning/lessons", params={"company": company}).json() if l["kind"] == kind)
+
+
+def test_a_gate_lesson_shows_every_trip_to_its_site_as_the_gate_saw_them(env):
+    c = client(env)
+    lesson = lesson_of(c, "site_access")
+    e = evidence(c, lesson["lesson_id"]).json()
+    limit = lesson["params"]["max_length_ft"]
+    assert e["kind"] == "trips" and e["site"]["site_id"] == lesson["params"]["site_id"] and e["limit"]["max_length_ft"] == limit
+    refused = [r for r in e["rows"] if r["status"] == "returned"]
+    assert refused and all(r["length_ft"] > limit for r in refused)                 # every refusal was a long truck
+    assert all(r["length_ft"] <= limit for r in e["rows"] if r["status"] != "returned")
+    assert lesson["gate"]["support"] == len([r for r in refused if r["status_seen"] == "could_not_enter"])
+    assert [r["date"] for r in e["rows"]] == sorted(r["date"] for r in e["rows"])
+
+
+def test_a_closure_shows_its_delays_by_week_and_none_after_it_ended(env):
+    c = client(env)
+    lesson = lesson_of(c, "closure")
+    e = evidence(c, lesson["lesson_id"]).json()
+    assert e["kind"] == "closure" and e["place"] == lesson["params"]["town"]
+    assert sum(w["delays"] for w in e["weeks"]) == e["delays"] >= 3
+    end = e["window"]["to"]
+    assert all(w["delays"] == 0 for w in e["weeks"] if w["week"] > end)            # the road reopened: no delays after
+    assert e["notes"] and [n["ts"] for n in e["notes"]] == sorted(n["ts"] for n in e["notes"])
+
+
+def test_a_shared_lesson_never_shows_the_other_companys_records(env):
+    c = client(env)
+    shared = next(l for l in c.get("/api/learning/lessons", params={"company": "TNEW"}).json() if str(l["source"]).startswith("pack:"))
+    e = evidence(c, shared["lesson_id"], "TNEW").json()
+    assert e["kind"] == "imported" and "rows" not in e and "notes" not in e
+
+
+def test_evidence_for_other_kinds_or_wrong_lessons(env):
+    c = client(env)
+    assert evidence(c, lesson_of(c, "alias")["lesson_id"]).json()["kind"] == "none"
+    assert evidence(c, "L-NOPE").status_code == 404
+    t01 = lesson_of(c, "site_access")["lesson_id"]
+    assert evidence(c, t01, "T02").status_code == 404                               # a lesson is read through its own company only
+
+
+def _git(*args):
+    return subprocess.run(["git", *args], capture_output=True, text=True, cwd=ROOT)
+
+
+def test_the_experiment_registry_points_at_real_files_and_commits():
+    reg = client_free_registry()
+    rows = reg["experiments"]
+    assert len(rows) == 17 and len({r["id"] for r in rows}) == 17
+    assert {r["verdict"] for r in rows} <= {"met", "not_met", "finding", "not_run"}
+    for r in rows:
+        if r["result"]:
+            assert (ROOT / r["result"]["file"]).exists(), r["id"]
+        assert (r["custody"] == "not_run") == (r["result"] is None)
+    if _git("rev-parse", "--is-shallow-repository").stdout.strip() != "false":
+        pytest.skip("shallow clone: commit history not available")
+    stamp = lambda h: int(_git("show", "-s", "--format=%ct", h).stdout.strip())
+    for r in rows:
+        assert _git("cat-file", "-e", f"{r['plan']['commit']}^{{commit}}").returncode == 0, r["id"]
+        if r["result"]:
+            assert _git("cat-file", "-e", f"{r['result']['commit']}^{{commit}}").returncode == 0, r["id"]
+            if r["custody"] == "plan_first":
+                assert stamp(r["plan"]["commit"]) < stamp(r["result"]["commit"]), r["id"]
+            else:
+                assert r["plan"]["commit"] == r["result"]["commit"], r["id"]
+
+
+def client_free_registry():
+    from anubhav.service import proof
+    return proof.registry()
+
+
+def test_proof_adds_open_weights_and_demo_world_mining(env):
+    entries = {e["id"]: e for e in client(env).get("/api/proof").json()}
+    ow = entries["EXP-004"]["arms"]
+    assert {a["tools"] for a in ow} == {8, 40}
+    assert all("muse-spark-open" in a["spark_open"]["model"] and a["spark_open"]["runs"] == 96 for a in ow)
+    m = entries["EXP-008"]
+    assert len(m["repeats"]) == 2 and 0 < m["pooled"]["precision"] <= 1 and m["pooled"]["traps_admitted"] == 0

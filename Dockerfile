@@ -25,6 +25,8 @@ COPY contracts contracts
 COPY demo demo
 COPY --from=web /web/dist web/dist
 COPY artifacts artifacts
+# EXP-004's result files (open weights against Spark 1.3), read by /api/proof
+COPY archive/prototype_experiments/artifacts/baseline archive/prototype_experiments/artifacts/baseline
 RUN uv sync --frozen --no-dev
 
 # The demo world is built into the image, so the first visitor doesn't wait about a minute for it
