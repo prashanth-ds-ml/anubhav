@@ -149,7 +149,8 @@ def dash_drafts(company: str = Cid, run_id: str | None = None, ws: Workspace = W
         r = _run_or_404(run_id, ws)
         if r["company"] != company:
             raise ApiError(404, "NOT_FOUND", f"run {run_id} is not {company}'s")
-        return {"drafts": views.drafts_of_run(ws, company, r), "source": "run"}
+        ds = views.drafts_of_run(ws, company, r)
+        return {"drafts": ds, "source": "live" if any(d["source"] == "live" for d in ds) else "run"}
     return {"drafts": views.drafts_for(ws, company, [r for r in runs.recent_runs(100, ws) if r["company"] == company and r.get("drafts")]), "source": "live"}
 
 

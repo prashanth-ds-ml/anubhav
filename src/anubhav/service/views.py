@@ -166,14 +166,17 @@ def drafts_for(ws, cid, runs_seen=()):
 
 
 def drafts_of_run(ws, cid, run):
-    """A run's drafts, read from its trace: a replay creates nothing, but shows what the real run made."""
+    """A run's drafts, read from its trace: a replay creates nothing, but shows what the real run made. A draft this
+    visitor's own live run made is in their workspace too: it comes back with its real status, so a person can decide it."""
     b, _ = ws.broker(cid, False)
     out = []
     for d in drafts(run):
         sites = list(dict.fromkeys(b.C.orders[o]["site_id"] for o in d.get("orders", []) if o in b.C.orders))
-        out.append({"draft_id": d["draft_id"], "status": "draft (not dispatched)", "vehicle_id": d.get("vehicle_id"), "delivery_date": d.get("delivery_date"),
-                    "orders": d.get("orders"), "load": d.get("load"), "warnings": d.get("warnings", []), "stops": _stops(b, site_ids=sites) if sites else None,
-                    "why": why_plan(run, d["draft_id"]), "source": "run"})
+        row = b.C.runtime.draft(d["draft_id"])
+        out.append({"draft_id": d["draft_id"], "status": row["status"] if row else "draft (not dispatched)", "vehicle_id": d.get("vehicle_id"),
+                    "delivery_date": d.get("delivery_date"), "orders": d.get("orders"), "load": d.get("load"), "warnings": d.get("warnings", []),
+                    "stops": _stops(b, site_ids=sites) if sites else None, "why": why_plan(run, d["draft_id"]),
+                    **({"decisions": b.C.runtime.decisions(d["draft_id"])} if row else {}), "source": "live" if row else "run"})
     return out
 
 

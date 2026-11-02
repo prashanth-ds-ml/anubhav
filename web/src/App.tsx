@@ -11,7 +11,7 @@ import { Proof } from "./components/Proof";
 import { RunsList } from "./components/RunsList";
 import { LiveMeter } from "./components/LiveMeter";
 import { MainNav, MAIN_LABEL } from "./components/MainNav";
-import { ScenarioGuide, SCENARIOS, type ScenarioActions } from "./components/Scenarios";
+import { ScenarioGuide, SCENARIOS, type LoopStep, type ScenarioActions } from "./components/Scenarios";
 import { Info } from "lucide-react";
 import { useNarrow } from "./lib/useNarrow";
 import { useSettings } from "./lib/ctx";
@@ -57,11 +57,14 @@ export default function App() {
     gateRule: (d) => chatActions.current!.gateRule(d),
     focusBox: () => { toDesk(); chatActions.current?.focusBox(); },
     toolApproved: () => chatActions.current!.toolApproved(),
+    gateActive: () => chatActions.current!.gateActive(),
   };
+  const [reached, setReached] = useState<LoopStep[]>([]); // Approve and Improve, once a scenario reaches them
   function startScenario(id: string) {
     const s = SCENARIOS.find((x) => x.id === id);
     if (!s) return;
     setScenario(id);
+    setReached([]);
     toDesk();
     if (s.id !== "S3" && s.company !== company) setCompany(s.company); // S3 switches company as its first step
   }
@@ -87,17 +90,20 @@ export default function App() {
     <div className="strips">
       {!narrow && companyEl}
       <ol className="loop" aria-label="Closed loop">
-        {LOOP.map((l) => (
-          <li
-            key={l.step}
-            title={l.hint}
-            className={`${current === l.step ? "on" : ""} ${l.outsideRun ? "later" : ""}`}
-            aria-current={current === l.step ? "step" : undefined}
-          >
-            {l.step}
-            <span className="sr-only">: {l.hint}</span>
-          </li>
-        ))}
+        {LOOP.map((l) => {
+          const lit = reached.includes(l.step as LoopStep);
+          return (
+            <li
+              key={l.step}
+              title={l.hint}
+              className={`${current === l.step ? "on" : ""} ${l.outsideRun && !lit ? "later" : ""} ${lit ? "lit" : ""}`}
+              aria-current={current === l.step ? "step" : undefined}
+            >
+              {l.step}{lit && <span aria-hidden> ✓</span>}
+              <span className="sr-only">: {lit ? "reached in this scenario. " : ""}{l.hint}</span>
+            </li>
+          );
+        })}
       </ol>
       <Roster acting={acting} />
     </div>
@@ -125,7 +131,8 @@ export default function App() {
           stripsEl
         )}
       </header>
-      {scenario && <ScenarioGuide key={scenario} id={scenario} actions={actions} runId={runId} onClose={() => setScenario(null)} />}
+      {scenario && <ScenarioGuide key={scenario} id={scenario} actions={actions} runId={runId} onClose={() => { setScenario(null); setReached([]); }}
+        onLoop={setReached} onStart={startScenario} />}
       <div className={`body ${onDesk ? "" : "full"}`} id="page">
         {/* The chat stays mounted on every tab, so a conversation and a scenario's runs survive a visit to Learning. */}
         <main className="center" hidden={!onDesk}>

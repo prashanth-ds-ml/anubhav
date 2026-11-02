@@ -5,7 +5,7 @@ import { Ledger } from "./Ledger";
 import { Sample } from "./Sample";
 import { Verdict } from "./Badges";
 import { WhyCard } from "./WhyCard";
-import { gateCheck, GateLine } from "./PlanCard";
+import { DraftDecision, gateCheck, GateLine } from "./PlanCard";
 import { humanName } from "../lib/text";
 import { go, type Desk } from "../lib/route";
 
@@ -35,12 +35,12 @@ const FACTS: [string, (f: any) => string | undefined][] = [
 ];
 
 export function Dashboard({ panel, refreshKey, runId, onPlan }: { panel: Desk; refreshKey: number; runId: string | null; onPlan: (text: string) => void }) {
-  const { company, companies, dataVersion } = useSettings();
+  const { company, companies, dataVersion, bumpData } = useSettings();
   const tab = TABS[SLUGS.indexOf(panel)] ?? "Orders";
   const setTab = (t: (typeof TABS)[number]) => go(SLUGS[TABS.indexOf(t)]);
   const o = useApi(() => api.orders(company), [company]);
   const f = useApi(() => api.fleet(company), [company]);
-  const d = useApi(() => api.drafts(company, runId ?? undefined), [company, runId, refreshKey]);
+  const d = useApi(() => api.drafts(company, runId ?? undefined), [company, runId, refreshKey, dataVersion], { keep: true });
   const c = useApi(() => api.company(company), [company]);
   const lessons = useApi(() => api.lessons(company), [company, dataVersion], { keep: true });
   const name = companies.find((x) => x.company === company)?.name ?? company;
@@ -109,6 +109,7 @@ export function Dashboard({ panel, refreshKey, runId, onPlan }: { panel: Desk; r
                 <header className="card-head">
                   <strong className="mono">{x.draft_id}</strong> on <span className="mono">{x.vehicle_id}</span>
                   {v && <span className="pill">{v.length_ft} ft · {v.class}</span>}
+                  {x.source === "live" && <span className="pill live">Live draft</span>}
                   <Verdict v={x.why?.checks?.every((k) => k.pass) === false ? "fail" : "pass"} />
                 </header>
                 {g && <GateLine g={g} />}
@@ -121,6 +122,7 @@ export function Dashboard({ panel, refreshKey, runId, onPlan }: { panel: Desk; r
                 )}
                 {x.warnings.length > 0 && <ul className="plain small">{x.warnings.map((w) => <li key={w.code}>{w.message}</li>)}</ul>}
                 {x.why && <WhyCard why={x.why} />}
+                <DraftDecision d={x} onDecided={bumpData} />
               </article>
               );
             })}

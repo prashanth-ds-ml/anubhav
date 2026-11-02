@@ -28,6 +28,9 @@ export interface Draft {
   draft_id: string; status: string; vehicle_id: string; delivery_date: string; orders: string[];
   load: { kg: number; m3: number; value_rs: number; stops: number; sites: string[]; handling_classes: string[] };
   warnings: { code: string; message: string }[];
+  /** "live": a draft in this visitor's workspace, which a person can approve or reject; "run": rebuilt from a recording. */
+  source?: "live" | "run";
+  decisions?: unknown[];
   stops?: { from: string; total_km: number; method: string; stops: { stop: number; site_id: string; name: string; town: string; leg_km: number; total_km: number; est_minutes_total: number }[] };
   why?: {
     request: string; lessons: { id: string; rule: string; evidence: string }[]; lessons_in_prompt: number;

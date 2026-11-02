@@ -71,6 +71,9 @@ export const api = {
   tools: (c: string) => read<NewTool[]>(`/api/tools?${q(c)}`, []),
   // The three actions on a repeated question. They change this visitor's own workspace only; a person is always the one who approves.
   checkTool: (c: string, key: string) => post<NewTool>(`/api/tools/candidates/${encodeURIComponent(key)}/check?${q(c)}`, {}),
+  /** A person approves a live draft (code re-checks it first) or rejects it with a note. Neither dispatches. */
+  decideDraft: (c: string, id: string, body: { decision: "approve" | "reject"; notes?: string; revise?: boolean }) =>
+    post<{ draft_id: string; status: string }>(`/api/dashboard/drafts/${encodeURIComponent(id)}/decide?${q(c)}`, body),
   decideTool: (c: string, id: string, approve: boolean, note: string) => post<NewTool>(`/api/tools/${encodeURIComponent(id)}/decide?${q(c)}`, { approve, note }),
   retireTool: (c: string, id: string, note: string) => post<NewTool>(`/api/tools/${encodeURIComponent(id)}/retire?${q(c)}`, { note }),
   proof: () => read<ProofEntry[]>("/api/proof", []),

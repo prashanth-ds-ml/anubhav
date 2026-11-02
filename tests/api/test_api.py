@@ -255,6 +255,7 @@ def test_a_replays_draft_shows_stops_and_why_without_creating_anything(env):
     run_id = c.post("/api/chat", json={"message": SUGGESTIONS["Roman Telugu"]}).json()["run_id"]
     d = c.get(f"/api/dashboard/drafts?company=T01&run_id={run_id}").json()
     (draft,) = d["drafts"]
+    assert d["source"] == "run" and draft["source"] == "run"
     assert draft["stops"]["stops"] and "not optimized" in draft["stops"]["method"] and draft["why"]["lessons_in_prompt"] > 0 and draft["why"]["tools"]
     assert c.get("/api/dashboard/drafts?company=T01").json()["drafts"] == []
     assert c.get(f"/api/dashboard/drafts?company=T02&run_id={run_id}").status_code == 404
@@ -274,6 +275,8 @@ def test_a_live_draft_appears_with_why_and_can_be_cancelled(env, monkeypatch):
         pytest.skip("validator refused the picked pair")
     (d,) = drafts
     assert d["why"]["run_id"] == run["run_id"] and d["stops"]["stops"]
+    by_run = c.get(f"/api/dashboard/drafts?run_id={run['run_id']}").json()   # the chat asks by run: a live draft is the real one
+    assert by_run["source"] == "live" and by_run["drafts"][0]["status"] == "draft" and by_run["drafts"][0]["source"] == "live"
     assert c.get("/api/dashboard/orders").json()["orders"][0] is not None
     assert c.post(f"/api/dashboard/drafts/{d['draft_id']}/cancel").status_code == 200
     assert c.post("/api/dashboard/drafts/DR-NONE/cancel").status_code == 404

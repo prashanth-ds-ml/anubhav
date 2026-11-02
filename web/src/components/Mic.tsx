@@ -89,6 +89,7 @@ export function Mic({ available, reason, onTranscript }: {
         disabled={!can || state.kind === "busy"}
         aria-pressed={recording}
         aria-label={recording ? "Stop recording" : "Record a voice message"}
+        title={can ? undefined : available ? "Voice is off: this browser cannot record audio." : reason ?? undefined}
         onClick={recording ? stop : start}
       >
         {state.kind === "busy" ? <Loader2 size={20} className="spin" aria-hidden /> : recording ? <Square size={20} aria-hidden /> : <MicIcon size={20} aria-hidden />}

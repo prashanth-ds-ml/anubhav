@@ -145,9 +145,12 @@ Owner and Claude in parallel. The single Planner stays the baseline and fallback
 | B-S1 | Build sprint 1 ([[Build_Plan_Demo_v1]]): six main tabs with addresses, guide across tabs, Runs list, live runs meter (session reports runs used and left today) | ✅ committed |
 | B-S1 commit | `d57eb9c` | ✅ |
 | B-S2 | Build sprint 2: lesson evidence route (trips / closure / imported), experiment registry (17, with plan and result commits), EXP-004 and EXP-008 in Proof, EXP-004 files in the Docker image | ✅ committed 0066271 |
-| B-S3 | Build sprint 3: Learning as two panes (list and detail with addresses), evidence charts (trip strip per kind, Kazipet weekly closure bars with drivers' notes), lesson life cycle, S6 road scenario | ✅ built and tested Nov 2; awaiting approval to commit |
+| B-S3 | Build sprint 3: Learning as two panes (list and detail with addresses), evidence charts (trip strip per kind, Kazipet weekly closure bars with drivers' notes), lesson life cycle, S6 road scenario | ✅ committed bf149c6 |
+| B-S4 | Build sprint 4: truck to scale against the learned gate, code-checks strip, language chips, S1 finish on one scale with Approve/Improve lit, S4 retired-lesson card with Undo, approve/reject on live drafts, first screen fits 1280×720 (Built on Meta Muse, cited impact line) | ✅ committed after the Docker check (4.8) passed |
+| B-S4 Docker | 4.8 local check: image builds, runs with no keys as user `anubhav` (uid 1000); health, session (replay, live off), EXP-004 in Proof, lesson evidence (18 trips, 3 turned back; 45 closure delays, 28 notes), six main tabs, S1 end to end (32 ft then 22 ft), no page errors; 165 MB | ✅ Nov 2 |
+| B-S7 note 2 | The scenario guide ticks a recorded step when its button is pressed, about 3 s before the run's plan appears; tick on the run's end instead | ⬜ sprint 7 |
 | B-S7 note | README says EXP-008 mining 73%: that is repeat 0; pooled over both repeats is 75% (73%, 77%). The mock scoreboard said 6 met / 6 missed; the registry has 5 met, 4 not met, 7 findings, 1 not run | ⬜ fix in sprint 7 docs; Benchmarks reads the registry |
-| B-S4…S7 | Build sprints 4–7 | ⬜ |
+| B-S5…S7 | Build sprints 5–7 | ⬜ |
 | H2 | Real voice recording with the key set (tests mock it); 60-second test with an outsider; push to a Space (needs the owner's go-ahead) | ⬜ |
 
 ## Cut

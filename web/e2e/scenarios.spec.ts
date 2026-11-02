@@ -137,8 +137,8 @@ test("a link opens a scenario directly, the stepper shows one step at a time, an
   const pair = guide.getByLabel("Before and after");
   await expect(pair).toContainText("32 ft");
   await expect(pair).toContainText("22 ft");
-  await expect(pair).toContainText("Too long for the gate");
-  await expect(pair).toContainText("Fits the gate");
+  await expect(pair).toContainText("32 ft · V11 · ✕ too long"); // both trucks on one scale
+  await expect(pair).toContainText("22 ft · V08 · ✓ fits");
 });
 
 test("S2's approve step ticks only once a tool is approved, and New tools leads with the right candidate", async ({ page }) => {

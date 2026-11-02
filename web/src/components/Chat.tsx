@@ -10,15 +10,16 @@ import { Mic } from "./Mic";
 import { closest } from "../lib/match";
 import type { RunEvent } from "../types";
 import { Timeline } from "./Timeline";
-import { ScenarioCards, type ScenarioActions } from "./Scenarios";
+import { ScenarioCards, SCENARIOS, type ScenarioActions } from "./Scenarios";
 import { go } from "../lib/route";
 import type { MutableRefObject } from "react";
 
 interface RunInfo { run_id: string; mode: string; bundled?: boolean }
 type Msg =
   | { kind: "user"; text: string }
-  | { kind: "run"; id: number; events: RunEvent[]; info?: RunInfo; ended: boolean; useLessons: boolean; live: boolean }
-  | { kind: "note"; text: string; suggestion?: string };
+  | { kind: "run"; id: number; events: RunEvent[]; info?: RunInfo; ended: boolean; useLessons: boolean; live: boolean; label?: string }
+  | { kind: "note"; text: string; suggestion?: string }
+  | { kind: "retired"; id: string; what: string; back: boolean };
 
 const answerOf = (events: RunEvent[]) => events.find((e) => e.type === "agent_done" && e.depth === 0);
 const waitingOf = (events: RunEvent[]) => events.find((e) => e.type === "needs_person" && e.depth === 0);
@@ -62,6 +63,33 @@ function Starters({ compact, onPick }: { compact: boolean; onPick: (label: strin
           </>
         )}
     </div>
+  );
+}
+
+/** Who it is for, with its source. On short screens it moves under "Read more", so the scenario cards stay in view. */
+function Impact({ className }: { className: string }) {
+  return (
+    <p className={`small muted ${className}`}>
+      For India's small fleet operators, who plan on phone calls and memory: about 75% of truck operators own fewer than five
+      trucks (<a href="https://redseer.com/articles/unlocking-growth-in-indias-fragmented-trucking-sector/" target="_blank" rel="noreferrer">Redseer, Dec 2024</a>).
+    </p>
+  );
+}
+
+/** During a scenario, the same saved request in its other languages: each chip plays that recording. */
+function Variants({ label, lessons, onPick }: { label?: string; lessons: boolean; onPick: (label: string, lessons?: boolean) => void }) {
+  const { requests } = useSettings();
+  const all = SCENARIOS.find((s) => s.variants?.some((v) => v.label === label))?.variants;
+  const others = all?.filter((v) => v.label !== label && requests.some((r) => r.label === v.label && (lessons ? r.on : r.off)));
+  if (!others?.length) return null;
+  return (
+    <p className="variants small" role="group" aria-label="The same request in other languages">
+      <span className="muted">Same request, also recorded in:</span>
+      {others.map((v) => {
+        const r = requests.find((x) => x.label === v.label)!;
+        return <button key={v.label} type="button" className="chip" lang={v.label === "Telugu" ? "te" : undefined} title={r.request} onClick={() => onPick(v.label, lessons)}>{v.text}</button>;
+      })}
+    </p>
   );
 }
 
@@ -147,10 +175,10 @@ export function Chat({ onEvents, prefill, ask, scenario, onStartScenario, action
   const patch = (id: number, f: (m: Extract<Msg, { kind: "run" }>) => Extract<Msg, { kind: "run" }>) =>
     setMsgs((m) => m.map((x) => (x.kind === "run" && x.id === id ? f(x) : x)));
 
-  function run(request: string, lessons: boolean, extra?: string, liveRun = false) {
+  function run(request: string, lessons: boolean, extra?: string, liveRun = false, label?: string) {
     stop.current();
     const id = nextId.current++;
-    setMsgs((m) => [...m, { kind: "user", text: request }, ...(extra ? [{ kind: "note" as const, text: extra }] : []), { kind: "run", id, events: [], ended: false, useLessons: lessons, live: liveRun }]);
+    setMsgs((m) => [...m, { kind: "user", text: request }, ...(extra ? [{ kind: "note" as const, text: extra }] : []), { kind: "run", id, events: [], ended: false, useLessons: lessons, live: liveRun, label }]);
     stop.current = startRun(request, { company, useLessons: lessons, team: session?.default_team ?? true, live: liveRun }, {
       onEvent: (e) => patch(id, (x) => ({ ...x, events: [...x.events, e] })),
       onRun: (info) => patch(id, (x) => ({ ...x, info, live: info.mode === "live" })),
@@ -167,12 +195,12 @@ export function Chat({ onEvents, prefill, ask, scenario, onStartScenario, action
   function pick(label: string, lessons?: boolean) {
     const r = requests.find((x) => x.label === label);
     if (!r) return;
-    if (lessons !== undefined && (lessons ? r.on : r.off)) { setUseLessons(lessons); return run(r.request, lessons); }
+    if (lessons !== undefined && (lessons ? r.on : r.off)) { setUseLessons(lessons); return run(r.request, lessons, undefined, false, label); }
     const ok = useLessons ? r.on : r.off;
-    if (ok) return run(r.request, useLessons);
+    if (ok) return run(r.request, useLessons, undefined, false, label);
     const flip = !useLessons;
     setUseLessons(flip);
-    run(r.request, flip, `The saved run for this request is with lessons ${flip ? "on" : "off"}, so I switched that setting.`);
+    run(r.request, flip, `The saved run for this request is with lessons ${flip ? "on" : "off"}, so I switched that setting.`, false, label);
   }
 
   function submit(text: string) {
@@ -197,19 +225,33 @@ export function Chat({ onEvents, prefill, ask, scenario, onStartScenario, action
     ]);
   }
 
+  const gateLesson = async () => (await api.lessons(company)).find((x) => x.kind === "site_access");
+  /** Retire the gate-size rule or bring it back, in this visitor's own lessons. Asking for the state it is already in
+   * changes nothing: a second "undo" would otherwise undo the approval itself. Retiring leaves a card in the chat. */
+  async function gateRule(decision: "retire" | "rollback") {
+    const rule = await gateLesson();
+    if (!rule) throw new Error("This company has no gate-size rule to change.");
+    const active = rule.state.startsWith("ACTIVE");
+    if (decision === "retire" && !active) return `${rule.lesson_id} is already retired.`;
+    if (decision === "rollback" && active) {
+      setMsgs((m) => m.map((x) => (x.kind === "retired" && x.id === rule.lesson_id ? { ...x, back: true } : x)));
+      return `${rule.lesson_id} is already active.`;
+    }
+    await api.decideLesson(company, rule.lesson_id, decision === "retire" ? { decision: "retire", why: "Scenario S4: trying the plan without this rule." } : { decision: "rollback" });
+    bumpData();
+    setMsgs((m) => decision === "retire"
+      ? [...m.filter((x) => !(x.kind === "retired" && x.id === rule.lesson_id)), { kind: "retired", id: rule.lesson_id, what: rule.what || rule.claim, back: false }]
+      : m.map((x) => (x.kind === "retired" && x.id === rule.lesson_id ? { ...x, back: true } : x)));
+    return decision === "retire" ? `Retired ${rule.lesson_id}: "${rule.what}". The agent will not see it now.` : `${rule.lesson_id} is active again.`;
+  }
+
   const actions: ScenarioActions = {
     runSaved: (label, lessons) => { if (ready) pick(label, lessons); else pending.current = { label, lessons }; },
     runLive: (text) => run(text, useLessons, undefined, true),
     openTab: (slug, focus) => { go(slug); if (focus) focusOn(focus); },
     setCompany: (c) => { if (c !== company) setCompany(c); },
-    gateRule: async (decision) => {
-      const all = await api.lessons(company);
-      const rule = all.find((x) => (x as unknown as { kind?: string }).kind === "site_access");
-      if (!rule) throw new Error("This company has no gate-size rule to change.");
-      await api.decideLesson(company, rule.lesson_id, decision === "retire" ? { decision: "retire", why: "Scenario S4: trying the plan without this rule." } : { decision: "rollback" });
-      bumpData();
-      return decision === "retire" ? `Retired ${rule.lesson_id}: "${rule.what}". The agent will not see it now.` : `${rule.lesson_id} is active again.`;
-    },
+    gateRule: (decision) => gateRule(decision),
+    gateActive: async () => !!(await gateLesson())?.state.startsWith("ACTIVE"),
     focusBox: () => field.current?.focus(),
     toolApproved: async () => (await api.tools(company)).some((t) => t.status === "active"),
   };
@@ -234,17 +276,21 @@ export function Chat({ onEvents, prefill, ask, scenario, onStartScenario, action
                 <strong>Every business has rules nobody wrote down.</strong> Anubhav learns them from the company's own records,
                 shows the evidence, and a person approves each one before it changes a plan. It never dispatches without a person.
               </p>
+              <Impact className="impact" />
+              <ul className="muse plain small" aria-label="Built on Meta Muse">
+                <li className="muse-head">Built on Meta Muse:</li>
+                <li><strong>Spark Open</strong> (open weights) · the agents plan and call tools</li>
+                <li><strong>Spark 1.3</strong> · finds lessons, live runs</li>
+                <li><strong>Voice Transcribe</strong> · hears Telugu</li>
+              </ul>
               <details>
                 <summary className="small">Read more</summary>
                 <p>
                   A dispatcher near Warangal knows a 32 ft truck can't get into one Jangaon godown. No system records that, so an AI
                   connected to the company's data still sends the truck. Anubhav finds such rules in past trips, and code checks the
-                  evidence before a person sees them.
+                  evidence before a person sees them. All companies and records here are synthetic.
                 </p>
-                <p className="small muted">
-                  Built on Meta Muse: Spark Open plans, Spark 1.3 finds the rules, Voice Transcribe hears Telugu. All companies and
-                  records here are synthetic.
-                </p>
+                <Impact className="impact-alt" />
               </details>
             </section>
             <ScenarioCards onStart={onStartScenario} />
@@ -255,6 +301,17 @@ export function Chat({ onEvents, prefill, ask, scenario, onStartScenario, action
         )}
         {msgs.map((m, i) => {
           if (m.kind === "user") return <div key={i} className="bubble user">{m.text}</div>;
+          if (m.kind === "retired")
+            return (
+              <section key={i} className={`retired-card ${m.back ? "back" : ""}`} aria-label={m.back ? "You brought a lesson back" : "You retired a lesson"}>
+                <div>
+                  <p className="retired-head">{m.back ? "You brought the lesson back" : "You retired a lesson"}</p>
+                  <p><span className="mono">{m.id}</span> · {m.what}</p>
+                  <p className="small muted">{m.back ? "It is active again: the agent is told it on the next run." : "Only your own copy changed. The recorded runs stay as they were."}</p>
+                </div>
+                {!m.back && <button type="button" className="chip" aria-label={`Undo: bring back ${m.id}`} onClick={() => gateRule("rollback").catch((e) => setBanner((e as Error).message))}>Undo</button>}
+              </section>
+            );
           if (m.kind === "note")
             return (
               <div key={i} className="bubble agent" role="status">
@@ -277,6 +334,7 @@ export function Chat({ onEvents, prefill, ask, scenario, onStartScenario, action
                   {m.live ? "Live run, just now" : `Recorded run${first.ts ? ` · ${first.ts.slice(0, 10)}` : ""}`} · {modelName(model)} · lessons {m.useLessons ? "on" : "off"}
                 </p>
               )}
+              {!m.live && m.ended && <Variants label={m.label} lessons={m.useLessons} onPick={pick} />}
               <details open>
                 <summary>Show how it got there ({m.events.length} steps)</summary>
                 {m.events.length === 0 ? <p className="muted small">Starting…</p> : <Timeline events={m.events} />}

@@ -8,9 +8,13 @@ test("the first screen states the problem, the idea, the Meta models and that th
   await expect(card).toContainText("Every business has rules nobody wrote down.");
   await expect(card).toContainText("learns them from the company's own records");
   await expect(card).toContainText("a person approves each one before it changes a plan");
+  const muse = card.getByRole("list", { name: "Built on Meta Muse" });
+  await expect(muse).toContainText("Spark Open (open weights) · the agents plan and call tools");
+  await expect(muse).toContainText("Spark 1.3 · finds lessons, live runs");
+  await expect(muse).toContainText("Voice Transcribe · hears Telugu");
   await card.getByText("Read more").click();
   await expect(card).toContainText("32 ft truck can't get into one Jangaon godown");
-  await expect(card).toContainText("Built on Meta Muse: Spark Open plans, Spark 1.3 finds the rules, Voice Transcribe hears Telugu");
+  await expect(card.getByRole("link", { name: "Redseer, Dec 2024" }).first()).toBeVisible(); // who it is for, with its source
   await expect(card).toContainText("synthetic");
   await expect(page.getByText(/a synthetic company generated for this project/)).toBeVisible();
 });

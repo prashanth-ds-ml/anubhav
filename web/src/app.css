@@ -196,12 +196,17 @@ table.orders td:nth-child(1), table.orders td:nth-last-child(-n+2) { white-space
 /* the completed-benchmark table must fit the panel; captions wrap instead of widening the table */
 caption { text-align: left; white-space: normal; padding-bottom: 6px; }
 .tablewrap table.fit { table-layout: fixed; }
+.problem .impact-alt { display: none; }
 /* short laptop screens: give the chat room, keep the welcome readable */
 @media (max-height: 820px) {
   .composer-form > p.small.muted { display: none; }
   .composer { padding-top: 8px; padding-bottom: 10px; }
   .welcome .starters { margin-top: 8px; }
   .problem { padding: 10px 14px; margin-bottom: 10px; }
+  .composer-row textarea { min-height: 44px; height: 44px; } /* one line on short screens; the mic's reason and privacy note stay */
+  .muse { margin-top: 4px; }
+  .problem > .impact, .scenarios .sc-sub { display: none; }
+  .problem .impact-alt { display: block; }
 }
 
 /* Settings added with the real backend: company picker, lessons switch, saved-request groups, key-value lists, replies */
@@ -434,3 +439,52 @@ ul.lessons { display: grid; gap: 8px; padding: 0; list-style: none; }
 .page a, .lesson-detail a { color: var(--accent); }
 .ev-scroll { overflow-x: auto; }
 @media (max-width: 860px) { .ev-scroll .ev-svg { min-width: 600px; } }
+
+/* ---------- Sprint 4: Dispatch Desk payoff */
+/* Trucks to scale against the gate line. Each bar says its length and ✓ or ✕ in words; colour only repeats it. */
+.truck-scale { margin: 8px 0 0; }
+.ts-rows { display: grid; grid-template-columns: 1fr; gap: 6px; }
+.ts-rows:has(.ts-label) { grid-template-columns: auto 1fr; column-gap: 10px; } /* one label column, so the gate line lines up */
+.ts-row { display: contents; }
+.ts-row > * { align-self: center; }
+.ts-label { color: var(--muted); min-width: 11em; }
+.ts-track { position: relative; display: block; min-height: 30px; }
+.ts-bar { display: flex; align-items: center; min-height: 30px; padding: 0 10px; border: 2px solid; border-radius: 8px; font-weight: 600; font-size: 0.9rem; white-space: nowrap; box-sizing: border-box; }
+.ts-bar.ok { border-color: var(--ok); background: var(--ok-bg); color: var(--ok); }
+.ts-bar.bad { border-color: var(--err); background: var(--err-bg); color: var(--err); }
+.ts-limit { position: absolute; top: -6px; bottom: -6px; border-left: 3px dashed var(--text); }
+.truck-scale figcaption { margin-top: 6px; }
+.truck-scale.small .ts-bar { min-height: 24px; font-size: 0.8rem; }
+.pair-scale { margin-top: 8px; flex: 1 1 100%; }
+.sc-finale { font-size: 1.05rem; flex-basis: 100% !important; }
+.sc-next, .link-btn { background: none; border: 0; padding: 0; color: var(--accent); font: inherit; font-weight: 600; text-decoration: underline; cursor: pointer; }
+
+/* What code checked on a draft */
+.code-checks { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px 16px; margin-top: 8px; padding: 6px 10px; border-radius: 8px; background: var(--bg); }
+.code-checks ul { display: flex; flex-wrap: wrap; gap: 4px 16px; font-weight: 600; font-size: 0.9rem; }
+.code-checks p { margin: 0 !important; }
+
+/* A person's decision on a live draft */
+.draft-decide { margin-top: 8px; }
+.draft-decide p { margin: 4px 0 0; }
+.pill.live { border: 1px solid var(--warn); color: var(--warn); background: var(--warn-bg); }
+
+/* S4: the lesson you retired, with Undo */
+.retired-card { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 8px 0; padding: 10px 14px; border: 2px solid var(--err); border-radius: var(--radius); background: var(--err-bg); }
+.retired-card p { margin: 0; }
+.retired-card .retired-head { color: var(--err); font-weight: 700; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.02em; }
+.retired-card.back { border-color: var(--ok); background: var(--ok-bg); }
+.retired-card.back .retired-head { color: var(--ok); }
+
+/* S1: the same request in other languages */
+.variants { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 4px 0; }
+.variants [lang="te"] { font-family: var(--font-te); }
+
+/* The loop strip: Approve and Improve, once a scenario reaches them */
+.loop li.lit { background: var(--accent); color: var(--bg); border-color: var(--accent); border-style: solid; font-weight: 600; }
+
+/* First screen: the impact line and what it is built on */
+.problem .impact { margin-top: 6px; }
+.muse { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 6px; margin: 6px 0 2px; font-size: 0.8rem; }
+.muse li:not(.muse-head) { padding: 1px 8px; border: 1px solid var(--border); border-radius: 999px; background: var(--surface); }
+.muse-head { font-weight: 600; }

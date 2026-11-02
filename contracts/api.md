@@ -36,7 +36,7 @@ Voice (`POST /api/voice`):
 | GET | `/api/dashboard/orders?company=` | `{delivery_date, orders: [... , in_draft]}` |
 | GET | `/api/dashboard/fleet?company=` | `{delivery_date, vehicles: [... , free, reason]}` |
 | GET | `/api/dashboard/drafts?company=` | This visitor's drafts: `[{draft_id, status, vehicle_id, orders, load, warnings, stops, why: {run_id, lessons, lessons_in_prompt, agents, tools, checks}, source}]` |
-| GET | `/api/dashboard/drafts?company=&run_id=` | The drafts a saved run made (a replay creates nothing) |
+| GET | `/api/dashboard/drafts?company=&run_id=` | The drafts a saved run made (a replay creates nothing): `source: "run"`. A draft this visitor's own live run made comes back with its real `status`, its `decisions` and `source: "live"`, so the UI can offer Approve and Reject on it |
 | POST | `/api/dashboard/drafts/{id}/cancel?company=` | Cancels a draft and releases its vehicle |
 | POST | `/api/dashboard/drafts/{id}/decide?company=` | `{decision: approve \| reject, notes, revise: true, model}`. Approve re-checks the plan first; approved is not dispatched. Reject needs notes, frees the vehicle and, with `revise`, sends the notes back to the agent: `{draft_id, status, revise_run_id, reason?}` |
 | GET | `/api/handoffs?company=` | Runs waiting for this person: `[{run_id, request, handoff: {rule: question \| tool_refused \| reply_refused, question, agent, drafts, tools_used}, saved_at}]` |
