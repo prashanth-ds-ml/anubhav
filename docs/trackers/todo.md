@@ -155,6 +155,14 @@ Owner and Claude in parallel. The single Planner stays the baseline and fallback
 | B-S7 | Build sprint 7: hardening. Axe on every main tab in light and dark; no sideways scroll at 1024 and 390 (fixed: Runs swimlane's screen-reader text escaped its scroll box; Runs and Proof grids at narrow widths; header at 1024); screenshot pass at 1440, 1280, 1024, 390; README "Try it" for six scenarios and the main tabs, new `web/readme-assets/` from `web/scripts/readme-shots.mjs`; storyboard, demo plan and UX plan follow the new screens; dead CSS removed; bundle 411 kB JS (121 kB gzip) | ✅ built Nov 2; Docker check 7.6 passed (no keys, user anubhav uid 1000, 156 MB, every tab, S1 32 ft then 22 ft, Runs S2 work, 17 custody rows, no page errors); committed, the build is done |
 | H2 | Real voice recording with the key set (tests mock it); 60-second test with an outsider; push to a Space (needs the owner's go-ahead) | ⬜ |
 
+## After the build (owner's order, [[Build_Plan_Demo_v1]] §4)
+| # | Task | Status |
+|---|---|---|
+| A1 | EXP-014 overnight: re-freeze with the model change recorded (agents on Muse Spark 1.3, Meta API), cap $40, commit the freeze before the first call; in the morning apply its fixed rules; Agents and Proof fill from `/api/proof/curve` | ⬜ needs the owner's go |
+| A2 | Deploy: the owner's Hugging Face Space name and the `meta_api` secret; push the Docker image; incognito check (health, first screen, S1–S3, live meter with a real key) | ⬜ needs the Space name |
+| A3 | Video from [[demo_video]] (S1, S2, S6 via `/?tour=`, Proof, 15 s of S4 live) | ⬜ owner |
+| A4 | Submission checklist, dry run, submit (Nov 4 evening IST) | ⬜ |
+
 ## Cut
 - ✂️ Hospital and call-centre demos, React frontend, government-docs RAG (D-039; [[ideas_parking_lot]])
 - ✂️ Judge seed challenge UI, double-booking UI (Oct 30 optional list)

@@ -1,6 +1,6 @@
 ---
 tags: [plan, build, sprints, react, api]
-status: PROPOSED (Nov 2, evening). Starts on the owner's go-ahead.
+status: DONE (Nov 2). All seven sprints built, each approved by the owner before its commit: 1 `d57eb9c`, 2 `0066271`, 3 `bf149c6`, 4 `c94e443`, 5 `81c4d6a`, 6 `0ba2d39`, 7 `2393361`. Local Docker checks passed at sprints 4 and 7. Next: section 4.
 date: 2026-11-02
 ---
 # Build plan: the judge-ready demo

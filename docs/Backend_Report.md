@@ -12,6 +12,8 @@ Related: `contracts/api.md`, `contracts/events.schema.json`, [[demo_plan]], [[be
 - Flows that need a live model (sign-off, reject and revise, ask and resume) were not repeated for this report. Their behaviour comes from the code, the 537 tests and the $0.39 Spark 1.3 test in `artifacts/smoke_supervised.json`.
 - Where `contracts/api.md` and the code differ, this report follows the code and lists the difference in section 14.
 
+> **Since this report (build sprints, Nov 2):** new routes `GET /api/learning/lessons/{id}/evidence`, `GET /api/proof/registry` and `GET /api/runs/{id}/steps` (events, work per agent, mistake → fix pairs); `/api/proof` adds EXP-004, EXP-008 and EXP-011R per-company totals; a live run's drafts can be approved or rejected from the chat. The contract is `contracts/api.md`.
+
 ## Contents
 1. [Summary](#1-summary)
 2. [Architecture](#2-architecture)

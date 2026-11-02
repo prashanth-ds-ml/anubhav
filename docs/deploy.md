@@ -33,7 +33,7 @@ Live mode and voice need keys. Without them, the app says so and stays on replay
 After new real runs locally: `uv run python scripts/export_demo.py`, then check the bundle for secrets and commit `demo/`.
 
 ## FastAPI on a Hugging Face Docker Space (D-044)
-The Streamlit link stays the hosted demo until the web app is on a Space. The API image, with the web app inside it, is built and checked locally.
+The Streamlit link stays the hosted demo until the web app is on a Space. The API image, with the web app inside it, is built and checked locally: the last check (Nov 2, commit `2393361`) ran it with no keys as user `anubhav` and passed health, session, `/api/proof`, the registry, the lesson evidence and run-steps routes, every main tab and S1 end to end.
 
 1. Check it locally: `docker build -t anubhav-api .` then `docker run --rm -p 7860:7860 anubhav-api`, and open http://localhost:7860/ (the web app) and http://localhost:7860/docs. The build has a Node stage that runs `npm ci` and `npm run build` in `web/` and copies `web/dist` into the image, so the API serves the web app at `/`. The first build took about 7 minutes and the image is about 2.2 GB. Checked on Nov 1 with no keys: `/api/health` answers after about 30 s, `/api/session` shows replay mode with live and voice off, the page and its script load, a saved request plays, and the app runs as a non-root user.
 2. Create a new Space with the **Docker** SDK and **Public** visibility. Its README needs this front matter (don't add it to this repo's README, which GitHub shows):

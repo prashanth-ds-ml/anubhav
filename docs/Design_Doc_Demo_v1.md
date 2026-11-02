@@ -1,6 +1,6 @@
 ---
 tags: [design, ux, react, api, audit]
-status: APPROVED by the owner (Nov 2, evening; D-052). Build plan: [[Build_Plan_Demo_v1]].
+status: APPROVED by the owner (Nov 2, evening; D-052) and BUILT the same day (sprints 1–7, [[Build_Plan_Demo_v1]]). Departures from the mocks are noted in [[todo]] (B-S rows).
 date: 2026-11-02
 ---
 # Design doc: the judge-ready demo (React app and API)
