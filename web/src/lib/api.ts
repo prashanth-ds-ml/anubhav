@@ -45,7 +45,15 @@ const q = (company: string, extra: Record<string, string | boolean | undefined> 
 
 export interface RunRow { run_id: string; saved_at: string; label: string; company: string; model: string; request: string; mode: string; agents: string[]; tool_calls: number; drafts: string[]; stop: string; cost_usd: number; issues: string }
 
+export interface TripRow { date: string; hour: number; weekday: number; vehicle_id: string; vehicle_class: string; length_ft: number | null; status: string; status_seen: string | null; wait_min: number }
+export type Evidence =
+  | { kind: "trips"; lesson_kind: string; site: { site_id: string; name: string; town: string }; limit: Record<string, number>; window: { from: string | null; to: string }; rows: TripRow[] }
+  | { kind: "closure"; lesson_kind: string; place: string; what?: string; window: { from: string | null; to: string | null }; today: string; delays: number; weeks: { week: string; delays: number }[]; notes: { ts: string; lang: string; source: string; text: string }[] }
+  | { kind: "imported"; lesson_kind: string; source: string; note: string }
+  | { kind: "none"; lesson_kind: string };
+
 export const api = {
+  evidence: (c: string, id: string) => read<Evidence | null>(`/api/learning/lessons/${encodeURIComponent(id)}/evidence?${q(c)}`, null),
   runs: (c: string) => read<RunRow[]>(`/api/logs/runs?${q(c)}`, []),
   session: () => read<Session | null>("/api/session", null),
   companies: () => read<CompanyRow[]>("/api/companies", []),
@@ -72,7 +80,7 @@ export const api = {
 export interface AgentRow { agent: string; name: string; purpose: string; status: string; model: string; version: string; versions_tried: number; knowledge_items: number; }
 export interface Lesson {
   lesson_id: string; claim: string; what: string; state: string; effect: string; source: string; created: string; reviewer: string;
-  kind?: string; params?: Record<string, any>;
+  kind?: string; params?: Record<string, any>; valid_from?: string | null; valid_to?: string | null;
   gate: { verdict: string; reason: string; support: number; counter: number; strength: string; enforceable?: boolean };
   miner: { evidence?: string[]; counter_evidence?: string[]; confidence?: string; model?: string } | null;
   events: { ts: string; actor: string; action: string; from_state: string | null; to_state: string; note: string }[];

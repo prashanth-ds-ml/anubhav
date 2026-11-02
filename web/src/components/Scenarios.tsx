@@ -32,6 +32,8 @@ interface Step {
 }
 export interface Scenario {
   id: string; title: string; kind: "recorded" | "live"; minutes: number; proves: string; company: string;
+  /** The card's badge, when "Recorded · watch it" isn't quite right (S6 explores recorded data, not a recorded run). */
+  badge?: string;
   steps: Step[]; evidence: { label: string; href: string }[]; honest?: string;
   /** A saved request whose before and after the guide shows once every step is done. */
   finale?: string;
@@ -82,6 +84,20 @@ export const SCENARIOS: Scenario[] = [
     finale: JANGAON_TEXT,
   },
   {
+    id: "S6", title: "Roads change: the Kazipet bridge", kind: "recorded", badge: "Recorded data · explore it", minutes: 1, company: "T01",
+    proves: "Route knowledge comes from drivers, can be shared with the region, and ends when the road reopens.",
+    steps: [
+      { label: "Open the road story", caption: "A bridge at Kazipet closed for two months. No system recorded it; the drivers did, in their own words.", act: (a) => a.openTab("learning", "lesson:closure") },
+      { label: "Read what the drivers wrote", caption: "Notes in Telugu, Roman Telugu and English, on the trips the closure delayed, linked by trip and stop in the records.", act: (a) => a.openTab("learning", "lesson:closure/notes") },
+      { label: "See the delays start and stop", caption: "Closure delays by week: every one inside the closure, none after the road reopened.", act: (a) => a.openTab("learning", "lesson:closure/chart") },
+      { label: "See why it is no longer used", caption: "It was learned after the road reopened, so it was stored as expired and is not given to the agent. Road lessons can travel in a regional pack to other companies.", act: (a) => a.openTab("learning", "lesson:closure/life") },
+    ],
+    evidence: [
+      { label: "How the gate checks a closure (learning/gate.py)", href: `${REPO}src/anubhav/learning/gate.py` },
+      { label: "Which lesson kinds can be shared (learning/pack.py)", href: `${REPO}src/anubhav/learning/pack.py` },
+    ],
+  },
+  {
     id: "S4", title: "Your lessons, your call", kind: "live", minutes: 2, company: "T01",
     proves: "The lesson causes the change: you switch it off and on, and the plan follows.",
     honest: "Live on Muse Spark 1.3. In our own test each step behaved as described once; a model can answer differently, so you may see something else.",
@@ -113,8 +129,8 @@ export function ScenarioCards({ onStart }: { onStart: (id: string) => void }) {
   const budget = liveBudget(session);
   return (
     <section className="scenarios" aria-labelledby="sc-title">
-      <h2 id="sc-title">Try it: five scenarios</h2>
-      <p className="small muted">Three replay real recorded runs and cost nothing. Two run the model live, so you can test what we claim.</p>
+      <h2 id="sc-title">Try it: six scenarios</h2>
+      <p className="small muted">Four replay real recordings and cost nothing. Two run the model live, so you can test what we claim.</p>
       <ul className="sc-grid">
         {SCENARIOS.map((s) => {
           const off = s.kind === "live" && !live.ok;
@@ -122,7 +138,7 @@ export function ScenarioCards({ onStart }: { onStart: (id: string) => void }) {
             <li key={s.id} className={`sc-card is-${s.kind}`}>
               <article aria-label={`${s.id} ${s.title}`}>
                 <p className={`sc-badge is-${s.kind}`}>
-                  {s.kind === "recorded" ? <><Film size={14} aria-hidden /> Recorded · watch it</> : <><Play size={14} aria-hidden /> Live · you run it</>}
+                  {s.kind === "recorded" ? <><Film size={14} aria-hidden /> {s.badge ?? "Recorded · watch it"}</> : <><Play size={14} aria-hidden /> Live · you run it</>}
                 </p>
                 <h3><span className="sc-id">{s.id}</span> {s.title}</h3>
                 <p>{s.proves}</p>

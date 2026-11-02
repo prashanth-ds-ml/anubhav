@@ -146,7 +146,7 @@ export default function App() {
           <main className="page">
             <section role="tabpanel" aria-labelledby={`main-tab-${route.main}`}>
             <h2 className="sr-only">{MAIN_LABEL[route.main]}</h2>
-            {route.main === "learning" && <Learning />}
+            {route.main === "learning" && <Learning item={route.item} />}
             {route.main === "tools" && <NewTools onAsk={(label) => { go("desk"); setAsk((a) => ({ label, n: a.n + 1 })); }} />}
             {route.main === "agents" && <AgentCards />}
             {route.main === "runs" && <RunsList />}

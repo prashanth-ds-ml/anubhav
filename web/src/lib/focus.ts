@@ -5,6 +5,10 @@ import { useEffect, useRef } from "react";
 let pending: string | null = null;
 const EVENT = "anubhav:focus";
 
+/** The target a step asked for that no element has answered yet (a page can use it to pick what to show). */
+export const peekFocus = () => pending;
+export const FOCUS_EVENT = "anubhav:focus";
+
 export function focusOn(target: string) {
   pending = target;
   window.dispatchEvent(new CustomEvent(EVENT, { detail: target }));

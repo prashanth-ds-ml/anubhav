@@ -7,7 +7,9 @@ const ADVICE = "L-T01-001"; // advice only: cannot become a rule
 const RULE = "L-T01-002"; // an enforceable site rule
 const EXPIRED = "L-T01-011";
 
-const card = (page: Page, id: string) => page.locator("li.panel", { hasText: id });
+// Lessons are a list beside one lesson's detail: pick a lesson, then act on it in the detail.
+const select = (page: Page, id: string) => page.getByRole("button", { name: new RegExp(`^${id} `) }).click();
+const card = (page: Page, id: string) => page.getByRole("article", { name: `Lesson ${id}` });
 const heading = (page: Page, text: string | RegExp) => page.getByRole("heading", { name: text });
 
 async function openLessons(page: Page) {
@@ -20,6 +22,7 @@ const undo = (page: Page, id: string) => page.getByRole("button", { name: new Re
 test("a person can undo an approval, which sends the lesson back to waiting, and approve it again", async ({ page }) => {
   await openLessons(page);
   await expect(page.getByText(/saved runs stay as they were recorded/)).toBeVisible();
+  await select(page, ADVICE);
   await undo(page, ADVICE).click();
   await expect(heading(page, "Waiting for a person (1)")).toBeVisible();
   await expect(heading(page, "Active (9)")).toBeVisible();
@@ -35,6 +38,7 @@ test("a person can undo an approval, which sends the lesson back to waiting, and
 
 test("rejecting needs a reason, and the lesson moves to rejected", async ({ page }) => {
   await openLessons(page);
+  await select(page, "L-T01-005");
   await undo(page, "L-T01-005").click();
   await page.getByRole("button", { name: "Reject…, L-T01-005" }).click();
   const send = page.getByRole("button", { name: "Reject it" });
@@ -48,10 +52,12 @@ test("rejecting needs a reason, and the lesson moves to rejected", async ({ page
 
 test("only an enforceable lesson can become a rule, and a rule needs a note of what was verified", async ({ page }) => {
   await openLessons(page);
+  await select(page, ADVICE);
   await undo(page, ADVICE).click();
   await expect(page.getByRole("button", { name: `Approve as advice, ${ADVICE}` })).toBeVisible();
   await expect(page.getByRole("button", { name: `Approve as a rule…, ${ADVICE}` })).toHaveCount(0); // advice-only kind
 
+  await select(page, RULE);
   await undo(page, RULE).click();
   await page.getByRole("button", { name: `Approve as a rule…, ${RULE}` }).click();
   const send = page.getByRole("button", { name: "Approve as a rule" });
@@ -63,6 +69,7 @@ test("only an enforceable lesson can become a rule, and a rule needs a note of w
 
 test("retiring needs a reason, and Undo brings the lesson back", async ({ page }) => {
   await openLessons(page);
+  await select(page, ADVICE);
   await page.getByRole("button", { name: `Retire…, ${ADVICE}` }).click();
   await expect(page.getByRole("button", { name: "Retire it" })).toBeDisabled();
   await page.getByLabel("Why retire it?").fill("No longer true.");
@@ -77,12 +84,14 @@ test("retiring needs a reason, and Undo brings the lesson back", async ({ page }
 
 test("a lesson that expired on arrival has nothing to undo, so it offers no buttons", async ({ page }) => {
   await openLessons(page);
+  await select(page, EXPIRED);
   await expect(card(page, EXPIRED)).toContainText("Expired");
-  await expect(card(page, EXPIRED).getByRole("button")).toHaveCount(0);
+  await expect(card(page, EXPIRED).getByRole("button", { name: /Undo|Retire|Approve|Reject/ })).toHaveCount(0);
 });
 
 test("cancel closes the reason box and changes nothing", async ({ page }) => {
   await openLessons(page);
+  await select(page, ADVICE);
   await page.getByRole("button", { name: `Retire…, ${ADVICE}` }).click();
   await page.getByLabel("Why retire it?").fill("changed my mind");
   await page.getByRole("button", { name: "Cancel" }).click();
@@ -94,6 +103,7 @@ test("when the server refuses, the person is told why and the lesson is unchange
   await page.route("**/api/learning/lessons/*/decide*", (r) =>
     r.fulfill({ status: 409, json: { error: { code: "CONFLICT", message: "That lesson cannot be changed right now." } } }));
   await openLessons(page);
+  await select(page, ADVICE);
   await undo(page, ADVICE).click();
   await expect(card(page, ADVICE).getByRole("alert")).toContainText("That lesson cannot be changed right now.");
   await expect(heading(page, "Active (10)")).toBeVisible();
@@ -101,6 +111,7 @@ test("when the server refuses, the person is told why and the lesson is unchange
 
 test("the lesson controls and the reason box pass the accessibility check", async ({ page }) => {
   await openLessons(page);
+  await select(page, ADVICE);
   await page.getByRole("button", { name: `Retire…, ${ADVICE}` }).click();
   await expect(page.getByLabel("Why retire it?")).toBeVisible();
   const axe = await new AxeBuilder({ page }).analyze();

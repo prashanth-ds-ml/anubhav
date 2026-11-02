@@ -1,11 +1,11 @@
 import { test, expect, type Page } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 
-// The five scenarios a judge can try. Recorded ones replay saved runs; live ones are mocked here (no keys, no credits).
+// The six scenarios a judge can try. Recorded ones replay saved runs; live ones are mocked here (no keys, no credits).
 
 async function home(page: Page) {
   await page.goto("/");
-  await expect(page.getByRole("heading", { name: "Try it: five scenarios" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Try it: six scenarios" })).toBeVisible();
 }
 
 /** Make the real session say Muse Spark 1.3 can run, without any key. */
@@ -17,20 +17,23 @@ async function liveOn(page: Page) {
   });
 }
 
-test("five scenarios, each saying whether it is recorded or live; without keys the live ones say why and stay closed", async ({ page }) => {
+test("six scenarios, each saying whether it is recorded or live; without keys the live ones say why and stay closed", async ({ page }) => {
   await home(page);
   const cards = page.locator(".sc-card article");
-  await expect(cards).toHaveCount(5);
+  await expect(cards).toHaveCount(6);
   for (const id of ["S1", "S2", "S3"]) {
     const c = page.getByRole("article", { name: new RegExp(`^${id} `) });
     await expect(c).toContainText("Recorded · watch it");
     await expect(c).toContainText("free");
     await expect(c.getByRole("button", { name: `Start ${id}` })).toBeEnabled();
   }
+  const s6 = page.getByRole("article", { name: /^S6 / });
+  await expect(s6).toContainText("Recorded data · explore it");
+  await expect(s6).toContainText("free");
   for (const id of ["S4", "S5"]) {
     const c = page.getByRole("article", { name: new RegExp(`^${id} `) });
     await expect(c).toContainText("Live · you run it");
-    await expect(c).toContainText(/Live mode is off here/);
+    await expect(c).toContainText(/Live mode is off on this demo/);
     await expect(c.getByRole("button", { name: `Start ${id}` })).toBeDisabled();
   }
   const axe = await new AxeBuilder({ page }).include(".scenarios").analyze();

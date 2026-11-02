@@ -62,7 +62,8 @@ test("Learning shows the same request with and without lessons: 32 ft against 22
   await expect(sides.nth(0)).toContainText("Vehicle V11: T32S, 32 ft");
   await expect(sides.nth(1)).toContainText("Vehicle V08: T22, 22 ft");
   await expect(page.getByText(/Both are recorded runs of Muse Spark Open/)).toBeVisible();
-  await expect(page.getByRole("tabpanel")).toContainText("Active rule: code enforces it");
+  await page.goto("/#learning/L-T01-002"); // the gate lesson is the enforced rule
+  await expect(page.getByRole("article", { name: "Lesson L-T01-002" })).toContainText("Active rule: code enforces it");
 });
 
 test("tabs have addresses: a link opens the right tab, and an unknown one falls back to Orders", async ({ page }) => {

@@ -1,12 +1,14 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { api, type CompareSide, type Lesson } from "../lib/api";
 import { LessonActions } from "./LessonActions";
 import { useApi } from "../lib/useApi";
 import { useSettings } from "../lib/ctx";
 import { AgentTag } from "./Badges";
-import { Reply } from "../lib/text";
-import { useFocusTarget } from "../lib/focus";
-import { shortTime } from "../lib/text";
+import { Reply, shortTime } from "../lib/text";
+import { FOCUS_EVENT, peekFocus, useFocusTarget } from "../lib/focus";
+import { go } from "../lib/route";
+import { ClosureStory, TripStrip } from "./EvidenceChart";
+import { LifeCycle } from "./LifeCycle";
 
 const STATE: Record<string, { text: string; cls: string }> = {
   ACTIVE_POLICY: { text: "Active rule: code enforces it", cls: "ok" },
@@ -19,6 +21,10 @@ const STATE: Record<string, { text: string; cls: string }> = {
   EXPIRED: { text: "Expired", cls: "err" },
 };
 const WAITING = new Set(["CANDIDATE", "NEEDS_EVIDENCE", "CHALLENGED"]);
+const KIND: Record<string, string> = {
+  site_access: "gate limit", night_only: "night only", receiving_hours: "receiving hours", weekly_off: "day off", alias: "nickname",
+  real_capacity: "real capacity", vendor_reliability: "vendor", closure: "road", time_window: "time window", moved_site: "moved site",
+};
 
 function Side({ title, s, vehicle }: { title: string; s: CompareSide | null; vehicle: (id: string) => string }) {
   if (!s) return <article className="panel"><h4>{title}</h4><p className="empty">No saved run.</p></article>;
@@ -33,43 +39,106 @@ function Side({ title, s, vehicle }: { title: string; s: CompareSide | null; veh
   );
 }
 
-function LessonItem({ x, target, onChanged }: { x: Lesson; target: string | null; onChanged: () => void }) {
-  const ref = useFocusTarget<HTMLLIElement>(target, true);
+/** A scenario step asks for "lesson:<kind>" or "lesson:<kind>/<part>": pick the first lesson of that kind. */
+function kindAsked(): string | null {
+  const t = peekFocus();
+  return t?.startsWith("lesson:") ? t.slice(7).split("/")[0] : null;
+}
+
+function Detail({ x, onChanged }: { x: Lesson; onChanged: () => void }) {
+  const { company } = useSettings();
+  const target = x.kind ? `lesson:${x.kind}` : null;
+  const ref = useFocusTarget<HTMLElement>(target, true);
+  const ev = useApi(() => api.evidence(company, x.lesson_id), [company, x.lesson_id]);
   const st = STATE[x.state] ?? { text: x.state, cls: "" };
+  const e = ev.data;
   return (
-    <li ref={ref} className="panel">
-      <div className="card-head"><span className="mono">{x.lesson_id}</span><span className={`pill ${st.cls}`}>{st.text}</span></div>
-      <p>{x.what || x.claim}</p>
+    <article ref={ref} className="lesson-detail" aria-label={`Lesson ${x.lesson_id}`}>
+      <div className="card-head">
+        <span className="mono">{x.lesson_id}</span>
+        <span className={`pill ${st.cls}`}>{st.text}</span>
+        {x.kind && <span className="pill">{KIND[x.kind] ?? x.kind}</span>}
+      </div>
+      <h3 className="lesson-title">{x.what || x.claim}</h3>
       <p className="small muted">Evidence check: {x.gate.reason}</p>
-      {x.miner?.evidence && x.miner.evidence.length > 0 && (
-        <details><summary>Evidence the miner cited</summary><ul>{x.miner.evidence.map((e) => <li key={e}>{e}</li>)}</ul></details>
-      )}
       <LessonActions lesson={x} onChanged={onChanged} />
-    </li>
+      {ev.loading ? <div className="skeleton" aria-busy="true" /> : e?.kind === "trips" ? <TripStrip e={e} target={target && `${target}/chart`} />
+        : e?.kind === "closure" ? <ClosureStory e={e} target={target} />
+        : e?.kind === "imported" ? <p className="note-box small">{e.note}</p>
+        : x.miner?.evidence?.length ? (
+          <details><summary>Evidence the miner cited</summary><ul>{x.miner.evidence.map((m) => <li key={m}>{m}</li>)}</ul></details>
+        ) : null}
+      {e && e.kind !== "none" && e.kind !== "imported" && (
+        <p className="small"><a href={`/api/learning/lessons/${encodeURIComponent(x.lesson_id)}/evidence?company=${encodeURIComponent(company)}`} target="_blank" rel="noreferrer">This evidence as data (JSON)</a></p>
+      )}
+      <LifeCycle lesson={x} target={target && `${target}/life`} />
+    </article>
   );
 }
 
-export function Learning() {
+export function Learning({ item }: { item?: string | null }) {
   const { company, requests, dataVersion } = useSettings();
   const [version, setVersion] = useState(0); // a decision on a lesson reloads the lessons and the timeline
   const t = useApi(() => api.timeline(company), [company, version, dataVersion], { keep: true });
   const l = useApi(() => api.lessons(company), [company, version, dataVersion], { keep: true });
-  const cmpRef = useFocusTarget<HTMLElement>("compare", true);
   const fleet = useApi(() => api.fleet(company), [company]);
+  const cmpRef = useFocusTarget<HTMLElement>("compare", true);
   const request = requests.find((r) => r.label === "English")?.request;
   const cmp = useApi(() => (request ? api.compare(company, request) : Promise.resolve(null)), [company, request]);
+  const [asked, setAsked] = useState<string | null>(kindAsked);
+  useEffect(() => {
+    const on = () => { const k = kindAsked(); if (k) setAsked(k); };
+    window.addEventListener(FOCUS_EVENT, on);
+    return () => window.removeEventListener(FOCUS_EVENT, on);
+  }, []);
   const vehicle = (id: string) => {
     const v = fleet.data?.vehicles.find((x) => x.vehicle_id === id);
     return v ? `${v.class}, ${v.length_ft} ft` : "";
   };
   const lessons = l.data ?? [];
+  // A step's request wins over the address once; after that the address (a click in the list) decides.
+  const byKind = asked ? lessons.find((x) => x.kind === asked) : undefined;
+  const selected = byKind ?? lessons.find((x) => x.lesson_id === item) ?? lessons.find((x) => x.state.startsWith("ACTIVE")) ?? lessons[0];
+  useEffect(() => { if (byKind) { setAsked(null); go(`learning/${byKind.lesson_id}`); } }, [byKind?.lesson_id]); // eslint-disable-line react-hooks/exhaustive-deps
   const groups: [string, typeof lessons][] = [
     ["Waiting for a person", lessons.filter((x) => WAITING.has(x.state))],
     ["Active", lessons.filter((x) => x.state.startsWith("ACTIVE"))],
     ["Rejected or retired", lessons.filter((x) => !WAITING.has(x.state) && !x.state.startsWith("ACTIVE"))],
   ];
   return (
-    <div>
+    <div className="learning">
+      <h3>What it has learned</h3>
+      <p className="small muted">The Lesson Miner proposes, code checks the evidence, and a person approves each lesson before it changes any plan.
+        You can undo an approval, retire a lesson or approve it again. That changes your own workspace and what live runs use; the saved runs stay as they were recorded.</p>
+      {l.loading ? <div className="skeleton" aria-busy="true" /> : lessons.length === 0 ? <p className="empty">Nothing learned yet for this company.</p> : (
+        <div className="learning-panes">
+          <nav className="lesson-list" aria-label="Lessons">
+            {groups.map(([title, items]) => items.length > 0 && (
+              <section key={title} aria-label={title}>
+                <h4>{title} ({items.length})</h4>
+                <ul className="plain">
+                  {items.map((x) => {
+                    const st = STATE[x.state] ?? { text: x.state, cls: "" };
+                    const on = x.lesson_id === selected?.lesson_id;
+                    return (
+                      <li key={x.lesson_id}>
+                        <button type="button" className={`lesson-row ${on ? "on" : ""}`} aria-current={on ? "true" : undefined}
+                          title={st.text} onClick={() => go(`learning/${x.lesson_id}`)}>
+                          <span className="mono small">{x.lesson_id}</span><span className="sr-only">: </span>
+                          <span className="lesson-row-text">{x.what || x.claim}</span>
+                          <span className={`pill ${st.cls}`}>{KIND[x.kind ?? ""] ?? st.text}</span>
+                        </button>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </section>
+            ))}
+          </nav>
+          {selected && <Detail key={selected.lesson_id} x={selected} onChanged={() => setVersion((v) => v + 1)} />}
+        </div>
+      )}
+
       <section ref={cmpRef} className="panel" aria-labelledby="ba-title">
         <h3 id="ba-title">Same request, with and without what it learned</h3>
         {cmp.loading ? <div className="skeleton" aria-busy="true" /> : !cmp.data?.cold || !cmp.data.with_lessons ? (
@@ -84,21 +153,6 @@ export function Learning() {
           </>
         )}
       </section>
-
-      <h3>What it has learned</h3>
-      <p className="small muted">A person approves each lesson before it changes any plan. Each one shows the evidence it was proposed from.</p>
-      <p className="small muted">You can undo an approval, retire a lesson or approve it again. That changes your own workspace and what live runs use; the saved runs stay as they were recorded.</p>
-      {l.loading ? <div className="skeleton" aria-busy="true" /> : lessons.length === 0 ? <p className="empty">Nothing learned yet for this company.</p> : groups.map(([title, items]) => items.length > 0 && (
-        <section key={title} aria-label={title}>
-          <h4>{title} ({items.length})</h4>
-          <ul className="plain lessons">
-            {items.map((x) => (
-              <LessonItem key={x.lesson_id} x={x} onChanged={() => setVersion((v) => v + 1)}
-                target={x.kind && lessons.find((y) => y.kind === x.kind) === x ? `lesson:${x.kind}` : null} />
-            ))}
-          </ul>
-        </section>
-      ))}
 
       <details className="timeline-box">
         <summary><h3>Learning timeline ({t.data?.length ?? "…"})</h3></summary>
