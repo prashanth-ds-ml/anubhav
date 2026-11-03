@@ -80,7 +80,7 @@ def test_the_route_list_above_is_complete(env):
              "/api/runs/{run_id}", "/api/runs/{run_id}/feedback", "/api/learning/lessons/{lesson_id}/decide", "/api/tools/candidates/{key}/check",
              "/api/tools/{tool_id}/decide", "/api/tools/{tool_id}/retire", "/api/packs/publish", "/api/packs/revoke", "/api/review/run",
              "/api/dashboard/drafts/{draft_id}/decide", "/api/handoffs", "/api/runs/{run_id}/resume", "/api/compare", "/api/agents/{agent_id}", "/api/harness/{version_id}/probe", "/api/harness/{version_id}/decide", "/api/logs/runs/{run_id}", "/api/voice", "/api/learning/lessons/{lesson_id}/evidence",
-             "/api/runs/{run_id}/steps", "/api/fresh/status", "/api/fresh/start", "/api/fresh/restore", "/api/fresh/records", "/api/fresh/learn"}
+             "/api/runs/{run_id}/steps", "/api/fresh/status", "/api/fresh/start", "/api/fresh/restore", "/api/fresh/set-aside", "/api/fresh/records", "/api/fresh/learn"}
     normal = {p.replace("/analyst", "/{agent_id}").replace("/h-001/", "/{version_id}/") for p in tested}
     assert paths <= normal | other, paths - normal - other
 
@@ -646,3 +646,24 @@ def test_on_a_public_host_rejecting_never_starts_a_live_revise(env, monkeypatch)
     out = c.post(f"/api/dashboard/drafts/{drafts[0]['draft_id']}/decide", json={"decision": "reject", "notes": "too long for the gate", "revise": True}).json()
     assert out["status"] == "rejected" and out["revise_run_id"] is None and "local run" in out["reason"]
     assert c.get("/api/session").json()["live_runs_used"] == used          # nothing spent
+
+
+def test_asking_again_sets_the_first_draft_aside_so_the_order_is_free(env, monkeypatch):
+    """S0's "Ask again": the first live draft holds the order, so it is cancelled first (kept in the audit)."""
+    c = client(env)
+    c.get("/api/session")
+    orders = c.get("/api/dashboard/orders").json()["orders"]
+    free = sorted((v for v in c.get("/api/dashboard/fleet").json()["vehicles"] if v["free"]), key=lambda v: -v["payload_kg"])
+    args = next(({"order_ids": [o["order_id"]], "vehicle_id": v["vehicle_id"]}) for o in orders for v in free if o["kg"] <= v["payload_kg"])
+    live_env(monkeypatch, [mock_tool_call("create_dispatch_draft", args), mock_final("draft")])
+    run = c.post("/api/chat", json={"message": "plan it", "mode": "live", "use_lessons": False}).json()
+    list(stream.follow(run["run_id"]))
+    drafts = c.get("/api/dashboard/drafts").json()["drafts"]
+    if not drafts:
+        pytest.skip("validator refused the picked pair")
+    out = c.post("/api/fresh/set-aside").json()
+    assert out["cancelled"] == [drafts[0]["draft_id"]]
+    assert c.post("/api/fresh/set-aside").json()["cancelled"] == []          # nothing left open
+    other = client(env)
+    other.get("/api/session")
+    assert other.post("/api/fresh/set-aside").json()["cancelled"] == []     # another visitor's drafts are theirs

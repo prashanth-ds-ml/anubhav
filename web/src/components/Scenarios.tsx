@@ -31,6 +31,8 @@ export interface ScenarioActions {
   freshStart: () => Promise<string>;
   /** True once this visitor has learned from the records for this company. */
   mined: () => Promise<boolean>;
+  /** Cancel this visitor's open drafts (kept in the audit), so the same order can be planned again. Returns their ids. */
+  setAside: () => Promise<string[]>;
 }
 
 /** The two loop steps that happen outside a run; a scenario lights them when it reaches them. */
@@ -72,7 +74,8 @@ export const SCENARIOS: Scenario[] = [
         act: (a) => a.openTab("learning", "learn"), until: (a) => a.mined(), auto: true },
       { label: "Approve the gate rule", caption: "Find Lakshmi Agencies, Jangaon: no truck longer than 22 ft gets in. Look at its evidence, then approve it as a rule (code will enforce it) and say what you checked.",
         act: (a) => a.openTab("learning", "lesson:site_access"), until: (a) => a.gateActive(), auto: true, loop: "Approve" },
-      { label: "Ask again", caption: "The same request. Now it should pick a 22 ft truck and name the rule it followed.", live: true, act: (a) => a.runLive(JANGAON_TEXT), loop: "Improve" },
+      { label: "Ask again", caption: "The same request. The first draft is cancelled first, so the order is free again. Now it should pick a 22 ft truck and name the rule it followed.", live: true,
+        act: async (a) => { await a.setAside(); await a.runLive(JANGAON_TEXT); }, loop: "Improve" },
     ],
     finaleLine: "Same model, same question. The only difference is one rule it learned from the company's records just now, checked by code and approved by you.",
     evidence: [

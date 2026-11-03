@@ -400,6 +400,16 @@ def fresh_restore(company: str = Cid, ws: Workspace = Ws):
     return fresh.restore(ws, company)
 
 
+@api.post("/fresh/set-aside")
+def fresh_set_aside(company: str = Cid, ws: Workspace = Ws):
+    """Cancel this visitor's open drafts, so asking the same question again starts with the orders free. The
+    cancellations go through the same tool as the Cancel button and are kept in the audit."""
+    b, _ = ws.broker(company, False)
+    open_ = [d["draft_id"] for d in ws.company(company).runtime.drafts() if d["status"] == "draft"]
+    done = [i for i in open_ if b.call("cancel_dispatch_draft", {"draft_id": i})["ok"]]
+    return {"cancelled": done}
+
+
 @api.get("/fresh/records")
 def fresh_records(company: str = Cid, ws: Workspace = Ws):
     """Stage 1 of learning, no model: what the miner reads, counted from the records."""

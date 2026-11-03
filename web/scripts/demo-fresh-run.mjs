@@ -41,7 +41,7 @@ await shot("2-4-plan-card");
 await g.getByRole("button", { name: /Learn from the records/ }).click();
 const panel = p.getByRole("region", { name: "Learn from the records" });
 await panel.getByRole("button", { name: /Learn from the records/ }).click();
-await panel.getByRole("list", { name: "What it proposed, with the gate's verdict" }).waitFor({ timeout: 240_000 });
+await panel.getByRole("list", { name: "What it proposed, with the gate's verdict" }).waitFor({ timeout: 360_000 });
 console.log(at(), "learned:", (await panel.getByRole("list", { name: "Learning, step by step" }).innerText()).replace(/\s+/g, " "));
 for (const li of await panel.getByRole("listitem").filter({ has: p.locator(".learned-what") }).all()) console.log("   -", (await li.innerText()).replace(/\s+/g, " "));
 await panel.scrollIntoViewIfNeeded();

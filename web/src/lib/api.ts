@@ -86,6 +86,7 @@ export const api = {
   /** Start from nothing: this visitor's lessons, tools and the agents' versions. */
   freshStatus: (c: string) => read<FreshStatus | null>(`/api/fresh/status?${q(c)}`, null),
   freshStart: (c: string) => post<FreshStatus>(`/api/fresh/start?${q(c)}`, {}),
+  freshSetAside: (c: string) => post<{ cancelled: string[] }>(`/api/fresh/set-aside?${q(c)}`, {}),
   freshRestore: (c: string) => post<FreshStatus>(`/api/fresh/restore?${q(c)}`, {}),
   /** Stage 1 of learning, no model: what the miner will read. */
   freshRecords: (c: string) => read<FreshRecords | null>(`/api/fresh/records?${q(c)}`, null),

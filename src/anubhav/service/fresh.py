@@ -69,7 +69,8 @@ def status(ws, cid) -> dict:
     agents = {a.agent_id: H.active(a.agent_id)["version_id"] for a in registry.load().agents.values()}
     as_number = lambda v: int(v.rsplit("-", 1)[-1]) + 1 if v and v.rsplit("-", 1)[-1].isdigit() else 1
     return {"fresh": bool(ws.state.get("fresh", {}).get(cid)),
-            "lessons": len(rows), "active_lessons": sum(r["state"].startswith("ACTIVE") for r in rows),
+            # rejected, expired and retired entries are kept for the record but are not something it knows
+            "lessons": sum(r["state"] not in ("REJECTED", "EXPIRED", "RETIRED") for r in rows), "active_lessons": sum(r["state"].startswith("ACTIVE") for r in rows),
             "waiting_lessons": sum(r["state"] in ("CANDIDATE", "NEEDS_EVIDENCE", "CHALLENGED") for r in rows),
             "tools": len(newtools.tools(S, cid, "active")), "agent_versions": {a: as_number(v) for a, v in agents.items()},
             "mined_here": bool(ws.state.get("mined", {}).get(cid)), "mines_left": mines_left(ws, cid)}

@@ -267,6 +267,7 @@ export function Chat({ onEvents, prefill, ask, scenario, onStartScenario, action
       return `Started fresh: ${s.lessons} lessons · ${s.tools} tools · agents at version ${v.length && v.every((x) => x === v[0]) ? v[0] : "1"}.`;
     },
     mined: async () => !!(await api.freshStatus(company))?.mined_here,
+    setAside: async () => { const r = await api.freshSetAside(company); bumpData(); return r.cancelled; },
     focusBox: () => field.current?.focus(),
     toolApproved: async () => (await api.tools(company)).some((t) => t.status === "active"),
   };

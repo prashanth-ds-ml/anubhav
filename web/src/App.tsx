@@ -61,6 +61,7 @@ export default function App() {
     gateActive: () => chatActions.current!.gateActive(),
     freshStart: () => { toDesk(); return chatActions.current!.freshStart(); },
     mined: () => chatActions.current!.mined(),
+    setAside: () => chatActions.current!.setAside(),
   };
   const [reached, setReached] = useState<LoopStep[]>([]); // Approve and Improve, once a scenario reaches them
   function startScenario(id: string) {
