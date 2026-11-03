@@ -1,0 +1,249 @@
+{
+ "model": "muse-spark-1.3",
+ "world": "full_seed5279",
+ "note": "diagnostic, not a benchmark",
+ "companies": {
+  "T01": {
+   "runs": 10,
+   "queries_written": 18,
+   "requests": 10,
+   "styles": {
+    "full_date": 14,
+    "like": 1
+   },
+   "old": {
+    "queries_with_inputs": 17,
+    "groups": 13,
+    "biggest_group_requests": 2,
+    "candidates": 0,
+    "candidates_passing_checks": 0,
+    "candidate_templates": [],
+    "check_reasons": []
+   },
+   "new": {
+    "queries_with_inputs": 18,
+    "groups": 14,
+    "biggest_group_requests": 2,
+    "candidates": 0,
+    "candidates_passing_checks": 0,
+    "candidate_templates": [],
+    "check_reasons": []
+   },
+   "queries": [
+    {
+     "request": "September lo ae weekday lo on-time deliveries worst ga unnayi?",
+     "sql": "SELECT t.shipment_id, t.stop_seq, t.site_id, t.arrived_at, s.delivery_date, o.order_id, o.window_end, o.window_start FROM trip_outcomes t JOIN shipments s ON s.shipment_id=t.shipment_id LEFT JOIN shipment_items si ON si.shipment_id=t.shipment_id LEFT JOIN orders o ON o.order_id=si.order_id AND o.site_id=t.site_id WHERE s.delivery_date BETWEEN '2026-09-01' AND '2026-09-30' LIMIT 20",
+     "rows": 20
+    },
+    {
+     "request": "September lo ae weekday lo on-time deliveries worst ga unnayi?",
+     "sql": "WITH stops AS (SELECT t.shipment_id, t.stop_seq, MIN(date(t.arrived_at)) AS arr_date, MIN(t.arrived_at) AS arrived_at, s.delivery_date AS del_date, MAX(o.window_end) AS window_end, strftime('%w', s.delivery_date) AS wd FROM trip_outcomes t JOIN shipments s ON s.shipment_id=t.shipment_id LEFT JOIN shipment_items si ON si.shipment_id=t.shipment_id LEFT JOIN orders o ON o.order_id=si.order_id AND o.site_id=t.site_id WHERE s.delivery_date BETWEEN '2026-09-01' AND '2026-09-30' AND t.arrived_at IS NOT NULL GROUP BY t.shipment_id, t.stop_seq) SELECT CASE wd WHEN '0' THEN 'Sunday' WHEN '1' THEN 'Monday' WHEN '2' THEN 'Tuesday' WHEN '3' THEN 'Wednesday' WHEN '4' THEN 'Thursday' WHEN '5' THEN 'Friday' WHEN '6' THEN 'Saturday' END AS weekday, wd, COUNT(*) AS stops, SUM(CASE WHEN date(arrived_at) < del_date OR (date(arrived_at)=del_date AND substr(arrived_at,12,5) <= window_end) THEN 1 ELSE 0 END) AS ontime, ROUND(100.0*SUM(CASE WHEN date(arrived_at) < del_date OR (date(arrived_at)=del_date AND substr(arrived_at,12,5) <= window_end) THEN 1 ELSE 0 END)/COUNT(*),1) AS ontime_pct, SUM(CASE WHEN date(arrived_at) < del_date OR (date(arrived_at)=del_date AND substr(arrived_at,12,5) <= window_end) THEN 0 ELSE 1 END) AS late FROM stops GROUP BY wd ORDER BY ontime_pct",
+     "rows": 7
+    },
+    {
+     "request": "ఆగస్టు లో ఏ వారం రోజున సమయానికి డెలివరీలు అతి తక్కువగా జరిగాయి?",
+     "sql": "SELECT t.shipment_id, t.stop_seq, t.site_id, t.arrived_at, s.delivery_date as ship_date, o.order_id, o.delivery_date as ord_date, o.window_end FROM trip_outcomes t JOIN shipments s ON s.shipment_id=t.shipment_id LEFT JOIN shipment_items si ON si.shipment_id=t.shipment_id LEFT JOIN orders o ON o.order_id=si.order_id AND o.site_id=t.site_id WHERE s.delivery_date BETWEEN '2026-08-01' AND '2026-08-31' LIMIT 20",
+     "rows": 20
+    },
+    {
+     "request": "ఆగస్టు లో ఏ వారం రోజున సమయానికి డెలివరీలు అతి తక్కువగా జరిగాయి?",
+     "sql": "SELECT t.shipment_id, t.stop_seq, t.site_id, COUNT(DISTINCT si.order_id) as n_orders, GROUP_CONCAT(DISTINCT o.window_end) as windows FROM trip_outcomes t JOIN shipments s ON s.shipment_id=t.shipment_id JOIN shipment_items si ON si.shipment_id=t.shipment_id JOIN orders o ON o.order_id=si.order_id AND o.site_id=t.site_id WHERE s.delivery_date BETWEEN '2026-08-01' AND '2026-08-31' GROUP BY t.shipment_id, t.stop_seq, t.site_id HAVING n_orders>1 LIMIT 20",
+     "rows": 20
+    },
+    {
+     "request": "ఆగస్టు లో ఏ వారం రోజున సమయానికి డెలివరీలు అతి తక్కువగా జరిగాయి?",
+     "sql": "WITH stops_orders AS (SELECT DISTINCT t.shipment_id, t.stop_seq, t.site_id, t.arrived_at, o.order_id, o.window_end, s.delivery_date FROM trip_outcomes t JOIN shipments s ON s.shipment_id=t.shipment_id JOIN shipment_items si ON si.shipment_id=t.shipment_id JOIN orders o ON o.order_id=si.order_id AND o.site_id=t.site_id WHERE s.delivery_date BETWEEN '2026-08-01' AND '2026-08-31') SELECT CASE strftime('%w', delivery_date) WHEN '0' THEN 'Sunday' WHEN '1' THEN 'Monday' WHEN '2' THEN 'Tuesday' WHEN '3' THEN 'Wednesday' WHEN '4' THEN 'Thursday' WHEN '5' THEN 'Friday' WHEN '6' THEN 'Saturday' END as weekday, strftime('%w', delivery_date) as wnum, COUNT(*) as order_deliveries, SUM(CASE WHEN substr(arrived_at,12,5) <= window_end THEN 1 ELSE 0 END) as ontime, ROUND(100.0*SUM(CASE WHEN substr(arrived_at,12,5) <= window_end THEN 1 ELSE 0 END)/COUNT(*),1) as ontime_pct, SUM(CASE WHEN substr(arrived_at,12,5) > window_end THEN 1 ELSE 0 END) as late_n FROM stops_orders GROUP BY weekday ORDER BY ontime_pct ASC",
+     "rows": 7
+    },
+    {
+     "request": "ఆగస్టు లో ఏ వారం రోజున సమయానికి డెలివరీలు అతి తక్కువగా జరిగాయి?",
+     "sql": "WITH stop_win AS (SELECT t.shipment_id, t.stop_seq, t.site_id, t.arrived_at, s.delivery_date, MIN(o.window_end) as strict_window FROM trip_outcomes t JOIN shipments s ON s.shipment_id=t.shipment_id JOIN shipment_items si ON si.shipment_id=t.shipment_id JOIN orders o ON o.order_id=si.order_id AND o.site_id=t.site_id WHERE s.delivery_date BETWEEN '2026-08-01' AND '2026-08-31' GROUP BY t.shipment_id, t.stop_seq, t.site_id) SELECT CASE strftime('%w', delivery_date) WHEN '0' THEN 'Sunday' WHEN '1' THEN 'Monday' WHEN '2' THEN 'Tuesday' WHEN '3' THEN 'Wednesday' WHEN '4' THEN 'Thursday' WHEN '5' THEN 'Friday' WHEN '6' THEN 'Saturday' END as weekday, COUNT(*) as stops, SUM(CASE WHEN substr(arrived_at,12,5) <= strict_window THEN 1 ELSE 0 END) as ontime, ROUND(100.0*SUM(CASE WHEN substr(arrived_at,12,5) <= strict_window THEN 1 ELSE 0 END)/COUNT(*),1) as ontime_pct FROM stop_win GROUP BY weekday ORDER BY ontime_pct ASC",
+     "rows": 7
+    },
+    {
+     "request": "On which weekday do we make the most delivery stops in Suryapet?",
+     "sql": "SELECT CASE strftime('%w', s.delivery_date) WHEN '0' THEN 'Sunday' WHEN '1' THEN 'Monday' WHEN '2' THEN 'Tuesday' WHEN '3' THEN 'Wednesday' WHEN '4' THEN 'Thursday' WHEN '5' THEN 'Friday' WHEN '6' THEN 'Saturday' END AS weekday, strftime('%w', s.delivery_date) AS wd_num, COUNT(*) AS stops FROM trip_outcomes t JOIN sites si ON t.site_id = si.site_id JOIN shipments s ON t.shipment_id = s.shipment_id WHERE si.town = 'Suryapet' GROUP BY weekday ORDER BY stops DESC",
+     "rows": 6
+    },
+    {
+     "request": "Karimnagar lo ae weekday lo manam ekkuva deliveries chestham?",
+     "sql": "SELECT CASE strftime('%w', s.delivery_date) WHEN '0' THEN 'Sunday' WHEN '1' THEN 'Monday' WHEN '2' THEN 'Tuesday' WHEN '3' THEN 'Wednesday' WHEN '4' THEN 'Thursday' WHEN '5' THEN 'Friday' WHEN '6' THEN 'Saturday' END AS weekday, strftime('%w', s.delivery_date) AS wd, COUNT(*) AS stops, SUM(CASE WHEN t.status='delivered' THEN 1 ELSE 0 END) AS delivered FROM trip_outcomes t JOIN shipments s ON s.shipment_id = t.shipment_id JOIN sites st ON st.site_id = t.site_id WHERE st.town = 'Karimnagar' GROUP BY weekday, wd ORDER BY stops DESC",
+     "rows": 7
+    },
+    {
+     "request": "Hanamkonda లో ఏ వారం రోజున మనం ఎక్కువ డెలివరీలు చేస్తాం?",
+     "sql": "SELECT strftime('%w', sh.delivery_date) AS wd, CASE strftime('%w', sh.delivery_date) WHEN '0' THEN 'Sunday' WHEN '1' THEN 'Monday' WHEN '2' THEN 'Tuesday' WHEN '3' THEN 'Wednesday' WHEN '4' THEN 'Thursday' WHEN '5' THEN 'Friday' WHEN '6' THEN 'Saturday' END AS weekday, COUNT(*) AS trips FROM trip_outcomes t JOIN shipments sh ON sh.shipment_id = t.shipment_id JOIN sites s ON s.site_id = t.site_id WHERE s.town = 'Hanamkonda' GROUP BY wd ORDER BY trips DESC LIMIT 7",
+     "rows": 7
+    },
+    {
+     "request": "How many cases came back (returned cases) from Narsampet in September?",
+     "sql": "SELECT s.delivery_date, t.shipment_id, t.stop_seq, t.status, t.delivered_cases, t.returned_cases, t.damaged_cases FROM trip_outcomes t JOIN shipments s ON s.shipment_id = t.shipment_id WHERE t.site_id = 'C0004' AND s.delivery_date >= '2026-09-01' AND s.delivery_date < '2026-10-01' ORDER BY s.delivery_date",
+     "rows": 6
+    },
+    {
+     "request": "September lo Suryapet nunchi enni cases venakki vachayi?",
+     "sql": "SELECT site_id, name, town FROM sites WHERE town LIKE '%Suryapet%' OR town LIKE '%suryapet%'",
+     "rows": 1
+    },
+    {
+     "request": "September lo Suryapet nunchi enni cases venakki vachayi?",
+     "sql": "SELECT s.delivery_date, t.shipment_id, t.stop_seq, t.status, t.delivered_cases, t.returned_cases, t.damaged_cases FROM trip_outcomes t JOIN shipments s ON s.shipment_id = t.shipment_id WHERE t.site_id = 'C0045' AND s.delivery_date >= '2026-09-01' AND s.delivery_date < '2026-10-01' ORDER BY s.delivery_date",
+     "rows": 2
+    },
+    {
+     "request": "September lo Suryapet nunchi enni cases venakki vachayi?",
+     "sql": "SELECT o.order_id, o.delivery_date, o.status, SUM(oi.returned_cases) as ret, SUM(oi.delivered_cases) as del, SUM(oi.ordered_cases) as ord FROM orders o JOIN order_items oi ON oi.order_id = o.order_id WHERE o.site_id = 'C0045' AND o.delivery_date >= '2026-09-01' AND o.delivery_date < '2026-10-01' GROUP BY o.order_id, o.delivery_date, o.status ORDER BY o.delivery_date",
+     "rows": 200
+    },
+    {
+     "request": "September lo Suryapet nunchi enni cases venakki vachayi?",
+     "sql": "SELECT SUM(oi.returned_cases) as total_ret, SUM(oi.delivered_cases) as total_del FROM orders o JOIN order_items oi ON oi.order_id = o.order_id WHERE o.site_id = 'C0045' AND o.delivery_date >= '2026-09-01' AND o.delivery_date < '2026-10-01'",
+     "rows": 1
+    },
+    {
+     "request": "ఆగస్టు లో Suryapet నుండి ఎన్ని కేసులు వెనక్కి వచ్చాయి?",
+     "sql": "SELECT s.town, sh.delivery_date, t.shipment_id, t.stop_seq, t.site_id, t.status, t.delivered_cases, t.returned_cases, t.damaged_cases, t.arrived_at FROM trip_outcomes t JOIN sites s ON s.site_id = t.site_id JOIN shipments sh ON sh.shipment_id = t.shipment_id WHERE s.town = 'Suryapet' AND sh.delivery_date >= '2026-08-01' AND sh.delivery_date < '2026-09-01' ORDER BY sh.delivery_date LIMIT 200",
+     "rows": 7
+    },
+    {
+     "request": "How many cases were damaged in delivery in September?",
+     "sql": "SELECT SUM(damaged_cases) AS total_damaged, COUNT(*) AS stops, COUNT(CASE WHEN damaged_cases>0 THEN 1 END) AS stops_with_damage FROM trip_outcomes o JOIN shipments s ON s.shipment_id=o.shipment_id WHERE s.delivery_date BETWEEN '2026-09-01' AND '2026-09-30'",
+     "rows": 1
+    },
+    {
+     "request": "August lo delivery lo enni cases damage ayyayi?",
+     "sql": "SELECT SUM(t.damaged_cases) AS total_damaged_cases, COUNT(*) AS stops_with_damage FROM trip_outcomes t JOIN shipments s ON s.shipment_id = t.shipment_id WHERE s.delivery_date BETWEEN '2026-08-01' AND '2026-08-31'",
+     "rows": 1
+    },
+    {
+     "request": "August lo delivery lo enni cases damage ayyayi?",
+     "sql": "SELECT COUNT(*) AS damage_stops, SUM(t.damaged_cases) AS total_damaged FROM trip_outcomes t JOIN shipments s ON s.shipment_id = t.shipment_id WHERE s.delivery_date BETWEEN '2026-08-01' AND '2026-08-31' AND t.damaged_cases > 0",
+     "rows": 1
+    }
+   ]
+  },
+  "T02": {
+   "runs": 10,
+   "queries_written": 17,
+   "requests": 10,
+   "styles": {
+    "full_date": 13,
+    "like": 1
+   },
+   "old": {
+    "queries_with_inputs": 16,
+    "groups": 13,
+    "biggest_group_requests": 3,
+    "candidates": 1,
+    "candidates_passing_checks": 1,
+    "candidate_templates": [
+     "SELECT CASE strftime('%w', s.delivery_date) WHEN '0' THEN 'Sunday' WHEN '1' THEN 'Monday' WHEN '2' THEN 'Tuesday' WHEN '3' THEN 'Wednesday' WHEN '4' THEN 'Thursday' WHEN '5' THEN 'Friday' WHEN '6' THEN 'Saturday' END AS weekday, strftime('%w', s.delivery_date) AS wnum, COUNT(*) AS stops FROM shipment_stops ss JOIN shipments s ON s.shipment_id = ss.shipment_id JOIN sites st ON st.site_id = ss.site_id WHERE st.town = :town GROUP BY weekday, wnum ORDER BY stops DESC"
+    ],
+    "check_reasons": [
+     []
+    ]
+   },
+   "new": {
+    "queries_with_inputs": 17,
+    "groups": 14,
+    "biggest_group_requests": 3,
+    "candidates": 1,
+    "candidates_passing_checks": 1,
+    "candidate_templates": [
+     "SELECT CASE strftime('%w', s.delivery_date) WHEN '0' THEN 'Sunday' WHEN '1' THEN 'Monday' WHEN '2' THEN 'Tuesday' WHEN '3' THEN 'Wednesday' WHEN '4' THEN 'Thursday' WHEN '5' THEN 'Friday' WHEN '6' THEN 'Saturday' END AS weekday, strftime('%w', s.delivery_date) AS wnum, COUNT(*) AS stops FROM shipment_stops ss JOIN shipments s ON s.shipment_id = ss.shipment_id JOIN sites st ON st.site_id = ss.site_id WHERE st.town = :town GROUP BY weekday, wnum ORDER BY stops DESC"
+    ],
+    "check_reasons": [
+     []
+    ]
+   },
+   "queries": [
+    {
+     "request": "September lo ae weekday lo on-time deliveries worst ga unnayi?",
+     "sql": "SELECT s.shipment_id, s.delivery_date, o.order_id, o.site_id, o.window_end, t.arrived_at, t.site_id as t_site, t.status FROM shipments s JOIN shipment_stops ss ON ss.shipment_id=s.shipment_id JOIN trip_outcomes t ON t.shipment_id=s.shipment_id AND t.stop_seq=ss.seq LEFT JOIN shipment_items si ON si.shipment_id=s.shipment_id LEFT JOIN orders o ON o.order_id=si.order_id WHERE s.delivery_date BETWEEN '2026-09-01' AND '2026-09-05' LIMIT 20",
+     "rows": 20
+    },
+    {
+     "request": "September lo ae weekday lo on-time deliveries worst ga unnayi?",
+     "sql": "SELECT s.shipment_id, s.delivery_date, ss.seq, ss.site_id as stop_site, t.site_id as outcome_site, t.arrived_at, si.order_id, o.site_id as order_site, o.window_end FROM shipments s JOIN shipment_stops ss ON ss.shipment_id=s.shipment_id JOIN trip_outcomes t ON t.shipment_id=s.shipment_id AND t.stop_seq=ss.seq JOIN shipment_items si ON si.shipment_id=s.shipment_id JOIN orders o ON o.order_id=si.order_id AND o.site_id=ss.site_id WHERE s.delivery_date='2026-09-01' AND s.shipment_id='T02-S00149' ORDER BY ss.seq",
+     "rows": 3
+    },
+    {
+     "request": "September lo ae weekday lo on-time deliveries worst ga unnayi?",
+     "sql": "SELECT CASE strftime('%w', s.delivery_date) WHEN '0' THEN 'Sunday' WHEN '1' THEN 'Monday' WHEN '2' THEN 'Tuesday' WHEN '3' THEN 'Wednesday' WHEN '4' THEN 'Thursday' WHEN '5' THEN 'Friday' WHEN '6' THEN 'Saturday' END AS weekday, strftime('%w', s.delivery_date) AS wd, COUNT(*) AS stops, SUM(CASE WHEN datetime(t.arrived_at) <= datetime(s.delivery_date || ' ' || o.window_end || ':00') THEN 1 ELSE 0 END) AS on_time, ROUND(100.0*SUM(CASE WHEN datetime(t.arrived_at) <= datetime(s.delivery_date || ' ' || o.window_end || ':00') THEN 1 ELSE 0 END)/COUNT(*),1) AS on_time_pct, ROUND(100.0*(COUNT(*)-SUM(CASE WHEN datetime(t.arrived_at) <= datetime(s.delivery_date || ' ' || o.window_end || ':00') THEN 1 ELSE 0 END))/COUNT(*),1) AS late_pct FROM shipments s JOIN shipment_stops ss ON ss.shipment_id=s.shipment_id JOIN trip_outcomes t ON t.shipment_id=s.shipment_id AND t.stop_seq=ss.seq JOIN shipment_items si ON si.shipment_id=s.shipment_id JOIN orders o ON o.order_id=si.order_id AND o.site_id=ss.site_id WHERE s.delivery_date BETWEEN '2026-09-01' AND '2026-09-30' GROUP BY wd ORDER BY on_time_pct ASC",
+     "rows": 7
+    },
+    {
+     "request": "September lo ae weekday lo on-time deliveries worst ga unnayi?",
+     "sql": "WITH so AS (SELECT DISTINCT shipment_id, order_id FROM shipment_items) SELECT CASE strftime('%w', s.delivery_date) WHEN '0' THEN 'Sunday' WHEN '1' THEN 'Monday' WHEN '2' THEN 'Tuesday' WHEN '3' THEN 'Wednesday' WHEN '4' THEN 'Thursday' WHEN '5' THEN 'Friday' WHEN '6' THEN 'Saturday' END AS weekday, strftime('%w', s.delivery_date) AS wd, COUNT(*) AS stops, SUM(CASE WHEN datetime(t.arrived_at) <= datetime(s.delivery_date || ' ' || o.window_end || ':00') THEN 1 ELSE 0 END) AS on_time, ROUND(100.0*SUM(CASE WHEN datetime(t.arrived_at) <= datetime(s.delivery_date || ' ' || o.window_end || ':00') THEN 1 ELSE 0 END)/COUNT(*),1) AS on_time_pct FROM shipments s JOIN shipment_stops ss ON ss.shipment_id=s.shipment_id JOIN trip_outcomes t ON t.shipment_id=s.shipment_id AND t.stop_seq=ss.seq JOIN so ON so.shipment_id=s.shipment_id JOIN orders o ON o.order_id=so.order_id AND o.site_id=ss.site_id WHERE s.delivery_date BETWEEN '2026-09-01' AND '2026-09-30' GROUP BY wd ORDER BY on_time_pct ASC",
+     "rows": 7
+    },
+    {
+     "request": "ఆగస్టు లో ఏ వారం రోజున సమయానికి డెలివరీలు అతి తక్కువగా జరిగాయి?",
+     "sql": "SELECT shipment_id, site_id, status, arrived_at, strftime('%w', arrived_at) as wd, strftime('%Y-%m-%d', arrived_at) as d FROM trip_outcomes WHERE arrived_at >= '2026-08-01' AND arrived_at < '2026-09-01' LIMIT 20",
+     "rows": 20
+    },
+    {
+     "request": "ఆగస్టు లో ఏ వారం రోజున సమయానికి డెలివరీలు అతి తక్కువగా జరిగాయి?",
+     "sql": "SELECT s.shipment_id, s.delivery_date, o.arrived_at, o.site_id, o.status, strftime('%Y-%m-%d', o.arrived_at) as arr_date FROM shipments s JOIN trip_outcomes o ON o.shipment_id=s.shipment_id WHERE s.delivery_date >= '2026-08-01' AND s.delivery_date < '2026-09-01' LIMIT 30",
+     "rows": 30
+    },
+    {
+     "request": "ఆగస్టు లో ఏ వారం రోజున సమయానికి డెలివరీలు అతి తక్కువగా జరిగాయి?",
+     "sql": "SELECT o.order_id, o.site_id, o.delivery_date, o.window_end, s.shipment_id, s.delivery_date as ship_date, t.arrived_at, t.status FROM orders o JOIN shipment_items si ON si.order_id=o.order_id JOIN shipments s ON s.shipment_id=si.shipment_id JOIN trip_outcomes t ON t.shipment_id=s.shipment_id AND t.site_id=o.site_id WHERE s.delivery_date='2026-08-01' LIMIT 20",
+     "rows": 10
+    },
+    {
+     "request": "ఆగస్టు లో ఏ వారం రోజున సమయానికి డెలివరీలు అతి తక్కువగా జరిగాయి?",
+     "sql": "SELECT t.shipment_id, t.site_id, date(t.arrived_at) as arr_date, t.arrived_at, GROUP_CONCAT(DISTINCT o.window_end) as windows, COUNT(DISTINCT o.order_id) as n_orders FROM trip_outcomes t JOIN shipment_items si ON si.shipment_id=t.shipment_id JOIN orders o ON o.order_id=si.order_id AND o.site_id=t.site_id WHERE t.arrived_at >= '2026-08-01' AND t.arrived_at < '2026-09-01' GROUP BY t.shipment_id, t.site_id LIMIT 30",
+     "rows": 30
+    },
+    {
+     "request": "On which weekday do we make the most delivery stops in Parkal?",
+     "sql": "SELECT CASE strftime('%w', s.delivery_date) WHEN '0' THEN 'Sunday' WHEN '1' THEN 'Monday' WHEN '2' THEN 'Tuesday' WHEN '3' THEN 'Wednesday' WHEN '4' THEN 'Thursday' WHEN '5' THEN 'Friday' WHEN '6' THEN 'Saturday' END AS weekday, strftime('%w', s.delivery_date) AS wnum, COUNT(*) AS stops FROM shipment_stops ss JOIN shipments s ON s.shipment_id = ss.shipment_id JOIN sites st ON st.site_id = ss.site_id WHERE st.town = 'Parkal' GROUP BY weekday, wnum ORDER BY stops DESC",
+     "rows": 7
+    },
+    {
+     "request": "Hanamkonda lo ae weekday lo manam ekkuva deliveries chestham?",
+     "sql": "SELECT st.town, s.delivery_date, t.status, t.site_id FROM trip_outcomes t JOIN shipments s ON s.shipment_id=t.shipment_id JOIN sites st ON st.site_id=t.site_id WHERE st.town LIKE '%Hanamkonda%' LIMIT 10",
+     "rows": 10
+    },
+    {
+     "request": "Hanamkonda lo ae weekday lo manam ekkuva deliveries chestham?",
+     "sql": "SELECT CASE strftime('%w', s.delivery_date) WHEN '0' THEN 'Sunday' WHEN '1' THEN 'Monday' WHEN '2' THEN 'Tuesday' WHEN '3' THEN 'Wednesday' WHEN '4' THEN 'Thursday' WHEN '5' THEN 'Friday' WHEN '6' THEN 'Saturday' END AS weekday, COUNT(*) AS trips FROM trip_outcomes t JOIN shipments s ON s.shipment_id=t.shipment_id JOIN sites st ON st.site_id=t.site_id WHERE st.town='Hanamkonda' GROUP BY weekday ORDER BY trips DESC",
+     "rows": 7
+    },
+    {
+     "request": "Suryapet లో ఏ వారం రోజున మనం ఎక్కువ డెలివరీలు చేస్తాం?",
+     "sql": "SELECT CASE strftime('%w', s.delivery_date) WHEN '0' THEN 'Sunday' WHEN '1' THEN 'Monday' WHEN '2' THEN 'Tuesday' WHEN '3' THEN 'Wednesday' WHEN '4' THEN 'Thursday' WHEN '5' THEN 'Friday' WHEN '6' THEN 'Saturday' END as weekday, COUNT(*) as trips FROM trip_outcomes t JOIN shipments s ON s.shipment_id = t.shipment_id JOIN sites st ON st.site_id = t.site_id WHERE st.town = 'Suryapet' GROUP BY weekday ORDER BY trips DESC",
+     "rows": 7
+    },
+    {
+     "request": "How many cases came back (returned cases) from Parkal in October?",
+     "sql": "SELECT s.site_id, s.name, t.shipment_id, t.status, t.delivered_cases, t.returned_cases, t.arrived_at FROM trip_outcomes t JOIN sites s ON s.site_id = t.site_id WHERE s.town = 'Parkal' AND t.arrived_at >= '2026-10-01' AND t.arrived_at < '2026-11-01' ORDER BY t.arrived_at",
+     "rows": 11
+    },
+    {
+     "request": "September lo Hanamkonda nunchi enni cases venakki vachayi?",
+     "sql": "SELECT s.site_id, s.name, SUM(t.returned_cases) AS returned_cases, COUNT(*) AS stops FROM trip_outcomes t JOIN shipments sh ON sh.shipment_id = t.shipment_id JOIN sites s ON s.site_id = t.site_id WHERE s.town = 'Hanamkonda' AND sh.delivery_date >= '2026-09-01' AND sh.delivery_date < '2026-10-01' GROUP BY s.site_id, s.name ORDER BY returned_cases DESC",
+     "rows": 5
+    },
+    {
+     "request": "ఆగస్టు లో Hanamkonda నుండి ఎన్ని కేసులు వెనక్కి వచ్చాయి?",
+     "sql": "SELECT s.town AS town, COUNT(*) AS stops, SUM(t.returned_cases) AS returned_cases, SUM(t.delivered_cases) AS delivered_cases, SUM(t.damaged_cases) AS damaged_cases FROM trip_outcomes t JOIN sites s ON s.site_id = t.site_id JOIN shipments sh ON sh.shipment_id = t.shipment_id WHERE s.town = 'Hanamkonda' AND sh.delivery_date >= '2026-08-01' AND sh.delivery_date < '2026-09-01' GROUP BY s.town",
+     "rows": 1
+    },
+    {
+     "request": "How many cases were damaged in delivery in September?",
+     "sql": "SELECT SUM(t.damaged_cases) AS total_damaged_cases, COUNT(*) AS total_stops, SUM(CASE WHEN t.damaged_cases > 0 THEN 1 ELSE 0 END) AS stops_with_damage FROM trip_outcomes t JOIN shipments s ON s.shipment_id = t.shipment_id WHERE s.delivery_date >= '2026-09-01' AND s.delivery_date <= '2026-09-30'",
+     "rows": 1
+    },
+    {
+     "request": "August lo delivery lo enni cases damage ayyayi?",
+     "sql": "SELECT COUNT(*) AS stops_with_damage, SUM(damaged_cases) AS total_damaged_cases, SUM(CASE WHEN damaged_cases>0 THEN 1 ELSE 0 END) AS stops_damaged FROM trip_outcomes JOIN shipments USING (shipment_id) WHERE shipments.delivery_date >= '2026-08-01' AND shipments.delivery_date <= '2026-08-31'",
+     "rows": 1
+    }
+   ]
+  }
+ },
+ "cost_usd": 0.9782
+}

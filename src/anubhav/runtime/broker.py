@@ -944,7 +944,7 @@ ANALYSIS = [
 def learned_tool(spec):
     """An approved learned tool: its stored query with typed parameters, run in the read-only sandbox."""
     from pydantic import create_model
-    fields = {p["name"]: (str, Field(description=("a date YYYY-MM-DD" if p["kind"] == "date" else f"a value of {p['column']}")
+    fields = {p["name"]: (str, Field(description=("a date YYYY-MM-DD" if p["kind"] == "date" else "a month YYYY-MM" if p["kind"] == "month" else f"a value of {p['column']}")
                                     + f", e.g. {p['example']}")) for p in spec["params"]}
     model = create_model(f"Args_{spec['name']}", __base__=Args, **fields)
 
@@ -954,6 +954,8 @@ def learned_tool(spec):
         for p in spec["params"]:
             if p["kind"] == "date":
                 b._date(args[p["name"]])
+            elif p["kind"] == "month" and not re.fullmatch(r"\d{4}-\d{2}", args[p["name"]] or ""):
+                raise ToolError("BAD_ARGS", f"{p['name']} must be a month like 2026-09")
         try:
             return sandbox(b.C).run(spec["template"], params=args) | {"tool": spec["name"], "learned": spec["tool_id"]}
         except QueryError as e:

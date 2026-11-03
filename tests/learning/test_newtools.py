@@ -136,3 +136,67 @@ def test_names_and_descriptions_are_general_never_the_values_a_tool_was_built_fr
         nt.propose(S, "T01", g, {"pass": True}, f"returns_{town.lower()}_september", desc)
     nt.propose(S, "T01", g, {"pass": True}, name, desc)
     assert nt.free_name(S, "T01", name) == f"{name}_2"
+
+
+# ---------- how models really write a filter (Nov 3 diagnosis: Spark 1.3 made no tools because these were dropped)
+WD = ("SELECT strftime('%w', o.delivery_date) AS wd, COUNT(*) AS n FROM orders o JOIN sites s ON s.site_id = o.site_id "
+      "WHERE {cond} GROUP BY wd")
+
+
+@pytest.mark.parametrize("cond", ["s.town = '{t}'", "lower(s.town) = '{tl}'", "s.town LIKE '%{t}%'", "lower(s.town) LIKE '%{tl}%'",
+                                  "upper(s.town) = '{tu}'"])
+def test_a_value_is_an_input_however_the_query_compares_it_and_the_template_gives_the_same_rows(C, cond):
+    sb = Sandbox(C)
+    town = sorted({x["town"] for x in C.sites.values()})[0]
+    sql = WD.format(cond=cond.format(t=town, tl=town.lower(), tu=town.upper()))
+    tpl, params = nt.template(sql, sb)
+    assert [(p["name"], p["value"], p["kind"]) for p in params] == [("town", town, "entity")]   # the stored spelling is the input
+    assert sb.run(tpl, params={"town": town})["rows"] == sb.run(sql)["rows"]
+    other = sorted({x["town"] for x in C.sites.values()})[1]
+    assert sb.run(tpl, params={"town": other})["rows"] == sb.run(WD.format(cond=f"s.town = '{other}'"))["rows"]   # and it generalizes
+
+
+def test_a_month_is_an_input_and_moves_by_whole_months(C):
+    sb = Sandbox(C)
+    town = sorted({x["town"] for x in C.sites.values()})[0]
+    sql = (f"SELECT COUNT(*) AS n FROM orders o JOIN sites s ON s.site_id = o.site_id WHERE s.town = '{town}' "
+           f"AND strftime('%Y-%m', o.delivery_date) = '2026-09'")
+    tpl, params = nt.template(sql, sb)
+    assert ("month", "2026-09", "month") in [(p["name"], p["value"], p["kind"]) for p in params] and "'2026-09'" not in tpl
+    g = {"template": tpl, "uses": [{"params": params, "sql": sql, "request": "r"}]}
+    months = {s["month"] for s in nt.held_out_values(g, sb)}
+    assert months and all(len(m) == 7 and m != "2026-09" for m in months)
+    assert nt._shift("2026-09", -1) == "2026-08" and nt._shift("2026-12", 1) == "2027-01"
+
+
+def test_a_list_of_ids_is_not_a_general_tool(C):
+    sb = Sandbox(C)
+    ids = sorted(C.sites)[:3]
+    sql = "SELECT COUNT(*) AS n FROM orders o WHERE o.site_id IN (" + ", ".join(f"'{i}'" for i in ids) + ")"
+    tpl, params = nt.template(sql, sb)
+    assert nt.LIST.search(tpl)
+    runs = [run_with(sql, f"request {k}", run_id=f"r{k}") for k in range(3)]
+    assert nt.uses_in(runs, "T01", sb) == []                         # never counted toward a tool
+    c = nt.check({"template": tpl, "uses": [{"params": params, "sql": sql, "request": "r"}]}, sb)
+    assert not c["pass"] and any("list of ids" in r for r in c["reasons"])
+
+
+def test_a_template_that_keeps_a_fixed_period_fails_its_checks(C):
+    sb = Sandbox(C)
+    town = sorted({x["town"] for x in C.sites.values()})[0]
+    tpl = ("SELECT COUNT(*) AS n FROM orders o JOIN sites s ON s.site_id = o.site_id WHERE s.town = :town "
+           "AND strftime('%Y', o.delivery_date) = '2026' AND o.delivery_date >= '2026-09-01'")
+    g = {"template": tpl, "uses": [{"params": [{"name": "town", "value": town, "kind": "entity", "column": "sites.town"}],
+                                    "sql": tpl.replace(":town", f"'{town}'"), "request": "r"}]}
+    c = nt.check(g, sb)
+    assert not c["pass"] and any("fixed date or month" in r and "2026-09-01" in r for r in c["reasons"])
+
+
+def test_a_learned_month_input_must_look_like_a_month(C, tmp_path):
+    from anubhav.runtime.broker import ToolError, learned_tool
+    tool = learned_tool({"name": "n_by_month", "description": "n", "tool_id": "t1", "template": "SELECT :month AS m",
+                         "params": [{"name": "month", "kind": "month", "column": None, "example": "2026-09"}]})
+    b = Broker(C, Session("T01", "dispatcher", "t"))
+    assert tool.fn(b, tool.args(month="2026-09"))["rows"] == [["2026-09"]]
+    with pytest.raises(ToolError):
+        tool.fn(b, tool.args(month="September"))

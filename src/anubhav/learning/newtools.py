@@ -3,8 +3,11 @@
 parameters, checks it, and a person approves it. Then the broker offers it like any other tool.
 
 Everything here is code; the model only wrote the original queries.
-- template(): string literals that are dates, or values of the company's own name/id columns (towns, sites,
+- template(): string literals that are dates or months, or values of the company's own name/id columns (towns, sites,
   vehicles…), become named parameters. Short code lists (a status, a weekday number) and formats stay as written.
+  A value is recognised however the query compares it: exactly, in another case (lower(town) = 'hanamkonda'), or
+  inside a LIKE pattern ('%Hanamkonda%'); the template keeps that comparison, with the stored value as the input.
+  A list of ids (site_id IN ('C0006','C0007')) is one request's answer, not a general tool: it is not offered.
 - candidates(): from run traces, the same template used for different requests (>= MIN_USES), or one a person marks.
 - check(): (1) with the original values it returns exactly the original rows; (2) it runs, within the limits, on
   held-out values drawn from the same columns or other months; (3) it is still one read-only SELECT (the sandbox).
@@ -21,6 +24,9 @@ MIN_USES = 3     # owner, Oct 31: written for 3+ different requests before it is
 HELD_OUT = 5
 STRING = re.compile(r"'((?:[^']|'')*)'")
 DATE = re.compile(r"\d{4}-\d{2}-\d{2}")
+MONTH = re.compile(r"\d{4}-\d{2}")
+FIXED = re.compile(r"'\d{4}-\d{2}(-\d{2})?'")       # a date or month left in a template: the tool would always answer for it
+LIST = re.compile(r"\bin\s*\(\s*:\w+\s*,\s*:\w+", re.I)
 
 
 def _norm(sql):
@@ -47,20 +53,35 @@ def template(sql, sb):
             return bool(re.search(r"between\s+(:\w+|'[^']*'|\S+)\s*$", before[:-3].rstrip(), re.I))
         return tok in {"=", "==", "<", ">", "<=", ">=", "<>", "!=", "like", "between", "in", "(", ","}
 
+    folded = {}
+    for ent in sb.entities:                    # stored values by lower case, when that is unambiguous
+        folded.setdefault(ent.lower(), set()).add(ent)
+
     def repl(m):
         v = m.group(1).replace("''", "'")
         if not compared(m):
             return m.group(0)
+        pre, suf = v.startswith("%"), v.endswith("%") and len(v) > 1
+        core = v[1 if pre else 0:len(v) - (1 if suf else 0)]
         if DATE.fullmatch(v):
-            kind, column, base = "date", None, "date"
-        elif v in sb.entities:
-            kind, column = "entity", sb.entities[v]
+            kind, column, base, value = "date", None, "date", v
+        elif MONTH.fullmatch(v):
+            kind, column, base, value = "month", None, "month", v
+        elif core in sb.entities or len(folded.get(core.lower(), ())) == 1:
+            value = core if core in sb.entities else next(iter(folded[core.lower()]))
+            kind, column = "entity", sb.entities[value]
             base = column.split(".")[1]
         else:
             return m.group(0)                      # a code or a format: part of the query, not a parameter
-        p = {"name": name_for(base), "value": v, "kind": kind, "column": column}
+        p = {"name": name_for(base), "value": value, "kind": kind, "column": column}
         params.append(p)
-        return f":{p['name']}"
+        ref = f":{p['name']}"
+        if kind == "entity" and core != value:       # compared in another case: keep that case for any input
+            ref = f"lower({ref})" if core == core.lower() else f"upper({ref})" if core == core.upper() else ref
+        if pre or suf:                               # a LIKE pattern keeps its wildcards around the input
+            ref = " || ".join([*(["'%'"] if pre else []), ref, *(["'%'"] if suf else [])])
+            ref = f"({ref})"
+        return ref
 
     tpl = STRING.sub(repl, src)
     dates = [p for p in params if p["kind"] == "date"]
@@ -91,8 +112,8 @@ def uses_in(runs, company, sb):
                 if not a.get("sql") or not (s.get("result") or {}).get("row_count"):
                     continue                       # a query that found nothing is not worth a tool
                 tpl, params = template(a["sql"], sb)
-                if not params:
-                    continue                       # nothing to vary: an answer, not a tool
+                if not params or LIST.search(tpl):
+                    continue                       # nothing to vary, or a list of ids: one request's answer, not a tool
                 out.append({"template": tpl, "key": key(tpl), "params": params, "request": top.get("request", ""),
                             "purpose": a.get("purpose", ""), "sql": a["sql"], "run_id": r.get("run_id"),
                             "agent": r.get("agent_id") or "planner"})
@@ -201,7 +222,7 @@ def describe(g):
     for p in u["params"]:
         example = re.sub(re.escape(p["value"]), f"<{p['name']}>", example, flags=re.I)
     outs = ", ".join(_outputs(g["template"])[:4]) or "rows"
-    ins = ", ".join(f"{p['name']} ({'YYYY-MM-DD' if p['kind'] == 'date' else p['column'].split('.')[1]})" for p in u["params"])
+    ins = ", ".join(f"{p['name']} ({'YYYY-MM-DD' if p['kind'] == 'date' else 'YYYY-MM' if p['kind'] == 'month' else p['column'].split('.')[1]})" for p in u["params"])
     return (f"Returns {outs} for any {ins}. Learned from {len(g.get('requests') or [1])} requests, e.g. \"{example[:90]}\"")[:300]
 
 
@@ -223,6 +244,8 @@ def specific_words(g, text):
 
 def _shift(d, months=0, days=0):
     from datetime import timedelta
+    if MONTH.fullmatch(d):                     # a month moves by whole months only
+        return _shift(d + "-01", months)[:7]
     base = date.fromisoformat(d)
     y, m = divmod(base.month - 1 + months, 12)
     try:
@@ -250,12 +273,14 @@ def held_out_values(g, sb, n=HELD_OUT):
         for nm, p in first.items():
             if p["kind"] == "date":
                 s[nm] = _shift(p["value"], mo, dy)
+            elif p["kind"] == "month":
+                s[nm] = _shift(p["value"], mo or (1 if dy > 0 else -1))
             elif pools.get(nm):
                 s[nm] = pools[nm][(i * 7) % len(pools[nm])]
             else:
                 s = None
                 break
-        if s and all(lo <= v <= hi for nm, v in s.items() if first[nm]["kind"] == "date") and s not in sets                 and any(s[nm] != first[nm]["value"] for nm in s):
+        if s and all(lo[:len(v)] <= v <= hi[:len(v)] for nm, v in s.items() if first[nm]["kind"] in ("date", "month")) and s not in sets                 and any(s[nm] != first[nm]["value"] for nm in s):
             sets.append(s)
         if len(sets) == n:
             break
@@ -284,6 +309,11 @@ def check(g, sb):
             held.append({"values": s, "ok": True, "rows": r["row_count"]})
         except QueryError as e:
             held.append({"values": s, "ok": False, "error": e.message})
+    fixed = FIXED.findall(g["template"]) and [x.group(0) for x in FIXED.finditer(g["template"])]
+    if fixed:
+        reasons.append(f"it keeps a fixed date or month ({', '.join(fixed)}): it would always answer for that period")
+    if LIST.search(g["template"]):
+        reasons.append("it takes a list of ids: one request's answer, not a general tool")
     if len(held) < 3:
         reasons.append("not enough held-out values to test it")
     elif not all(h["ok"] for h in held):

@@ -22,7 +22,7 @@ from datetime import datetime
 from pathlib import Path
 
 import exp_freeze
-from anubhav import muse
+from anubhav import muse, trace
 from anubhav.agent import graph
 from anubhav.data.config import ROOT
 from anubhav.harness import practice
@@ -35,9 +35,14 @@ from anubhav.runtime.query import sandbox
 WORLD = ROOT / "data" / "worlds" / "full_seed5279"
 
 
+TRACE_LABEL = None      # set from --tag: every run's full trace is saved to data/traces (local, not in git), so its SQL can be read later
+
+
 def ask(C, client, q, analysis, learned=()):
     b = Broker(C, Session(C.company, "dispatcher", "exp012"), analysis=analysis, learned_tools=learned)
     r = graph.run(b, client, q["question"])
+    if TRACE_LABEL:
+        trace.save(r, label=TRACE_LABEL)
     s = practice.score(q, r)
     return r, {**{k: q[k] for k in ("id", "company", "type", "lang", "question")}, **{k: s[k] for k in ("answer_ok", "right_tool", "tools", "cost_usd")},
                "tool_calls": r["tool_calls"], "stop": r["stop"], "reply": r["reply"][:400], "run_id": r["run_id"]}
@@ -62,6 +67,8 @@ def main():
     ap.add_argument("--budget", type=float, default=0.0, help="stop once this many dollars are spent (0 = no limit)")
     ap.add_argument("--freeze", action="store_true", help="write <tag>_frozen.json and exit (before any model call)")
     a = ap.parse_args()
+    global TRACE_LABEL
+    TRACE_LABEL = f"{a.tag}:{a.model}"
     script = "scripts/exp012b_new_tools.py"
     if a.freeze:
         print(json.dumps(exp_freeze.freeze(a.tag, script), indent=1))

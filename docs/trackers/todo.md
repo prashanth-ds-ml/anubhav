@@ -160,7 +160,8 @@ Owner and Claude in parallel. The single Planner stays the baseline and fallback
 |---|---|---|
 | A1 | Overnight experiments on the Meta API (D-054): EXP-015 (EXP-011R on Spark 1.3: replicated 3 of 3), EXP-014 (team 58.6% → 91.4%, 3 of 5 rules; no tools, Tool Forge worse), EXP-016 (no learned tools on Spark 1.3); $43.05; results in Proof, Agents and README | ✅ Nov 3 (pre-registered `da8f8be`, results `3e8efe9`, wired into the app next commit) |
 | A2 | Deploy: the owner's Hugging Face Space name and the `meta_api` secret; push the Docker image; incognito check (health, first screen, S1–S3, live meter with a real key) | ⬜ needs the Space name |
-| A1b | Why Spark 1.3 made no tool candidates (EXP-014, EXP-016): check whether its queries differ for each request; a finding, not a claim | ⬜ optional, no spend |
+| A1b | Why Spark 1.3 made no tool candidates: detection fixed (case, LIKE, months, id lists; tests) and a $0.98 diagnostic run. Main cause: Spark 1.3 answers the same question differently each time (raw dumps, drifting inputs and measures), not detection | ✅ Nov 3 ([[experiments]] "Diagnostic") |
+| A1c | Query library for the query writer (an earlier query for a similar question) and the one-aggregated-query instruction; then measure (pre-registered) | ⬜ after deploy and video, owner's go |
 | A3 | Video from [[demo_video]] (S1, S2, S6 via `/?tour=`, Proof, 15 s of S4 live) | ⬜ owner |
 | A4 | Submission checklist, dry run, submit (Nov 4 evening IST) | ⬜ |
 

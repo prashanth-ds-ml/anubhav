@@ -634,3 +634,19 @@ Packs: T01→TNEW 4 lessons (1 skipped: no matching site), T02→TNEW 4 lessons 
 ### Overnight batch, 2026-11-03 (D-054)
 Order: EXP-015, then EXP-014, then EXP-016, one after the other. The batch runs with the Baseten key blanked, so a Baseten call fails instead of spending. Caps total **$63** of Meta credit (about $133 left before the batch); at least about $70 stays for judges and the demo. A failed or capped experiment does not stop the next one; each result is reported whichever way it goes.
 - **Done 03:17 IST:** all three ran to the end, 905 rows in total ($20.15 + $20.62 + $2.28 = **$43.05** Meta, no Baseten call). Log: `artifacts/benchmark/overnight_d054_20261103_001537.log`.
+
+### Diagnostic, 2026-11-03: why Muse Spark 1.3 made no learned tools (not a benchmark; owner's go)
+- **Free part (no model call):** tool detection only recognised an input written as an exact equality with the stored spelling. `lower(town) = 'hanamkonda'`, `town LIKE '%Hanamkonda%'` and `lower(town) LIKE '%hanamkonda%'` (how Spark Open wrote it in our own recorded demo run) were dropped; a month written `'2026-09'` stayed baked into the template, so a tool would always answer for that month; a list of site ids became a tool with one input per id. **Fixed in code:** case-insensitive and LIKE inputs (the template keeps the comparison, the stored value is the input), month inputs (moved by whole months in the held-out check; the broker accepts only YYYY-MM), id lists never counted and refused by the checks, and a template that keeps a fixed date or month fails its checks. Tests in `tests/learning/test_newtools.py`. This changes `newtools.py`, `broker.py` and `exp012b_new_tools.py` (which now saves full traces), so EXP-014 to EXP-016 must be frozen again before any re-run.
+- **$0.98 confirmation (Meta, Muse Spark 1.3):** `scripts/diag_tool_detection.py` re-asked EXP-016's 20 learning questions with traces saved, then ran the old and the new detection on the same runs (`artifacts/benchmark/diag_tools_spark_20261103_110258.json`).
+
+| | T01 | T02 |
+|---|---|---|
+| Queries written (10 requests each) | 18 | 17 |
+| Kept with inputs, old → new | 17 → 18 | 16 → 17 |
+| Groups (one tool each), old → new | 13 → 14 | 13 → 14 |
+| Most requests in one group | 2 | 3 |
+| Candidates (3+ requests) · passing the checks | 0 · 0 | 1 · 1 (old and new) |
+
+- **Finding:** the detection fix was real but small (one query a company). The main cause is that Spark 1.3 answers the same question differently each time: raw row dumps (20 to 200 rows) worked through in its own reply instead of one aggregated query; up to 4 exploratory queries per question; and, across the English, Roman Telugu and Telugu versions of one question, different inputs (one site id, a town, a looked-up site) and different measures (orders against stops). Different answers are rightly not merged. Where it was consistent it grouped (damaged cases: 2 requests; T02: one group of 3 that passed), so EXP-016's zero was partly one run's luck.
+- **Likely fix, not built:** show the query writer an earlier query that answered a similar question (a query library), and tell it to answer with one aggregated query that takes the town and dates as inputs (Tool Forge's instructions say this; EXP-016 used the single Planner, whose instructions do not). Optionally, 2 requests plus a person's approval.
+
