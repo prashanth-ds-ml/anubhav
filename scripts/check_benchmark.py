@@ -2,6 +2,8 @@
 opened read-only. See docs/benchmark_data_guide.md.
   uv run python scripts/check_benchmark.py benchmark/questions_v1.jsonl
   uv run python scripts/check_benchmark.py benchmark/questions_v1.jsonl --show      # also prints each computed answer
+  uv run python scripts/check_benchmark.py --schema T01                             # the tables and columns answer_sql can use
+Reference answers are computed over the agent's own sandbox tables (anubhav.eval.reference), the same for every company.
 """
 
 import argparse
@@ -12,7 +14,9 @@ from collections import Counter, defaultdict
 from pathlib import Path
 
 from anubhav.data.config import ROOT
+from anubhav.eval.reference import reference_sandbox, run_reference_sql
 from anubhav.runtime.broker import REGISTRY
+from anubhav.runtime.query import QueryError
 
 WORLD = ROOT / "data" / "worlds" / "full_seed7919"
 COMPANIES = {"T01", "T02"}
@@ -25,11 +29,14 @@ BANNED_SQL = ("truth", "attach", "hidden_rules", "canonical", "true_site_profile
 
 
 def rows_for(world, company, sql):
-    con = sqlite3.connect(f"file:{(world / f'{company}.sqlite').as_posix()}?mode=ro", uri=True)
-    try:
-        return con.execute(sql).fetchall()
-    finally:
-        con.close()
+    """The rows the agent itself would get: the company's sandbox tables, one read-only SELECT."""
+    return run_reference_sql(world, company, sql)
+
+
+def print_schema(world, company):
+    sb = reference_sandbox(world, company)
+    for name, m in sb.tables.items():
+        print(f"{name} ({m['rows']} rows): {', '.join(m['columns'])}")
 
 
 def answer_problem(kind, rows):
@@ -92,7 +99,7 @@ def check(lines, world=WORLD):
         if q["company"] in COMPANIES:
             try:
                 q["computed"] = rows_for(world, q["company"], q["answer_sql"])
-            except sqlite3.Error as e:
+            except (sqlite3.Error, QueryError) as e:
                 problems.append(f"{where}: SQL failed: {e}")
                 continue
             if p := answer_problem(q["answer_kind"], q["computed"]):
@@ -124,12 +131,20 @@ def check(lines, world=WORLD):
 def main(argv=None):
     sys.stdout.reconfigure(encoding="utf-8")
     ap = argparse.ArgumentParser(description="Check benchmark questions. No model is called.")
-    ap.add_argument("path", type=Path)
+    ap.add_argument("path", type=Path, nargs="?")
     ap.add_argument("--show", action="store_true", help="print each computed answer")
+    ap.add_argument("--schema", metavar="COMPANY", help="print the tables and columns answer_sql can use, then exit")
     a = ap.parse_args(argv)
+    if not a.schema and a.path is None:
+        ap.error("give a questions file, or --schema COMPANY")
     if not (WORLD / "manifest.json").exists():
         print("The test world is missing. Make it with: uv run python -m anubhav.data.generate --full --seed 7919")
         return 2
+    if a.schema:
+        if a.schema not in COMPANIES:
+            ap.error(f"--schema must be one of {sorted(COMPANIES)}")
+        print_schema(WORLD, a.schema)
+        return 0
     problems, warnings, questions = check(a.path.read_text(encoding="utf-8").splitlines())
     if a.show:
         for q in questions:
