@@ -77,7 +77,7 @@ All 19 experiments, with their verdicts, failures included: `docs/trackers/exper
 
 ## Links
 - **Code:** https://github.com/prashanth-ds-ml/anubhav
-- **Hosted demo:** TODO: the Hugging Face Space URL (not deployed yet). *(The README's Try it section still links the older Streamlit replay, anubhav-metahackathon.streamlit.app; decide whether to list it as a fallback.)*
+- **Hosted demo:** https://huggingface.co/spaces/KPrashanth/anubhav (an earlier replay-only version: anubhav-metahackathon.streamlit.app)
 - **Video:** TODO: the video URL (target 2:50).
 
 ## Bonus prizes we qualify for
@@ -87,5 +87,6 @@ All 19 experiments, with their verdicts, failures included: `docs/trackers/exper
 ## Before submitting (owner)
 - [ ] Choose the problem statement.
 - [ ] Check the exact bonus prize names on the form (the repo's trackers call the first one "Best Open Weights ($10K)").
-- [ ] Fill in the hosted demo and video links.
+- [x] Hosted demo link (Nov 3).
+- [ ] Fill in the video link.
 - [ ] Recount tests and commits if more land before submission (563 tests and 134 commits on Nov 3).

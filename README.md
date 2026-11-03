@@ -6,6 +6,8 @@
 
 *Same model. Verified experience. Safer plans.*
 
+**Try it:** **[huggingface.co/spaces/KPrashanth/anubhav](https://huggingface.co/spaces/KPrashanth/anubhav)** (start with S0, *Start from nothing*).
+
 ## The problem
 A dispatcher near Warangal knows that a 32 ft truck can't get into one Jangaon godown. That rule isn't in any system. It lives in a driver's note from a failed trip and in the dispatcher's head. An AI agent connected to the company's data passes every check and still sends the 32 ft truck.
 
@@ -139,12 +141,15 @@ Nothing in the runtime is hand-coded world knowledge: no word lists, no site rul
 **Measured on both models:** the recorded runs and the benchmarks EXP-011 to EXP-013 ran on **Muse Spark Open**, the open-weights model, served by Baseten. Live mode runs **Muse Spark 1.3** on the Meta API (D-050), and EXP-015 repeated the main benchmark on it with the same result. Muse Spark 1.3 also proposes lessons and patches, and code checks everything it proposes; Muse Voice Transcribe turns speech into text.
 
 ## Try it
-**Hosted demo:** **[anubhav-metahackathon.streamlit.app](https://anubhav-metahackathon.streamlit.app/)**. Replay mode, no keys, free; each visitor gets their own drafts and lessons. The first open after a quiet spell can take about a minute while it wakes up.
+**Hosted demo:** **[huggingface.co/spaces/KPrashanth/anubhav](https://huggingface.co/spaces/KPrashanth/anubhav)** (app: [kprashanth-anubhav.hf.space](https://kprashanth-anubhav.hf.space/)). Recorded scenarios are free; live mode runs Muse Spark 1.3, 8 live runs and one learning run per visit. Each visitor gets their own drafts and lessons. The first open after a quiet spell can take about a minute while the Space wakes up.
 
-**Six scenarios to try.** The web app opens on them; add `/?tour=S1` … `/?tour=S6` to its address to open one directly.
+An earlier replay-only version: [anubhav-metahackathon.streamlit.app](https://anubhav-metahackathon.streamlit.app/).
+
+**Seven scenarios to try.** The web app opens on them; add `/?tour=S0` … `/?tour=S6` to its address to open one directly.
 
 | | Scenario | Kind | What you see |
 |---|---|---|---|
+| S0 | Start from nothing | live, Muse Spark 1.3 | An empty workspace (0 lessons, 0 tools) plans a 32 ft truck; it learns from 90 days of records, code checks every proposed rule, you approve the 22 ft gate rule, and the same question gets a 22 ft truck |
 | S1 | The rule nobody wrote down | recorded, free | Without lessons a 32 ft truck, drawn past the gate's 22 ft line ("the code checks passed; only the learned rule says no"); with the approved lesson a 22 ft truck. Also recorded in Telugu, English and mixed |
 | S2 | It builds its own tool | recorded, free | A repeated question is checked by code and approved by you as a tool: 5 tool calls become 1 |
 | S3 | A new company on day 1 | recorded, free | Shared regional lessons: 33% → 100% on new-company cases, nothing private leaked |
