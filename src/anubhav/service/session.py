@@ -31,7 +31,7 @@ LIVE_CALLS_PER_DAY_BY_MODEL = {"open": 30}    # Baseten has the smaller credit, 
 PUBLIC = os.environ.get("ANUBHAV_PUBLIC") == "1"   # hosted for judges: each visitor gets their own drafts and lessons
 COMPANIES = {"T01": "Sri Kakatiya Logistics", "T02": "Ramappa Carriers", "T03": "Deccan Freight Services",
              "TNEW": "Bhadrakali Transport Co (new)"}
-AGENT_MODEL = "spark"           # the default for live runs (owner, D-046); people can switch to Muse Spark Open. Every measured result is on Open
+AGENT_MODEL = "spark"           # the default for live runs (owner, D-046); people can switch to Muse Spark Open. EXP-011R and earlier ran on Open; EXP-014 to EXP-016 on Spark 1.3 (D-054)
 MODELS = {"Replay (free)": None, "Muse Spark 1.3": "spark", "Muse Spark Open": "open"}
 SUGGESTIONS = {
     "Roman Telugu": "Repu Jangaon Lakshmi Agencies load ki bandi pettu. Dispatch confirm cheyyaku.",

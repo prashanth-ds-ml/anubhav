@@ -22,12 +22,12 @@ test("Benchmarks: the per-company chart and the mining bars come from the result
   await expect(page.getByRole("region", { name: /Open weights match/ }).locator("tbody tr")).toHaveCount(2);
 });
 
-test("the scoreboard lists all 17 pre-registered experiments, and every missed bar is marked ✕", async ({ page }) => {
+test("the scoreboard lists all 19 pre-registered experiments, and every missed bar is marked ✕", async ({ page }) => {
   const reg = (await (await page.request.get("/api/proof/registry")).json()).experiments as { id: string; verdict: string }[];
-  expect(reg).toHaveLength(17);
+  expect(reg).toHaveLength(19);
   await page.goto("/#proof");
-  const board = page.getByRole("list", { name: "17 experiments" });
-  await expect(board.locator("details")).toHaveCount(17);
+  const board = page.getByRole("list", { name: "19 experiments" });
+  await expect(board.locator("details")).toHaveCount(19);
   await expect(board.locator("details.v-not-met")).toHaveCount(reg.filter((r) => r.verdict === "not_met").length);
   await expect(board.locator("details.v-met")).toHaveCount(reg.filter((r) => r.verdict === "met").length);
   for (const r of reg.filter((x) => x.verdict === "not_met")) {
@@ -52,11 +52,25 @@ test("Check our claims: one line per repeat, and a plan → result chain for eve
   await expect(lessons).toContainText("bar set in advance: +25");
   await expect(page.getByRole("region", { name: /A new company went from/ })).toContainText("100% · all 3 repeats");
   const custody = page.getByRole("region", { name: /Check our claims: each one was fixed in advance/ });
-  await expect(custody.locator("tbody tr")).toHaveCount(17);
+  await expect(custody.locator("tbody tr")).toHaveCount(19);
   // Every row links its plan commit; every run experiment links its result commit and file.
-  await expect(custody.locator('a[href*="/commit/"]')).toHaveCount(17 + 16);
-  await expect(custody.getByRole("link", { name: "result file" })).toHaveCount(16);
+  await expect(custody.locator('a[href*="/commit/"]')).toHaveCount(19 + 19); // every experiment has now run
+  await expect(custody.getByRole("link", { name: "result file" })).toHaveCount(19);
   await expect(custody.locator("tbody tr").filter({ hasText: "EXP-009b" })).toContainText("(same commit)");
+});
+
+test("Proof shows the results on both models, and the per-company chart switches to Muse Spark 1.3", async ({ page }) => {
+  await page.goto("/#proof/claims");
+  const both = page.getByRole("region", { name: /Measured on both models/ });
+  await expect(both).toContainText("Muse Spark Open (EXP-011R)");
+  await expect(both).toContainText("Muse Spark 1.3 (EXP-015)");
+  await expect(both.getByRole("row", { name: /Unwritten rules/ })).toContainText("45% → 90%");
+  await expect(both.getByRole("row", { name: /Both bars met/ })).toContainText("3 of 3 ✓");
+  await page.goto("/#proof/bench");
+  await page.getByRole("button", { name: /EXP-015/ }).click();
+  const chart = page.getByRole("region", { name: /learning made every company's plans correct more often/ });
+  await expect(chart).toContainText("EXP-015 · Muse Spark 1.3");
+  await expect(chart.getByRole("figure")).toHaveAttribute("aria-label", /T01: 19\/42 to 36\/42, unsafe 2 to 0/);
 });
 
 test("the raw data links on Proof answer", async ({ page }) => {

@@ -42,7 +42,7 @@ test("plain-language labels replace jargon", async ({ page }) => {
   await page.getByRole("tab", { name: "Agents" }).click();
   await expect(page.getByRole("heading", { name: "How it learns" }).first()).toBeVisible();
   await expect(page.getByText(/thing(s)? about this company/).first()).toBeVisible();
-  await expect(page.getByText(/not measured yet/).first()).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Measured", exact: true }).first()).toBeVisible(); // every agent now has measured numbers (EXP-014)
   await expect(page.getByText("Held-out score")).toHaveCount(0);
 });
 

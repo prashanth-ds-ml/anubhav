@@ -55,8 +55,17 @@
     {"id": "EXP-013", "question": "Does the team work as well as one Planner?", "verdict": "met", "summary": "Safe and within its bars; not more accurate. The learning round missed its bar",
      "plan": {"commit": "73848f0", "date": "2026-10-31 18:34"}, "result": {"commit": "861a47f", "date": "2026-10-31 19:36", "file": "artifacts/benchmark/exp013_20261031_183713.json"},
      "custody": "plan_first", "runs": 162, "cost_usd": 14.21},
-    {"id": "EXP-014", "question": "Does the whole team improve as it learns, and does each agent?", "verdict": "not_run", "summary": "Pre-registered and frozen; not run yet",
-     "plan": {"commit": "59716e7", "date": "2026-10-31 19:54", "file": "artifacts/benchmark/exp014_frozen.json"}, "result": null,
-     "custody": "not_run"}
+    {"id": "EXP-014", "question": "Does the whole team improve as it learns, and does each agent?", "verdict": "not_met", "summary": "Team 58.6% to 91.4%, unsafe 4 to 0 (3 of 5 bars met); no tools made, and Tool Forge's approved change made it worse (100% to 50%)",
+     "bar": {"text": "S1 0 unsafe from s2 on; S2 lessons ≥ +25 points; S3 pack ≥ +25 points, 0 leaks; S4 a tool made, used on half the gap questions, gap no worse, cost ≤ 0.8×; S5 s4 no lower than s3 and one agent's own score up", "gain_pts": 25},
+     "plan": {"commit": "da8f8be", "date": "2026-11-03 00:15", "file": "artifacts/benchmark/exp014_frozen.json"}, "result": {"commit": "3e8efe9", "date": "2026-11-03 07:05", "file": "artifacts/benchmark/exp014_20261103_014004.json"},
+     "custody": "plan_first", "runs": 283, "cost_usd": 20.62, "note": "First frozen on 2026-10-31 (59716e7) and not run; re-registered with Muse Spark 1.3 agents on the Meta API before any call (D-054)."},
+    {"id": "EXP-015", "question": "Does EXP-011R hold on Muse Spark 1.3, the model judges use live?", "verdict": "met", "summary": "Replicated 3 of 3 on Spark 1.3: 45% to 90%, 33% to 100%, 0 unsafe",
+     "bar": {"text": "EXP-011's bars, per repeat and pooled: C − B ≥ 25 points with 0 unsafe; E − B ≥ 25 points with 0 leaks; replicated if met pooled and in 2 of 3 repeats", "gain_pts": 25},
+     "plan": {"commit": "da8f8be", "date": "2026-11-03 00:15", "file": "artifacts/benchmark/exp015_frozen.json"}, "result": {"commit": "3e8efe9", "date": "2026-11-03 07:05", "file": "artifacts/benchmark/exp015_20261103_001537.json"},
+     "custody": "plan_first", "runs": 306, "cost_usd": 20.15},
+    {"id": "EXP-016", "question": "Are learned tools used, and cheaper, on Muse Spark 1.3?", "verdict": "not_met", "summary": "No tools made on Spark 1.3 (0 of 16 used); it answered well without them",
+     "bar": {"text": "Learned tools: calls ≤ 0.7 × the query arm's, and answers not worse; used on at least half the questions", "call_ratio": 0.7},
+     "plan": {"commit": "da8f8be", "date": "2026-11-03 00:15", "file": "artifacts/benchmark/exp016_frozen.json"}, "result": {"commit": "3e8efe9", "date": "2026-11-03 07:05", "file": "artifacts/benchmark/exp016_20261103_030847.json"},
+     "custody": "plan_first", "runs": 52, "cost_usd": 2.28}
   ]
 }

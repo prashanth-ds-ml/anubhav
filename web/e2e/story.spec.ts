@@ -71,7 +71,7 @@ test("Proof shows the measured results, labelled as what they are, with what was
   await expect(panel).toContainText("0 unsafe drafts with lessons");
   await expect(panel).toContainText("Not improved, and said so");
   await expect(panel).toContainText("Not measured yet");
-  await expect(panel).toContainText("every measured planning run used Muse Spark Open");
+  await expect(panel).toContainText("Measured on both models: the results hold on Muse Spark 1.3");
   await page.getByRole("tab", { name: "Benchmarks" }).click();
   await expect(panel).toContainText("The team of agents is safe, but not more accurate than one Planner");
   await expect(panel).toContainText("Not improved:");

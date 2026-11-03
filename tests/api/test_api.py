@@ -544,7 +544,7 @@ def _git(*args):
 def test_the_experiment_registry_points_at_real_files_and_commits():
     reg = client_free_registry()
     rows = reg["experiments"]
-    assert len(rows) == 17 and len({r["id"] for r in rows}) == 17
+    assert len(rows) == 19 and len({r["id"] for r in rows}) == 19
     assert {r["verdict"] for r in rows} <= {"met", "not_met", "finding", "not_run"}
     for r in rows:
         if r["result"]:
@@ -567,6 +567,10 @@ def test_the_registry_keeps_each_bar_and_the_proof_route_gives_per_company_total
     reg = client_free_registry()["experiments"]
     by = {r["id"]: r for r in reg}
     assert by["EXP-009b"]["bar"]["precision"] == 0.85 and by["EXP-008"]["verdict"] == "not_met"   # the mining bar was missed (0.73)
+    assert by["EXP-015"]["verdict"] == "met" and by["EXP-014"]["verdict"] == "not_met" and by["EXP-016"]["verdict"] == "not_met"
+    proof = {x["id"]: x for x in client(env).get("/api/proof").json()}
+    assert "spark-1.3" in proof["EXP-015"]["model"] and proof["EXP-015"]["replicated"] == {"lessons": True, "transfer": True}
+    assert client(env).get("/api/proof/curve").json()["measured"] is True
     r11 = next(x for x in client(env).get("/api/proof").json() if x["id"] == "EXP-011R")
     assert r11["summary"] and all(k.split(":")[0] in {"T01", "T02", "TNEW"} for k in r11["summary"]) and r11["runs"] > 0
 

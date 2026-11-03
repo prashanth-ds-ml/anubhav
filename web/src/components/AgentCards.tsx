@@ -4,6 +4,7 @@ import { useApi } from "../lib/useApi";
 import { useSettings } from "../lib/ctx";
 import { AGENT_STYLE } from "../agents";
 import { go } from "../lib/route";
+import { AgentScores, TeamCurve, type Curve } from "./TeamCurve";
 
 // How each agent learns: a description of the design, for people. The numbers beside it come from the result files.
 const HOW: Record<string, string> = {
@@ -33,7 +34,21 @@ function Bar({ label, value, tone }: { label: string; value: number; tone: "base
 }
 
 /** What has been measured for one agent, read from /api/proof, with the experiment's own verdict. */
-function measured(agent: string, proof: Record<string, ProofEntry>, reg: Record<string, RegistryRow>): ReactNode {
+/** One line from EXP-014 for an agent: its own score, first version against final. */
+function fromCurve(agent: string, c?: Curve): ReactNode {
+  const a = c?.measured ? c.agents?.[agent] : undefined;
+  if (!a) return null;
+  const g = a.gain_pts;
+  const mark = g == null ? "" : g > 0 ? "▲" : g < 0 ? "▼" : "=";
+  const text = agent === "lesson_miner" ? `precision ${pct(a.v0?.precision ?? 0)} → ${pct(a.final?.precision ?? 0)}, recall ${pct(a.v0?.recall ?? 0)} → ${pct(a.final?.recall ?? 0)}`
+    : agent === "planner" ? `unwritten rules ${pct(a.v0?.unwritten ?? 0)} → ${pct(a.final?.unwritten ?? 0)} as learning was added`
+    : `${pct(a.v0?.rate ?? 0)} → ${pct(a.final?.rate ?? 0)} on its own ${a.v0?.n} questions`;
+  const cls = g == null || g === 0 ? "" : g > 0 ? "ok-text" : "err-text";
+  return <p className={`small ${cls}`}><span aria-hidden>{mark} </span>EXP-014 on Muse Spark 1.3: {text}{agent === "tool_forge" && g != null && g < 0 ? ", after its approved change" : ""}</p>;
+}
+
+function measured(agent: string, proof: Record<string, ProofEntry>, reg: Record<string, RegistryRow>, c?: Curve): ReactNode {
+  const more = fromCurve(agent, c);
   if (agent === "planner" && proof["EXP-011R"]?.repeats?.length) {
     const r = proof["EXP-011R"].repeats!;
     return (
@@ -41,8 +56,12 @@ function measured(agent: string, proof: Record<string, ProofEntry>, reg: Record<
         <p className="small">Unwritten rules handled, single Planner:</p>
         <Bar label="given the raw notes" value={mean(r.map((x) => x.raw_notes_B))} tone="base" />
         <Bar label="with approved lessons" value={mean(r.map((x) => x.lessons_C))} tone="now" />
-        <p className="small muted">EXP-011R · {r.length} repeats · {proof["EXP-011R"].measured_on}</p>
+        <p className="small muted">EXP-011R · {r.length} repeats · Muse Spark Open</p>
         <Verdict r={reg["EXP-011R"]} />
+        {proof["EXP-015"]?.pooled && (
+          <p className="small">On Muse Spark 1.3, the live model (EXP-015): <strong>{pct(proof["EXP-015"].pooled.raw_notes_B)} → {pct(proof["EXP-015"].pooled.lessons_C)}</strong>, {reg["EXP-015"]?.verdict === "met" ? "✓ replicated" : "not replicated"} in {proof["EXP-015"].repeats?.length} repeats</p>
+        )}
+        {more}
       </>
     );
   }
@@ -53,8 +72,10 @@ function measured(agent: string, proof: Record<string, ProofEntry>, reg: Record<
       <>
         {used && <p className="small">Learned tool used: <strong>{used.replace("/", " of ")}</strong> questions</p>}
         <p className="small">Tool calls: {Q.mean_tool_calls} → {T.mean_tool_calls} a question ({Math.round(100 * (1 - T.mean_tool_calls / Q.mean_tool_calls))}% fewer)</p>
-        <p className="small muted">EXP-012b · {Q.n} held-out questions</p>
+        <p className="small muted">EXP-012b · {Q.n} held-out questions · Muse Spark Open</p>
         <Verdict r={reg["EXP-012b"]} />
+        {proof["EXP-016"] && <p className="small err-text"><span aria-hidden>✕ </span>On Muse Spark 1.3 (EXP-016): no tool was made, so learned tools were used on {String(proof["EXP-016"].decision?.learned_tool_used_in ?? "0").replace("/", " of ")} questions</p>}
+        {more}
       </>
     );
   }
@@ -67,10 +88,11 @@ function measured(agent: string, proof: Record<string, ProofEntry>, reg: Record<
         <p className="small">Trap rules admitted: <strong>{Array.isArray(p.traps_admitted) ? p.traps_admitted.length : p.traps_admitted}</strong></p>
         <p className="small muted">EXP-009b · offline mining on an unseen world</p>
         <Verdict r={reg["EXP-009b"]} />
+        {more}
       </>
     );
   }
-  return <p className="not-measured small">Not measured yet. EXP-014 will score it before and after; no number until it has run.</p>;
+  return more ?? <p className="not-measured small">Not measured yet. EXP-014 will score it before and after; no number until it has run.</p>;
 }
 
 function Totals({ t }: { t?: AgentTotal }) {
@@ -96,6 +118,7 @@ export function AgentCards() {
   const reg = Object.fromEntries((regApi.data?.experiments ?? []).map((r) => [r.id, r]));
   const team = proof["EXP-013"]?.decision as Record<string, { n: number; ok: number; routing: number; unsafe: number }> | undefined;
   const exp014 = reg["EXP-014"];
+  const c = curve.data as Curve | null;
   return (
     <div className="agents-page">
       <section className="panel agents-head" aria-labelledby="ag-title">
@@ -129,7 +152,7 @@ export function AgentCards() {
               <p className="small">{HOW[a.agent] ?? "Not described."}</p>
               <p className="small muted">{a.versions_tried === 0 ? "No instruction changes tried yet." : `${a.versions_tried} instruction change${a.versions_tried === 1 ? "" : "s"} tried.`} Knows {a.knowledge_items} thing{a.knowledge_items === 1 ? "" : "s"} about this company. Live runs use {a.model === "spark" ? modelName("muse-spark-1.3") : a.model}.</p>
               <h4 className="eyebrow">Measured</h4>
-              {measured(a.agent, proof, reg)}
+              {measured(a.agent, proof, reg, c ?? undefined)}
               <Totals t={totals.data?.find((t) => t.agent === a.agent)} />
             </article>
           );
@@ -138,8 +161,12 @@ export function AgentCards() {
 
       <section className="panel" aria-labelledby="curve-title">
         <h3 id="curve-title">Does the whole team improve as it learns, and does each agent?</h3>
-        {curve.data?.measured ? (
-          <p className="small">EXP-014 has run. Its results are under Proof &amp; audit.</p>
+        {c?.measured ? (
+          <>
+            <TeamCurve c={c} />
+            <h4>Each agent, first version against its final one, on the same questions</h4>
+            <AgentScores c={c} names={Object.fromEntries(agents.data!.map((a) => [a.agent, a.name]))} />
+          </>
         ) : (
           <>
             <p className="small muted">

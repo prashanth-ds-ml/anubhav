@@ -158,8 +158,9 @@ Owner and Claude in parallel. The single Planner stays the baseline and fallback
 ## After the build (owner's order, [[Build_Plan_Demo_v1]] §4)
 | # | Task | Status |
 |---|---|---|
-| A1 | EXP-014 overnight: re-freeze with the model change recorded (agents on Muse Spark 1.3, Meta API), cap $40, commit the freeze before the first call; in the morning apply its fixed rules; Agents and Proof fill from `/api/proof/curve` | ⬜ needs the owner's go |
+| A1 | Overnight experiments on the Meta API (D-054): EXP-015 (EXP-011R on Spark 1.3: replicated 3 of 3), EXP-014 (team 58.6% → 91.4%, 3 of 5 rules; no tools, Tool Forge worse), EXP-016 (no learned tools on Spark 1.3); $43.05; results in Proof, Agents and README | ✅ Nov 3 (pre-registered `da8f8be`, results `3e8efe9`, wired into the app next commit) |
 | A2 | Deploy: the owner's Hugging Face Space name and the `meta_api` secret; push the Docker image; incognito check (health, first screen, S1–S3, live meter with a real key) | ⬜ needs the Space name |
+| A1b | Why Spark 1.3 made no tool candidates (EXP-014, EXP-016): check whether its queries differ for each request; a finding, not a claim | ⬜ optional, no spend |
 | A3 | Video from [[demo_video]] (S1, S2, S6 via `/?tour=`, Proof, 15 s of S4 live) | ⬜ owner |
 | A4 | Submission checklist, dry run, submit (Nov 4 evening IST) | ⬜ |
 

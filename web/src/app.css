@@ -615,3 +615,21 @@ table.custody td, table.custody th { vertical-align: top; text-align: left; }
   .replay-more { display: none; }
   .about-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 }
+
+/* Overnight results (D-054): the model switch on Proof, and EXP-014's stage chart on Agents */
+.model-switch { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 6px; margin: 0 0 8px; }
+.model-switch .subtab { border: 1px solid var(--border); min-height: 36px; padding: 4px 12px; font-size: 0.9rem; }
+.team-curve h4 { margin: 4px 0; font-size: 1rem; }
+.stage-bars { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; align-items: end; margin: 8px 0; }
+.stage-bar { display: grid; gap: 4px; justify-items: center; text-align: center; }
+.stage-track { position: relative; display: block; width: 100%; max-width: 90px; height: 140px; background: var(--bg); border-radius: 6px; }
+.stage-fill { position: absolute; left: 0; right: 0; bottom: 0; background: var(--chart-ok); border-radius: 6px; }
+.stage-name { color: var(--muted); }
+.rules { display: grid; gap: 2px; margin: 8px 0; }
+.agent-scores { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 8px; margin: 8px 0; }
+.agent-score { display: grid; gap: 2px; border: 1.5px solid var(--border); border-radius: 8px; padding: 8px 10px; }
+.agent-score.up { border-color: var(--ok); }
+.agent-score.down { border-color: var(--err); }
+.agent-score.up > .small:nth-of-type(1) { color: var(--ok); font-weight: 700; }
+.agent-score.down > .small:nth-of-type(1) { color: var(--err); font-weight: 700; }
+@media (max-width: 600px) { .stage-bars { grid-template-columns: repeat(5, minmax(56px, 1fr)); gap: 4px; } .stage-track { height: 100px; } }

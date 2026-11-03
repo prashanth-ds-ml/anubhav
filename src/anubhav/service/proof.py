@@ -68,16 +68,21 @@ def results():
     f, d = _latest(BENCH, "exp011_2*.json")
     if d:
         out.append({"id": "EXP-011", "file": f, "measured_on": "single Planner, commit 61cc927, one run each", "world": d.get("world"), "summary": d["summary"]})
-    f, d = _latest(BENCH, "exp011r_2*.json")
-    if d:
-        out.append({"id": "EXP-011R", "file": f, "measured_on": "single Planner on the shipped version, 3 repeats", "repeats": d["repeats"],
-                    "pooled": d["pooled"], "replicated": d["replicated"], "summary": d.get("summary"), "world": d.get("world"),
-                    "cost_usd": d.get("cost_usd"), "runs": len(d.get("rows", [])), "pack_leaks": sum(len(k.get("leaks", [])) for k in d.get("packs", []))})
-    for eid, pattern in (("EXP-012", "exp012_2*.json"), ("EXP-012b", "exp012b_2*.json")):
+    # EXP-011R and EXP-015 are one protocol on two models: Muse Spark Open (Baseten) and Muse Spark 1.3 (Meta), the live model.
+    for eid, pattern, measured in (("EXP-011R", "exp011r_2*.json", "single Planner on the shipped version, 3 repeats"),
+                                   ("EXP-015", "exp015_2*.json", "EXP-011R's protocol on Muse Spark 1.3 (Meta API), 3 repeats")):
         f, d = _latest(BENCH, pattern)
         if d:
-            out.append({"id": eid, "file": f, "measured_on": "single Planner; tool candidates at the old threshold of 2 requests (now 3, D-045)",
-                        "arms": d.get("arms"), "decision": d.get("decision")})
+            out.append({"id": eid, "file": f, "measured_on": measured, "model": d.get("model") or "meta-models/muse-spark-open-1026", "repeats": d["repeats"],
+                        "pooled": d["pooled"], "replicated": d["replicated"], "summary": d.get("summary"), "world": d.get("world"),
+                        "cost_usd": d.get("cost_usd"), "runs": len(d.get("rows", [])), "pack_leaks": sum(len(k.get("leaks", [])) for k in d.get("packs", []))})
+    for eid, pattern, measured in (("EXP-012", "exp012_2*.json", "single Planner; tool candidates at the old threshold of 2 requests (now 3, D-045)"),
+                                   ("EXP-012b", "exp012b_2*.json", "single Planner; tool candidates at the old threshold of 2 requests (now 3, D-045)"),
+                                   ("EXP-016", "exp016_2*.json", "EXP-012b's protocol on Muse Spark 1.3 (Meta API); candidates at 3 requests")):
+        f, d = _latest(BENCH, pattern)
+        if d:
+            out.append({"id": eid, "file": f, "measured_on": measured, "model": d.get("model") or "meta-models/muse-spark-open-1026",
+                        "arms": d.get("arms"), "decision": d.get("decision"), "learned": d.get("learned")})
     f, d = _latest(BENCH, "exp013_2*.json")
     if d:
         out.append({"id": "EXP-013", "file": f, "measured_on": "single Planner vs the team, one repeat, 54 cases; learning-round patches approved by a fixed rule in the experiment's own store",
@@ -93,5 +98,7 @@ def curve():
     f, d = _latest(BENCH, "exp014_2*.json")
     if not d:
         return {"measured": False, "note": "EXP-014 has not run yet"}
-    return {"measured": True, "file": f, "stages": d["stages"], "agents": d["agents"], "decision": d["decision"], "cost_usd": d["cost_usd"]}
+    changes = {p["agent"]: p.get("outcome") for p in d.get("learning", {}).get("patches", [])}   # each agent's proposed change: rejected, activated, or no problems
+    return {"measured": True, "file": f, "model": "muse-spark-1.3", "stages": d["stages"], "agents": d["agents"], "changes": changes,
+            "tools_made": d.get("learning", {}).get("tools_made"), "decision": d["decision"], "cost_usd": d["cost_usd"], "runs": len(d.get("rows", []))}
 

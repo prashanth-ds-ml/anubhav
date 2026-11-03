@@ -1,4 +1,5 @@
-import { api, type ProofEntry, type RegistryRow } from "../lib/api";
+import { useState } from "react";
+import { api, modelName, type ProofEntry, type RegistryRow } from "../lib/api";
 import { useApi } from "../lib/useApi";
 import { useFocusTarget } from "../lib/focus";
 import { go } from "../lib/route";
@@ -36,7 +37,7 @@ function Dumbbell({ e }: { e: ProofEntry }) {
   return (
     <section ref={ref} className="panel" aria-labelledby="dumb-title">
       <h3 id="dumb-title">On a world it had never seen, learning made every company's plans correct more often, with no unsafe drafts</h3>
-      <p className="small muted">EXP-011R · {e.world?.replace("full_seed", "fresh seed ")} · {e.runs} runs · totals over the repeats · {e.measured_on}</p>
+      <p className="small muted">{e.id} · <strong>{modelName(e.model)}</strong> · {e.world?.replace("full_seed", "fresh seed ")} · {e.runs} runs · totals over the repeats · {e.measured_on}</p>
       <figure className="ev-figure" aria-label={`Correct plans per company, without and with approved lessons. ${said}.`}>
         <div className="ev-scroll" tabIndex={0} role="region" aria-label="Chart, scrolls sideways on small screens">
           <svg viewBox={`0 0 700 ${H}`} role="img" aria-label={said} className="chart">
@@ -265,13 +266,54 @@ function Team({ e, reg }: { e?: ProofEntry; reg?: RegistryRow }) {
   );
 }
 
+/** The same protocol on both models: Muse Spark Open (EXP-011R) and Muse Spark 1.3, the model judges use live (EXP-015). */
+function BothModels({ proof, reg }: { proof: Record<string, ProofEntry>; reg: Record<string, RegistryRow> }) {
+  const runs = (["EXP-011R", "EXP-015"] as const).map((id) => ({ id, e: proof[id] })).filter((x) => x.e?.pooled);
+  if (runs.length < 2) return null;
+  const row = (label: string, f: (p: Record<string, any>) => string) => (
+    <tr><th scope="row">{label}</th>{runs.map(({ id, e }) => <td key={id}>{f(e!.pooled!)}</td>)}</tr>
+  );
+  return (
+    <section className="panel" aria-labelledby="both-title">
+      <h3 id="both-title">Measured on both models: the results hold on Muse Spark 1.3, the model you try live</h3>
+      <p className="small muted">The same 38 cases, arms, lessons, packs and judge, 3 repeats each, on a world neither had seen.</p>
+      <div className="tablewrap">
+        <table className="fit small">
+          <thead><tr><th>Totals over 3 repeats</th>{runs.map(({ id, e }) => <th key={id} scope="col">{modelName(e!.model)} ({id})</th>)}</tr></thead>
+          <tbody>
+            {row("Unwritten rules: raw notes → approved lessons", (p) => `${pct(p.raw_notes_B)} → ${pct(p.lessons_C)}`)}
+            {row("New company on day 1: alone → shared pack", (p) => `${pct(p.cold_B)} → ${pct(p.pack_E)}`)}
+            {row("Unsafe drafts with lessons", (p) => String(p.C_unsafe))}
+            <tr><th scope="row">Both bars met in each repeat</th>{runs.map(({ id, e }) => <td key={id}>{(e!.repeats ?? []).filter((r: any) => r.lessons_bar_met && r.transfer_bar_met).length} of {e!.repeats?.length} {reg[id]?.verdict === "met" ? "✓" : ""}</td>)}</tr>
+            <tr><th scope="row">Runs · cost</th>{runs.map(({ id, e }) => <td key={id}>{e!.runs} · ${e!.cost_usd?.toFixed(2)}</td>)}</tr>
+          </tbody>
+        </table>
+      </div>
+      <p className="small">{runs.map(({ id, e }) => <a key={id} href={blob(`artifacts/benchmark/${e!.file}`)} target="_blank" rel="noreferrer" style={{ marginRight: 12 }}>{id} result file</a>)}</p>
+    </section>
+  );
+}
+
 function Benchmarks({ proof, reg }: { proof: Record<string, ProofEntry>; reg: RegistryRow[] }) {
   const byId = Object.fromEntries(reg.map((r) => [r.id, r]));
+  const [m, setM] = useState<"EXP-011R" | "EXP-015">("EXP-011R");
+  const shown = proof[m]?.summary ? proof[m] : proof["EXP-011R"];
+  const both = !!proof["EXP-015"]?.summary && !!proof["EXP-011R"]?.summary;
   return (
     <>
       <div className="proof-top">
         <div>
-          {proof["EXP-011R"]?.summary && <Dumbbell e={proof["EXP-011R"]} />}
+          {both && (
+            <div className="model-switch" role="group" aria-label="Model for the per-company chart">
+              <span className="small muted">Model:</span>
+              {(["EXP-011R", "EXP-015"] as const).map((id) => (
+                <button key={id} type="button" className={`subtab ${m === id ? "on" : ""}`} aria-pressed={m === id} onClick={() => setM(id)}>
+                  {modelName(proof[id].model)} ({id}){id === "EXP-015" ? ", live model" : ""}
+                </button>
+              ))}
+            </div>
+          )}
+          {shown?.summary && <Dumbbell key={shown.id} e={shown} />}
           <Team e={proof["EXP-013"]} reg={byId["EXP-013"]} />
         </div>
         <div>
@@ -289,8 +331,10 @@ function Claims({ proof, reg }: { proof: Record<string, ProofEntry>; reg: Regist
   const gain = reg.find((r) => r.id === "EXP-011R")?.bar?.gain_pts;
   const team = proof["EXP-013"]?.decision as Record<string, { ok: number; n: number }> | undefined;
   const cap = e?.summary?.["T01:C"]?.by_family?.real_capacity;
+  const byId = Object.fromEntries(reg.map((r) => [r.id, r]));
   return (
     <>
+      <BothModels proof={proof} reg={byId} />
       {p && reps.length > 0 && (
         <div className="proof-top even">
           <Slope title={`Approved lessons lifted unwritten-rule accuracy from ${pct(p.raw_notes_B)} to ${pct(p.lessons_C)}`}
@@ -307,16 +351,19 @@ function Claims({ proof, reg }: { proof: Record<string, ProofEntry>; reg: Regist
       <section className="panel" aria-labelledby="open-title">
         <h3 id="open-title">Not measured yet</h3>
         <ul className="small">
-          <li>Whether each agent, and the whole team, improves version by version (EXP-014, pre-registered, not run).</li>
-          <li>Muse Spark 1.3 as the planner: every measured planning run used Muse Spark Open.</li>
+          <li>A real company's records: every result here uses synthetic companies, scored against rules the data generator hid.</li>
+          <li>A dispatcher's own review of the learned lessons (the review kit is ready; not run yet).</li>
+          <li>Voice accuracy on real Telugu speech: the transcription is checked by hand, not measured.</li>
         </ul>
       </section>
       <div className="proof-notes">
         <div className="note-box small"><strong>Reproduce without keys</strong><br /><code>uv run pytest -q</code>: every test runs without a model call.</div>
-        <div className="note-box small"><strong>Frozen files can't drift</strong><br />The EXP-013 and EXP-014 scripts refuse to run if a frozen file's hash has changed.</div>
+        <div className="note-box small"><strong>Frozen files can't drift</strong><br />The EXP-013 to EXP-016 scripts refuse to run if a frozen file's hash has changed.</div>
         <div className="note-box small"><strong>Not improved, and said so</strong><br />
           {cap ? `Real truck capacity: ${cap.replace("/", " of ")} with lessons. ` : ""}
-          {team?.S && team.M1 ? `Team accuracy: ${team.M1.ok} of ${team.M1.n}, not better than one Planner (${team.S.ok}).` : ""}
+          {team?.S && team.M1 ? `Team accuracy: ${team.M1.ok} of ${team.M1.n}, not better than one Planner (${team.S.ok}). ` : ""}
+          {byId["EXP-014"]?.verdict === "not_met" ? `EXP-014: ${byId["EXP-014"].summary}. ` : ""}
+          {byId["EXP-016"]?.verdict === "not_met" ? `EXP-016: ${byId["EXP-016"].summary}.` : ""}
         </div>
       </div>
     </>

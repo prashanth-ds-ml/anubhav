@@ -114,7 +114,7 @@ export interface NewTool {
 }
 export interface ProofEntry {
   id: string; measured_on: string; file?: string; pooled?: Record<string, any>; arms?: any; decision?: Record<string, any>; replicated?: Record<string, boolean>;
-  repeats?: any[]; learning_round?: any; cost_usd?: number; world?: string; runs?: number; pack_leaks?: number;
+  repeats?: any[]; learning_round?: any; cost_usd?: number; world?: string; runs?: number; pack_leaks?: number; model?: string; learned?: Record<string, unknown[]>;
   summary?: Record<string, { ok: string; unsafe: number; by_family?: Record<string, string>; cost_usd?: number }>;
 }
 export interface CompareSide { run_id: string; reply: string; drafts: { vehicle_id: string; orders: string[] }[]; tool_calls: number; cost_usd: number; lessons_in_prompt: number; }

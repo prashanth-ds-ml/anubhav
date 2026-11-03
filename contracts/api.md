@@ -98,7 +98,7 @@ The stream:
 | POST | `/api/review/run?company=` | Nightly review report; free on the public host |
 | GET | `/api/review/history?company=` | Past reports |
 | GET | `/api/proof` | Result files, each with `measured_on`. EXP-011R also has `summary` (per company and arm: `ok` as "n/m", `unsafe`, `by_family`), `world`, `runs`, `cost_usd` and `pack_leaks` |
-| GET | `/api/proof/curve` | EXP-014's stages and agent scores, or `{measured: false}` (it has not run) |
+| GET | `/api/proof/curve` | EXP-014: `{measured: true, file, model, stages: [{stage, n, correct, rate, unsafe, plan, gap, unwritten, new_company, …}], agents: {id: {v0, final, gain_pts}}, changes: {agent: rejected / activated / no problems}, tools_made, decision, cost_usd, runs}`, or `{measured: false}` before it has run. `/api/proof` also returns EXP-015 (EXP-011R's shape plus `model`) and EXP-016 (EXP-012b's shape plus `model`, `learned`) |
 | GET | `/api/proof/registry` | `{about, experiments:[{id, question, verdict: met / not_met / finding / not_run, summary, plan:{commit, date}, result:{commit, date, file} or null, custody: plan_first / same_commit / not_run, runs?, cost_usd?, note?, bar?: {text, precision?, gain_pts?, call_ratio?}}]}`. `bar` is the decision rule as fixed in advance, copied from the experiments log |
 | GET | `/api/compare?company=&request=` | One request from saved runs: cold, with lessons, with learned tools |
 | GET | `/api/ledger?company=&agent=&type=&limit=` | Hand-offs, drafts, checks, lessons used, missing tools |

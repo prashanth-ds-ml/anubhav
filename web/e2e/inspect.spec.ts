@@ -64,8 +64,17 @@ test("the Agents page reads its numbers from the result files, and says what is 
   await expect(forge).toContainText(`Tool calls: ${by["EXP-012b"].arms.Q.mean_tool_calls} → ${by["EXP-012b"].arms.T.mean_tool_calls}`);
   await expect(forge).toContainText("✕ bar not met");
   await expect(page.getByRole("article", { name: "Lesson Miner" })).toContainText(`Precision ${pct(by["EXP-009b"].pooled.precision)}`);
-  await expect(page.getByRole("article", { name: "Analyst" })).toContainText("Not measured yet.");
-  await expect(page.getByRole("region", { name: /Does the whole team improve/ })).toContainText("not run yet");
+  // EXP-014 (Muse Spark 1.3), read from /api/proof/curve: the team stage by stage, and each agent before and after.
+  const curve = await (await page.request.get("/api/proof/curve")).json();
+  const first = curve.stages[0], last = curve.stages[curve.stages.length - 1];
+  const r = (x: number) => `${Math.round(x * 1000) / 10}%`;
+  await expect(page.getByRole("article", { name: "Analyst" })).toContainText("EXP-014 on Muse Spark 1.3: 78% → 78%");
+  await expect(page.getByRole("article", { name: "Tool Forge" })).toContainText("On Muse Spark 1.3 (EXP-016): no tool was made");
+  const curveBox = page.getByRole("region", { name: /Does the whole team improve/ });
+  await expect(curveBox).toContainText(`The whole team got better as each kind of learning was added: ${r(first.rate)} → ${r(last.rate)}`);
+  await expect(curveBox.getByRole("list", { name: "The rules fixed in advance" })).toContainText("Tools: made, used on half the gap questions, cheaper: not met");
+  await expect(curveBox.getByRole("list", { name: "Each agent, first version against its final one" })).toContainText("▼ -50 points");
+  await expect(page.getByRole("article", { name: "Planner" })).toContainText("On Muse Spark 1.3, the live model (EXP-015): 45% → 90%");
 });
 
 test("Tools: the benchmark beside the candidates, and what approving changes beside Approve", async ({ page }) => {
