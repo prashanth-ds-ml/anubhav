@@ -13,6 +13,8 @@ This is the normal case, not an edge case. India has about 12.5 million trucks r
 
 Muse already handles Telugu, Roman Telugu and tool calls well. What it can't know is the local, unwritten part. Anubhav lets the agent earn that knowledge from the business's own records, with proof, and only after a person agrees.
 
+**Built for small fleets first.** Anubhav is built first for small and mid-size fleets and distributors, where rules live in notes and people's heads. We expect the same loop to get stronger as a company grows: more trips give the evidence gate more to prove, repeated questions become tools sooner, and every company in a region adds to what the next one learns on day one. This is a hypothesis. We haven't measured it yet; it's the next experiment.
+
 ## Results (pre-registered; files frozen by hash before any model call; read the [limitations](#limitations))
 
 **Final benchmark, EXP-011R: the shipped version, 3 repeats.** A world the system had never seen (fresh seed 5279), the same model (Muse Spark Open), 38 cases in RT/TE/EN, each run 3 times (306 runs), on the version you can try. Totals over the 3 repeats:
