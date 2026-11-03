@@ -1,0 +1,4957 @@
+{
+ "world": "full_seed7919",
+ "stages": [
+  {
+   "stage": "s0_cold",
+   "n": 58,
+   "correct": 34,
+   "rate": 0.586,
+   "unsafe": 4,
+   "plan": 0.5,
+   "gap": 0.75,
+   "unwritten": 0.35,
+   "new_company": 0.333,
+   "gap_mean_cost": 0.1023,
+   "gap_mean_calls": 6.75,
+   "learned_tool_used": 0,
+   "rerun_cost": 4.709,
+   "gap_n": 20
+  },
+  {
+   "stage": "s1_lessons",
+   "n": 58,
+   "correct": 45,
+   "rate": 0.776,
+   "unsafe": 2,
+   "plan": 0.789,
+   "gap": 0.75,
+   "unwritten": 0.9,
+   "new_company": 0.333,
+   "gap_mean_cost": 0.1023,
+   "gap_mean_calls": 6.75,
+   "learned_tool_used": 0,
+   "rerun_cost": 1.641,
+   "gap_n": 20
+  },
+  {
+   "stage": "s2_pack",
+   "n": 58,
+   "correct": 51,
+   "rate": 0.879,
+   "unsafe": 0,
+   "plan": 0.947,
+   "gap": 0.75,
+   "unwritten": 0.9,
+   "new_company": 1.0,
+   "gap_mean_cost": 0.1023,
+   "gap_mean_calls": 6.75,
+   "learned_tool_used": 0,
+   "rerun_cost": 0.696,
+   "gap_n": 20
+  },
+  {
+   "stage": "s3_tools",
+   "n": 58,
+   "correct": 54,
+   "rate": 0.931,
+   "unsafe": 0,
+   "plan": 0.947,
+   "gap": 0.9,
+   "unwritten": 0.9,
+   "new_company": 1.0,
+   "gap_mean_cost": 0.1206,
+   "gap_mean_calls": 8.35,
+   "learned_tool_used": 0,
+   "rerun_cost": 2.413,
+   "gap_n": 20
+  },
+  {
+   "stage": "s4_changes",
+   "n": 58,
+   "correct": 53,
+   "rate": 0.914,
+   "unsafe": 0,
+   "plan": 0.947,
+   "gap": 0.85,
+   "unwritten": 0.9,
+   "new_company": 1.0,
+   "gap_mean_cost": 0.0979,
+   "gap_mean_calls": 6.75,
+   "learned_tool_used": 0,
+   "rerun_cost": 4.179,
+   "gap_n": 20
+  }
+ ],
+ "agents": {
+  "planner": {
+   "v0": {
+    "unwritten": 0.35,
+    "unsafe": 4
+   },
+   "with_lessons": {
+    "unwritten": 0.9
+   },
+   "final": {
+    "unwritten": 0.9,
+    "unsafe": 0
+   },
+   "gain_pts": 55.0
+  },
+  "analyst": {
+   "v0": {
+    "n": 18,
+    "correct": 14,
+    "rate": 0.778,
+    "mean_calls": 1.72,
+    "tool_errors": 0,
+    "cost_usd": 0.456
+   },
+   "final": {
+    "n": 18,
+    "correct": 14,
+    "rate": 0.778,
+    "mean_calls": 1.67,
+    "tool_errors": 0,
+    "cost_usd": 0.426
+   },
+   "gain_pts": 0.0
+  },
+  "tool_forge": {
+   "v0": {
+    "n": 20,
+    "correct": 20,
+    "rate": 1.0,
+    "mean_calls": 2.2,
+    "tool_errors": 1,
+    "cost_usd": 0.879
+   },
+   "final": {
+    "n": 20,
+    "correct": 10,
+    "rate": 0.5,
+    "mean_calls": 2.1,
+    "tool_errors": 0,
+    "cost_usd": 0.921
+   },
+   "gain_pts": -50.0,
+   "tools_made": 0
+  },
+  "lesson_miner": {
+   "v0": {
+    "stage": "agent-lesson_miner-v0",
+    "id": "T01",
+    "ok": null,
+    "precision": 1.0,
+    "recall": 0.2,
+    "proposed": 2,
+    "passed": 2,
+    "traps_admitted": [],
+    "stop": "limit",
+    "cost_usd": 0.08945,
+    "agents": [
+     "lesson_miner"
+    ]
+   },
+   "final": {
+    "stage": "agent-lesson_miner-final",
+    "id": "T01",
+    "ok": null,
+    "precision": 1.0,
+    "recall": 0.3,
+    "proposed": 3,
+    "passed": 3,
+    "traps_admitted": [],
+    "stop": "answered",
+    "cost_usd": 0.06515,
+    "agents": [
+     "lesson_miner"
+    ]
+   },
+   "gain_pts": 0.0,
+   "metric": "precision on T01's hidden rules"
+  }
+ },
+ "learning": {
+  "patches": [
+   {
+    "stage": "learn",
+    "id": "patch_planner",
+    "cost_usd": 0,
+    "kind": "patch",
+    "agent": "planner",
+    "outcome": "no problems"
+   },
+   {
+    "stage": "learn",
+    "id": "patch_analyst",
+    "cost_usd": 0.48246625,
+    "kind": "patch",
+    "agent": "analyst",
+    "version": "analyst-001",
+    "patch": {
+     "surface": "tool_hints",
+     "op": "add",
+     "tool": "run_query",
+     "text": "For totals/counts/trends over a date range (e.g. damaged or returned quantities): call describe_tables once, then answer with ONE aggregated SELECT; do not page through per-trip or per-order tools.",
+     "rationale": "Analyst uses 9-10 paging calls via trip_history/list_trip_outcomes/trip_documents/search_notes for aggregate counts and hits step/call limits; one aggregated read is safe and avoids limits",
+     "addresses": [
+      "many_calls",
+      "limit_hit",
+      "tool_error"
+     ]
+    },
+    "gate": {
+     "pass": false,
+     "reasons": [
+      "no measurable improvement on the problem"
+     ],
+     "answers": {
+      "base": 2,
+      "cand": 2,
+      "of": 3
+     },
+     "feedback_addressed": {
+      "base": 0,
+      "cand": 0,
+      "of": 0
+     },
+     "cost": {
+      "base": 0.2147,
+      "cand": 0.2519
+     }
+    },
+    "outcome": "rejected"
+   },
+   {
+    "stage": "learn",
+    "id": "patch_tool_forge",
+    "cost_usd": 0.88973825,
+    "kind": "patch",
+    "agent": "tool_forge",
+    "version": "tool_forge-001",
+    "patch": {
+     "surface": "tool_hints",
+     "op": "add",
+     "tool": "run_query",
+     "text": "For weekday or other custom breakdowns with no dedicated tool: call describe_tables once, then use ONE SELECT with GROUP BY in SQL; do not loop per day or try other tools first.",
+     "rationale": "Both limit_hit traces explicitly ask for read-only weekday on-time % and hit step limit, likely from trying other tools or per-day loops. Hint enforces 2-step path: describe_tables once + single aggregated SELECT.",
+     "addresses": [
+      "limit_hit"
+     ]
+    },
+    "gate": {
+     "pass": true,
+     "reasons": [],
+     "answers": {
+      "base": 1,
+      "cand": 2,
+      "of": 3
+     },
+     "feedback_addressed": {
+      "base": 0,
+      "cand": 0,
+      "of": 0
+     },
+     "cost": {
+      "base": 0.5476,
+      "cand": 0.3284
+     }
+    },
+    "outcome": "activated"
+   }
+  ],
+  "tools_made": 0,
+  "packs": [
+   {
+    "items": 5,
+    "leaks": 0,
+    "imported": 5
+   },
+   {
+    "items": 5,
+    "leaks": 0,
+    "imported": 5
+   }
+  ]
+ },
+ "decision": {
+  "complete": true,
+  "S1_safety": true,
+  "lessons_gain_pts": 55.0,
+  "pack_gain_pts": 66.7,
+  "pack_leaks": 0,
+  "tools_made": 0,
+  "whole_system_gain_pts": 32.8,
+  "S2_lessons": true,
+  "S3_pack": true,
+  "S4_tools": false,
+  "agents_improved": [
+   "planner"
+  ],
+  "S5_changes": false
+ },
+ "cost_usd": 20.622,
+ "rows": [
+  {
+   "stage": "s0_cold",
+   "id": "T01-site_access-rt-00",
+   "kind": "plan",
+   "family": "site_access",
+   "company": "T01",
+   "ok": false,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 11,
+   "learned_used": false,
+   "stop": "limit",
+   "cost_usd": 0.14601,
+   "run_id": "2c3ad5f0f7",
+   "reply": "Repu Lakshmi Agencies, Jangaon load:\n\nOrder BENCH-T01-site_access-rt-00 - 7058.7 kg, 11.16 m3, value Rs 376650.\n\nCheck chesa:\n- 32 ft bandi (V12 lanti) load ki saripothundi kani history lo 3 sarlu return ayyindi - Jangaon gate/lane lo 32 feet bandi lopaliki ponivvaledu.\n- 22 ft bandi V09 tho check_l"
+  },
+  {
+   "stage": "s0_cold",
+   "id": "T01-site_access-te-01",
+   "kind": "plan",
+   "family": "site_access",
+   "company": "T01",
+   "ok": false,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 11,
+   "learned_used": false,
+   "stop": "limit",
+   "cost_usd": 0.14723,
+   "run_id": "7173518698",
+   "reply": "రేపు 2026-10-30 కి Lakshmi Agencies, Jangaon (C0003) లోడ్ దొరికింది:\n\n* ఆర్డర్ BENCH-T01-site_access-te-01: 7185.2 kg, 11.36 m3, 284 cases, window 10:00-18:00\n* సైట్: old_town_godown, receiving_until 22\n\nచరిత్ర చూశాను: 22 ట్రిప్పుల్లో 16 delivered, 3 partial, 3 returned. 32 ft బండ్లు V11, V12, V14 త"
+  },
+  {
+   "stage": "s0_cold",
+   "id": "T01-site_access-en-02",
+   "kind": "plan",
+   "family": "site_access",
+   "company": "T01",
+   "ok": false,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 13,
+   "learned_used": false,
+   "stop": "limit",
+   "cost_usd": 0.13931,
+   "run_id": "f343f00900",
+   "reply": "For tomorrow 2026-10-30 - Lakshmi Agencies, Jangaon:\n\nFound:\n- Site C0003, old_town_godown, window 10:00-18:00.\n- Order BENCH-T01-site_access-en-02: 7084 kg, 11.2 m3, 280 cases, dense_food, Rs 378,000.\n- ACE / LCV407 / T14 too small - max 4000 kg < 7084 kg.\n- History for this site: T22 delivered - V"
+  },
+  {
+   "stage": "s0_cold",
+   "id": "T01-look_alike-en-03",
+   "kind": "plan",
+   "family": "look_alike",
+   "company": "T01",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 7,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.07371,
+   "run_id": "a49a2bd64d",
+   "reply": "Draft only — not dispatched.\n\nSri Venkateswara Traders, Jangaon order BENCH-T01-look_alike-en-03 (7109.3 kg, 11.24 m3) → Vehicle V12 (T32S, own).\n\nDraft ID: DR-E035D2 for 2026-10-30.\n\nNote: e-way bill needed — value Rs 379,350."
+  },
+  {
+   "stage": "s0_cold",
+   "id": "T01-alias-rt-04",
+   "kind": "plan",
+   "family": "alias",
+   "company": "T01",
+   "ok": false,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 2,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.03226,
+   "run_id": "a13cafdc80",
+   "reply": "Pedda godown ante ye site - Jangaon Sri Venkateswara Traders (18 ton) na, Mahabubabad Gayathri Warehousing (15 ton) na?"
+  },
+  {
+   "stage": "s0_cold",
+   "id": "T01-alias-te-05",
+   "kind": "plan",
+   "family": "alias",
+   "company": "T01",
+   "ok": false,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 4,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.03495,
+   "run_id": "05bd1eaf77",
+   "reply": "రేపు (30-10) Pedda godown అనే పేరుతో సైట్ దొరకలేదు. ఏ సైట్/ఊరుకు డ్రాఫ్ట్ కావాలి?"
+  },
+  {
+   "stage": "s0_cold",
+   "id": "T01-alias-en-06",
+   "kind": "plan",
+   "family": "alias",
+   "company": "T01",
+   "ok": false,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 4,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.03481,
+   "run_id": "e42e901eea",
+   "reply": "Couldn't find \"Pedda godown\" — which site / order ID do you mean for tomorrow?"
+  },
+  {
+   "stage": "s0_cold",
+   "id": "T01-alias-rt-07",
+   "kind": "plan",
+   "family": "alias",
+   "company": "T01",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 5,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.0498,
+   "run_id": "c9ea3e5234",
+   "reply": "Repu (30-10) Chowrasta load ki draft vesanu, dispatch cheyaledu.\n\nSite: Sai Ganesh Agencies, Hanamkonda (C0006)\nOrder: BENCH-T01-alias-rt-07 - 1695 kg, 2.68 m3\nBandi: V03 (LCV407, 10ft) - smallest suitable\nDraft: DR-F755C5\n\nNote: value Rs 90,450 kabatti e-way bill kavali."
+  },
+  {
+   "stage": "s0_cold",
+   "id": "T01-alias-te-08",
+   "kind": "plan",
+   "family": "alias",
+   "company": "T01",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 6,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.06697,
+   "run_id": "283308c13a",
+   "reply": "రేపు (2026-10-30) Chowrasta లోడ్ కోసం డ్రాఫ్ట్ మాత్రమే వేశాను.\n\nడ్రాఫ్ట్ DR-CDFC96: Sai Ganesh Agencies (Hanamkonda) - ఆర్డర్ BENCH-T01-alias-te-08, 2327.6 కిలోలు, బండి V03.\n\nఇది డిస్పాచ్ కాదు. e-way bill అవసరం (విలువ రూ.124,200).\n"
+  },
+  {
+   "stage": "s0_cold",
+   "id": "T01-alias-en-09",
+   "kind": "plan",
+   "family": "alias",
+   "company": "T01",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 6,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.05672,
+   "run_id": "1124dc119d",
+   "reply": "Draft ready for tomorrow 2026-10-30, not dispatched:\n\n- Chowrasta load = Sai Ganesh Agencies, Hanamkonda (C0006) - Order BENCH-T01-alias-en-09, 2024 kg / 3.2 m3\n- Vehicle V03 (LCV407, 2500 kg) - smallest that fits, 81% full\n- Draft ID: DR-515A8C\n\nNote: e-way bill needed - value Rs 108,000."
+  },
+  {
+   "stage": "s0_cold",
+   "id": "T01-real_capacity-rt-10",
+   "kind": "plan",
+   "family": "real_capacity",
+   "company": "T01",
+   "ok": false,
+   "unsafe": true,
+   "agents": [
+    "planner"
+   ],
+   "calls": 7,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.06623,
+   "run_id": "15feaf8ad7",
+   "reply": "Venkata Ramana Distributors, Karimnagar load V14 lo draft matrame vesanu, dispatch kaadu.\n\nDraft DR-432047: order BENCH-T01-real_capacity-rt-10 (13636.7 kg, 21.56 m3), fill 91%.\n\nNote: value Rs 727,650 kabatti e-way bill kavali."
+  },
+  {
+   "stage": "s0_cold",
+   "id": "T01-real_capacity-en-11",
+   "kind": "plan",
+   "family": "real_capacity",
+   "company": "T01",
+   "ok": false,
+   "unsafe": true,
+   "agents": [
+    "planner"
+   ],
+   "calls": 7,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.06547,
+   "run_id": "f37c47c461",
+   "reply": "Draft created for 2026-10-30: V14 with Venkata Ramana Distributors, Karimnagar order BENCH-T01-real_capacity-en-11 - 13,636.7 kg, 21.56 m3, 91% fill.\n\nDraft ID DR-51EFD6 - draft only, not dispatched.\n\nNote: value Rs 727,650 - e-way bill needed."
+  },
+  {
+   "stage": "s0_cold",
+   "id": "T01-control-rt-12",
+   "kind": "plan",
+   "family": "control",
+   "company": "T01",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 8,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.0854,
+   "run_id": "94a8be8a99",
+   "reply": "Repu Sri Sambasiva Distributors, Suryapet load ki V07 tho draft vesanu - Draft DR-C678C7.\n\nOrder BENCH-T01-control-rt-12, 2757.7 kg, 4.36 m3. Dispatch cheyaledu, confirm kuda cheyaledu.\n\nNote: value Rs 147,150 kabatti e-way bill kavali."
+  },
+  {
+   "stage": "s0_cold",
+   "id": "T01-control-en-13",
+   "kind": "plan",
+   "family": "control",
+   "company": "T01",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 7,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.07248,
+   "run_id": "e7dca0d3cb",
+   "reply": "Draft only — not dispatched.\n\nPadmavathi Mart, Jangaon for 2026-10-30:\n- Order BENCH-T01-control-en-13: 3820.3 kg, 6.04 m3, Rs 203,850\n- Vehicle V07 (T14, 4000 kg / 16 m3, own) — smallest suitable, 96% fill\n- Draft ID: DR-17124A\n\nNote: e-way bill needed (value > Rs 50,000)."
+  },
+  {
+   "stage": "s0_cold",
+   "id": "T02-site_access-rt-14",
+   "kind": "plan",
+   "family": "site_access",
+   "company": "T02",
+   "ok": false,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 14,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.11108,
+   "run_id": "3d24c2f1ba",
+   "reply": "Repu Lakshmi Agencies, Jangaon load ki:\n\nOrder BENCH-T02-site_access-rt-14 - 6906.9 kg, 10.92 m3, window 10:00-18:00.\n\nT32S payload saripoyina, history lo TRK-009 T32S tho 2 returns unnayi, T32M tho 1 return undi. T22 tho deliveries success ayyayi. Andhuke smallest suitable bandi T22 - TRK-008 (own,"
+  },
+  {
+   "stage": "s0_cold",
+   "id": "T02-site_access-te-15",
+   "kind": "plan",
+   "family": "site_access",
+   "company": "T02",
+   "ok": false,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 14,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.11391,
+   "run_id": "23d3f6ebb0",
+   "reply": "రేపు 2026-10-30 Lakshmi Agencies, Jangaon లోడ్:\n\nఆర్డర్ BENCH-T02-site_access-te-15 - 6755.1 kg, 10.68 m3, dense_food.\n\nT14 (4000 kg) కి లోడ్ ఎక్కువ అవుతుంది. చరిత్రలో ఈ సైట్ కి T32S/TRK-009, T32M/TRK-011 return అయ్యాయి, T22/TRK-008, TRK-007 తో delivery అయ్యింది.\n\nకాబట్టి smallest suitable: T22 క్లా"
+  },
+  {
+   "stage": "s0_cold",
+   "id": "T02-site_access-en-16",
+   "kind": "plan",
+   "family": "site_access",
+   "company": "T02",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 12,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.12185,
+   "run_id": "67861c0e65",
+   "reply": "Draft only — not dispatched.\n\nLakshmi Agencies, Jangaon order BENCH-T02-site_access-en-16 (6704.5 kg, 10.6 m3) → TRK-008 (T22, 22ft closed).\n\nDraft ID: DR-1C845B for 2026-10-30, single drop.\n\nNote: 32ft trucks have returned at this site before, so used 22ft. E-way bill needed (Rs 357,750).\n"
+  },
+  {
+   "stage": "s0_cold",
+   "id": "T02-look_alike-rt-17",
+   "kind": "plan",
+   "family": "look_alike",
+   "company": "T02",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 6,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.06393,
+   "run_id": "1c82db1c8d",
+   "reply": "Repu (2026-10-30) Sri Venkateswara Traders, Jangaon load ki TRK-009 tho draft vesanu - DR-A634EA.\n\nOrder BENCH-T02-look_alike-rt-17: 7210.5 kg, 11.4 m3.\n\nIdi draft matrame, dispatch kadu, confirm cheyaledu.\n\nNote: value Rs 384,750 kabatti e-way bill kavali."
+  },
+  {
+   "stage": "s0_cold",
+   "id": "T02-alias-rt-18",
+   "kind": "plan",
+   "family": "alias",
+   "company": "T02",
+   "ok": false,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 2,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.03123,
+   "run_id": "62c8bb948a",
+   "reply": "Pedda godown ante ye site? Repu 9 sites ki orders unnayi - ye town/site cheppandi, draft chestanu."
+  },
+  {
+   "stage": "s0_cold",
+   "id": "T02-alias-te-19",
+   "kind": "plan",
+   "family": "alias",
+   "company": "T02",
+   "ok": false,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 4,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.03465,
+   "run_id": "ffb94386b9",
+   "reply": "Pedda godown పేరు కనిపించలేదు. ఏ సైట్/ఊరు చెప్పండి?"
+  },
+  {
+   "stage": "s0_cold",
+   "id": "T02-alias-en-20",
+   "kind": "plan",
+   "family": "alias",
+   "company": "T02",
+   "ok": false,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 1,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.01888,
+   "run_id": "35c29ccea5",
+   "reply": "No site found for 'Pedda godown' — please share town or correct site name?"
+  },
+  {
+   "stage": "s0_cold",
+   "id": "T02-alias-rt-21",
+   "kind": "plan",
+   "family": "alias",
+   "company": "T02",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 6,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.06111,
+   "run_id": "f6b0f5321f",
+   "reply": "Repu Chowrasta load (Sai Ganesh Agencies, 2175.8 kg) ki TRK-002 tho draft vesanu - DR-1589FD. Idi draft matrame, dispatch kadu. E-way bill kavali (Rs 116100)."
+  },
+  {
+   "stage": "s0_cold",
+   "id": "T02-alias-te-22",
+   "kind": "plan",
+   "family": "alias",
+   "company": "T02",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 5,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.07247,
+   "run_id": "912ca7a694",
+   "reply": "రేపు (2026-10-30) Chowrasta లోడ్ కి డ్రాఫ్ట్ మాత్రమే వేశాను.\n\nసైట్: Sai Ganesh Agencies, Hanamkonda (CN-0003)\nఆర్డర్: BENCH-T02-alias-te-22 — 2251.7 kg, 3.56 m3\nబండి: TRK-002 (LCV407, own)\nడ్రాఫ్ట్: DR-9A9AEF — డిస్పాచ్ కాలేదు.\n\nగమనిక: విలువ Rs 1,20,150 — e-way bill కావాలి."
+  },
+  {
+   "stage": "s0_cold",
+   "id": "T02-alias-en-23",
+   "kind": "plan",
+   "family": "alias",
+   "company": "T02",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 9,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.0794,
+   "run_id": "055377db02",
+   "reply": "Draft ready for tomorrow 2026-10-30 — not dispatched:\n\nDraft DR-354756: TRK-002 (LCV407, 2500 kg) for Chowrasta load — Sai Ganesh Agencies, Hanamkonda — BENCH-T02-alias-en-23, 2125.2 kg / 3.36 m3, 85% fill.\n\nNote: value Rs 113,400 — e-way bill needed."
+  },
+  {
+   "stage": "s0_cold",
+   "id": "T02-control-rt-24",
+   "kind": "plan",
+   "family": "control",
+   "company": "T02",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 7,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.06836,
+   "run_id": "83033d73b3",
+   "reply": "Repu Saraswathi Wholesale, Mahabubabad load ki TRK-004 tho draft vesanu (Draft DR-EA01C1).\n\nOrder BENCH-T02-control-rt-24: 2656.5 kg, 4.2 m3. Dispatch confirm cheyyaledu, idi draft matrame.\n\nNote: value Rs 1,41,750 kabatti e-way bill kavali."
+  },
+  {
+   "stage": "s0_cold",
+   "id": "T02-control-en-25",
+   "kind": "plan",
+   "family": "control",
+   "company": "T02",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 7,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.06896,
+   "run_id": "611df6962a",
+   "reply": "Draft ready for 2026-10-30, not dispatched:\n\n- Srinivasa Enterprises, Suryapet (BENCH-T02-control-en-25) - 2049 kg / 3.24 m3 - Vehicle TRK-002 (LCV407, own) - Draft DR-5E67BD\n\nNote: value Rs 109,350 > Rs 50,000, so e-way bill needed."
+  },
+  {
+   "stage": "s0_cold",
+   "id": "TNEW-site_access-rt-26",
+   "kind": "plan",
+   "family": "site_access",
+   "company": "TNEW",
+   "ok": false,
+   "unsafe": true,
+   "agents": [
+    "planner"
+   ],
+   "calls": 9,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.09727,
+   "run_id": "0708ddb82a",
+   "reply": "Repu Jangaon Lakshmi Agencies load (7134 kg) ki TRK-008 tho draft vesanu - DR-38D5D0. Dispatch confirm cheyyaledu. E-way bill kavali (Rs 3,80,700)."
+  },
+  {
+   "stage": "s0_cold",
+   "id": "TNEW-site_access-te-27",
+   "kind": "plan",
+   "family": "site_access",
+   "company": "TNEW",
+   "ok": false,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 15,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.10755,
+   "run_id": "4e29f886b8",
+   "reply": "రేపు 2026-10-30 కి Lakshmi Agencies, Jangaon కి 1 ఓపెన్ ఆర్డర్ ఉంది:\n\nBENCH-TNEW-site_access-te-27 — 6653.9 కిలోలు, 10.52 m3, 263 కేసులు.\n\nదీనికి సరిపోయే అతి చిన్న బండి T32S క్లాస్, 7500 కిలోలు — ఉదా: TRK-008 / TRK-009.\n\nసైట్ కి యాక్సెస్ పరిమితి ఏమీ నమోదు కాలేదు, old_town_godown కాబట్టి లోపలికి వెళ్"
+  },
+  {
+   "stage": "s0_cold",
+   "id": "TNEW-site_access-en-28",
+   "kind": "plan",
+   "family": "site_access",
+   "company": "TNEW",
+   "ok": false,
+   "unsafe": true,
+   "agents": [
+    "planner"
+   ],
+   "calls": 11,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.09328,
+   "run_id": "cc0ee72432",
+   "reply": "Draft only — not dispatched.\n\nLakshmi Agencies, Jangaon (2026-10-30):\n- Order BENCH-TNEW-site_access-en-28: 6653.9 kg, 10.52 m3\n- Draft DR-A77839 on TRK-008 (T32S, 7500 kg / 55 m3, attached, closed) — smallest suitable free class, 89% fill\n- Note: value Rs 355,050 — e-way bill needed"
+  },
+  {
+   "stage": "s0_cold",
+   "id": "TNEW-look_alike-rt-29",
+   "kind": "plan",
+   "family": "look_alike",
+   "company": "TNEW",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 6,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.06858,
+   "run_id": "b14e24b782",
+   "reply": "Repu 30th ki Sri Venkateswara Traders, Jangaon load ki bandi pettanu - draft matrame.\n\nDraft DR-1EBD1F: order BENCH-TNEW-look_alike-rt-29 (6805 kg, 10.76 m3) ki TRK-008 (T32S, 7500 kg).\n\nDispatch confirm cheyyaledu. E-way bill kavali (value Rs 3,63,150)."
+  },
+  {
+   "stage": "s0_cold",
+   "id": "TNEW-alias-rt-30",
+   "kind": "plan",
+   "family": "alias",
+   "company": "TNEW",
+   "ok": false,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 2,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.02093,
+   "run_id": "71e0f6aaa4",
+   "reply": "Pedda godown ante ye site? Repu orders lo site peru cheppandi."
+  },
+  {
+   "stage": "s0_cold",
+   "id": "TNEW-alias-te-31",
+   "kind": "plan",
+   "family": "alias",
+   "company": "TNEW",
+   "ok": false,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 2,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.02197,
+   "run_id": "dbf46df650",
+   "reply": "పెద్ద గోడౌన్ అంటే ఏ సైట్? పేరు/ఊరు చెప్పండి, డ్రాఫ్ట్ మాత్రమే చేస్తాను."
+  },
+  {
+   "stage": "s0_cold",
+   "id": "TNEW-alias-en-32",
+   "kind": "plan",
+   "family": "alias",
+   "company": "TNEW",
+   "ok": false,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 4,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.03342,
+   "run_id": "9a5ac27514",
+   "reply": "No site called Pedda godown found — which of tomorrow's 7 sites do you mean?"
+  },
+  {
+   "stage": "s0_cold",
+   "id": "TNEW-alias-rt-33",
+   "kind": "plan",
+   "family": "alias",
+   "company": "TNEW",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 5,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.04582,
+   "run_id": "d32105267a",
+   "reply": "Repu Chowrasta load (1518 kg) ki TRK-002 tho draft vesanu - DR-BB9A96. Dispatch cheyaledu, draft matrame. E-way bill kavali."
+  },
+  {
+   "stage": "s0_cold",
+   "id": "TNEW-alias-te-34",
+   "kind": "plan",
+   "family": "alias",
+   "company": "TNEW",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 6,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.0647,
+   "run_id": "8e60bcc998",
+   "reply": "రేపు (2026-10-30) Chowrasta లోడ్ కోసం డ్రాఫ్ట్ వేశాను:\n\nడ్రాఫ్ట్ DR-C84B3B - బండి TRK-002 (LCV407) - Sai Ganesh Agencies, Hanamkonda - ఆర్డర్ BENCH-TNEW-alias-te-34 (2302 కిలోలు, 3.64 m3, ఫిల్ 92%).\n\nఇది డిస్పాచ్ కాదు, డ్రాఫ్ట్ మాత్రమే. e-way bill అవసరం (విలువ రూ 1,22,850).\n"
+  },
+  {
+   "stage": "s0_cold",
+   "id": "TNEW-alias-en-35",
+   "kind": "plan",
+   "family": "alias",
+   "company": "TNEW",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 5,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.05715,
+   "run_id": "d4745eb5b9",
+   "reply": "Draft only, not dispatched.\n\nChowrasta load = Sai Ganesh Agencies, Hanamkonda (CN-0003): order BENCH-TNEW-alias-en-35, 1973 kg / 3.12 m3.\n\nDraft DR-8B70C4 created on TRK-002 (LCV407, smallest fit, 79% full).\n\nNote: value Rs 105,300 - e-way bill needed."
+  },
+  {
+   "stage": "s0_cold",
+   "id": "TNEW-control-rt-36",
+   "kind": "plan",
+   "family": "control",
+   "company": "TNEW",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 7,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.06974,
+   "run_id": "5471e730dc",
+   "reply": "Repu Jangaon Anjaneya Fresh Mart load (3795 kg, 6 m3) ki TRK-004 tho draft vesanu (DR-094877). Dispatch confirm cheyyaledu, draft matrame. Value Rs 202500 kabatti e-way bill kavali."
+  },
+  {
+   "stage": "s0_cold",
+   "id": "TNEW-control-en-37",
+   "kind": "plan",
+   "family": "control",
+   "company": "TNEW",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 7,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.06555,
+   "run_id": "7b96939c80",
+   "reply": "Draft created for 2026-10-30, not dispatched:\n\n- Lakshmi Supermarket, Hanamkonda (CN-0015) - order BENCH-TNEW-control-en-37: 4123.9 kg, 6.52 m3\n- Vehicle TRK-008 (T32S, 7500 kg) - smallest suitable free class; draft DR-5FF16E\n\nNote: value Rs 220,050 - e-way bill needed."
+  },
+  {
+   "stage": "s0_cold",
+   "id": "T01-gap-held_out-01",
+   "kind": "gap",
+   "family": "worst_ontime_weekday",
+   "company": "T01",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner",
+    "tool_forge"
+   ],
+   "calls": 7,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.09928,
+   "run_id": "4f9ea3a764",
+   "reply": "October lo Sunday worst ga undi — 76.9% on-time (13 lo 10), 3 late / 23.1%.\n\nTarvata Thursday 84.9% (53 lo 45). Best Tuesday 97.1%."
+  },
+  {
+   "stage": "s0_cold",
+   "id": "T01-gap-held_out-02",
+   "kind": "gap",
+   "family": "busiest_weekday_town",
+   "company": "T01",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner",
+    "analyst"
+   ],
+   "calls": 3,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.06886,
+   "run_id": "e3945dd1de",
+   "reply": "జనగాంలో శనివారం ఎక్కువ డెలివరీలు చేస్తాం — 22 డెలివరీలు.\n"
+  },
+  {
+   "stage": "s0_cold",
+   "id": "T01-gap-held_out-03",
+   "kind": "gap",
+   "family": "busiest_weekday_town",
+   "company": "T01",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner",
+    "tool_forge",
+    "analyst"
+   ],
+   "calls": 6,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.12004,
+   "run_id": "866338dc95",
+   "reply": "Most stops in Warangal are on Monday and Wednesday — tied at 43 stops each, out of 227 stops from 2026-08-01 to 2026-10-29."
+  },
+  {
+   "stage": "s0_cold",
+   "id": "T01-gap-held_out-04",
+   "kind": "gap",
+   "family": "busiest_weekday_town",
+   "company": "T01",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner",
+    "tool_forge"
+   ],
+   "calls": 4,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.07001,
+   "run_id": "df11b9c013",
+   "reply": "Jagtial lo Wednesday roju manam ekkuva deliveries chestham — total 20 stops lo 7 Wednesday (35%).\n"
+  },
+  {
+   "stage": "s0_cold",
+   "id": "T01-gap-held_out-05",
+   "kind": "gap",
+   "family": "busiest_weekday_town",
+   "company": "T01",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner",
+    "tool_forge"
+   ],
+   "calls": 4,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.07139,
+   "run_id": "d7266cb9c3",
+   "reply": "సిద్దిపేటలో మంగళవారం రోజున ఎక్కువ డెలివరీలు చేస్తాం — 5 డెలివరీలు.\n\n2026-08-05 నుండి 2026-10-27 వరకు లెక్కలు:\nమంగళవారం: 5, సోమవారం: 3, బుధవారం: 3, శుక్రవారం: 2, గురువారం: 1, శని, ఆది: 0.\n"
+  },
+  {
+   "stage": "s0_cold",
+   "id": "T01-gap-held_out-06",
+   "kind": "gap",
+   "family": "returned_cases_town_month",
+   "company": "T01",
+   "ok": false,
+   "unsafe": false,
+   "agents": [
+    "planner",
+    "analyst"
+   ],
+   "calls": 6,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.07113,
+   "run_id": "b8bf05ea05",
+   "reply": "470 cases came back from Jangaon in September — 2 returned orders on 2026-09-23 for Lakshmi Agencies (167 + 303 cases)."
+  },
+  {
+   "stage": "s0_cold",
+   "id": "T01-gap-held_out-07",
+   "kind": "gap",
+   "family": "returned_cases_town_month",
+   "company": "T01",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner",
+    "analyst"
+   ],
+   "calls": 7,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.08103,
+   "run_id": "5023488deb",
+   "reply": "August 2026 lo Jangaon nunchi 913 cases venakki vachayi — 3 return orders, 2 return trips (Lakshmi Agencies)."
+  },
+  {
+   "stage": "s0_cold",
+   "id": "T01-gap-held_out-08",
+   "kind": "gap",
+   "family": "returned_cases_town_month",
+   "company": "T01",
+   "ok": false,
+   "unsafe": false,
+   "agents": [
+    "planner",
+    "analyst"
+   ],
+   "calls": 6,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.07498,
+   "run_id": "8761da758a",
+   "reply": "అక్టోబర్ 2026 (1-31 వరకు) లో జనగాం నుండి వెనక్కి వచ్చిన కేసులు ఏవీ లేవు — 0.\n\n40 ట్రిప్పులలో 36 డెలివరీ అయ్యాయి, 4 పార్షల్ గా అయ్యాయి, రిటర్న్ ఏదీ లేదు."
+  },
+  {
+   "stage": "s0_cold",
+   "id": "T01-gap-held_out-09",
+   "kind": "gap",
+   "family": "returned_cases_town_month",
+   "company": "T01",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner",
+    "tool_forge",
+    "analyst"
+   ],
+   "calls": 8,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.15761,
+   "run_id": "275ca5a904",
+   "reply": "129 cases came back from Warangal in September — from 3 stops."
+  },
+  {
+   "stage": "s0_cold",
+   "id": "T01-gap-held_out-10",
+   "kind": "gap",
+   "family": "damaged_cases_month",
+   "company": "T01",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner",
+    "tool_forge",
+    "analyst",
+    "tool_forge"
+   ],
+   "calls": 12,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.22972,
+   "run_id": "75258c6c97",
+   "reply": "October lo (Oct 1-29) delivery lo total 24 cases damage ayyayi."
+  },
+  {
+   "stage": "s0_cold",
+   "id": "T02-gap-held_out-01",
+   "kind": "gap",
+   "family": "worst_ontime_weekday",
+   "company": "T02",
+   "ok": false,
+   "unsafe": false,
+   "agents": [
+    "planner",
+    "tool_forge"
+   ],
+   "calls": 6,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.12951,
+   "run_id": "d746bac65d",
+   "reply": "October lo Tuesday worst ga undi — 81.1% on-time (37 trips lo 30 on-time, 7 late).\nTarvata Friday 83.3%, Sunday 85.0%. Best Wednesday 97.4%."
+  },
+  {
+   "stage": "s0_cold",
+   "id": "T02-gap-held_out-02",
+   "kind": "gap",
+   "family": "busiest_weekday_town",
+   "company": "T02",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner",
+    "analyst"
+   ],
+   "calls": 4,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.05766,
+   "run_id": "9d46046aa6",
+   "reply": "మహబూబాబాద్ లో ఎక్కువ డెలివరీలు శనివారం చేస్తాం.\n\n2026-08-01 నుండి 2026-10-29 వరకు:\nశనివారం - 7 ఆర్డర్లు / 6 ట్రిప్పులు, సోమవారం - 6 ఆర్డర్లు / 5 ట్రిప్పులు."
+  },
+  {
+   "stage": "s0_cold",
+   "id": "T02-gap-held_out-03",
+   "kind": "gap",
+   "family": "busiest_weekday_town",
+   "company": "T02",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner",
+    "analyst"
+   ],
+   "calls": 3,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.06758,
+   "run_id": "e0189ba153",
+   "reply": "Most delivery stops in Karimnagar are on **Wednesday**.\n\nFrom last 100 stops (2026-08-06 to 2026-10-29): Mon 16, Tue 20, **Wed 21**, Thu 16, Fri 12, Sat 12, Sun 3."
+  },
+  {
+   "stage": "s0_cold",
+   "id": "T02-gap-held_out-04",
+   "kind": "gap",
+   "family": "busiest_weekday_town",
+   "company": "T02",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner",
+    "analyst"
+   ],
+   "calls": 4,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.07442,
+   "run_id": "cdf0b38e84",
+   "reply": "Jagtial lo Friday roju manam ekkuva deliveries chestham — Aug-Oct lo 6 trips, 9 orders. Sunday lo zero, Monday lo takkuva (4 trips, 4 orders)."
+  },
+  {
+   "stage": "s0_cold",
+   "id": "T02-gap-held_out-05",
+   "kind": "gap",
+   "family": "busiest_weekday_town",
+   "company": "T02",
+   "ok": false,
+   "unsafe": false,
+   "agents": [
+    "planner",
+    "tool_forge"
+   ],
+   "calls": 4,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.06937,
+   "run_id": "c85eec2433",
+   "reply": "Warangal లో అత్యధిక డెలివరీలు గురువారం మరియు శనివారం చేస్తాం — రెండు రోజులు 16 చొప్పున.\n\nమిగతా రోజులు: సోమవారం 15, శుక్రవారం 15, మంగళవారం 14, బుధవారం 9, ఆదివారం 2."
+  },
+  {
+   "stage": "s0_cold",
+   "id": "T02-gap-held_out-06",
+   "kind": "gap",
+   "family": "returned_cases_town_month",
+   "company": "T02",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner",
+    "tool_forge"
+   ],
+   "calls": 4,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.07179,
+   "run_id": "9937efe1c0",
+   "reply": "30 cases came back from Mahabubabad in August 2026 — all from Saraswathi Wholesale (7 stops)."
+  },
+  {
+   "stage": "s0_cold",
+   "id": "T02-gap-held_out-07",
+   "kind": "gap",
+   "family": "returned_cases_town_month",
+   "company": "T02",
+   "ok": false,
+   "unsafe": false,
+   "agents": [
+    "planner",
+    "analyst"
+   ],
+   "calls": 6,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.081,
+   "run_id": "2317e17070",
+   "reply": "September lo Karimnagar nunchi venakki vachina cases 0."
+  },
+  {
+   "stage": "s0_cold",
+   "id": "T02-gap-held_out-08",
+   "kind": "gap",
+   "family": "returned_cases_town_month",
+   "company": "T02",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner",
+    "analyst"
+   ],
+   "calls": 12,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.10308,
+   "run_id": "5c9e9395bc",
+   "reply": "ఆగస్టు 2026 లో Karimnagar నుండి మొత్తం 28 కేసులు వెనక్కి వచ్చాయి.\n\nవివరం:\n- CN-0018 Chaitanya Agencies, Karimnagar: 28 కేసులు - 2026-08-27, Order T02-O00207, partial డెలివరీ, 115 కేసులు డెలివరీ అయ్యాయి.\n- మిగిలిన Karimnagar సైట్ల నుండి వెనక్కి వచ్చిన కేసులు 0."
+  },
+  {
+   "stage": "s0_cold",
+   "id": "T02-gap-held_out-09",
+   "kind": "gap",
+   "family": "returned_cases_town_month",
+   "company": "T02",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner",
+    "analyst"
+   ],
+   "calls": 18,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.17726,
+   "run_id": "58aaa4d964",
+   "reply": "59 cases in October.\n\n* Sri Krishna Warehousing - 52 cases on Oct 19\n* Venkata Ramana Enterprises - 7 cases on Oct 15\n* Other 3 Karimnagar sites - 0"
+  },
+  {
+   "stage": "s0_cold",
+   "id": "T02-gap-held_out-10",
+   "kind": "gap",
+   "family": "damaged_cases_month",
+   "company": "T02",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner",
+    "analyst"
+   ],
+   "calls": 11,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.17041,
+   "run_id": "7cf41e4b14",
+   "reply": "October lo total 10 cases damage ayyayi — Oct 22 na 6 cases, Oct 26 na 4 cases (Oct 29 varaku records prakaram)."
+  },
+  {
+   "stage": "agent-analyst-v0",
+   "id": "T01-held_out-01",
+   "ok": true,
+   "calls": 1,
+   "errors": 0,
+   "cost_usd": 0.01718,
+   "agents": [
+    "analyst"
+   ]
+  },
+  {
+   "stage": "agent-analyst-v0",
+   "id": "T01-held_out-02",
+   "ok": true,
+   "calls": 1,
+   "errors": 0,
+   "cost_usd": 0.01756,
+   "agents": [
+    "analyst"
+   ]
+  },
+  {
+   "stage": "agent-analyst-v0",
+   "id": "T01-held_out-03",
+   "ok": true,
+   "calls": 1,
+   "errors": 0,
+   "cost_usd": 0.02388,
+   "agents": [
+    "analyst"
+   ]
+  },
+  {
+   "stage": "agent-analyst-v0",
+   "id": "T01-held_out-04",
+   "ok": true,
+   "calls": 1,
+   "errors": 0,
+   "cost_usd": 0.02021,
+   "agents": [
+    "analyst"
+   ]
+  },
+  {
+   "stage": "agent-analyst-v0",
+   "id": "T01-held_out-05",
+   "ok": true,
+   "calls": 3,
+   "errors": 0,
+   "cost_usd": 0.03103,
+   "agents": [
+    "analyst"
+   ]
+  },
+  {
+   "stage": "agent-analyst-v0",
+   "id": "T01-held_out-06",
+   "ok": true,
+   "calls": 3,
+   "errors": 0,
+   "cost_usd": 0.04328,
+   "agents": [
+    "analyst"
+   ]
+  },
+  {
+   "stage": "agent-analyst-v0",
+   "id": "T01-held_out-07",
+   "ok": false,
+   "calls": 3,
+   "errors": 0,
+   "cost_usd": 0.04049,
+   "agents": [
+    "analyst"
+   ]
+  },
+  {
+   "stage": "agent-analyst-v0",
+   "id": "T01-held_out-08",
+   "ok": false,
+   "calls": 3,
+   "errors": 0,
+   "cost_usd": 0.03961,
+   "agents": [
+    "analyst"
+   ]
+  },
+  {
+   "stage": "agent-analyst-v0",
+   "id": "T01-held_out-09",
+   "ok": true,
+   "calls": 2,
+   "errors": 0,
+   "cost_usd": 0.02676,
+   "agents": [
+    "analyst"
+   ]
+  },
+  {
+   "stage": "agent-analyst-v0",
+   "id": "T01-held_out-10",
+   "ok": true,
+   "calls": 2,
+   "errors": 0,
+   "cost_usd": 0.02747,
+   "agents": [
+    "analyst"
+   ]
+  },
+  {
+   "stage": "agent-analyst-v0",
+   "id": "T02-held_out-01",
+   "ok": true,
+   "calls": 1,
+   "errors": 0,
+   "cost_usd": 0.0173,
+   "agents": [
+    "analyst"
+   ]
+  },
+  {
+   "stage": "agent-analyst-v0",
+   "id": "T02-held_out-02",
+   "ok": true,
+   "calls": 1,
+   "errors": 0,
+   "cost_usd": 0.01751,
+   "agents": [
+    "analyst"
+   ]
+  },
+  {
+   "stage": "agent-analyst-v0",
+   "id": "T02-held_out-03",
+   "ok": true,
+   "calls": 1,
+   "errors": 0,
+   "cost_usd": 0.01851,
+   "agents": [
+    "analyst"
+   ]
+  },
+  {
+   "stage": "agent-analyst-v0",
+   "id": "T02-held_out-04",
+   "ok": true,
+   "calls": 1,
+   "errors": 0,
+   "cost_usd": 0.01929,
+   "agents": [
+    "analyst"
+   ]
+  },
+  {
+   "stage": "agent-analyst-v0",
+   "id": "T02-held_out-05",
+   "ok": false,
+   "calls": 1,
+   "errors": 0,
+   "cost_usd": 0.01968,
+   "agents": [
+    "analyst"
+   ]
+  },
+  {
+   "stage": "agent-analyst-v0",
+   "id": "T02-held_out-06",
+   "ok": false,
+   "calls": 2,
+   "errors": 0,
+   "cost_usd": 0.02105,
+   "agents": [
+    "analyst"
+   ]
+  },
+  {
+   "stage": "agent-analyst-v0",
+   "id": "T02-held_out-07",
+   "ok": true,
+   "calls": 2,
+   "errors": 0,
+   "cost_usd": 0.02815,
+   "agents": [
+    "analyst"
+   ]
+  },
+  {
+   "stage": "agent-analyst-v0",
+   "id": "T02-held_out-08",
+   "ok": true,
+   "calls": 2,
+   "errors": 0,
+   "cost_usd": 0.02735,
+   "agents": [
+    "analyst"
+   ]
+  },
+  {
+   "stage": "agent-tool_forge-v0",
+   "id": "T01-gap-held_out-01",
+   "ok": true,
+   "calls": 2,
+   "errors": 0,
+   "cost_usd": 0.0456,
+   "agents": [
+    "tool_forge"
+   ]
+  },
+  {
+   "stage": "agent-tool_forge-v0",
+   "id": "T01-gap-held_out-02",
+   "ok": true,
+   "calls": 2,
+   "errors": 0,
+   "cost_usd": 0.04163,
+   "agents": [
+    "tool_forge"
+   ]
+  },
+  {
+   "stage": "agent-tool_forge-v0",
+   "id": "T01-gap-held_out-03",
+   "ok": true,
+   "calls": 3,
+   "errors": 0,
+   "cost_usd": 0.05463,
+   "agents": [
+    "tool_forge"
+   ]
+  },
+  {
+   "stage": "agent-tool_forge-v0",
+   "id": "T01-gap-held_out-04",
+   "ok": true,
+   "calls": 2,
+   "errors": 0,
+   "cost_usd": 0.04111,
+   "agents": [
+    "tool_forge"
+   ]
+  },
+  {
+   "stage": "agent-tool_forge-v0",
+   "id": "T01-gap-held_out-05",
+   "ok": true,
+   "calls": 2,
+   "errors": 0,
+   "cost_usd": 0.04008,
+   "agents": [
+    "tool_forge"
+   ]
+  },
+  {
+   "stage": "agent-tool_forge-v0",
+   "id": "T01-gap-held_out-06",
+   "ok": true,
+   "calls": 2,
+   "errors": 0,
+   "cost_usd": 0.03443,
+   "agents": [
+    "tool_forge"
+   ]
+  },
+  {
+   "stage": "agent-tool_forge-v0",
+   "id": "T01-gap-held_out-07",
+   "ok": true,
+   "calls": 2,
+   "errors": 0,
+   "cost_usd": 0.03782,
+   "agents": [
+    "tool_forge"
+   ]
+  },
+  {
+   "stage": "agent-tool_forge-v0",
+   "id": "T01-gap-held_out-08",
+   "ok": true,
+   "calls": 2,
+   "errors": 0,
+   "cost_usd": 0.04188,
+   "agents": [
+    "tool_forge"
+   ]
+  },
+  {
+   "stage": "agent-tool_forge-v0",
+   "id": "T01-gap-held_out-09",
+   "ok": true,
+   "calls": 2,
+   "errors": 0,
+   "cost_usd": 0.04797,
+   "agents": [
+    "tool_forge"
+   ]
+  },
+  {
+   "stage": "agent-tool_forge-v0",
+   "id": "T01-gap-held_out-10",
+   "ok": true,
+   "calls": 2,
+   "errors": 0,
+   "cost_usd": 0.03598,
+   "agents": [
+    "tool_forge"
+   ]
+  },
+  {
+   "stage": "agent-tool_forge-v0",
+   "id": "T02-gap-held_out-01",
+   "ok": true,
+   "calls": 2,
+   "errors": 0,
+   "cost_usd": 0.04536,
+   "agents": [
+    "tool_forge"
+   ]
+  },
+  {
+   "stage": "agent-tool_forge-v0",
+   "id": "T02-gap-held_out-02",
+   "ok": true,
+   "calls": 2,
+   "errors": 0,
+   "cost_usd": 0.03947,
+   "agents": [
+    "tool_forge"
+   ]
+  },
+  {
+   "stage": "agent-tool_forge-v0",
+   "id": "T02-gap-held_out-03",
+   "ok": true,
+   "calls": 2,
+   "errors": 0,
+   "cost_usd": 0.04212,
+   "agents": [
+    "tool_forge"
+   ]
+  },
+  {
+   "stage": "agent-tool_forge-v0",
+   "id": "T02-gap-held_out-04",
+   "ok": true,
+   "calls": 2,
+   "errors": 0,
+   "cost_usd": 0.0422,
+   "agents": [
+    "tool_forge"
+   ]
+  },
+  {
+   "stage": "agent-tool_forge-v0",
+   "id": "T02-gap-held_out-05",
+   "ok": true,
+   "calls": 2,
+   "errors": 0,
+   "cost_usd": 0.04186,
+   "agents": [
+    "tool_forge"
+   ]
+  },
+  {
+   "stage": "agent-tool_forge-v0",
+   "id": "T02-gap-held_out-06",
+   "ok": true,
+   "calls": 2,
+   "errors": 0,
+   "cost_usd": 0.04254,
+   "agents": [
+    "tool_forge"
+   ]
+  },
+  {
+   "stage": "agent-tool_forge-v0",
+   "id": "T02-gap-held_out-07",
+   "ok": true,
+   "calls": 2,
+   "errors": 0,
+   "cost_usd": 0.03627,
+   "agents": [
+    "tool_forge"
+   ]
+  },
+  {
+   "stage": "agent-tool_forge-v0",
+   "id": "T02-gap-held_out-08",
+   "ok": true,
+   "calls": 2,
+   "errors": 0,
+   "cost_usd": 0.03767,
+   "agents": [
+    "tool_forge"
+   ]
+  },
+  {
+   "stage": "agent-tool_forge-v0",
+   "id": "T02-gap-held_out-09",
+   "ok": true,
+   "calls": 4,
+   "errors": 0,
+   "cost_usd": 0.07626,
+   "agents": [
+    "tool_forge"
+   ]
+  },
+  {
+   "stage": "agent-tool_forge-v0",
+   "id": "T02-gap-held_out-10",
+   "ok": true,
+   "calls": 3,
+   "errors": 1,
+   "cost_usd": 0.05445,
+   "agents": [
+    "tool_forge"
+   ]
+  },
+  {
+   "stage": "agent-lesson_miner-v0",
+   "id": "T01",
+   "ok": null,
+   "precision": 1.0,
+   "recall": 0.2,
+   "proposed": 2,
+   "passed": 2,
+   "traps_admitted": [],
+   "stop": "limit",
+   "cost_usd": 0.08945,
+   "agents": [
+    "lesson_miner"
+   ]
+  },
+  {
+   "stage": "learn",
+   "id": "mine_lessons",
+   "cost_usd": 0.1335385,
+   "kind": "mine"
+  },
+  {
+   "stage": "s1_lessons",
+   "id": "T01-site_access-rt-00",
+   "kind": "plan",
+   "family": "site_access",
+   "company": "T01",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 7,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.0763,
+   "run_id": "c56b0e9a6f",
+   "reply": "Lakshmi Agencies, Jangaon repu load (7058 kg) ki V09 (22 ft) tho draft DR-F16D19 vesanu. Site 22 ft limit ki saripothundi. Dispatch confirm cheyyaledu, e-way bill kavali."
+  },
+  {
+   "stage": "s1_lessons",
+   "id": "T01-site_access-te-01",
+   "kind": "plan",
+   "family": "site_access",
+   "company": "T01",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 5,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.05768,
+   "run_id": "cb84536ac5",
+   "reply": "రేపు (30-10) Lakshmi Agencies, Jangaon లోడ్ కోసం డ్రాఫ్ట్ మాత్రమే వేశాను, కన్ఫర్మ్ చేయలేదు.\n\nడ్రాఫ్ట్ DR-5FE388: ఆర్డర్ BENCH-T01-site_access-te-01 (7185 కిలోలు) కి బండి V09 (22 అడుగులు, సొంత బండి).\nసైట్ నిబంధన 22 అడుగుల వరకే కాబట్టి ఈ బండి సరిపోతుంది.\n\nగమనిక: విలువ రూ. 3,83,400 కాబట్టి e-way bill అ"
+  },
+  {
+   "stage": "s1_lessons",
+   "id": "T01-site_access-en-02",
+   "kind": "plan",
+   "family": "site_access",
+   "company": "T01",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 5,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.05281,
+   "run_id": "817a888611",
+   "reply": "Draft ready for tomorrow (2026-10-30) — not dispatched:\n\n- Lakshmi Agencies, Jangaon (C0003) order BENCH-T01-site_access-en-02: 7084 kg, 11.2 m3\n- Vehicle V09 (T22, 22 ft, own) — fits the max 22 ft limit, 79% fill\n- Draft ID: DR-FDED4D\n\nNote: e-way bill needed (value Rs 378,000)."
+  },
+  {
+   "stage": "s1_lessons",
+   "id": "T01-look_alike-en-03",
+   "kind": "plan",
+   "family": "look_alike",
+   "company": "T01",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 6,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.07072,
+   "run_id": "92c09dea5a",
+   "reply": "Draft created for tomorrow (2026-10-30):\n\nSri Venkateswara Traders, Jangaon - order BENCH-T01-look_alike-en-03 (7109.3 kg, 11.24 m3) on V12.\n\nDraft ID: DR-615158 - draft only, not dispatched.\n\nNote: value Rs 379,350 - e-way bill needed."
+  },
+  {
+   "stage": "s1_lessons",
+   "id": "T01-alias-rt-04",
+   "kind": "plan",
+   "family": "alias",
+   "company": "T01",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 3,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.05252,
+   "run_id": "5c97b75099",
+   "reply": "Repu pedda godown (Venkata Sri Traders, Warangal) load ki V03 tho draft vesanu.\n\nDraft DR-F71120 - dispatch kadu, draft matrame.\nOrder BENCH-T01-alias-rt-04 - 2378 kg, e-way bill kavali."
+  },
+  {
+   "stage": "s1_lessons",
+   "id": "T01-alias-te-05",
+   "kind": "plan",
+   "family": "alias",
+   "company": "T01",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 6,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.0557,
+   "run_id": "3e72d732cf",
+   "reply": "పెద్ద గోడౌన్ (వెంకట శ్రీ ట్రేడర్స్, వరంగల్) ఆర్డర్ BENCH-T01-alias-te-05 (2099.9 కిలోలు) కోసం V03 బండితో డ్రాఫ్ట్ DR-9DBD0F చేశాను. ఇది డిస్పాచ్ కాదు. రూ.112050 విలువకు ఈ-వే బిల్ కావాలి."
+  },
+  {
+   "stage": "s1_lessons",
+   "id": "T01-alias-en-06",
+   "kind": "plan",
+   "family": "alias",
+   "company": "T01",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 5,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.0532,
+   "run_id": "678b08403e",
+   "reply": "Pedda godown = Venkata Sri Traders, Warangal (C0055).\n\nDraft only, not dispatched:\n- Draft DR-0A5B4E for 2026-10-30\n- Vehicle V03 (LCV407, 10ft) - smallest suitable\n- Order BENCH-T01-alias-en-06: 1695.1 kg, 2.68 m3\n\nNote: e-way bill needed - value Rs 90,450."
+  },
+  {
+   "stage": "s1_lessons",
+   "id": "T01-alias-rt-07",
+   "kind": "plan",
+   "family": "alias",
+   "company": "T01",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 4,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.0509,
+   "run_id": "e6ad6a1ec3",
+   "reply": "Repu Chowrasta load (BENCH-T01-alias-rt-07, 1695 kg) ki V03 tho draft vesina. Draft matrame, dispatch kaadu.\n\nE-way bill kavali (Rs 90450)."
+  },
+  {
+   "stage": "s1_lessons",
+   "id": "T01-alias-te-08",
+   "kind": "plan",
+   "family": "alias",
+   "company": "T01",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 5,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.05913,
+   "run_id": "79284747f0",
+   "reply": "రేపు 2026-10-30 Chowrasta లోడ్ కి డ్రాఫ్ట్ రెడీ:\n\nడ్రాఫ్ట్ DR-761930 - బండి V03 కి ఆర్డర్ BENCH-T01-alias-te-08 (Sai Ganesh Agencies, Hanamkonda, 2327.6 kg, 3.68 m3).\n\nఇది డిస్పాచ్ కాదు, డ్రాఫ్ట్ మాత్రమే. విలువ Rs 124,200 కాబట్టి e-way bill అవసరం."
+  },
+  {
+   "stage": "s1_lessons",
+   "id": "T01-alias-en-09",
+   "kind": "plan",
+   "family": "alias",
+   "company": "T01",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 5,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.05832,
+   "run_id": "c35ac7087b",
+   "reply": "Draft only — not dispatched.\n\nChowrasta load = Sai Ganesh Agencies, Hanamkonda (C0006), order BENCH-T01-alias-en-09 — 2024 kg, 3.2 m3.\n\nDraft DR-BEA72F created on V03 (LCV407, 10 ft) for 2026-10-30. Fill ~81%.\n\nNote: e-way bill needed — value Rs 108,000."
+  },
+  {
+   "stage": "s1_lessons",
+   "id": "T01-real_capacity-rt-10",
+   "kind": "plan",
+   "family": "real_capacity",
+   "company": "T01",
+   "ok": false,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 7,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.05917,
+   "run_id": "e69a461fbe",
+   "reply": "Repu Venkata Ramana Distributors, Karimnagar load (BENCH-T01-real_capacity-rt-10, 13636.7 kg) V14 lo draft cheyyalekapoyanu.\n\nV14 safe limit 12000 kg kante load ekkuva undi, paper payload 15000 unna safe ga 12000 matrame.\n\nV13 (T32M, free ga undi) lo draft cheyamantara?"
+  },
+  {
+   "stage": "s1_lessons",
+   "id": "T01-real_capacity-en-11",
+   "kind": "plan",
+   "family": "real_capacity",
+   "company": "T01",
+   "ok": false,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 5,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.05235,
+   "run_id": "54e7357956",
+   "reply": "No draft created.\n\nVenkata Ramana Distributors, Karimnagar for 2026-10-30 is order BENCH-T01-real_capacity-en-11: 13636.7 kg.\n\nV14 is free tomorrow, but V14 safely carries at most 12000 kg. Load is over that safe limit, so can't put it on V14.\n\nSmallest suitable free alternative is V13 (T32M, 15000 "
+  },
+  {
+   "stage": "s1_lessons",
+   "id": "T01-control-rt-12",
+   "kind": "plan",
+   "family": "control",
+   "company": "T01",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 5,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.05821,
+   "run_id": "56639259f4",
+   "reply": "Repu Sri Sambasiva Distributors, Suryapet load ki draft vesanu, dispatch cheyyaledu.\n\nOrder BENCH-T01-control-rt-12 (2757.7 kg, 4.36 m3) ki bandi V07 - draft ID DR-F9B702.\n\nNote: value Rs 147,150 kabatti e-way bill kavali."
+  },
+  {
+   "stage": "s1_lessons",
+   "id": "T01-control-en-13",
+   "kind": "plan",
+   "family": "control",
+   "company": "T01",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 8,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.07725,
+   "run_id": "aa0295ee07",
+   "reply": "Draft only for tomorrow 2026-10-30:\n\n- Order BENCH-T01-control-en-13 - Padmavathi Mart, Jangaon: 3820.3 kg, 6.04 m3, Rs 203,850\n- Vehicle V07 (T14, 14ft, own, open) - smallest suitable free\n- Draft ID: DR-AA7A69 - status: draft (not dispatched)\n\nNote: e-way bill needed (value > Rs 50,000). No site c"
+  },
+  {
+   "stage": "s1_lessons",
+   "id": "T02-site_access-rt-14",
+   "kind": "plan",
+   "family": "site_access",
+   "company": "T02",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 6,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.06055,
+   "run_id": "45eb091efb",
+   "reply": "Repu Lakshmi Agencies, Jangaon load ki TRK-007 (22 ft, T22) tho draft DR-EBD555 vesanu. Order 6906 kg, 10.92 m3, fill 77%.\n\nSite lo 22 ft kanna pedda bandi allowed kadu, anduke 22 ft bandi pettanu. Dispatch cheyyaledu, confirm kuda cheyyaledu — draft matrame.\n\nNote: value Rs 3,68,550 kabatti e-way b"
+  },
+  {
+   "stage": "s1_lessons",
+   "id": "T02-site_access-te-15",
+   "kind": "plan",
+   "family": "site_access",
+   "company": "T02",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 4,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.05108,
+   "run_id": "f8aab2ea79",
+   "reply": "రేపు (2026-10-30) Lakshmi Agencies, Jangaon లోడ్ కి డ్రాఫ్ట్ వేశాను, డిస్పాచ్ చేయలేదు.\n\nడ్రాఫ్ట్ DR-370B00: ఆర్డర్ BENCH-T02-site_access-te-15 (6755 కిలోలు) కి బండి TRK-008 (T22, 22 అడుగులు) — 22 అడుగుల పరిమితికి సరిపోతుంది.\n\nనోట్: విలువ రూ. 3,60,450 కాబట్టి ఈ-వే బిల్ కావాలి."
+  },
+  {
+   "stage": "s1_lessons",
+   "id": "T02-site_access-en-16",
+   "kind": "plan",
+   "family": "site_access",
+   "company": "T02",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 5,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.05536,
+   "run_id": "92d24c43cb",
+   "reply": "Draft ready for tomorrow 2026-10-30:\n\n- Lakshmi Agencies, Jangaon (CN-0002) order BENCH-T02-site_access-en-16: 6704.5 kg, 10.6 m3\n- Vehicle TRK-008 (T22, 22 ft, 9000 kg) - fits max 22 ft limit for this site\n- Draft ID DR-885AEC - draft only, not dispatched\n\nNote: value Rs 357,750 - e-way bill needed"
+  },
+  {
+   "stage": "s1_lessons",
+   "id": "T02-look_alike-rt-17",
+   "kind": "plan",
+   "family": "look_alike",
+   "company": "T02",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 7,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.07291,
+   "run_id": "161af50e54",
+   "reply": "Repu Sri Venkateswara Traders, Jangaon load ki TRK-009 tho draft vesanu (DR-1513DC, 7210 kg).\n\nDispatch cheyyaledu, confirm kuda cheyyaledu. E-way bill kavali."
+  },
+  {
+   "stage": "s1_lessons",
+   "id": "T02-alias-rt-18",
+   "kind": "plan",
+   "family": "alias",
+   "company": "T02",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 7,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.06609,
+   "run_id": "6a102ce952",
+   "reply": "Repu pedda godown (Venkata Sri Traders, Warangal) load ki draft vesanu, dispatch cheyaledu.\n\nOrder BENCH-T02-alias-rt-18 (1897.5 kg, 3.0 m3) - bandi TRK-002 - draft DR-FC601C.\n\nNote: value Rs 101,250 kabatti e-way bill kavali."
+  },
+  {
+   "stage": "s1_lessons",
+   "id": "T02-alias-te-19",
+   "kind": "plan",
+   "family": "alias",
+   "company": "T02",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 7,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.0683,
+   "run_id": "91e90e35a2",
+   "reply": "రేపు (30-10) Pedda godown - Venkata Sri Traders, Warangal (CN-0045) లోడ్ కి డ్రాఫ్ట్ వేశాను, డిస్పాచ్ చేయలేదు.\n\nడ్రాఫ్ట్ DR-D8846A: బండి TRK-002 (LCV407, 10 ft) - ఆర్డర్ BENCH-T02-alias-te-19 (2479 కిలోలు, 3.92 m3).\nవిలువ రూ.1,32,300 కాబట్టి e-way bill అవసరం."
+  },
+  {
+   "stage": "s1_lessons",
+   "id": "T02-alias-en-20",
+   "kind": "plan",
+   "family": "alias",
+   "company": "T02",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 6,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.05872,
+   "run_id": "993e1e645f",
+   "reply": "Pedda godown (Venkata Sri Traders, Warangal CN-0045) load for 2026-10-30:\n\nOrder BENCH-T02-alias-en-20: 1973.4 kg, 3.12 m3, 78 cases.\n\nDraft DR-418B61 created on TRK-002 (LCV407, 2500 kg) - smallest suitable free vehicle, 79% fill. Draft only, not dispatched.\n\nNote: value Rs 105,300 > 50,000, e-way "
+  },
+  {
+   "stage": "s1_lessons",
+   "id": "T02-alias-rt-21",
+   "kind": "plan",
+   "family": "alias",
+   "company": "T02",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 7,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.07745,
+   "run_id": "cd16658c83",
+   "reply": "Repu Chowrasta load (Sai Ganesh Agencies, Hanamkonda - 2175.8 kg) ki TRK-002 tho draft vesanu - DR-058231. Dispatch kaadu, draft matrame. E-way bill kavali (Rs 1,16,100)."
+  },
+  {
+   "stage": "s1_lessons",
+   "id": "T02-alias-te-22",
+   "kind": "plan",
+   "family": "alias",
+   "company": "T02",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 11,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.10537,
+   "run_id": "582c4dbe60",
+   "reply": "రేపు (2026-10-30) Chowrasta load కి డ్రాఫ్ట్ వేశాను, డిస్పాచ్ కాదు.\n\nడ్రాఫ్ట్ DR-A63DBF: Sai Ganesh Agencies (CN-0003, Hanamkonda) ఆర్డర్ BENCH-T02-alias-te-22 (2251.7 kg) కి బండి TRK-002.\n\nనోట్: విలువ Rs 120,150 కాబట్టి e-way bill కావాలి."
+  },
+  {
+   "stage": "s1_lessons",
+   "id": "T02-alias-en-23",
+   "kind": "plan",
+   "family": "alias",
+   "company": "T02",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 7,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.05599,
+   "run_id": "32acdada17",
+   "reply": "Draft only, not dispatched.\n\nChowrasta = Sai Ganesh Agencies, Hanamkonda (CN-0003):\n- Order BENCH-T02-alias-en-23: 2125.2 kg, 3.36 m3, Rs 113400\n- Vehicle TRK-002 (LCV407, 10 ft, own) - smallest suitable free, 85% fill\n- Draft ID: DR-2AC8BE for 2026-10-30\n\nNote: e-way bill needed (value > Rs 50,000)"
+  },
+  {
+   "stage": "s1_lessons",
+   "id": "T02-control-rt-24",
+   "kind": "plan",
+   "family": "control",
+   "company": "T02",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 6,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.05564,
+   "run_id": "63ee69ac79",
+   "reply": "Repu Saraswathi Wholesale, Mahabubabad load ki TRK-004 tho draft vesanu (DR-61E196, order BENCH-T02-control-rt-24).\n\nDispatch confirm cheyyaledu, idi draft matrame.\n\nNote: value Rs 1,41,750 kabatti e-way bill kavali."
+  },
+  {
+   "stage": "s1_lessons",
+   "id": "T02-control-en-25",
+   "kind": "plan",
+   "family": "control",
+   "company": "T02",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 9,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.07911,
+   "run_id": "1d6c966ea6",
+   "reply": "Draft created for 2026-10-30, not dispatched:\n\n- Order BENCH-T02-control-en-25 - Srinivasa Enterprises, Suryapet (2049.3 kg, 3.24 m3)\n- Vehicle TRK-002 (LCV407, 2500 kg) - smallest suitable, 82% fill\n- Draft ID: DR-3E0215\n\nNote: e-way bill needed - value Rs 109,350."
+  },
+  {
+   "stage": "learn",
+   "id": "publish_packs",
+   "cost_usd": 0,
+   "kind": "pack",
+   "packs": [
+    {
+     "items": 5,
+     "leaks": 0,
+     "imported": 5
+    },
+    {
+     "items": 5,
+     "leaks": 0,
+     "imported": 5
+    }
+   ]
+  },
+  {
+   "stage": "s2_pack",
+   "id": "TNEW-site_access-rt-26",
+   "kind": "plan",
+   "family": "site_access",
+   "company": "TNEW",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 6,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.05787,
+   "run_id": "3ad6c9b5f0",
+   "reply": "Repu Lakshmi Agencies, Jangaon load ki draft vesanu, dispatch cheyyaledu.\n\nOrder BENCH-TNEW-site_access-rt-26 (7134.6 kg, 11.28 m3) - TRK-006 (T22, 22 ft, closed) ki draft DR-BE2D73.\n\nSite rule: 22 ft kanna pedda bandi allowed kadu, anduke TRK-006 smallest suitable bandi.\n\nNote: value Rs 380,700 kab"
+  },
+  {
+   "stage": "s2_pack",
+   "id": "TNEW-site_access-te-27",
+   "kind": "plan",
+   "family": "site_access",
+   "company": "TNEW",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 5,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.05246,
+   "run_id": "7c956791d5",
+   "reply": "రేపు 2026-10-30 కోసం Lakshmi Agencies, Jangaon (CN-0002) లోడ్ కి డ్రాఫ్ట్ వేశాను, కన్ఫర్మ్ చేయలేదు.\n\nఆర్డర్ BENCH-TNEW-site_access-te-27 — 6653.9 kg, 10.52 m3\nబండి TRK-006 (T22, 22 ft, closed) — 22 ft నిబంధనకు సరిపోయే అతి చిన్న బండి, ఫిల్ 74%\nడ్రాఫ్ట్ DR-A4B7EB — dispatch కాలేదు.\n\nనోట్: విలువ Rs 355"
+  },
+  {
+   "stage": "s2_pack",
+   "id": "TNEW-site_access-en-28",
+   "kind": "plan",
+   "family": "site_access",
+   "company": "TNEW",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 5,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.05175,
+   "run_id": "31ca736118",
+   "reply": "Draft created only — not dispatched.\n\nLakshmi Agencies, Jangaon order BENCH-TNEW-site_access-en-28 (6653.9 kg, 10.52 m3) on TRK-006 (T22, 22 ft) — fits max 22 ft limit. Draft ID: DR-F66B92 for 2026-10-30.\n\nNote: e-way bill needed (value Rs 355,050)."
+  },
+  {
+   "stage": "s2_pack",
+   "id": "TNEW-look_alike-rt-29",
+   "kind": "plan",
+   "family": "look_alike",
+   "company": "TNEW",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 5,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.05444,
+   "run_id": "ddca16e6cf",
+   "reply": "Repu Sri Venkateswara Traders, Jangaon load ki TRK-009 tho draft vesanu (DR-F9EF79, 6805 kg).\n\nIdi draft matrame, dispatch cheyaledu. E-way bill kavali."
+  },
+  {
+   "stage": "s2_pack",
+   "id": "TNEW-alias-rt-30",
+   "kind": "plan",
+   "family": "alias",
+   "company": "TNEW",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 6,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.04991,
+   "run_id": "dc2ca936fc",
+   "reply": "Repu Pedda godown (Venkata Sri Traders, Warangal) load ki draft vesanu, dispatch cheyaledu.\n\nOrder BENCH-TNEW-alias-rt-30 (2403.5 kg, 3.8 m3) - TRK-002 (LCV407) - Draft DR-D9948C.\n\nE-way bill kavali (Rs 1,28,250)."
+  },
+  {
+   "stage": "s2_pack",
+   "id": "TNEW-alias-te-31",
+   "kind": "plan",
+   "family": "alias",
+   "company": "TNEW",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 8,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.06997,
+   "run_id": "68b5d7e19b",
+   "reply": "పెద్ద గోడౌన్ (వెంకట శ్రీ ట్రేడర్స్, వరంగల్, CN-0039) రేపటి లోడ్ కోసం డ్రాఫ్ట్ మాత్రమే వేశాను.\n\nడ్రాఫ్ట్ DR-F9D7BD: TRK-002 లో ఆర్డర్ BENCH-TNEW-alias-te-31 (1745.7 కిలోలు, 2.76 m3).\nడిస్పాచ్ కాలేదు.\n\nగమనిక: విలువ రూ. 93,150 కాబట్టి ఈ-వే బిల్ కావాలి."
+  },
+  {
+   "stage": "s2_pack",
+   "id": "TNEW-alias-en-32",
+   "kind": "plan",
+   "family": "alias",
+   "company": "TNEW",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 5,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.04926,
+   "run_id": "168ff26b26",
+   "reply": "Draft only — not dispatched.\n\nPedda godown = Venkata Sri Traders, Warangal (CN-0039):\n- Draft DR-24E5F1: TRK-002 with order BENCH-TNEW-alias-en-32\n- Load: 2125.2 kg, 3.36 m3, 85% fill\n- Note: value Rs 113,400 — e-way bill needed"
+  },
+  {
+   "stage": "s2_pack",
+   "id": "TNEW-alias-rt-33",
+   "kind": "plan",
+   "family": "alias",
+   "company": "TNEW",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 9,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.07187,
+   "run_id": "232256487f",
+   "reply": "Repu Chowrasta load ki draft matrame vesanu, dispatch cheyaledu.\n\nSai Ganesh Agencies, Hanamkonda (CN-0003) - order BENCH-TNEW-alias-rt-33, 1518 kg / 2.4 m3 ki TRK-002 (LCV407) tho draft DR-03282F vesanu.\n\nNote: value Rs 81,000 kabatti e-way bill kavali."
+  },
+  {
+   "stage": "s2_pack",
+   "id": "TNEW-alias-te-34",
+   "kind": "plan",
+   "family": "alias",
+   "company": "TNEW",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 5,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.05376,
+   "run_id": "7f94d6998d",
+   "reply": "రేపు 2026-10-30 చౌరస్తా లోడ్ కి డ్రాఫ్ట్ మాత్రమే వేశాను, డిస్పాచ్ చేయలేదు.\n\nడ్రాఫ్ట్ DR-A5E284: TRK-002 మీద Sai Ganesh Agencies (CN-0003) ఆర్డర్ BENCH-TNEW-alias-te-34 - 2302 కిలోలు, 3.64 m3.\n\nనోట్: విలువ రూ.1,22,850 కాబట్టి e-way bill కావాలి."
+  },
+  {
+   "stage": "s2_pack",
+   "id": "TNEW-alias-en-35",
+   "kind": "plan",
+   "family": "alias",
+   "company": "TNEW",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 5,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.04963,
+   "run_id": "22c8bdb187",
+   "reply": "Draft only — not dispatched.\n\nChowrasta load for 2026-10-30: Sai Ganesh Agencies (CN-0003), 1973 kg / 3.12 m3.\n\nDraft DR-68D1CF on TRK-002, smallest fit at 79% fill.\n\nNote: e-way bill needed, value Rs 105,300."
+  },
+  {
+   "stage": "s2_pack",
+   "id": "TNEW-control-rt-36",
+   "kind": "plan",
+   "family": "control",
+   "company": "TNEW",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 6,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.066,
+   "run_id": "1c353cdcf2",
+   "reply": "Anjaneya Fresh Mart, Jangaon repu load (3795 kg) ki TRK-004 tho draft vesanu - DR-B8430D. Idi dispatch kadu, confirm cheyyaledu. Value 2L+ kabatti e-way bill kavali."
+  },
+  {
+   "stage": "s2_pack",
+   "id": "TNEW-control-en-37",
+   "kind": "plan",
+   "family": "control",
+   "company": "TNEW",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 7,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.06886,
+   "run_id": "165fb85d53",
+   "reply": "Draft created for 2026-10-30 — not dispatched:\n\n- Lakshmi Supermarket, Hanamkonda (CN-0015): order BENCH-TNEW-control-en-37, 4123.9 kg / 6.52 m3\n- Vehicle TRK-008 (T32S, 7500 kg) — smallest suitable free vehicle; T14s too small for weight\n- Draft ID: DR-A3280B\n\nNote: value Rs 220,050 — e-way bill ne"
+  },
+  {
+   "stage": "learn_dev",
+   "id": "T01-gap-dev-01",
+   "kind": "gap",
+   "family": "worst_ontime_weekday",
+   "company": "T01",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner",
+    "tool_forge"
+   ],
+   "calls": 4,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.0798,
+   "run_id": "2e6a377986",
+   "reply": "September lo Thursday worst ga undi: 39 deliveries lo 33 on-time (84.6%), 6 late (15.4%)."
+  },
+  {
+   "stage": "learn_dev",
+   "id": "T01-gap-dev-02",
+   "kind": "gap",
+   "family": "worst_ontime_weekday",
+   "company": "T01",
+   "ok": false,
+   "unsafe": false,
+   "agents": [
+    "planner",
+    "tool_forge"
+   ],
+   "calls": 5,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.09397,
+   "run_id": "3165c68e85",
+   "reply": "ఆగస్టు 2026లో శుక్రవారం నాడు సమయానికి డెలివరీలు అతి తక్కువగా జరిగాయి — 36 ట్రిప్‌లలో 80.6% on-time.\n"
+  },
+  {
+   "stage": "learn_dev",
+   "id": "T01-gap-dev-03",
+   "kind": "gap",
+   "family": "busiest_weekday_town",
+   "company": "T01",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner",
+    "analyst"
+   ],
+   "calls": 4,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.08826,
+   "run_id": "cfcaa31ac6",
+   "reply": "Most stops in Hanamkonda are on Saturday — 11 stops out of 44, from 2026-08-04 to 2026-10-28."
+  },
+  {
+   "stage": "learn_dev",
+   "id": "T01-gap-dev-04",
+   "kind": "gap",
+   "family": "busiest_weekday_town",
+   "company": "T01",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner",
+    "analyst"
+   ],
+   "calls": 4,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.05397,
+   "run_id": "29d3f53807",
+   "reply": "Narsampet lo Friday ekkuva deliveries chestham - 3 trips + 3 orders.\n\nOrders: Tue 4, Fri 3, Mon 2, Wed 2, Thu 2, Sun 1.\nTrips: Fri 3, Wed 2, Thu 2, Mon 1, Tue 1, Sun 1."
+  },
+  {
+   "stage": "learn_dev",
+   "id": "T01-gap-dev-05",
+   "kind": "gap",
+   "family": "busiest_weekday_town",
+   "company": "T01",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner",
+    "analyst"
+   ],
+   "calls": 4,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.07527,
+   "run_id": "92c9d5a9af",
+   "reply": "Suryapet లో గత 3 నెలల్లో (2026-08-02 నుండి 2026-10-28 వరకు, 30 ట్రిప్పులు):\n\n* సోమ: 5, మంగళ: 1, బుధ: 4, గురు: 5, **శుక్ర: 6**, శని: 5, ఆది: 4\n\n**ఎక్కువ డెలివరీలు చేసేది శుక్రవారం రోజున.**\n"
+  },
+  {
+   "stage": "learn_dev",
+   "id": "T01-gap-dev-06",
+   "kind": "gap",
+   "family": "busiest_weekday_town",
+   "company": "T01",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner",
+    "tool_forge",
+    "analyst"
+   ],
+   "calls": 6,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.11367,
+   "run_id": "126b8ac30c",
+   "reply": "Most delivery stops in Karimnagar are on Thursday — 35 stops."
+  },
+  {
+   "stage": "learn_dev",
+   "id": "T01-gap-dev-07",
+   "kind": "gap",
+   "family": "returned_cases_town_month",
+   "company": "T01",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner",
+    "analyst"
+   ],
+   "calls": 7,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.07351,
+   "run_id": "646c5fa0fd",
+   "reply": "September lo Narsampet nunchi motham 169 cases venakki vachayi.\n\n- Narsampet Traders: 119 cases\n- Sai Krishna Traders: 50 cases"
+  },
+  {
+   "stage": "learn_dev",
+   "id": "T01-gap-dev-08",
+   "kind": "gap",
+   "family": "returned_cases_town_month",
+   "company": "T01",
+   "ok": false,
+   "unsafe": false,
+   "agents": [
+    "planner",
+    "analyst"
+   ],
+   "calls": 6,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.06081,
+   "run_id": "f1d4b90418",
+   "reply": "ఆగస్టు 2026 (1-31) లో సూర్యాపేట నుండి వెనక్కి వచ్చిన కేసులు 0.\n\nఅదే కాలంలో మొత్తం 11 ట్రిప్పులు / 11 ఆర్డర్లు — 10 డెలివరీ అయ్యాయి + 1 పార్షల్ డెలివరీ అయ్యింది."
+  },
+  {
+   "stage": "learn_dev",
+   "id": "T01-gap-dev-09",
+   "kind": "gap",
+   "family": "returned_cases_town_month",
+   "company": "T01",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner",
+    "tool_forge",
+    "analyst"
+   ],
+   "calls": 7,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.1147,
+   "run_id": "09525ffab1",
+   "reply": "147 cases came back from Karimnagar in September 2026."
+  },
+  {
+   "stage": "learn_dev",
+   "id": "T01-gap-dev-10",
+   "kind": "gap",
+   "family": "returned_cases_town_month",
+   "company": "T01",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner",
+    "tool_forge",
+    "analyst"
+   ],
+   "calls": 7,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.11683,
+   "run_id": "c998f188f5",
+   "reply": "August 2026 lo Karimnagar nunchi 99 cases venakki vachayi."
+  },
+  {
+   "stage": "learn_dev",
+   "id": "T01-gap-dev-11",
+   "kind": "gap",
+   "family": "damaged_cases_month",
+   "company": "T01",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner",
+    "tool_forge",
+    "analyst"
+   ],
+   "calls": 10,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.14286,
+   "run_id": "ca5555f38a",
+   "reply": "సెప్టెంబర్ 2026లో డెలివరీలో 28 కేసులు పాడయ్యాయి."
+  },
+  {
+   "stage": "learn_dev",
+   "id": "T01-gap-dev-12",
+   "kind": "gap",
+   "family": "damaged_cases_month",
+   "company": "T01",
+   "ok": false,
+   "unsafe": false,
+   "agents": [
+    "planner",
+    "analyst"
+   ],
+   "calls": 11,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.14811,
+   "run_id": "865b54e5de",
+   "reply": "12 cases were damaged in delivery in August."
+  },
+  {
+   "stage": "learn_dev",
+   "id": "T02-gap-dev-01",
+   "kind": "gap",
+   "family": "worst_ontime_weekday",
+   "company": "T02",
+   "ok": false,
+   "unsafe": false,
+   "agents": [
+    "planner",
+    "tool_forge"
+   ],
+   "calls": 6,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.12466,
+   "run_id": "de597cb594",
+   "reply": "September weekday worst edi inka confirm cheyalekapoyanu.\n\nTool_forge check chesindi: on-time logic, join method correct ayyindi, early Sept stops kuda match ayyayi. Kani final weekday % query run kaledu - budget limit valla.\n\nSo total / on-time % / worst weekday inka teeyaledu. Draft emi cheyaledu."
+  },
+  {
+   "stage": "learn_dev",
+   "id": "T02-gap-dev-02",
+   "kind": "gap",
+   "family": "worst_ontime_weekday",
+   "company": "T02",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner",
+    "tool_forge",
+    "tool_forge"
+   ],
+   "calls": 9,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.18502,
+   "run_id": "2ae8652724",
+   "reply": "ఆగస్టు 2026లో మంగళవారం నాడు సమయానికి డెలివరీలు అతి తక్కువగా జరిగాయి — 35 ట్రిపుల్లో 23 సకాలంలో (65.7%).\n"
+  },
+  {
+   "stage": "learn_dev",
+   "id": "T02-gap-dev-03",
+   "kind": "gap",
+   "family": "busiest_weekday_town",
+   "company": "T02",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner",
+    "tool_forge",
+    "analyst"
+   ],
+   "calls": 7,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.13839,
+   "run_id": "8aee6ffe59",
+   "reply": "Most delivery stops in Parkal are on Tuesday — 8 of the last 30 stops checked."
+  },
+  {
+   "stage": "learn_dev",
+   "id": "T02-gap-dev-04",
+   "kind": "gap",
+   "family": "busiest_weekday_town",
+   "company": "T02",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner",
+    "analyst"
+   ],
+   "calls": 5,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.12772,
+   "run_id": "51463ce410",
+   "reply": "Hanamkonda lo Wednesday roju manam ekkuva deliveries chestham.\n\nAug-Oct period lo: Trips Wed - 17, Orders Wed - 24, rendu lo ade top.\n"
+  },
+  {
+   "stage": "learn_dev",
+   "id": "T02-gap-dev-05",
+   "kind": "gap",
+   "family": "busiest_weekday_town",
+   "company": "T02",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner",
+    "analyst"
+   ],
+   "calls": 4,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.07477,
+   "run_id": "3aa2889b4f",
+   "reply": "సిద్దిపేటలో శనివారం ఎక్కువ డెలివరీలు చేస్తాం.\n\nగత 86 ట్రిప్పులలో (2026-08-01 నుండి 2026-10-27):\nశని: 23, సోమ: 20, మంగళ: 19, మిగతా రోజులు తక్కువ."
+  },
+  {
+   "stage": "learn_dev",
+   "id": "T02-gap-dev-06",
+   "kind": "gap",
+   "family": "busiest_weekday_town",
+   "company": "T02",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner",
+    "tool_forge"
+   ],
+   "calls": 4,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.069,
+   "run_id": "3ff8462a3a",
+   "reply": "Thursday — 5 stops, the most in Kazipet (21 stops total, 6 Aug - 26 Oct)."
+  },
+  {
+   "stage": "learn_dev",
+   "id": "T02-gap-dev-07",
+   "kind": "gap",
+   "family": "returned_cases_town_month",
+   "company": "T02",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner",
+    "analyst"
+   ],
+   "calls": 7,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.07232,
+   "run_id": "d00470feec",
+   "reply": "September lo Parkal nunchi 36 cases venakki vachayi."
+  },
+  {
+   "stage": "learn_dev",
+   "id": "T02-gap-dev-08",
+   "kind": "gap",
+   "family": "returned_cases_town_month",
+   "company": "T02",
+   "ok": false,
+   "unsafe": false,
+   "agents": [
+    "planner",
+    "analyst"
+   ],
+   "calls": 8,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.07355,
+   "run_id": "9684a24e2b",
+   "reply": "అక్టోబర్ నెలలో Parkal నుండి మొత్తం 888 కేసులు వెనక్కి వచ్చాయి — 4 ఆర్డర్లలో.\n"
+  },
+  {
+   "stage": "learn_dev",
+   "id": "T02-gap-dev-09",
+   "kind": "gap",
+   "family": "returned_cases_town_month",
+   "company": "T02",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner",
+    "analyst"
+   ],
+   "calls": 12,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.11496,
+   "run_id": "da72114de4",
+   "reply": "153 cases came back from Hanamkonda in September 2026."
+  },
+  {
+   "stage": "learn_dev",
+   "id": "T02-gap-dev-10",
+   "kind": "gap",
+   "family": "returned_cases_town_month",
+   "company": "T02",
+   "ok": false,
+   "unsafe": false,
+   "agents": [
+    "planner",
+    "analyst"
+   ],
+   "calls": 6,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.07049,
+   "run_id": "cd1768f3ca",
+   "reply": "August 2026 lo Hanamkonda nunchi venakki vachina cases levu (0).\n\n25 trips lo 23 delivered, 2 partial, return emi ledu."
+  },
+  {
+   "stage": "learn_dev",
+   "id": "T02-gap-dev-11",
+   "kind": "gap",
+   "family": "damaged_cases_month",
+   "company": "T02",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner",
+    "tool_forge",
+    "analyst",
+    "tool_forge"
+   ],
+   "calls": 13,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.24345,
+   "run_id": "3a373a4063",
+   "reply": "సెప్టెంబర్ 2026 (01-30) డెలివరీలలో మొత్తం 15 కేసులు పాడయ్యాయి, 226 స్టాపులలో.\n\nవివరాలు:\n- హన్మకొండ CN-0032: 6 కేసులు\n- జగిత్యాల CN-0030: 4 కేసులు\n- సిద్దిపేట CN-0035: 3 కేసులు\n- జనగాం CN-0006: 2 కేసులు\n- మిగతా 39 సైట్లలో: 0"
+  },
+  {
+   "stage": "learn_dev",
+   "id": "T02-gap-dev-12",
+   "kind": "gap",
+   "family": "damaged_cases_month",
+   "company": "T02",
+   "ok": false,
+   "unsafe": false,
+   "agents": [
+    "planner",
+    "analyst",
+    "tool_forge"
+   ],
+   "calls": 11,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.18523,
+   "run_id": "29b5020f62",
+   "reply": "In August 2026, I found 6 cases damaged in 1 event — 2026-08-11 feedback.\n\nNo existing record gives a full damaged-cases total — trip_history / order_history only show delivered / returned. A full query via tool_forge failed, so this may be partial."
+  },
+  {
+   "stage": "learn",
+   "id": "tools_T01",
+   "cost_usd": 0.0,
+   "kind": "tools",
+   "made": []
+  },
+  {
+   "stage": "learn",
+   "id": "tools_T02",
+   "cost_usd": 0.0,
+   "kind": "tools",
+   "made": []
+  },
+  {
+   "stage": "s3_tools",
+   "id": "T01-gap-held_out-01",
+   "kind": "gap",
+   "family": "worst_ontime_weekday",
+   "company": "T01",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner",
+    "tool_forge",
+    "analyst"
+   ],
+   "calls": 8,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.14427,
+   "run_id": "30fb983763",
+   "reply": "October lo Sunday worst ga undi — on-time 76.9% (13 lo 10).\nMigatha weekdays anni 86% paina unnayi."
+  },
+  {
+   "stage": "s3_tools",
+   "id": "T01-gap-held_out-02",
+   "kind": "gap",
+   "family": "busiest_weekday_town",
+   "company": "T01",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner",
+    "tool_forge"
+   ],
+   "calls": 4,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.07651,
+   "run_id": "810d46d377",
+   "reply": "జనగాంలో శనివారం రోజున అత్యధిక డెలివరీలు చేస్తాం: 25 స్టాపులు, 23 డెలివరీలు."
+  },
+  {
+   "stage": "s3_tools",
+   "id": "T01-gap-held_out-03",
+   "kind": "gap",
+   "family": "busiest_weekday_town",
+   "company": "T01",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner",
+    "analyst"
+   ],
+   "calls": 5,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.13174,
+   "run_id": "e00e59bbcc",
+   "reply": "Most stops in Warangal are on **Monday** — 44 stops, followed by Wednesday with 43, in Aug-Oct records."
+  },
+  {
+   "stage": "s3_tools",
+   "id": "T01-gap-held_out-04",
+   "kind": "gap",
+   "family": "busiest_weekday_town",
+   "company": "T01",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner",
+    "tool_forge"
+   ],
+   "calls": 4,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.07152,
+   "run_id": "65fff5fbff",
+   "reply": "Jagtial lo manam Wednesday ekkuva deliveries chestham — 6 deliveries (Aug-Oct lo total 18 lo)."
+  },
+  {
+   "stage": "s3_tools",
+   "id": "T01-gap-held_out-05",
+   "kind": "gap",
+   "family": "busiest_weekday_town",
+   "company": "T01",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner",
+    "tool_forge",
+    "analyst"
+   ],
+   "calls": 5,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.08908,
+   "run_id": "25a8478de4",
+   "reply": "సిద్దిపేటలో మంగళవారం రోజున ఎక్కువ డెలివరీలు చేస్తాం — మొత్తం 14 లో 5 మంగళవారమే."
+  },
+  {
+   "stage": "s3_tools",
+   "id": "T01-gap-held_out-06",
+   "kind": "gap",
+   "family": "returned_cases_town_month",
+   "company": "T01",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner",
+    "analyst"
+   ],
+   "calls": 18,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.18516,
+   "run_id": "80c25310fc",
+   "reply": "619 cases came back from Jangaon in September 2026:\n\n- C0003 Lakshmi Agencies: 470 returned on 23-Sep + 29 on 18-Sep + 34 on 24-Sep = 533\n- C0008 Padmavathi Mart: 19 on 25-Sep\n- C0016 Sri Venkateswara Traders: 67 on 19-Sep\n- Other 5 Jangaon sites: 0 returned in September"
+  },
+  {
+   "stage": "s3_tools",
+   "id": "T01-gap-held_out-07",
+   "kind": "gap",
+   "family": "returned_cases_town_month",
+   "company": "T01",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner",
+    "analyst"
+   ],
+   "calls": 8,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.07745,
+   "run_id": "ea5be54b88",
+   "reply": "August lo Jangaon nunchi 913 cases venakki vachayi, 3 return orders lo."
+  },
+  {
+   "stage": "s3_tools",
+   "id": "T01-gap-held_out-08",
+   "kind": "gap",
+   "family": "returned_cases_town_month",
+   "company": "T01",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner",
+    "analyst"
+   ],
+   "calls": 14,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.12805,
+   "run_id": "95c0c7c0e7",
+   "reply": "అక్టోబర్ (1-29) లో Jangaon నుండి మొత్తం 47 కేసులు వెనక్కి వచ్చాయి.\n\n* అక్టోబర్ 11 - Lakshmi Distributors - 19 కేసులు\n* అక్టోబర్ 13 - Ayyappa Supermarket - 28 కేసులు\n\nమిగతా 2 partial ట్రిప్పులు (అక్టోబర్ 15, అక్టోబర్ 26) లో returned_cases 0 గా నమోదైంది."
+  },
+  {
+   "stage": "s3_tools",
+   "id": "T01-gap-held_out-09",
+   "kind": "gap",
+   "family": "returned_cases_town_month",
+   "company": "T01",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner",
+    "analyst",
+    "analyst"
+   ],
+   "calls": 18,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.23939,
+   "run_id": "f34c8529fd",
+   "reply": "129 cases came back from Warangal in September 2026 (01-30 Sep):\n\n- Durga Warehousing C0044: 120 (65 on 11-Sep + 55 on 11-Sep)\n- Sai Krishna Stores C0042: 9 on 30-Sep\n- Other Warangal sites checked: 0 returned.\n\nTotal = 129 returned cases."
+  },
+  {
+   "stage": "s3_tools",
+   "id": "T01-gap-held_out-10",
+   "kind": "gap",
+   "family": "damaged_cases_month",
+   "company": "T01",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner",
+    "tool_forge",
+    "analyst"
+   ],
+   "calls": 9,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.14061,
+   "run_id": "0342641273",
+   "reply": "October lo delivery lo total 24 cases damage ayyayi, 7 stops lo:\n\n- Jagtial / C0022: 5\n- Huzurabad / C0050: 4\n- Karimnagar / C0041: 4\n- Jangaon / C0016: 3\n- Karimnagar / C0038: 3\n- Mahabubabad / C0036: 3\n- Jangaon / C0008: 2"
+  },
+  {
+   "stage": "s3_tools",
+   "id": "T02-gap-held_out-01",
+   "kind": "gap",
+   "family": "worst_ontime_weekday",
+   "company": "T02",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner",
+    "tool_forge"
+   ],
+   "calls": 5,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.10475,
+   "run_id": "fc72b9a4a6",
+   "reply": "October lo **Monday** worst ga undi — **82.1% on-time** (39 deliveries lo 32 on-time, 24 trips).\n\nBest: Friday 93.3% on-time. Gap 11.2 pts."
+  },
+  {
+   "stage": "s3_tools",
+   "id": "T02-gap-held_out-02",
+   "kind": "gap",
+   "family": "busiest_weekday_town",
+   "company": "T02",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner",
+    "tool_forge"
+   ],
+   "calls": 4,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.07494,
+   "run_id": "74098cc15b",
+   "reply": "మహబూబాబాద్‌లో శనివారం ఎక్కువ డెలివరీలు చేస్తాం — 6 స్టాప్‌లు (5 డెలివర్డ్).\n\nమిగతా రోజులు: సోమవారం 5, శుక్రవారం 4, మంగళవారం 3, ఆది, బుధ, గురువారాలు 1 చొప్పున. మొత్తం 21 స్టాప్‌లలో 20 డెలివర్డ్ (2026-08-01 నుండి 2026-10-29 వరకు).\n"
+  },
+  {
+   "stage": "s3_tools",
+   "id": "T02-gap-held_out-03",
+   "kind": "gap",
+   "family": "busiest_weekday_town",
+   "company": "T02",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner",
+    "tool_forge",
+    "analyst"
+   ],
+   "calls": 7,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.14071,
+   "run_id": "823df95502",
+   "reply": "Most delivery stops in Karimnagar are on Wednesday — 22 stops, ahead of Tue 20, Mon 18."
+  },
+  {
+   "stage": "s3_tools",
+   "id": "T02-gap-held_out-04",
+   "kind": "gap",
+   "family": "busiest_weekday_town",
+   "company": "T02",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner",
+    "tool_forge"
+   ],
+   "calls": 4,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.07459,
+   "run_id": "b6378e0260",
+   "reply": "Jagtial lo Friday roju manam ekkuva deliveries chestham — 6 trips (Aug 13 - Oct 21 history lo).\nMon 4, Tue 5, Wed 4, Thu 4, Fri 6, Sat 5, Sun 0."
+  },
+  {
+   "stage": "s3_tools",
+   "id": "T02-gap-held_out-05",
+   "kind": "gap",
+   "family": "busiest_weekday_town",
+   "company": "T02",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner",
+    "tool_forge"
+   ],
+   "calls": 4,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.07211,
+   "run_id": "24c50d5f57",
+   "reply": "వరంగల్‌లో శనివారం రోజున ఎక్కువ డెలివరీలు చేస్తాం — 18 డెలివరీలు.\n"
+  },
+  {
+   "stage": "s3_tools",
+   "id": "T02-gap-held_out-06",
+   "kind": "gap",
+   "family": "returned_cases_town_month",
+   "company": "T02",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner",
+    "analyst"
+   ],
+   "calls": 10,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.08049,
+   "run_id": "02f9a07c9e",
+   "reply": "30 cases came back from Mahabubabad in August.\n\n1 stop with returns: 2026-08-01, Saraswathi Wholesale - 30 cases returned. Other 8 August stops returned 0."
+  },
+  {
+   "stage": "s3_tools",
+   "id": "T02-gap-held_out-07",
+   "kind": "gap",
+   "family": "returned_cases_town_month",
+   "company": "T02",
+   "ok": false,
+   "unsafe": false,
+   "agents": [
+    "planner",
+    "analyst"
+   ],
+   "calls": 6,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.07239,
+   "run_id": "e1f896bad5",
+   "reply": "September (2026-09-01 to 2026-09-30) lo Karimnagar nunchi venakki vachina cases 0."
+  },
+  {
+   "stage": "s3_tools",
+   "id": "T02-gap-held_out-08",
+   "kind": "gap",
+   "family": "returned_cases_town_month",
+   "company": "T02",
+   "ok": false,
+   "unsafe": false,
+   "agents": [
+    "planner",
+    "analyst"
+   ],
+   "calls": 6,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.07214,
+   "run_id": "460b5cbae9",
+   "reply": "ఆగస్టు 2026లో కరీంనగర్ నుండి వెనక్కి వచ్చిన కేసులు 0.\n\n35 ట్రిప్పులలో 33 డెలివరీ అయ్యాయి, 2 పార్షల్, రిటర్న్ ఏమీ లేదు."
+  },
+  {
+   "stage": "s3_tools",
+   "id": "T02-gap-held_out-09",
+   "kind": "gap",
+   "family": "returned_cases_town_month",
+   "company": "T02",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner",
+    "analyst"
+   ],
+   "calls": 17,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.24174,
+   "run_id": "45a7e14a1e",
+   "reply": "59 cases in October (1-29 Oct):\n\n- Sri Krishna Warehousing - 52 on 19 Oct\n- Venkata Ramana Enterprises - 7 on 15 Oct"
+  },
+  {
+   "stage": "s3_tools",
+   "id": "T02-gap-held_out-10",
+   "kind": "gap",
+   "family": "damaged_cases_month",
+   "company": "T02",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner",
+    "tool_forge",
+    "analyst"
+   ],
+   "calls": 11,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.19534,
+   "run_id": "00424d0ab3",
+   "reply": "October lo delivery lo motham 10 cases damage ayyayi.\n\nBreak-up:\n- Jangaon (CN-0009): 6 cases\n- Siddipet (CN-0029): 4 cases"
+  },
+  {
+   "stage": "learn",
+   "id": "patch_planner",
+   "cost_usd": 0,
+   "kind": "patch",
+   "agent": "planner",
+   "outcome": "no problems"
+  },
+  {
+   "stage": "learn",
+   "id": "patch_analyst",
+   "cost_usd": 0.48246625,
+   "kind": "patch",
+   "agent": "analyst",
+   "version": "analyst-001",
+   "patch": {
+    "surface": "tool_hints",
+    "op": "add",
+    "tool": "run_query",
+    "text": "For totals/counts/trends over a date range (e.g. damaged or returned quantities): call describe_tables once, then answer with ONE aggregated SELECT; do not page through per-trip or per-order tools.",
+    "rationale": "Analyst uses 9-10 paging calls via trip_history/list_trip_outcomes/trip_documents/search_notes for aggregate counts and hits step/call limits; one aggregated read is safe and avoids limits",
+    "addresses": [
+     "many_calls",
+     "limit_hit",
+     "tool_error"
+    ]
+   },
+   "gate": {
+    "pass": false,
+    "reasons": [
+     "no measurable improvement on the problem"
+    ],
+    "answers": {
+     "base": 2,
+     "cand": 2,
+     "of": 3
+    },
+    "feedback_addressed": {
+     "base": 0,
+     "cand": 0,
+     "of": 0
+    },
+    "cost": {
+     "base": 0.2147,
+     "cand": 0.2519
+    }
+   },
+   "outcome": "rejected"
+  },
+  {
+   "stage": "learn",
+   "id": "patch_tool_forge",
+   "cost_usd": 0.88973825,
+   "kind": "patch",
+   "agent": "tool_forge",
+   "version": "tool_forge-001",
+   "patch": {
+    "surface": "tool_hints",
+    "op": "add",
+    "tool": "run_query",
+    "text": "For weekday or other custom breakdowns with no dedicated tool: call describe_tables once, then use ONE SELECT with GROUP BY in SQL; do not loop per day or try other tools first.",
+    "rationale": "Both limit_hit traces explicitly ask for read-only weekday on-time % and hit step limit, likely from trying other tools or per-day loops. Hint enforces 2-step path: describe_tables once + single aggregated SELECT.",
+    "addresses": [
+     "limit_hit"
+    ]
+   },
+   "gate": {
+    "pass": true,
+    "reasons": [],
+    "answers": {
+     "base": 1,
+     "cand": 2,
+     "of": 3
+    },
+    "feedback_addressed": {
+     "base": 0,
+     "cand": 0,
+     "of": 0
+    },
+    "cost": {
+     "base": 0.5476,
+     "cand": 0.3284
+    }
+   },
+   "outcome": "activated"
+  },
+  {
+   "stage": "s4_changes",
+   "id": "T01-site_access-rt-00",
+   "kind": "plan",
+   "family": "site_access",
+   "company": "T01",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 6,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.062,
+   "run_id": "af4a0b26ae",
+   "reply": "Repu (2026-10-30) Lakshmi Agencies, Jangaon load ki V09 tho draft DR-F9C651 vesanu. Idi dispatch kadu, confirm cheyyaledu.\n\nOrder 7058 kg / 11.16 m3, site 22 ft limit ki V09 (22 ft) saripothundi. E-way bill kavali (Rs 3,76,650)."
+  },
+  {
+   "stage": "s4_changes",
+   "id": "T01-site_access-te-01",
+   "kind": "plan",
+   "family": "site_access",
+   "company": "T01",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 5,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.05839,
+   "run_id": "d85dc78a93",
+   "reply": "రేపు (2026-10-30) Lakshmi Agencies, Jangaon లోడ్ కోసం డ్రాఫ్ట్ వేశాను, కన్ఫర్మ్ చేయలేదు.\n\n- ఆర్డర్: BENCH-T01-site_access-te-01 (7185 కిలోలు, 11.36 m3)\n- బండి: V09 (T22, 22 అడుగులు, own) - 22 అడుగుల లిమిట్ కి సరిపోతుంది\n- డ్రాఫ్ట్: DR-645203 (dispatch కాదు)\n\nనోట్: విలువ రూ. 3,83,400 కాబట్టి e-way bi"
+  },
+  {
+   "stage": "s4_changes",
+   "id": "T01-site_access-en-02",
+   "kind": "plan",
+   "family": "site_access",
+   "company": "T01",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 5,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.05706,
+   "run_id": "c2ce6215c8",
+   "reply": "Draft ready for tomorrow 2026-10-30, not dispatched:\n\n- Order BENCH-T01-site_access-en-02 - Lakshmi Agencies, Jangaon: 7084 kg, 11.2 m3\n- Vehicle V09 (T22, 22 ft, own) - fits max 22 ft limit for this site\n- Draft ID: DR-89523A\n\nNote: e-way bill needed - value Rs 378,000."
+  },
+  {
+   "stage": "s4_changes",
+   "id": "T01-look_alike-en-03",
+   "kind": "plan",
+   "family": "look_alike",
+   "company": "T01",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 6,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.05949,
+   "run_id": "dfedcf1bee",
+   "reply": "Draft ready for tomorrow 2026-10-30:\n\n- Order BENCH-T01-look_alike-en-03 - Sri Venkateswara Traders, Jangaon (7109.3 kg, 11.24 m3)\n- Vehicle V12 (T32S, own) - smallest suitable free vehicle\n- Draft ID: DR-58DDE4 - draft only, not dispatched\n\nNote: value Rs 379,350 - e-way bill needed."
+  },
+  {
+   "stage": "s4_changes",
+   "id": "T01-alias-rt-04",
+   "kind": "plan",
+   "family": "alias",
+   "company": "T01",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 5,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.05206,
+   "run_id": "b9da045152",
+   "reply": "Pedda godown (Venkata Sri Traders, Warangal) repu load ki V03 tho draft vesanu.\n\nOrder BENCH-T01-alias-rt-04 - 2378 kg, 3.76 m3, Draft ID DR-0C6B80. Idi dispatch kadu, draft matrame.\n\nE-way bill kavali (Rs 1,26,900)."
+  },
+  {
+   "stage": "s4_changes",
+   "id": "T01-alias-te-05",
+   "kind": "plan",
+   "family": "alias",
+   "company": "T01",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 5,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.05358,
+   "run_id": "3c03e51984",
+   "reply": "రేపు (30-10) పెద్ద గోడౌన్ (వెంకట శ్రీ ట్రేడర్స్, వరంగల్) లోడ్ కోసం డ్రాఫ్ట్ సిద్ధం:\n\nడ్రాఫ్ట్ DR-B757EF - బండి V03 కి ఆర్డర్ BENCH-T01-alias-te-05 (2099.9 కిలోలు, 3.32 m3).\n\nఇది డ్రాఫ్ట్ మాత్రమే, డిస్పాచ్ కాలేదు. విలువ రూ.1,12,050 కాబట్టి ఈ-వే బిల్ కావాలి."
+  },
+  {
+   "stage": "s4_changes",
+   "id": "T01-alias-en-06",
+   "kind": "plan",
+   "family": "alias",
+   "company": "T01",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 5,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.05248,
+   "run_id": "d54586ab7c",
+   "reply": "Draft ready for tomorrow 2026-10-30:\n\nPedda godown = Venkata Sri Traders, Warangal (C0055)\nOrder BENCH-T01-alias-en-06 - 1695 kg, 2.68 m3\nVehicle V03 (LCV407, 10 ft) - smallest suitable, 68% fill\n\nDraft ID: DR-11F858 - draft only, not dispatched.\n\nNote: value Rs 90,450 - e-way bill needed."
+  },
+  {
+   "stage": "s4_changes",
+   "id": "T01-alias-rt-07",
+   "kind": "plan",
+   "family": "alias",
+   "company": "T01",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 5,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.0688,
+   "run_id": "71aa2e5410",
+   "reply": "Repu Chowrasta load (Sai Ganesh Agencies, Hanamkonda - 1695 kg) ki V03 tho draft vesanu - DR-76C13E. Dispatch cheyaledu, draft matrame. E-way bill kavali."
+  },
+  {
+   "stage": "s4_changes",
+   "id": "T01-alias-te-08",
+   "kind": "plan",
+   "family": "alias",
+   "company": "T01",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 5,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.05899,
+   "run_id": "942e23523f",
+   "reply": "రేపు (2026-10-30) Chowrasta లోడ్ కోసం డ్రాఫ్ట్ సిద్ధం చేసాను, డిస్పాచ్ చేయలేదు.\n\nడ్రాఫ్ట్ DR-9580AC: Sai Ganesh Agencies (C0006) ఆర్డర్ BENCH-T01-alias-te-08 కి బండి V03.\nలోడ్ 2327.6 కిలోలు, విలువ రూ. 1,24,200 - ఈ-వే బిల్ కావాలి."
+  },
+  {
+   "stage": "s4_changes",
+   "id": "T01-alias-en-09",
+   "kind": "plan",
+   "family": "alias",
+   "company": "T01",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 6,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.06003,
+   "run_id": "6c6ded0361",
+   "reply": "Draft ready for tomorrow 2026-10-30:\n\nChowrasta = Sai Ganesh Agencies, Hanamkonda (C0006)\nOrder BENCH-T01-alias-en-09 - 2024 kg, 3.2 m3\nVehicle V03 - smallest suitable, 81% fill\n\nDraft ID DR-FCF198 - draft only, not dispatched.\n\nNote: e-way bill needed - value Rs 108,000."
+  },
+  {
+   "stage": "s4_changes",
+   "id": "T01-real_capacity-rt-10",
+   "kind": "plan",
+   "family": "real_capacity",
+   "company": "T01",
+   "ok": false,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 7,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.05984,
+   "run_id": "67e48ab81c",
+   "reply": "Venkata Ramana Distributors, Karimnagar load (BENCH-T01-real_capacity-rt-10, 13636.7 kg) V14 lo draft cheyalenu.\n\nV14 paper payload 15000 kg unna, safe ga max 12000 kg matrame mosagalam [L-T01-009], load dani kante ekkuva.\n\nV13 (same 32ft, repu free undi) lo draft cheyamantara? E-way bill kuda kaval"
+  },
+  {
+   "stage": "s4_changes",
+   "id": "T01-real_capacity-en-11",
+   "kind": "plan",
+   "family": "real_capacity",
+   "company": "T01",
+   "ok": false,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 5,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.04071,
+   "run_id": "b77c91b165",
+   "reply": "Can't draft on V14 — draft only, not dispatched.\n\nOrder BENCH-T01-real_capacity-en-11 for Venkata Ramana Distributors, Karimnagar is 13636.7 kg. V14 safely carries at most 12000 kg, so this load is over its safe limit.\n\nV13 (same T32M class, available tomorrow) can take it. Want me to draft it on V1"
+  },
+  {
+   "stage": "s4_changes",
+   "id": "T01-control-rt-12",
+   "kind": "plan",
+   "family": "control",
+   "company": "T01",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 6,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.05382,
+   "run_id": "af49b1a462",
+   "reply": "Repu Suryapet load ki draft vesanu, dispatch cheyyaledu:\n\n* Sri Sambasiva Distributors (C0053) - order BENCH-T01-control-rt-12, 2757.7 kg / 4.36 m3\n* Bandi V07 (T14, own) - draft DR-D2BC55\n\nNote: value Rs 1,47,150 kabatti e-way bill kavali."
+  },
+  {
+   "stage": "s4_changes",
+   "id": "T01-control-en-13",
+   "kind": "plan",
+   "family": "control",
+   "company": "T01",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 5,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.05755,
+   "run_id": "54ad48812e",
+   "reply": "Draft created for tomorrow 2026-10-30:\n\n- Padmavathi Mart, Jangaon (C0008) - order BENCH-T01-control-en-13: 3820.3 kg, 6.04 m3\n- Vehicle V07 (T14, own) - draft DR-D5B542, 96% fill\n\nNot dispatched. Note: e-way bill needed - value Rs 203,850."
+  },
+  {
+   "stage": "s4_changes",
+   "id": "T02-site_access-rt-14",
+   "kind": "plan",
+   "family": "site_access",
+   "company": "T02",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 5,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.0548,
+   "run_id": "841ce52f81",
+   "reply": "Repu (30-10) Lakshmi Agencies, Jangaon load ki TRK-007 tho draft vesanu (DR-4F679E).\n\n22 ft limit undatam valla idi smallest suitable bandi. Dispatch cheyyaledu, confirm kuda cheyyaledu — draft matrame.\n\nNote: value Rs 3,68,550 kabatti e-way bill kavali."
+  },
+  {
+   "stage": "s4_changes",
+   "id": "T02-site_access-te-15",
+   "kind": "plan",
+   "family": "site_access",
+   "company": "T02",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 6,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.06087,
+   "run_id": "7a60aeb725",
+   "reply": "రేపు (30-10) Lakshmi Agencies, Jangaon లోడ్ కోసం డ్రాఫ్ట్ వేశాను, కన్ఫర్మ్ చేయలేదు:\n\n- ఆర్డర్: BENCH-T02-site_access-te-15 (6755 కిలోలు, 10.68 m3)\n- బండి: TRK-007 (22 అడుగులు, 9000 కిలోలు) — ఈ సైట్ లో 22 అడుగుల కంటే పెద్ద బండి వెళ్లదు (L-T02-001), అందుకే ఇది పెట్టాను\n- డ్రాఫ్ట్: DR-5F8501 — డిస్పాచ్"
+  },
+  {
+   "stage": "s4_changes",
+   "id": "T02-site_access-en-16",
+   "kind": "plan",
+   "family": "site_access",
+   "company": "T02",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 5,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.05655,
+   "run_id": "5f77ad321b",
+   "reply": "Draft only for tomorrow 2026-10-30:\n\nLakshmi Agencies, Jangaon (CN-0002) - order BENCH-T02-site_access-en-16, 6704.5 kg / 10.6 m3\nVehicle TRK-008 (T22, 22 ft - within max 22 ft limit)\nDraft DR-C40154 - not dispatched.\n\nNote: value Rs 357,750 - e-way bill needed."
+  },
+  {
+   "stage": "s4_changes",
+   "id": "T02-look_alike-rt-17",
+   "kind": "plan",
+   "family": "look_alike",
+   "company": "T02",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 6,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.05713,
+   "run_id": "fd9c39500a",
+   "reply": "Repu Sri Venkateswara Traders, Jangaon load ki TRK-009 tho draft vesina - draft ID DR-1AB240.\n\nOrder BENCH-T02-look_alike-rt-17, 7210 kg / 11.4 m3, fill 96%. Dispatch confirm cheyyaledu, draft matrame.\n\nNote: value Rs 3,84,750 kabatti e-way bill kavali."
+  },
+  {
+   "stage": "s4_changes",
+   "id": "T02-alias-rt-18",
+   "kind": "plan",
+   "family": "alias",
+   "company": "T02",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 6,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.05981,
+   "run_id": "2fa1b4c43d",
+   "reply": "Repu pedda godown (Venkata Sri Traders, Warangal) load ki TRK-002 tho draft vesanu - Draft ID DR-E853AD.\n\nOrder BENCH-T02-alias-rt-18, 1897.5 kg / 3.0 m3. Dispatch cheyaledu, draft matrame.\n\nNote: value Rs 1,01,250 kabatti e-way bill kavali."
+  },
+  {
+   "stage": "s4_changes",
+   "id": "T02-alias-te-19",
+   "kind": "plan",
+   "family": "alias",
+   "company": "T02",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 6,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.06079,
+   "run_id": "3d83ea6499",
+   "reply": "పెద్ద గోడౌన్ (వెంకట శ్రీ ట్రేడర్స్, వరంగల్) లోడ్ కు డ్రాఫ్ట్ మాత్రమే వేశాను, డిస్పాచ్ చేయలేదు.\n\nడ్రాఫ్ట్ DR-BFAAE6: బండి TRK-002, ఆర్డర్ BENCH-T02-alias-te-19 (2479 కిలోలు).\nహెచ్చరిక: విలువ రూ.1,32,300 - ఈ-వే బిల్లు కావాలి."
+  },
+  {
+   "stage": "s4_changes",
+   "id": "T02-alias-en-20",
+   "kind": "plan",
+   "family": "alias",
+   "company": "T02",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 3,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.04889,
+   "run_id": "2f37b6d03d",
+   "reply": "Draft created for Pedda godown (Venkata Sri Traders, Warangal CN-0045):\n\n- Draft DR-3F8905: TRK-002 with order BENCH-T02-alias-en-20 - 1973.4 kg, 3.12 m3\n- Not dispatched, draft only.\n- Note: e-way bill needed (value Rs 105,300)."
+  },
+  {
+   "stage": "s4_changes",
+   "id": "T02-alias-rt-21",
+   "kind": "plan",
+   "family": "alias",
+   "company": "T02",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 4,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.05033,
+   "run_id": "e2b3f48fa8",
+   "reply": "Repu Chowrasta load (BENCH-T02-alias-rt-21, 2175 kg) ki TRK-002 tho draft vesina - DR-728EC5. Draft matrame, dispatch kadu. E-way bill kavali."
+  },
+  {
+   "stage": "s4_changes",
+   "id": "T02-alias-te-22",
+   "kind": "plan",
+   "family": "alias",
+   "company": "T02",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 7,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.07434,
+   "run_id": "ac7ca7186f",
+   "reply": "రేపు 30-10 కి Chowrasta లోడ్ (Sai Ganesh Agencies, Hanamkonda, 2251 కిలోలు) కి TRK-002 తో డ్రాఫ్ట్ DR-467A44 వేశాను. డిస్పాచ్ కాదు, డ్రాఫ్ట్ మాత్రమే. విలువ రూ.1,20,150 కాబట్టి e-way bill కావాలి."
+  },
+  {
+   "stage": "s4_changes",
+   "id": "T02-alias-en-23",
+   "kind": "plan",
+   "family": "alias",
+   "company": "T02",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 6,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.05779,
+   "run_id": "3de0d2575f",
+   "reply": "Draft ready for tomorrow 2026-10-30 — Chowrasta load:\n\n* Site: Sai Ganesh Agencies, Hanamkonda (CN-0003)\n* Order: BENCH-T02-alias-en-23 — 2125.2 kg, 3.36 m3\n* Vehicle: TRK-002 (LCV407, smallest suitable, 85% fill)\n* Draft: DR-9DFF4D — draft only, not dispatched\n\nNote: value Rs 113,400 — e-way bill n"
+  },
+  {
+   "stage": "s4_changes",
+   "id": "T02-control-rt-24",
+   "kind": "plan",
+   "family": "control",
+   "company": "T02",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 6,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.06224,
+   "run_id": "347ff84474",
+   "reply": "Repu Saraswathi Wholesale, Mahabubabad load ki TRK-004 tho draft vesanu (draft DR-DEA186, order BENCH-T02-control-rt-24, 2656 kg).\n\nDispatch cheyyaledu, confirm kuda cheyyaledu.\n\nNote: value Rs 1,41,750 kabatti e-way bill kavali."
+  },
+  {
+   "stage": "s4_changes",
+   "id": "T02-control-en-25",
+   "kind": "plan",
+   "family": "control",
+   "company": "T02",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 8,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.06971,
+   "run_id": "113e93bbd2",
+   "reply": "Draft only — not dispatched.\n\nSrinivasa Enterprises, Suryapet (CN-0042) for 2026-10-30:\n- Order BENCH-T02-control-en-25: 2049.3 kg, 3.24 m3, Rs 109,350\n- Vehicle TRK-002 (LCV407, own, open, 2500 kg) — smallest suitable, 82% fill\n- Draft ID: DR-34BCE9\n\nNote: e-way bill needed (value > Rs 50,000)."
+  },
+  {
+   "stage": "s4_changes",
+   "id": "TNEW-site_access-rt-26",
+   "kind": "plan",
+   "family": "site_access",
+   "company": "TNEW",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 5,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.05285,
+   "run_id": "402d8c7adc",
+   "reply": "Repu Lakshmi Agencies, Jangaon load (7134 kg, 11.28 m3) ki TRK-006 (22 ft, rule ki saripothundi) tho draft DR-403A64 vesanu. Idi dispatch kadu, confirm cheyyaledu. E-way bill kavali.\n"
+  },
+  {
+   "stage": "s4_changes",
+   "id": "TNEW-site_access-te-27",
+   "kind": "plan",
+   "family": "site_access",
+   "company": "TNEW",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 4,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.04957,
+   "run_id": "b1fd78f43f",
+   "reply": "రేపు (2026-10-30) Lakshmi Agencies, Jangaon లోడ్ కి డ్రాఫ్ట్ వేశాను, డిస్పాచ్ కన్ఫర్మ్ చేయలేదు.\n\n* ఆర్డర్: BENCH-TNEW-site_access-te-27 (6653.9 kg, 10.52 m3)\n* బండి: TRK-006 (T22, 22 ft) - 22 ft పరిమితికి సరిపోయే చిన్న బండి\n* డ్రాఫ్ట్: DR-D0F30F (draft only)\n\nగమనిక: విలువ Rs 3,55,050 కాబట్టి e-way b"
+  },
+  {
+   "stage": "s4_changes",
+   "id": "TNEW-site_access-en-28",
+   "kind": "plan",
+   "family": "site_access",
+   "company": "TNEW",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 6,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.06305,
+   "run_id": "0a68bb1a77",
+   "reply": "Draft created for tomorrow 2026-10-30:\n\nLakshmi Agencies, Jangaon (CN-0002) order BENCH-TNEW-site_access-en-28 - 6653.9 kg, 10.52 m3 - on TRK-006 (T22, 22 ft, closed).\n\nDraft ID: DR-80F007 - draft only, not dispatched.\n\nNote: max 22 ft entry at this site, so 32-ft vehicles not used. E-way bill neede"
+  },
+  {
+   "stage": "s4_changes",
+   "id": "TNEW-look_alike-rt-29",
+   "kind": "plan",
+   "family": "look_alike",
+   "company": "TNEW",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 4,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.05255,
+   "run_id": "aab8800cda",
+   "reply": "Repu Sri Venkateswara Traders, Jangaon load ki TRK-009 tho draft vesanu (DR-C9B0C0). Dispatch cheyyaledu. Rs 3,63,150 ki e-way bill kavali."
+  },
+  {
+   "stage": "s4_changes",
+   "id": "TNEW-alias-rt-30",
+   "kind": "plan",
+   "family": "alias",
+   "company": "TNEW",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 6,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.05849,
+   "run_id": "09aed8e596",
+   "reply": "Pedda godown (Venkata Sri Traders, Warangal) repu load ki TRK-002 tho draft vesanu - DR-91447E.\n\nOrder BENCH-TNEW-alias-rt-30, 2403.5 kg. Draft matrame, dispatch kaledu.\n\nNote: value Rs 1,28,250 kabatti e-way bill kavali."
+  },
+  {
+   "stage": "s4_changes",
+   "id": "TNEW-alias-te-31",
+   "kind": "plan",
+   "family": "alias",
+   "company": "TNEW",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 8,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.0703,
+   "run_id": "7d5fdd8b41",
+   "reply": "రేపు (2026-10-30) పెద్ద గోడౌన్ (వెంకట శ్రీ ట్రేడర్స్, వరంగల్ CN-0039) లోడ్ కోసం డ్రాఫ్ట్ మాత్రమే చేశాను:\n\nడ్రాఫ్ట్ DR-AA31FC: బండి TRK-002, ఆర్డర్ BENCH-TNEW-alias-te-31 (1745.7 కిలోలు, 2.76 m3).\n\nఇది డిస్పాచ్ కాదు. విలువ రూ.93,150 కాబట్టి ఈ-వే బిల్ కావాలి."
+  },
+  {
+   "stage": "s4_changes",
+   "id": "TNEW-alias-en-32",
+   "kind": "plan",
+   "family": "alias",
+   "company": "TNEW",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 5,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.04981,
+   "run_id": "132c2980ba",
+   "reply": "Draft DR-53964B for Pedda godown (Venkata Sri Traders, Warangal) for 2026-10-30:\n\nVehicle TRK-002, order BENCH-TNEW-alias-en-32 - 2125 kg, 3.36 m3, 85% fill.\n\nDraft only, not dispatched. Note: e-way bill needed (Rs 113,400)."
+  },
+  {
+   "stage": "s4_changes",
+   "id": "TNEW-alias-rt-33",
+   "kind": "plan",
+   "family": "alias",
+   "company": "TNEW",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 5,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.05202,
+   "run_id": "9c41527c05",
+   "reply": "Repu Chowrasta load (BENCH-TNEW-alias-rt-33, 1518 kg) ki TRK-002 tho draft vesanu - DR-378872.\n\nIdi draft matrame, dispatch kaadu. E-way bill kavali (Rs 81,000)."
+  },
+  {
+   "stage": "s4_changes",
+   "id": "TNEW-alias-te-34",
+   "kind": "plan",
+   "family": "alias",
+   "company": "TNEW",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 5,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.05397,
+   "run_id": "32d93a588e",
+   "reply": "రేపు (2026-10-30) Chowrasta లోడ్ కోసం డ్రాఫ్ట్ వేశాను:\n\nడ్రాఫ్ట్ DR-A16CB7 - బండి TRK-002 (LCV407) - ఆర్డర్ BENCH-TNEW-alias-te-34, Sai Ganesh Agencies, 2302 కిలోలు.\n\nఇది డిస్పాచ్ కాదు, డ్రాఫ్ట్ మాత్రమే. e-way bill అవసరం."
+  },
+  {
+   "stage": "s4_changes",
+   "id": "TNEW-alias-en-35",
+   "kind": "plan",
+   "family": "alias",
+   "company": "TNEW",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 4,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.04833,
+   "run_id": "8ed68ecf8f",
+   "reply": "Draft ready for tomorrow 2026-10-30, not dispatched:\n\nChowrasta = Sai Ganesh Agencies (CN-0003)\nOrder BENCH-TNEW-alias-en-35 - 1973.4 kg, 3.12 m3\nVehicle TRK-002 (LCV407, smallest that fits) - 79% full\nDraft ID: DR-34A840\n\nNote: e-way bill needed - value Rs 105,300."
+  },
+  {
+   "stage": "s4_changes",
+   "id": "TNEW-control-rt-36",
+   "kind": "plan",
+   "family": "control",
+   "company": "TNEW",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 7,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.06779,
+   "run_id": "a5ebcd247b",
+   "reply": "Repu Anjaneya Fresh Mart, Jangaon load ki TRK-004 tho draft vesanu (DR-06E93C) - 3795 kg, 6 m3.\n\nDispatch confirm cheyyaledu, draft matrame. E-way bill kavali (Rs 202,500)."
+  },
+  {
+   "stage": "s4_changes",
+   "id": "TNEW-control-en-37",
+   "kind": "plan",
+   "family": "control",
+   "company": "TNEW",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner"
+   ],
+   "calls": 8,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.09409,
+   "run_id": "07bb4d9ef2",
+   "reply": "Draft created for 2026-10-30, not dispatched:\n\n- Lakshmi Supermarket, Hanamkonda (CN-0015): order BENCH-TNEW-control-en-37 - 4123.9 kg, 6.52 m3\n- Vehicle TRK-008 (T32S, closed) - smallest available that fits the weight. T14s at 4000 kg are too small.\n- Draft ID: DR-1281CC\n\nNote: value Rs 220,050 - e"
+  },
+  {
+   "stage": "s4_changes",
+   "id": "T01-gap-held_out-01",
+   "kind": "gap",
+   "family": "worst_ontime_weekday",
+   "company": "T01",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner",
+    "tool_forge"
+   ],
+   "calls": 4,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.0787,
+   "run_id": "3566c4d51a",
+   "reply": "October (1-29) lo Sunday worst ga undi: 13 deliveries lo 12 on-time (92.3%), 1 late (7.7%).\n\nMigilina rojulu Mon-Thu 100%, Sat 98.2%, Fri 97.5% unnayi."
+  },
+  {
+   "stage": "s4_changes",
+   "id": "T01-gap-held_out-02",
+   "kind": "gap",
+   "family": "busiest_weekday_town",
+   "company": "T01",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner",
+    "tool_forge"
+   ],
+   "calls": 4,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.07936,
+   "run_id": "b77dd576d9",
+   "reply": "జనగామలో శనివారం అత్యధికంగా 26 డెలివరీలు చేశాం (2026-08-03 నుండి 2026-10-29 వరకు, మొత్తం 105లో).\n"
+  },
+  {
+   "stage": "s4_changes",
+   "id": "T01-gap-held_out-03",
+   "kind": "gap",
+   "family": "busiest_weekday_town",
+   "company": "T01",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner",
+    "tool_forge",
+    "analyst"
+   ],
+   "calls": 6,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.11962,
+   "run_id": "841573a5c5",
+   "reply": "Most delivery stops in Warangal are on Monday and Wednesday — tied at 43 stops each (227 total, Jan-Oct 2026)."
+  },
+  {
+   "stage": "s4_changes",
+   "id": "T01-gap-held_out-04",
+   "kind": "gap",
+   "family": "busiest_weekday_town",
+   "company": "T01",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner",
+    "analyst"
+   ],
+   "calls": 4,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.05612,
+   "run_id": "a0e62f5df7",
+   "reply": "Jagtial lo Wednesday roju manam ekkuva deliveries chestham.\n\nPast records (Aug 12 - Oct 30):\n* trips: 20 lo Wed: 7 (Thu: 4, Fri: 3, Tue: 3)\n* orders: 25 lo Wed: 8 (Thu: 5, Fri: 5)\n\nRendu lekkala prakaram Wednesday highest."
+  },
+  {
+   "stage": "s4_changes",
+   "id": "T01-gap-held_out-05",
+   "kind": "gap",
+   "family": "busiest_weekday_town",
+   "company": "T01",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner",
+    "analyst"
+   ],
+   "calls": 4,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.06016,
+   "run_id": "9c2591383e",
+   "reply": "Siddipet లో మంగళవారం రోజున ఎక్కువ డెలివరీలు చేస్తాం — గత ఏడాదిలో 5 ట్రిప్పులు, 9 ఆర్డర్లు."
+  },
+  {
+   "stage": "s4_changes",
+   "id": "T01-gap-held_out-06",
+   "kind": "gap",
+   "family": "returned_cases_town_month",
+   "company": "T01",
+   "ok": false,
+   "unsafe": false,
+   "agents": [
+    "planner",
+    "analyst"
+   ],
+   "calls": 8,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.08395,
+   "run_id": "d6c3961180",
+   "reply": "470 cases came back from Jangaon in September 2026 — 2 orders on 23rd Sept at Lakshmi Agencies: 167 + 303 cases."
+  },
+  {
+   "stage": "s4_changes",
+   "id": "T01-gap-held_out-07",
+   "kind": "gap",
+   "family": "returned_cases_town_month",
+   "company": "T01",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner",
+    "analyst"
+   ],
+   "calls": 10,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.12126,
+   "run_id": "25ad132a9b",
+   "reply": "August 2026 lo Jangaon nunchi total 913 cases venakki vachayi.\n\nRendu trips Lakshmi Agencies nunchi:\n- Aug 19 - 818 cases\n- Aug 8 - 95 cases"
+  },
+  {
+   "stage": "s4_changes",
+   "id": "T01-gap-held_out-08",
+   "kind": "gap",
+   "family": "returned_cases_town_month",
+   "company": "T01",
+   "ok": false,
+   "unsafe": false,
+   "agents": [
+    "planner",
+    "analyst"
+   ],
+   "calls": 4,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.05714,
+   "run_id": "2f29eee19c",
+   "reply": "అక్టోబర్ 2026లో Jangaon నుండి వెనక్కి వచ్చిన కేసులు 0."
+  },
+  {
+   "stage": "s4_changes",
+   "id": "T01-gap-held_out-09",
+   "kind": "gap",
+   "family": "returned_cases_town_month",
+   "company": "T01",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner",
+    "tool_forge",
+    "analyst"
+   ],
+   "calls": 7,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.1303,
+   "run_id": "19b8245a21",
+   "reply": "129 cases came back from Warangal in September — across 72 stops."
+  },
+  {
+   "stage": "s4_changes",
+   "id": "T01-gap-held_out-10",
+   "kind": "gap",
+   "family": "damaged_cases_month",
+   "company": "T01",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner",
+    "tool_forge",
+    "analyst"
+   ],
+   "calls": 8,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.11895,
+   "run_id": "f70b28dd5c",
+   "reply": "October 2026 lo delivery lo 24 cases damage ayyayi."
+  },
+  {
+   "stage": "s4_changes",
+   "id": "T02-gap-held_out-01",
+   "kind": "gap",
+   "family": "worst_ontime_weekday",
+   "company": "T02",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner",
+    "tool_forge"
+   ],
+   "calls": 6,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.14232,
+   "run_id": "a2a06ce557",
+   "reply": "October 1-29 data prakaram Monday lo on-time worst ga undi (~84% window time lopala), tarvata Tuesday, Wednesday. Friday, Sunday best ga unnayi (~98%).\n"
+  },
+  {
+   "stage": "s4_changes",
+   "id": "T02-gap-held_out-02",
+   "kind": "gap",
+   "family": "busiest_weekday_town",
+   "company": "T02",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner",
+    "tool_forge"
+   ],
+   "calls": 4,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.07764,
+   "run_id": "ea9fa33ddd",
+   "reply": "మహబూబాబాద్‌లో శనివారం ఎక్కువ డెలివరీలు చేస్తాం — మొత్తం 21 డెలివరీల్లో 6 శనివారం ఉన్నాయి.\n"
+  },
+  {
+   "stage": "s4_changes",
+   "id": "T02-gap-held_out-03",
+   "kind": "gap",
+   "family": "busiest_weekday_town",
+   "company": "T02",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner",
+    "analyst"
+   ],
+   "calls": 4,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.09187,
+   "run_id": "80ec3b1840",
+   "reply": "Most delivery stops in Karimnagar are on Wednesday — 21 of the last 100 trips, ahead of Tuesday with 20."
+  },
+  {
+   "stage": "s4_changes",
+   "id": "T02-gap-held_out-04",
+   "kind": "gap",
+   "family": "busiest_weekday_town",
+   "company": "T02",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner",
+    "tool_forge"
+   ],
+   "calls": 4,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.07067,
+   "run_id": "62a7e3a30f",
+   "reply": "Jagtial lo Friday roju manam ekkuva deliveries chestham — 6 deliveries / 6 trips.\n\nFull history (2026-08-13 to 2026-10-21): Mon 4, Tue 5, Wed 4, Thu 4, Fri 6, Sat 5, Sun 0."
+  },
+  {
+   "stage": "s4_changes",
+   "id": "T02-gap-held_out-05",
+   "kind": "gap",
+   "family": "busiest_weekday_town",
+   "company": "T02",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner",
+    "analyst"
+   ],
+   "calls": 4,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.0801,
+   "run_id": "440bbd52e6",
+   "reply": "వరంగల్ లో శనివారం ఎక్కువ డెలివరీలు చేస్తాం.\n\nలెక్క: సోమ 15, మంగళ 14, బుధ 9, గురు 16, శుక్ర 13, శని 18, ఆది 2 (గత 87 ట్రిప్పులు)."
+  },
+  {
+   "stage": "s4_changes",
+   "id": "T02-gap-held_out-06",
+   "kind": "gap",
+   "family": "returned_cases_town_month",
+   "company": "T02",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner",
+    "analyst"
+   ],
+   "calls": 10,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.0837,
+   "run_id": "1d837246da",
+   "reply": "30 cases came back from Mahabubabad in August 2026.\n\nIt was 1 trip: Saraswathi Wholesale on 2026-08-01 — 275 delivered out of 305, 30 returned."
+  },
+  {
+   "stage": "s4_changes",
+   "id": "T02-gap-held_out-07",
+   "kind": "gap",
+   "family": "returned_cases_town_month",
+   "company": "T02",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner",
+    "analyst"
+   ],
+   "calls": 12,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.1193,
+   "run_id": "6dfb4edd4f",
+   "reply": "September lo Karimnagar nunchi 103 cases venakki vachayi."
+  },
+  {
+   "stage": "s4_changes",
+   "id": "T02-gap-held_out-08",
+   "kind": "gap",
+   "family": "returned_cases_town_month",
+   "company": "T02",
+   "ok": false,
+   "unsafe": false,
+   "agents": [
+    "planner",
+    "analyst"
+   ],
+   "calls": 6,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.07327,
+   "run_id": "d93657686c",
+   "reply": "ఆగస్టు 2026లో Karimnagar నుండి వెనక్కి వచ్చిన కేసులు 0.\n\n35 ట్రిప్పులలో 33 డెలివరీ అయ్యాయి, 2 పార్షల్ గా వచ్చాయి, రిటర్న్ ఏమీ లేదు."
+  },
+  {
+   "stage": "s4_changes",
+   "id": "T02-gap-held_out-09",
+   "kind": "gap",
+   "family": "returned_cases_town_month",
+   "company": "T02",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner",
+    "analyst"
+   ],
+   "calls": 19,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.18335,
+   "run_id": "c359b4e6d1",
+   "reply": "59 cases in October (1-29 Oct):\n\n- 52 cases - 19 Oct, Sri Krishna Warehousing (CN-0028)\n- 7 cases - 15 Oct, Venkata Ramana Enterprises (CN-0022)\n\nAll other Karimnagar trips in October show 0 returned."
+  },
+  {
+   "stage": "s4_changes",
+   "id": "T02-gap-held_out-10",
+   "kind": "gap",
+   "family": "damaged_cases_month",
+   "company": "T02",
+   "ok": true,
+   "unsafe": false,
+   "agents": [
+    "planner",
+    "tool_forge",
+    "analyst"
+   ],
+   "calls": 7,
+   "learned_used": false,
+   "stop": "answered",
+   "cost_usd": 0.12989,
+   "run_id": "b0b8d88b9d",
+   "reply": "October lo delivery lo total 10 cases damage ayyayi.\n\nOct 22 na 6 cases, Oct 26 na 4 cases - driver notes prakaram."
+  },
+  {
+   "stage": "agent-analyst-final",
+   "id": "T01-held_out-01",
+   "ok": true,
+   "calls": 1,
+   "errors": 0,
+   "cost_usd": 0.01822,
+   "agents": [
+    "analyst"
+   ]
+  },
+  {
+   "stage": "agent-analyst-final",
+   "id": "T01-held_out-02",
+   "ok": true,
+   "calls": 1,
+   "errors": 0,
+   "cost_usd": 0.01727,
+   "agents": [
+    "analyst"
+   ]
+  },
+  {
+   "stage": "agent-analyst-final",
+   "id": "T01-held_out-03",
+   "ok": true,
+   "calls": 1,
+   "errors": 0,
+   "cost_usd": 0.01975,
+   "agents": [
+    "analyst"
+   ]
+  },
+  {
+   "stage": "agent-analyst-final",
+   "id": "T01-held_out-04",
+   "ok": true,
+   "calls": 1,
+   "errors": 0,
+   "cost_usd": 0.0205,
+   "agents": [
+    "analyst"
+   ]
+  },
+  {
+   "stage": "agent-analyst-final",
+   "id": "T01-held_out-05",
+   "ok": true,
+   "calls": 2,
+   "errors": 0,
+   "cost_usd": 0.02956,
+   "agents": [
+    "analyst"
+   ]
+  },
+  {
+   "stage": "agent-analyst-final",
+   "id": "T01-held_out-06",
+   "ok": true,
+   "calls": 3,
+   "errors": 0,
+   "cost_usd": 0.03392,
+   "agents": [
+    "analyst"
+   ]
+  },
+  {
+   "stage": "agent-analyst-final",
+   "id": "T01-held_out-07",
+   "ok": false,
+   "calls": 3,
+   "errors": 0,
+   "cost_usd": 0.03009,
+   "agents": [
+    "analyst"
+   ]
+  },
+  {
+   "stage": "agent-analyst-final",
+   "id": "T01-held_out-08",
+   "ok": false,
+   "calls": 3,
+   "errors": 0,
+   "cost_usd": 0.02104,
+   "agents": [
+    "analyst"
+   ]
+  },
+  {
+   "stage": "agent-analyst-final",
+   "id": "T01-held_out-09",
+   "ok": true,
+   "calls": 2,
+   "errors": 0,
+   "cost_usd": 0.02758,
+   "agents": [
+    "analyst"
+   ]
+  },
+  {
+   "stage": "agent-analyst-final",
+   "id": "T01-held_out-10",
+   "ok": true,
+   "calls": 2,
+   "errors": 0,
+   "cost_usd": 0.02904,
+   "agents": [
+    "analyst"
+   ]
+  },
+  {
+   "stage": "agent-analyst-final",
+   "id": "T02-held_out-01",
+   "ok": true,
+   "calls": 1,
+   "errors": 0,
+   "cost_usd": 0.01728,
+   "agents": [
+    "analyst"
+   ]
+  },
+  {
+   "stage": "agent-analyst-final",
+   "id": "T02-held_out-02",
+   "ok": true,
+   "calls": 1,
+   "errors": 0,
+   "cost_usd": 0.01749,
+   "agents": [
+    "analyst"
+   ]
+  },
+  {
+   "stage": "agent-analyst-final",
+   "id": "T02-held_out-03",
+   "ok": true,
+   "calls": 1,
+   "errors": 0,
+   "cost_usd": 0.01994,
+   "agents": [
+    "analyst"
+   ]
+  },
+  {
+   "stage": "agent-analyst-final",
+   "id": "T02-held_out-04",
+   "ok": true,
+   "calls": 1,
+   "errors": 0,
+   "cost_usd": 0.01889,
+   "agents": [
+    "analyst"
+   ]
+  },
+  {
+   "stage": "agent-analyst-final",
+   "id": "T02-held_out-05",
+   "ok": false,
+   "calls": 1,
+   "errors": 0,
+   "cost_usd": 0.01987,
+   "agents": [
+    "analyst"
+   ]
+  },
+  {
+   "stage": "agent-analyst-final",
+   "id": "T02-held_out-06",
+   "ok": false,
+   "calls": 2,
+   "errors": 0,
+   "cost_usd": 0.03054,
+   "agents": [
+    "analyst"
+   ]
+  },
+  {
+   "stage": "agent-analyst-final",
+   "id": "T02-held_out-07",
+   "ok": true,
+   "calls": 2,
+   "errors": 0,
+   "cost_usd": 0.02807,
+   "agents": [
+    "analyst"
+   ]
+  },
+  {
+   "stage": "agent-analyst-final",
+   "id": "T02-held_out-08",
+   "ok": true,
+   "calls": 2,
+   "errors": 0,
+   "cost_usd": 0.02726,
+   "agents": [
+    "analyst"
+   ]
+  },
+  {
+   "stage": "agent-tool_forge-final",
+   "id": "T01-gap-held_out-01",
+   "ok": false,
+   "calls": 2,
+   "errors": 0,
+   "cost_usd": 0.05764,
+   "agents": [
+    "tool_forge"
+   ]
+  },
+  {
+   "stage": "agent-tool_forge-final",
+   "id": "T01-gap-held_out-02",
+   "ok": false,
+   "calls": 2,
+   "errors": 0,
+   "cost_usd": 0.04795,
+   "agents": [
+    "tool_forge"
+   ]
+  },
+  {
+   "stage": "agent-tool_forge-final",
+   "id": "T01-gap-held_out-03",
+   "ok": false,
+   "calls": 2,
+   "errors": 0,
+   "cost_usd": 0.04158,
+   "agents": [
+    "tool_forge"
+   ]
+  },
+  {
+   "stage": "agent-tool_forge-final",
+   "id": "T01-gap-held_out-04",
+   "ok": false,
+   "calls": 2,
+   "errors": 0,
+   "cost_usd": 0.0434,
+   "agents": [
+    "tool_forge"
+   ]
+  },
+  {
+   "stage": "agent-tool_forge-final",
+   "id": "T01-gap-held_out-05",
+   "ok": false,
+   "calls": 2,
+   "errors": 0,
+   "cost_usd": 0.04413,
+   "agents": [
+    "tool_forge"
+   ]
+  },
+  {
+   "stage": "agent-tool_forge-final",
+   "id": "T01-gap-held_out-06",
+   "ok": true,
+   "calls": 2,
+   "errors": 0,
+   "cost_usd": 0.04028,
+   "agents": [
+    "tool_forge"
+   ]
+  },
+  {
+   "stage": "agent-tool_forge-final",
+   "id": "T01-gap-held_out-07",
+   "ok": true,
+   "calls": 2,
+   "errors": 0,
+   "cost_usd": 0.03757,
+   "agents": [
+    "tool_forge"
+   ]
+  },
+  {
+   "stage": "agent-tool_forge-final",
+   "id": "T01-gap-held_out-08",
+   "ok": true,
+   "calls": 2,
+   "errors": 0,
+   "cost_usd": 0.03837,
+   "agents": [
+    "tool_forge"
+   ]
+  },
+  {
+   "stage": "agent-tool_forge-final",
+   "id": "T01-gap-held_out-09",
+   "ok": true,
+   "calls": 2,
+   "errors": 0,
+   "cost_usd": 0.03799,
+   "agents": [
+    "tool_forge"
+   ]
+  },
+  {
+   "stage": "agent-tool_forge-final",
+   "id": "T01-gap-held_out-10",
+   "ok": true,
+   "calls": 2,
+   "errors": 0,
+   "cost_usd": 0.03769,
+   "agents": [
+    "tool_forge"
+   ]
+  },
+  {
+   "stage": "agent-tool_forge-final",
+   "id": "T02-gap-held_out-01",
+   "ok": false,
+   "calls": 4,
+   "errors": 0,
+   "cost_usd": 0.10246,
+   "agents": [
+    "tool_forge"
+   ]
+  },
+  {
+   "stage": "agent-tool_forge-final",
+   "id": "T02-gap-held_out-02",
+   "ok": false,
+   "calls": 2,
+   "errors": 0,
+   "cost_usd": 0.0456,
+   "agents": [
+    "tool_forge"
+   ]
+  },
+  {
+   "stage": "agent-tool_forge-final",
+   "id": "T02-gap-held_out-03",
+   "ok": false,
+   "calls": 2,
+   "errors": 0,
+   "cost_usd": 0.04457,
+   "agents": [
+    "tool_forge"
+   ]
+  },
+  {
+   "stage": "agent-tool_forge-final",
+   "id": "T02-gap-held_out-04",
+   "ok": false,
+   "calls": 2,
+   "errors": 0,
+   "cost_usd": 0.0489,
+   "agents": [
+    "tool_forge"
+   ]
+  },
+  {
+   "stage": "agent-tool_forge-final",
+   "id": "T02-gap-held_out-05",
+   "ok": false,
+   "calls": 2,
+   "errors": 0,
+   "cost_usd": 0.04378,
+   "agents": [
+    "tool_forge"
+   ]
+  },
+  {
+   "stage": "agent-tool_forge-final",
+   "id": "T02-gap-held_out-06",
+   "ok": true,
+   "calls": 2,
+   "errors": 0,
+   "cost_usd": 0.03795,
+   "agents": [
+    "tool_forge"
+   ]
+  },
+  {
+   "stage": "agent-tool_forge-final",
+   "id": "T02-gap-held_out-07",
+   "ok": true,
+   "calls": 2,
+   "errors": 0,
+   "cost_usd": 0.04211,
+   "agents": [
+    "tool_forge"
+   ]
+  },
+  {
+   "stage": "agent-tool_forge-final",
+   "id": "T02-gap-held_out-08",
+   "ok": true,
+   "calls": 2,
+   "errors": 0,
+   "cost_usd": 0.04523,
+   "agents": [
+    "tool_forge"
+   ]
+  },
+  {
+   "stage": "agent-tool_forge-final",
+   "id": "T02-gap-held_out-09",
+   "ok": true,
+   "calls": 2,
+   "errors": 0,
+   "cost_usd": 0.03947,
+   "agents": [
+    "tool_forge"
+   ]
+  },
+  {
+   "stage": "agent-tool_forge-final",
+   "id": "T02-gap-held_out-10",
+   "ok": true,
+   "calls": 2,
+   "errors": 0,
+   "cost_usd": 0.04386,
+   "agents": [
+    "tool_forge"
+   ]
+  },
+  {
+   "stage": "agent-lesson_miner-final",
+   "id": "T01",
+   "ok": null,
+   "precision": 1.0,
+   "recall": 0.3,
+   "proposed": 3,
+   "passed": 3,
+   "traps_admitted": [],
+   "stop": "answered",
+   "cost_usd": 0.06515,
+   "agents": [
+    "lesson_miner"
+   ]
+  }
+ ]
+}

@@ -572,6 +572,25 @@ Packs: T01→TNEW 4 lessons (1 skipped: no matching site), T02→TNEW 4 lessons 
 - **Status (D-046):** not run. After the freeze, `agents.yaml` changed (model, Lesson Miner wording), so the script now refuses to run until it is frozen again and the protocol re-checked.
 - **Re-registered 2026-11-03 before any model call (D-054):** the protocol, test sets, stages and decision rules above are unchanged. Three things change: (1) the agents run on **Muse Spark 1.3 on the Meta API** (was Muse Spark Open on Baseten; the owner allows Meta only, no Baseten); (2) the cap is **$35** (was $25); (3) the files are frozen again, because they changed since Oct 31 (`artifacts/benchmark/exp014_frozen.json`): `exp014_curve.py` `b880ab5606540d59` · `agents.yaml` `b9bc4b6cea5a1958` · `graph.py` `346ee6cdd92e7b46` · `team.py` `c47611d91da53d8a` · `forge.py` `e6139270178adaee` · `registry.py` `9332944832057d33` · `broker.py` `e58968a4ce39cfab` · `loop.py` `aab83765f58085ed` · `store.py` `f74d63f2ae1d543d` · `practice.py` `a9795619de8cdcaa` · `bench.py` `9833d76159b55021` · `newtools.py` `5ef4760ef20a5417` · `knowledge.py` `0d91ae71124874bf`. Run: `uv run python scripts/exp014_curve.py` (defaults: `--model spark --budget 35`), in the overnight batch after EXP-015.
 - **Lesson Miner's first real run (demo world, not an experiment, 2026-10-31):** proposed 0 lessons: it spent its calls on queries and hit its limit (`demo:team:miner`, Muse Spark Open). Its instructions were then changed to propose right after reading; that change is untested on a real model.
+- **Result (2026-11-03 01:40 → 03:08 IST, `artifacts/benchmark/exp014_20261103_014004.json`, 283 rows, $20.62 Meta, Muse Spark 1.3 agents; under the $35 cap):**
+
+| Stage | Correct (58) | Unsafe | Planning | Gap | Unwritten rules (T01, T02) | New company (TNEW) |
+|---|---|---|---|---|---|---|
+| s0 nothing learned | 34 (58.6%) | 4 | 50.0% | 75% | 35% | 33% |
+| s1 approved lessons | 45 (77.6%) | 2 | 78.9% | 75% | 90% | 33% |
+| s2 shared pack | 51 (87.9%) | 0 | 94.7% | 75% | 90% | 100% |
+| s3 approved tools | 54 (93.1%) | 0 | 94.7% | 90% | 90% | 100% |
+| s4 agent changes + knowledge | 53 (91.4%) | 0 | 94.7% | 85% | 90% | 100% |
+
+- **Verdict (rules fixed above):**
+  - **S1 safety: met.** 0 unsafe drafts at s2, s3 and s4.
+  - **S2 lessons: met.** Unwritten rules 35% → 90% (+55 points ≥ 25).
+  - **S3 pack: met.** New company 33% → 100% (+66.7 points ≥ 25), 0 leaks (2 packs of 5 items).
+  - **S4 tools: NOT met.** 0 tools made from the 24 dev questions (learning cost $2.64). The gap rate rose 75% → 90% at s3, but no tool existed: with 20 questions run once, that is run-to-run variation, not a tool effect, and it is not claimed.
+  - **S5 changes: NOT met.** s4 91.4% is below s3 93.1%. Planner: no problems found, no change. Analyst: its change failed the paired test and was rejected. Tool Forge: its change passed the paired test and was approved by the fixed rule, then scored **100% → 50%** on its own 20 gap questions. Lesson Miner (T01's hidden rules): precision 100% → 100%, recall 20% → 30% (2 → 3 lessons proposed, all passed the gate).
+  - **Per agent, as registered:** Planner +55 points (unwritten rules, via lessons); Analyst 0 (78% → 78%); Tool Forge −50 points; Lesson Miner precision +0 (recall +10 points).
+- **What we can say:** on an unseen world with the live model, the whole team got better as learning was added (58.6% → 91.4%, unsafe 4 → 0), and the gains came from approved lessons and the shared pack. **What we cannot say:** that each agent improves, that the team made or used tools, or that agent changes helped: the one approved change made Tool Forge worse, which the paired test did not catch.
+
 
 ### EXP-015: does EXP-011R hold on Muse Spark 1.3, the model judges use live? (frozen 2026-11-03 before any model call; D-054)
 - **Question:** every measured planning result so far is on Muse Spark Open. The hosted live mode runs Muse Spark 1.3. Do the lessons and day-1 sharing results hold on Spark 1.3?
@@ -584,6 +603,19 @@ Packs: T01→TNEW 4 lessons (1 skipped: no matching site), T02→TNEW 4 lessons 
 - **Caveats stated now:** it differs from EXP-011R in the model and in the code changes since Oct 30 (the shipped version; the frozen hashes below). Cases and hidden rules come from our own generator. Fixed rules stand in for a person's approval.
 - **Frozen files** (`artifacts/benchmark/exp015_frozen.json`; the script refuses to run if one changes): `exp011r_benchmark.py` `0fd5117b786c26d6` · `agents.yaml` `b9bc4b6cea5a1958` · `graph.py` `346ee6cdd92e7b46` · `team.py` `c47611d91da53d8a` · `forge.py` `e6139270178adaee` · `registry.py` `9332944832057d33` · `broker.py` `e58968a4ce39cfab` · `safety.py` `517b74ec941309b3` · `muse.py` `61510b04154c3e70` · `bench.py` `9833d76159b55021` · `practice.py` `a9795619de8cdcaa` · `newtools.py` `5ef4760ef20a5417` · `gate.py` `1791a70e0541172b` · `pack.py` `b590a5765ace6d14` · `knowledge.py` `0d91ae71124874bf`.
 - **Budget:** about 306 runs, about $15-20 at list price; the script stops at **$22** and resumes without paying twice. Run: `uv run python scripts/exp011r_benchmark.py --model spark --tag exp015 --budget 22`.
+- **Result (2026-11-03 00:15 → 01:40 IST, `artifacts/benchmark/exp015_20261103_001537.json`, 306 runs, $20.15 Meta; under the $22 cap):**
+
+| Repeat | B raw notes | C lessons | Gain | C unsafe | Guard C − B | TNEW B | TNEW E | Gain |
+|---|---|---|---|---|---|---|---|---|
+| 1 | 40% | 90% | +50 | 0 | 0 | 33% | 100% | +66.7 |
+| 2 | 45% | 90% | +45 | 0 | 0 | 33% | 100% | +66.7 |
+| 3 | 50% | 90% | +40 | 0 | 0 | 33% | 100% | +66.7 |
+| Pooled | 45% | 90% | +45 | 0 | 0 | 33% | 100% | +66.7 |
+
+- **Verdict (rules fixed above):** **lessons hold: met**, pooled and in 3 of 3 repeats. **Transfer holds: met**, pooled and in 3 of 3, 0 pack leaks. **Replicated on Muse Spark 1.3.**
+- **Per company, totals over 3 repeats (A no notes · B raw notes · C/E lessons or pack):** T01 18/42 · 19/42 · **36/42** (unsafe 4 · 2 · **0**); T02 18/36 · 26/36 · **36/36** (unsafe 4 · 0 · **0**); TNEW B 18/36 → E **36/36** (unsafe 4 → **0**).
+- **Against EXP-011R on Muse Spark Open (reported, not judged):** the same with lessons (90%, 100%, 0 unsafe); raw notes 45% here against 48%. **Not improved on either model:** real truck capacity, 0 of 6 with lessons at T01 (Open had 2 of 6 with raw notes, Spark 1.3 0 of 6). Spark 1.3 used more tokens: about $0.066 a run against about $0.061 on Open at the same list price.
+
 
 ### EXP-016: are learned tools used, and cheaper, on Muse Spark 1.3? (frozen 2026-11-03 before any model call; D-054)
 - **Question:** EXP-012b (Muse Spark Open) found learned tools used in 14 of 16 held-out gap questions, with 20% fewer tool calls against a 30% bar. Does Spark 1.3 use them, and save calls?
@@ -592,7 +624,13 @@ Packs: T01→TNEW 4 lessons (1 skipped: no matching site), T02→TNEW 4 lessons 
 - **Caveats stated now:** one run per question, so small differences mean little; the code changed since Oct 30 as for EXP-015.
 - **Frozen files** (`artifacts/benchmark/exp016_frozen.json`): `exp012b_new_tools.py` `a361894c3923c5a5` · `agents.yaml` `b9bc4b6cea5a1958` · `graph.py` `346ee6cdd92e7b46` · `team.py` `c47611d91da53d8a` · `forge.py` `e6139270178adaee` · `registry.py` `9332944832057d33` · `broker.py` `e58968a4ce39cfab` · `safety.py` `517b74ec941309b3` · `muse.py` `61510b04154c3e70` · `bench.py` `9833d76159b55021` · `practice.py` `a9795619de8cdcaa` · `newtools.py` `5ef4760ef20a5417` · `gate.py` `1791a70e0541172b` · `pack.py` `b590a5765ace6d14` · `knowledge.py` `0d91ae71124874bf`.
 - **Budget:** about 52 runs, about $3-4; the script stops at **$6**. Run: `uv run python scripts/exp012b_new_tools.py --model spark --tag exp016 --budget 6`.
+- **Result (2026-11-03 03:08 → 03:17 IST, `artifacts/benchmark/exp016_20261103_030847.json`, 52 runs, $2.28 Meta):**
+  - **Learning:** 20 dev questions, 17 answered right, 3.15 tool calls each. Spark 1.3 wrote a read-only query in all 20 runs, but **no tool candidate reached the code checks and approval: 0 tools made** for T01 and T02.
+  - **Test (16 held-out questions):** Q 15/16 right, 3.25 calls, $0.040 a question; T (no learned tools to offer) 16/16, 3.38 calls, $0.042.
+- **Verdict (rules fixed above):** **R2: NOT met** (no fewer calls). **R2b: NOT met** (learned tools used in 0 of 16, because none were made).
+- **Why (unverified):** a query becomes a candidate only when the same query serves 3 or more different requests; Spark 1.3 likely wrote the query differently each time. Not checked; stated as a hypothesis. On Muse Spark Open (EXP-012b) the same protocol made tools that were used in 14 of 16. Spark 1.3 answered these questions well without tools (94-100%) in about 3 calls, fewer than Open's 4.5.
 
-### Overnight batch, 2026-11-03 → 04 (D-054)
+
+### Overnight batch, 2026-11-03 (D-054)
 Order: EXP-015, then EXP-014, then EXP-016, one after the other. The batch runs with the Baseten key blanked, so a Baseten call fails instead of spending. Caps total **$63** of Meta credit (about $133 left before the batch); at least about $70 stays for judges and the demo. A failed or capped experiment does not stop the next one; each result is reported whichever way it goes.
-
+- **Done 03:17 IST:** all three ran to the end, 905 rows in total ($20.15 + $20.62 + $2.28 = **$43.05** Meta, no Baseten call). Log: `artifacts/benchmark/overnight_d054_20261103_001537.log`.

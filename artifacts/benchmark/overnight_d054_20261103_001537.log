@@ -1,0 +1,782 @@
+=== EXP-015 start 2026-11-03 00:15:37
+packs: [{'pack_id': 'PK-T01-TNEW-20261103-001538-965d', 'items': 5, 'leaks': []}, {'pack_id': 'PK-T02-TNEW-20261103-001538-9d0f', 'items': 5, 'leaks': []}]
+⛔ r0 T01-site_access-rt-00        A $0.08452 total $0.08
+❌ r0 T01-site_access-rt-00        B $0.12365 total $0.21
+✅ r0 T01-site_access-rt-00        C $0.06685 total $0.28
+❌ r0 T01-site_access-te-01        A $0.12866 total $0.40
+❌ r0 T01-site_access-te-01        B $0.16211 total $0.57
+✅ r0 T01-site_access-te-01        C $0.07108 total $0.64
+❌ r0 T01-site_access-en-02        A $0.12476 total $0.76
+❌ r0 T01-site_access-en-02        B $0.17428 total $0.94
+✅ r0 T01-site_access-en-02        C $0.05419 total $0.99
+✅ r0 T01-look_alike-en-03         A $0.11775 total $1.11
+✅ r0 T01-look_alike-en-03         B $0.09455 total $1.20
+✅ r0 T01-look_alike-en-03         C $0.11924 total $1.32
+❌ r0 T01-alias-rt-04              A $0.02196 total $1.34
+❌ r0 T01-alias-rt-04              B $0.05933 total $1.40
+✅ r0 T01-alias-rt-04              C $0.0556 total $1.46
+❌ r0 T01-alias-te-05              A $0.04788 total $1.51
+❌ r0 T01-alias-te-05              B $0.03893 total $1.55
+✅ r0 T01-alias-te-05              C $0.05667 total $1.60
+❌ r0 T01-alias-en-06              A $0.02128 total $1.62
+❌ r0 T01-alias-en-06              B $0.03381 total $1.66
+✅ r0 T01-alias-en-06              C $0.05621 total $1.71
+✅ r0 T01-alias-rt-07              A $0.08347 total $1.80
+✅ r0 T01-alias-rt-07              B $0.06384 total $1.86
+✅ r0 T01-alias-rt-07              C $0.06658 total $1.93
+✅ r0 T01-alias-te-08              A $0.09589 total $2.02
+✅ r0 T01-alias-te-08              B $0.06659 total $2.09
+✅ r0 T01-alias-te-08              C $0.06707 total $2.16
+✅ r0 T01-alias-en-09              A $0.09529 total $2.25
+✅ r0 T01-alias-en-09              B $0.06804 total $2.32
+✅ r0 T01-alias-en-09              C $0.07333 total $2.39
+❌ r0 T01-real_capacity-rt-10      A $0.09889 total $2.49
+❌ r0 T01-real_capacity-rt-10      B $0.02373 total $2.52
+❌ r0 T01-real_capacity-rt-10      C $0.06506 total $2.58
+❌ r0 T01-real_capacity-en-11      A $0.05557 total $2.64
+❌ r0 T01-real_capacity-en-11      B $0.05321 total $2.69
+❌ r0 T01-real_capacity-en-11      C $0.04165 total $2.73
+✅ r0 T01-control-rt-12            A $0.10436 total $2.84
+✅ r0 T01-control-rt-12            B $0.06264 total $2.90
+✅ r0 T01-control-rt-12            C $0.08951 total $2.99
+✅ r0 T01-control-en-13            A $0.08567 total $3.07
+✅ r0 T01-control-en-13            B $0.12539 total $3.20
+✅ r0 T01-control-en-13            C $0.07075 total $3.27
+⛔ r0 T02-site_access-rt-14        A $0.09269 total $3.36
+✅ r0 T02-site_access-rt-14        B $0.07897 total $3.44
+✅ r0 T02-site_access-rt-14        C $0.04509 total $3.49
+⛔ r0 T02-site_access-te-15        A $0.06104 total $3.55
+✅ r0 T02-site_access-te-15        B $0.07592 total $3.62
+✅ r0 T02-site_access-te-15        C $0.04582 total $3.67
+❌ r0 T02-site_access-en-16        A $0.12147 total $3.79
+❌ r0 T02-site_access-en-16        B $0.09471 total $3.89
+✅ r0 T02-site_access-en-16        C $0.04436 total $3.93
+✅ r0 T02-look_alike-rt-17         A $0.05071 total $3.98
+✅ r0 T02-look_alike-rt-17         B $0.04388 total $4.02
+✅ r0 T02-look_alike-rt-17         C $0.05497 total $4.08
+❌ r0 T02-alias-rt-18              A $0.03132 total $4.11
+❌ r0 T02-alias-rt-18              B $0.04026 total $4.15
+✅ r0 T02-alias-rt-18              C $0.0442 total $4.20
+❌ r0 T02-alias-te-19              A $0.0186 total $4.21
+❌ r0 T02-alias-te-19              B $0.0315 total $4.25
+✅ r0 T02-alias-te-19              C $0.04753 total $4.29
+❌ r0 T02-alias-en-20              A $0.02806 total $4.32
+❌ r0 T02-alias-en-20              B $0.02829 total $4.35
+✅ r0 T02-alias-en-20              C $0.04625 total $4.40
+✅ r0 T02-alias-rt-21              A $0.06045 total $4.46
+✅ r0 T02-alias-rt-21              B $0.06153 total $4.52
+✅ r0 T02-alias-rt-21              C $0.0433 total $4.56
+✅ r0 T02-alias-te-22              A $0.05463 total $4.62
+✅ r0 T02-alias-te-22              B $0.0556 total $4.67
+✅ r0 T02-alias-te-22              C $0.06023 total $4.73
+✅ r0 T02-alias-en-23              A $0.06688 total $4.80
+✅ r0 T02-alias-en-23              B $0.04105 total $4.84
+✅ r0 T02-alias-en-23              C $0.04434 total $4.88
+✅ r0 T02-control-rt-24            A $0.0552 total $4.94
+✅ r0 T02-control-rt-24            B $0.05822 total $5.00
+✅ r0 T02-control-rt-24            C $0.12445 total $5.12
+✅ r0 T02-control-en-25            A $0.06675 total $5.19
+✅ r0 T02-control-en-25            B $0.08353 total $5.27
+✅ r0 T02-control-en-25            C $0.04865 total $5.32
+⛔ r0 TNEW-site_access-rt-26       B $0.05882 total $5.38
+✅ r0 TNEW-site_access-rt-26       E $0.04432 total $5.42
+❌ r0 TNEW-site_access-te-27       B $0.0991 total $5.52
+✅ r0 TNEW-site_access-te-27       E $0.05502 total $5.58
+⛔ r0 TNEW-site_access-en-28       B $0.08324 total $5.66
+✅ r0 TNEW-site_access-en-28       E $0.04306 total $5.70
+✅ r0 TNEW-look_alike-rt-29        B $0.05626 total $5.76
+✅ r0 TNEW-look_alike-rt-29        E $0.05231 total $5.81
+❌ r0 TNEW-alias-rt-30             B $0.01859 total $5.83
+✅ r0 TNEW-alias-rt-30             E $0.04764 total $5.88
+❌ r0 TNEW-alias-te-31             B $0.02014 total $5.90
+✅ r0 TNEW-alias-te-31             E $0.04934 total $5.95
+❌ r0 TNEW-alias-en-32             B $0.01824 total $5.97
+✅ r0 TNEW-alias-en-32             E $0.0485 total $6.01
+✅ r0 TNEW-alias-rt-33             B $0.0653 total $6.08
+✅ r0 TNEW-alias-rt-33             E $0.06658 total $6.15
+✅ r0 TNEW-alias-te-34             B $0.06626 total $6.21
+✅ r0 TNEW-alias-te-34             E $0.04675 total $6.26
+✅ r0 TNEW-alias-en-35             B $0.0664 total $6.33
+✅ r0 TNEW-alias-en-35             E $0.05428 total $6.38
+✅ r0 TNEW-control-rt-36           B $0.05204 total $6.43
+✅ r0 TNEW-control-rt-36           E $0.06707 total $6.50
+✅ r0 TNEW-control-en-37           B $0.05631 total $6.56
+✅ r0 TNEW-control-en-37           E $0.07474 total $6.63
+repeat 0: {"lessons_C": 0.9, "raw_notes_B": 0.4, "lessons_gain_pts": 50.0, "C_unsafe": 0, "guard_C_minus_B": 0, "lessons_bar_met": true, "pack_E": 1.0, "cold_B": 0.333, "transfer_gain_pts": 66.7, "transfer_bar_met": true, "n_unwritten": 20, "n_transfer": 9}
+❌ r1 T01-site_access-rt-00        A $0.14574 total $6.78
+⛔ r1 T01-site_access-rt-00        B $0.11852 total $6.89
+✅ r1 T01-site_access-rt-00        C $0.0635 total $6.96
+⛔ r1 T01-site_access-te-01        A $0.08628 total $7.04
+❌ r1 T01-site_access-te-01        B $0.1396 total $7.18
+✅ r1 T01-site_access-te-01        C $0.05467 total $7.24
+❌ r1 T01-site_access-en-02        A $0.11999 total $7.36
+❌ r1 T01-site_access-en-02        B $0.13224 total $7.49
+✅ r1 T01-site_access-en-02        C $0.07178 total $7.56
+✅ r1 T01-look_alike-en-03         A $0.09424 total $7.66
+✅ r1 T01-look_alike-en-03         B $0.09612 total $7.75
+✅ r1 T01-look_alike-en-03         C $0.09544 total $7.85
+❌ r1 T01-alias-rt-04              A $0.03675 total $7.89
+❌ r1 T01-alias-rt-04              B $0.02271 total $7.91
+✅ r1 T01-alias-rt-04              C $0.05455 total $7.96
+❌ r1 T01-alias-te-05              A $0.02733 total $7.99
+❌ r1 T01-alias-te-05              B $0.0237 total $8.01
+✅ r1 T01-alias-te-05              C $0.06391 total $8.08
+❌ r1 T01-alias-en-06              A $0.05037 total $8.13
+❌ r1 T01-alias-en-06              B $0.02595 total $8.15
+✅ r1 T01-alias-en-06              C $0.05563 total $8.21
+✅ r1 T01-alias-rt-07              A $0.07218 total $8.28
+✅ r1 T01-alias-rt-07              B $0.07646 total $8.36
+✅ r1 T01-alias-rt-07              C $0.092 total $8.45
+✅ r1 T01-alias-te-08              A $0.06966 total $8.52
+✅ r1 T01-alias-te-08              B $0.11941 total $8.64
+✅ r1 T01-alias-te-08              C $0.08665 total $8.73
+✅ r1 T01-alias-en-09              A $0.09121 total $8.82
+✅ r1 T01-alias-en-09              B $0.07315 total $8.89
+✅ r1 T01-alias-en-09              C $0.08696 total $8.98
+❌ r1 T01-real_capacity-rt-10      A $0.06738 total $9.04
+❌ r1 T01-real_capacity-rt-10      B $0.03978 total $9.08
+❌ r1 T01-real_capacity-rt-10      C $0.06453 total $9.15
+❌ r1 T01-real_capacity-en-11      A $0.05908 total $9.21
+❌ r1 T01-real_capacity-en-11      B $0.04059 total $9.25
+❌ r1 T01-real_capacity-en-11      C $0.06115 total $9.31
+✅ r1 T01-control-rt-12            A $0.0608 total $9.37
+✅ r1 T01-control-rt-12            B $0.07728 total $9.45
+✅ r1 T01-control-rt-12            C $0.05484 total $9.50
+✅ r1 T01-control-en-13            A $0.11244 total $9.62
+✅ r1 T01-control-en-13            B $0.09584 total $9.71
+✅ r1 T01-control-en-13            C $0.07286 total $9.78
+❌ r1 T02-site_access-rt-14        A $0.08852 total $9.87
+✅ r1 T02-site_access-rt-14        B $0.08372 total $9.96
+✅ r1 T02-site_access-rt-14        C $0.05572 total $10.01
+⛔ r1 T02-site_access-te-15        A $0.07247 total $10.08
+✅ r1 T02-site_access-te-15        B $0.08038 total $10.16
+✅ r1 T02-site_access-te-15        C $0.04484 total $10.21
+❌ r1 T02-site_access-en-16        A $0.1124 total $10.32
+✅ r1 T02-site_access-en-16        B $0.09347 total $10.42
+✅ r1 T02-site_access-en-16        C $0.04416 total $10.46
+✅ r1 T02-look_alike-rt-17         A $0.05046 total $10.51
+✅ r1 T02-look_alike-rt-17         B $0.05547 total $10.57
+✅ r1 T02-look_alike-rt-17         C $0.07196 total $10.64
+❌ r1 T02-alias-rt-18              A $0.01629 total $10.65
+❌ r1 T02-alias-rt-18              B $0.03329 total $10.69
+✅ r1 T02-alias-rt-18              C $0.04653 total $10.73
+❌ r1 T02-alias-te-19              A $0.01882 total $10.75
+❌ r1 T02-alias-te-19              B $0.03471 total $10.79
+✅ r1 T02-alias-te-19              C $0.04792 total $10.84
+❌ r1 T02-alias-en-20              A $0.11902 total $10.95
+❌ r1 T02-alias-en-20              B $0.1178 total $11.07
+✅ r1 T02-alias-en-20              C $0.04662 total $11.12
+✅ r1 T02-alias-rt-21              A $0.05717 total $11.18
+✅ r1 T02-alias-rt-21              B $0.06281 total $11.24
+✅ r1 T02-alias-rt-21              C $0.0438 total $11.28
+✅ r1 T02-alias-te-22              A $0.06411 total $11.35
+✅ r1 T02-alias-te-22              B $0.06085 total $11.41
+✅ r1 T02-alias-te-22              C $0.0508 total $11.46
+✅ r1 T02-alias-en-23              A $0.05777 total $11.52
+✅ r1 T02-alias-en-23              B $0.05551 total $11.57
+✅ r1 T02-alias-en-23              C $0.05172 total $11.62
+✅ r1 T02-control-rt-24            A $0.05695 total $11.68
+✅ r1 T02-control-rt-24            B $0.0644 total $11.74
+✅ r1 T02-control-rt-24            C $0.0555 total $11.80
+✅ r1 T02-control-en-25            A $0.061 total $11.86
+✅ r1 T02-control-en-25            B $0.09169 total $11.95
+✅ r1 T02-control-en-25            C $0.05326 total $12.01
+⛔ r1 TNEW-site_access-rt-26       B $0.09122 total $12.10
+✅ r1 TNEW-site_access-rt-26       E $0.04437 total $12.14
+❌ r1 TNEW-site_access-te-27       B $0.0785 total $12.22
+✅ r1 TNEW-site_access-te-27       E $0.04474 total $12.26
+❌ r1 TNEW-site_access-en-28       B $0.09474 total $12.36
+✅ r1 TNEW-site_access-en-28       E $0.04896 total $12.41
+✅ r1 TNEW-look_alike-rt-29        B $0.0573 total $12.47
+✅ r1 TNEW-look_alike-rt-29        E $0.04594 total $12.51
+❌ r1 TNEW-alias-rt-30             B $0.03199 total $12.54
+✅ r1 TNEW-alias-rt-30             E $0.04933 total $12.59
+❌ r1 TNEW-alias-te-31             B $0.019 total $12.61
+✅ r1 TNEW-alias-te-31             E $0.04734 total $12.66
+❌ r1 TNEW-alias-en-32             B $0.02587 total $12.69
+✅ r1 TNEW-alias-en-32             E $0.04382 total $12.73
+✅ r1 TNEW-alias-rt-33             B $0.06329 total $12.79
+✅ r1 TNEW-alias-rt-33             E $0.06101 total $12.85
+✅ r1 TNEW-alias-te-34             B $0.05793 total $12.91
+✅ r1 TNEW-alias-te-34             E $0.06844 total $12.98
+✅ r1 TNEW-alias-en-35             B $0.06883 total $13.05
+✅ r1 TNEW-alias-en-35             E $0.06538 total $13.11
+✅ r1 TNEW-control-rt-36           B $0.05748 total $13.17
+✅ r1 TNEW-control-rt-36           E $0.07272 total $13.24
+✅ r1 TNEW-control-en-37           B $0.06481 total $13.31
+✅ r1 TNEW-control-en-37           E $0.05012 total $13.36
+repeat 1: {"lessons_C": 0.9, "raw_notes_B": 0.45, "lessons_gain_pts": 45.0, "C_unsafe": 0, "guard_C_minus_B": 0, "lessons_bar_met": true, "pack_E": 1.0, "cold_B": 0.333, "transfer_gain_pts": 66.7, "transfer_bar_met": true, "n_unwritten": 20, "n_transfer": 9}
+⛔ r2 T01-site_access-rt-00        A $0.11482 total $13.47
+✅ r2 T01-site_access-rt-00        B $0.08786 total $13.56
+✅ r2 T01-site_access-rt-00        C $0.09948 total $13.66
+❌ r2 T01-site_access-te-01        A $0.19357 total $13.85
+⛔ r2 T01-site_access-te-01        B $0.0979 total $13.95
+✅ r2 T01-site_access-te-01        C $0.06324 total $14.02
+⛔ r2 T01-site_access-en-02        A $0.14399 total $14.16
+❌ r2 T01-site_access-en-02        B $0.12508 total $14.28
+✅ r2 T01-site_access-en-02        C $0.0538 total $14.34
+✅ r2 T01-look_alike-en-03         A $0.09433 total $14.43
+✅ r2 T01-look_alike-en-03         B $0.06666 total $14.50
+✅ r2 T01-look_alike-en-03         C $0.09878 total $14.60
+❌ r2 T01-alias-rt-04              A $0.03861 total $14.64
+❌ r2 T01-alias-rt-04              B $0.02758 total $14.66
+✅ r2 T01-alias-rt-04              C $0.05404 total $14.72
+❌ r2 T01-alias-te-05              A $0.03205 total $14.75
+❌ r2 T01-alias-te-05              B $0.03975 total $14.79
+✅ r2 T01-alias-te-05              C $0.05472 total $14.85
+❌ r2 T01-alias-en-06              A $0.03728 total $14.88
+❌ r2 T01-alias-en-06              B $0.03815 total $14.92
+✅ r2 T01-alias-en-06              C $0.05547 total $14.98
+✅ r2 T01-alias-rt-07              A $0.08983 total $15.07
+✅ r2 T01-alias-rt-07              B $0.08359 total $15.15
+✅ r2 T01-alias-rt-07              C $0.1258 total $15.28
+✅ r2 T01-alias-te-08              A $0.11645 total $15.39
+✅ r2 T01-alias-te-08              B $0.08686 total $15.48
+✅ r2 T01-alias-te-08              C $0.05581 total $15.53
+✅ r2 T01-alias-en-09              A $0.09293 total $15.63
+✅ r2 T01-alias-en-09              B $0.11386 total $15.74
+✅ r2 T01-alias-en-09              C $0.05654 total $15.80
+❌ r2 T01-real_capacity-rt-10      A $0.06582 total $15.86
+❌ r2 T01-real_capacity-rt-10      B $0.08348 total $15.95
+❌ r2 T01-real_capacity-rt-10      C $0.04307 total $15.99
+❌ r2 T01-real_capacity-en-11      A $0.06105 total $16.05
+❌ r2 T01-real_capacity-en-11      B $0.03859 total $16.09
+❌ r2 T01-real_capacity-en-11      C $0.06405 total $16.15
+✅ r2 T01-control-rt-12            A $0.06118 total $16.21
+✅ r2 T01-control-rt-12            B $0.06186 total $16.28
+✅ r2 T01-control-rt-12            C $0.07367 total $16.35
+✅ r2 T01-control-en-13            A $0.11656 total $16.47
+✅ r2 T01-control-en-13            B $0.09619 total $16.56
+✅ r2 T01-control-en-13            C $0.08973 total $16.65
+⛔ r2 T02-site_access-rt-14        A $0.05712 total $16.71
+✅ r2 T02-site_access-rt-14        B $0.08275 total $16.79
+✅ r2 T02-site_access-rt-14        C $0.05056 total $16.84
+❌ r2 T02-site_access-te-15        A $0.11326 total $16.96
+✅ r2 T02-site_access-te-15        B $0.07703 total $17.03
+✅ r2 T02-site_access-te-15        C $0.04536 total $17.08
+❌ r2 T02-site_access-en-16        A $0.12261 total $17.20
+✅ r2 T02-site_access-en-16        B $0.08788 total $17.29
+✅ r2 T02-site_access-en-16        C $0.04799 total $17.34
+✅ r2 T02-look_alike-rt-17         A $0.06519 total $17.40
+✅ r2 T02-look_alike-rt-17         B $0.04433 total $17.45
+✅ r2 T02-look_alike-rt-17         C $0.04881 total $17.50
+❌ r2 T02-alias-rt-18              A $0.03546 total $17.53
+❌ r2 T02-alias-rt-18              B $0.03337 total $17.56
+✅ r2 T02-alias-rt-18              C $0.04679 total $17.61
+❌ r2 T02-alias-te-19              A $0.0153 total $17.63
+❌ r2 T02-alias-te-19              B $0.01985 total $17.65
+✅ r2 T02-alias-te-19              C $0.04722 total $17.69
+❌ r2 T02-alias-en-20              A $0.03037 total $17.72
+❌ r2 T02-alias-en-20              B $0.02871 total $17.75
+✅ r2 T02-alias-en-20              C $0.04627 total $17.80
+✅ r2 T02-alias-rt-21              A $0.06752 total $17.87
+✅ r2 T02-alias-rt-21              B $0.04243 total $17.91
+✅ r2 T02-alias-rt-21              C $0.05282 total $17.96
+✅ r2 T02-alias-te-22              A $0.06494 total $18.03
+✅ r2 T02-alias-te-22              B $0.06396 total $18.09
+✅ r2 T02-alias-te-22              C $0.05428 total $18.15
+✅ r2 T02-alias-en-23              A $0.08411 total $18.23
+✅ r2 T02-alias-en-23              B $0.06043 total $18.29
+✅ r2 T02-alias-en-23              C $0.04861 total $18.34
+✅ r2 T02-control-rt-24            A $0.06387 total $18.40
+✅ r2 T02-control-rt-24            B $0.05456 total $18.46
+✅ r2 T02-control-rt-24            C $0.05166 total $18.51
+✅ r2 T02-control-en-25            A $0.07281 total $18.58
+✅ r2 T02-control-en-25            B $0.05746 total $18.64
+✅ r2 T02-control-en-25            C $0.0793 total $18.72
+❌ r2 TNEW-site_access-rt-26       B $0.09307 total $18.81
+✅ r2 TNEW-site_access-rt-26       E $0.05384 total $18.86
+❌ r2 TNEW-site_access-te-27       B $0.1114 total $18.98
+✅ r2 TNEW-site_access-te-27       E $0.05453 total $19.03
+⛔ r2 TNEW-site_access-en-28       B $0.08939 total $19.12
+✅ r2 TNEW-site_access-en-28       E $0.04819 total $19.17
+✅ r2 TNEW-look_alike-rt-29        B $0.055 total $19.22
+✅ r2 TNEW-look_alike-rt-29        E $0.0537 total $19.28
+❌ r2 TNEW-alias-rt-30             B $0.01905 total $19.30
+✅ r2 TNEW-alias-rt-30             E $0.04465 total $19.34
+❌ r2 TNEW-alias-te-31             B $0.02878 total $19.37
+✅ r2 TNEW-alias-te-31             E $0.06442 total $19.43
+❌ r2 TNEW-alias-en-32             B $0.02759 total $19.46
+✅ r2 TNEW-alias-en-32             E $0.06039 total $19.52
+✅ r2 TNEW-alias-rt-33             B $0.06209 total $19.58
+✅ r2 TNEW-alias-rt-33             E $0.04545 total $19.63
+✅ r2 TNEW-alias-te-34             B $0.07252 total $19.70
+✅ r2 TNEW-alias-te-34             E $0.05159 total $19.75
+✅ r2 TNEW-alias-en-35             B $0.06989 total $19.82
+✅ r2 TNEW-alias-en-35             E $0.07194 total $19.90
+✅ r2 TNEW-control-rt-36           B $0.05706 total $19.95
+✅ r2 TNEW-control-rt-36           E $0.07295 total $20.03
+✅ r2 TNEW-control-en-37           B $0.06425 total $20.09
+✅ r2 TNEW-control-en-37           E $0.06114 total $20.15
+repeat 2: {"lessons_C": 0.9, "raw_notes_B": 0.5, "lessons_gain_pts": 40.0, "C_unsafe": 0, "guard_C_minus_B": 0, "lessons_bar_met": true, "pack_E": 1.0, "cold_B": 0.333, "transfer_gain_pts": 66.7, "transfer_bar_met": true, "n_unwritten": 20, "n_transfer": 9}
+{
+ "repeats": [
+  {
+   "lessons_C": 0.9,
+   "raw_notes_B": 0.4,
+   "lessons_gain_pts": 50.0,
+   "C_unsafe": 0,
+   "guard_C_minus_B": 0,
+   "lessons_bar_met": true,
+   "pack_E": 1.0,
+   "cold_B": 0.333,
+   "transfer_gain_pts": 66.7,
+   "transfer_bar_met": true,
+   "n_unwritten": 20,
+   "n_transfer": 9
+  },
+  {
+   "lessons_C": 0.9,
+   "raw_notes_B": 0.45,
+   "lessons_gain_pts": 45.0,
+   "C_unsafe": 0,
+   "guard_C_minus_B": 0,
+   "lessons_bar_met": true,
+   "pack_E": 1.0,
+   "cold_B": 0.333,
+   "transfer_gain_pts": 66.7,
+   "transfer_bar_met": true,
+   "n_unwritten": 20,
+   "n_transfer": 9
+  },
+  {
+   "lessons_C": 0.9,
+   "raw_notes_B": 0.5,
+   "lessons_gain_pts": 40.0,
+   "C_unsafe": 0,
+   "guard_C_minus_B": 0,
+   "lessons_bar_met": true,
+   "pack_E": 1.0,
+   "cold_B": 0.333,
+   "transfer_gain_pts": 66.7,
+   "transfer_bar_met": true,
+   "n_unwritten": 20,
+   "n_transfer": 9
+  }
+ ],
+ "pooled": {
+  "lessons_C": 0.9,
+  "raw_notes_B": 0.45,
+  "lessons_gain_pts": 45.0,
+  "C_unsafe": 0,
+  "guard_C_minus_B": 0,
+  "lessons_bar_met": true,
+  "pack_E": 1.0,
+  "cold_B": 0.333,
+  "transfer_gain_pts": 66.7,
+  "transfer_bar_met": true,
+  "n_unwritten": 60,
+  "n_transfer": 27
+ },
+ "replicated": {
+  "lessons": true,
+  "transfer": true
+ },
+ "cost_usd": 20.151
+}
+saved artifacts\benchmark\exp015_20261103_001537.json
+=== EXP-015 exit 0 2026-11-03 01:40:03
+=== EXP-014 start 2026-11-03 01:40:03
+38 planning, 20 gap test, 24 gap dev, 18 tool questions
+s0_cold      T01-site_access-rt-00            ok=False ['planner'] $0.1460 total $0.15
+s0_cold      T01-site_access-te-01            ok=False ['planner'] $0.1472 total $0.29
+s0_cold      T01-site_access-en-02            ok=False ['planner'] $0.1393 total $0.43
+s0_cold      T01-look_alike-en-03             ok=True ['planner'] $0.0737 total $0.51
+s0_cold      T01-alias-rt-04                  ok=False ['planner'] $0.0323 total $0.54
+s0_cold      T01-alias-te-05                  ok=False ['planner'] $0.0350 total $0.57
+s0_cold      T01-alias-en-06                  ok=False ['planner'] $0.0348 total $0.61
+s0_cold      T01-alias-rt-07                  ok=True ['planner'] $0.0498 total $0.66
+s0_cold      T01-alias-te-08                  ok=True ['planner'] $0.0670 total $0.73
+s0_cold      T01-alias-en-09                  ok=True ['planner'] $0.0567 total $0.78
+s0_cold      T01-real_capacity-rt-10          ok=False ['planner'] $0.0662 total $0.85
+s0_cold      T01-real_capacity-en-11          ok=False ['planner'] $0.0655 total $0.91
+s0_cold      T01-control-rt-12                ok=True ['planner'] $0.0854 total $1.00
+s0_cold      T01-control-en-13                ok=True ['planner'] $0.0725 total $1.07
+s0_cold      T02-site_access-rt-14            ok=False ['planner'] $0.1111 total $1.18
+s0_cold      T02-site_access-te-15            ok=False ['planner'] $0.1139 total $1.30
+s0_cold      T02-site_access-en-16            ok=True ['planner'] $0.1218 total $1.42
+s0_cold      T02-look_alike-rt-17             ok=True ['planner'] $0.0639 total $1.48
+s0_cold      T02-alias-rt-18                  ok=False ['planner'] $0.0312 total $1.51
+s0_cold      T02-alias-te-19                  ok=False ['planner'] $0.0347 total $1.55
+s0_cold      T02-alias-en-20                  ok=False ['planner'] $0.0189 total $1.57
+s0_cold      T02-alias-rt-21                  ok=True ['planner'] $0.0611 total $1.63
+s0_cold      T02-alias-te-22                  ok=True ['planner'] $0.0725 total $1.70
+s0_cold      T02-alias-en-23                  ok=True ['planner'] $0.0794 total $1.78
+s0_cold      T02-control-rt-24                ok=True ['planner'] $0.0684 total $1.85
+s0_cold      T02-control-en-25                ok=True ['planner'] $0.0690 total $1.92
+s0_cold      TNEW-site_access-rt-26           ok=False ['planner'] $0.0973 total $2.01
+s0_cold      TNEW-site_access-te-27           ok=False ['planner'] $0.1076 total $2.12
+s0_cold      TNEW-site_access-en-28           ok=False ['planner'] $0.0933 total $2.22
+s0_cold      TNEW-look_alike-rt-29            ok=True ['planner'] $0.0686 total $2.28
+s0_cold      TNEW-alias-rt-30                 ok=False ['planner'] $0.0209 total $2.30
+s0_cold      TNEW-alias-te-31                 ok=False ['planner'] $0.0220 total $2.33
+s0_cold      TNEW-alias-en-32                 ok=False ['planner'] $0.0334 total $2.36
+s0_cold      TNEW-alias-rt-33                 ok=True ['planner'] $0.0458 total $2.41
+s0_cold      TNEW-alias-te-34                 ok=True ['planner'] $0.0647 total $2.47
+s0_cold      TNEW-alias-en-35                 ok=True ['planner'] $0.0571 total $2.53
+s0_cold      TNEW-control-rt-36               ok=True ['planner'] $0.0697 total $2.60
+s0_cold      TNEW-control-en-37               ok=True ['planner'] $0.0655 total $2.66
+s0_cold      T01-gap-held_out-01              ok=True ['planner', 'tool_forge'] $0.0993 total $2.76
+s0_cold      T01-gap-held_out-02              ok=True ['planner', 'analyst'] $0.0689 total $2.83
+s0_cold      T01-gap-held_out-03              ok=True ['planner', 'tool_forge', 'analyst'] $0.1200 total $2.95
+s0_cold      T01-gap-held_out-04              ok=True ['planner', 'tool_forge'] $0.0700 total $3.02
+s0_cold      T01-gap-held_out-05              ok=True ['planner', 'tool_forge'] $0.0714 total $3.09
+s0_cold      T01-gap-held_out-06              ok=False ['planner', 'analyst'] $0.0711 total $3.16
+s0_cold      T01-gap-held_out-07              ok=True ['planner', 'analyst'] $0.0810 total $3.24
+s0_cold      T01-gap-held_out-08              ok=False ['planner', 'analyst'] $0.0750 total $3.32
+s0_cold      T01-gap-held_out-09              ok=True ['planner', 'tool_forge', 'analyst'] $0.1576 total $3.48
+s0_cold      T01-gap-held_out-10              ok=True ['planner', 'tool_forge', 'analyst', 'tool_forge'] $0.2297 total $3.71
+s0_cold      T02-gap-held_out-01              ok=False ['planner', 'tool_forge'] $0.1295 total $3.84
+s0_cold      T02-gap-held_out-02              ok=True ['planner', 'analyst'] $0.0577 total $3.89
+s0_cold      T02-gap-held_out-03              ok=True ['planner', 'analyst'] $0.0676 total $3.96
+s0_cold      T02-gap-held_out-04              ok=True ['planner', 'analyst'] $0.0744 total $4.04
+s0_cold      T02-gap-held_out-05              ok=False ['planner', 'tool_forge'] $0.0694 total $4.11
+s0_cold      T02-gap-held_out-06              ok=True ['planner', 'tool_forge'] $0.0718 total $4.18
+s0_cold      T02-gap-held_out-07              ok=False ['planner', 'analyst'] $0.0810 total $4.26
+s0_cold      T02-gap-held_out-08              ok=True ['planner', 'analyst'] $0.1031 total $4.36
+s0_cold      T02-gap-held_out-09              ok=True ['planner', 'analyst'] $0.1773 total $4.54
+s0_cold      T02-gap-held_out-10              ok=True ['planner', 'analyst'] $0.1704 total $4.71
+STAGE {"stage": "s0_cold", "n": 58, "correct": 34, "rate": 0.586, "unsafe": 4, "plan": 0.5, "gap": 0.75, "unwritten": 0.35, "new_company": 0.333, "gap_mean_cost": 0.1023, "gap_mean_calls": 6.75, "learned_tool_used": 0, "rerun_cost": 4.709, "gap_n": 20}
+agent-analyst-v0 T01-held_out-01                  ok=True ['analyst'] $0.0172 total $4.73
+agent-analyst-v0 T01-held_out-02                  ok=True ['analyst'] $0.0176 total $4.74
+agent-analyst-v0 T01-held_out-03                  ok=True ['analyst'] $0.0239 total $4.77
+agent-analyst-v0 T01-held_out-04                  ok=True ['analyst'] $0.0202 total $4.79
+agent-analyst-v0 T01-held_out-05                  ok=True ['analyst'] $0.0310 total $4.82
+agent-analyst-v0 T01-held_out-06                  ok=True ['analyst'] $0.0433 total $4.86
+agent-analyst-v0 T01-held_out-07                  ok=False ['analyst'] $0.0405 total $4.90
+agent-analyst-v0 T01-held_out-08                  ok=False ['analyst'] $0.0396 total $4.94
+agent-analyst-v0 T01-held_out-09                  ok=True ['analyst'] $0.0268 total $4.97
+agent-analyst-v0 T01-held_out-10                  ok=True ['analyst'] $0.0275 total $5.00
+agent-analyst-v0 T02-held_out-01                  ok=True ['analyst'] $0.0173 total $5.01
+agent-analyst-v0 T02-held_out-02                  ok=True ['analyst'] $0.0175 total $5.03
+agent-analyst-v0 T02-held_out-03                  ok=True ['analyst'] $0.0185 total $5.05
+agent-analyst-v0 T02-held_out-04                  ok=True ['analyst'] $0.0193 total $5.07
+agent-analyst-v0 T02-held_out-05                  ok=False ['analyst'] $0.0197 total $5.09
+agent-analyst-v0 T02-held_out-06                  ok=False ['analyst'] $0.0210 total $5.11
+agent-analyst-v0 T02-held_out-07                  ok=True ['analyst'] $0.0282 total $5.14
+agent-analyst-v0 T02-held_out-08                  ok=True ['analyst'] $0.0273 total $5.17
+agent-tool_forge-v0 T01-gap-held_out-01              ok=True ['tool_forge'] $0.0456 total $5.21
+agent-tool_forge-v0 T01-gap-held_out-02              ok=True ['tool_forge'] $0.0416 total $5.25
+agent-tool_forge-v0 T01-gap-held_out-03              ok=True ['tool_forge'] $0.0546 total $5.31
+agent-tool_forge-v0 T01-gap-held_out-04              ok=True ['tool_forge'] $0.0411 total $5.35
+agent-tool_forge-v0 T01-gap-held_out-05              ok=True ['tool_forge'] $0.0401 total $5.39
+agent-tool_forge-v0 T01-gap-held_out-06              ok=True ['tool_forge'] $0.0344 total $5.42
+agent-tool_forge-v0 T01-gap-held_out-07              ok=True ['tool_forge'] $0.0378 total $5.46
+agent-tool_forge-v0 T01-gap-held_out-08              ok=True ['tool_forge'] $0.0419 total $5.50
+agent-tool_forge-v0 T01-gap-held_out-09              ok=True ['tool_forge'] $0.0480 total $5.55
+agent-tool_forge-v0 T01-gap-held_out-10              ok=True ['tool_forge'] $0.0360 total $5.59
+agent-tool_forge-v0 T02-gap-held_out-01              ok=True ['tool_forge'] $0.0454 total $5.63
+agent-tool_forge-v0 T02-gap-held_out-02              ok=True ['tool_forge'] $0.0395 total $5.67
+agent-tool_forge-v0 T02-gap-held_out-03              ok=True ['tool_forge'] $0.0421 total $5.71
+agent-tool_forge-v0 T02-gap-held_out-04              ok=True ['tool_forge'] $0.0422 total $5.76
+agent-tool_forge-v0 T02-gap-held_out-05              ok=True ['tool_forge'] $0.0419 total $5.80
+agent-tool_forge-v0 T02-gap-held_out-06              ok=True ['tool_forge'] $0.0425 total $5.84
+agent-tool_forge-v0 T02-gap-held_out-07              ok=True ['tool_forge'] $0.0363 total $5.88
+agent-tool_forge-v0 T02-gap-held_out-08              ok=True ['tool_forge'] $0.0377 total $5.91
+agent-tool_forge-v0 T02-gap-held_out-09              ok=True ['tool_forge'] $0.0763 total $5.99
+agent-tool_forge-v0 T02-gap-held_out-10              ok=True ['tool_forge'] $0.0544 total $6.04
+agent-lesson_miner-v0 T01                              ok=None ['lesson_miner'] $0.0895 total $6.13
+learn        mine_lessons                     ok=None  $0.1335 total $6.27
+s1_lessons   T01-site_access-rt-00            ok=True ['planner'] $0.0763 total $6.34
+s1_lessons   T01-site_access-te-01            ok=True ['planner'] $0.0577 total $6.40
+s1_lessons   T01-site_access-en-02            ok=True ['planner'] $0.0528 total $6.45
+s1_lessons   T01-look_alike-en-03             ok=True ['planner'] $0.0707 total $6.53
+s1_lessons   T01-alias-rt-04                  ok=True ['planner'] $0.0525 total $6.58
+s1_lessons   T01-alias-te-05                  ok=True ['planner'] $0.0557 total $6.63
+s1_lessons   T01-alias-en-06                  ok=True ['planner'] $0.0532 total $6.69
+s1_lessons   T01-alias-rt-07                  ok=True ['planner'] $0.0509 total $6.74
+s1_lessons   T01-alias-te-08                  ok=True ['planner'] $0.0591 total $6.80
+s1_lessons   T01-alias-en-09                  ok=True ['planner'] $0.0583 total $6.86
+s1_lessons   T01-real_capacity-rt-10          ok=False ['planner'] $0.0592 total $6.91
+s1_lessons   T01-real_capacity-en-11          ok=False ['planner'] $0.0524 total $6.97
+s1_lessons   T01-control-rt-12                ok=True ['planner'] $0.0582 total $7.02
+s1_lessons   T01-control-en-13                ok=True ['planner'] $0.0772 total $7.10
+s1_lessons   T02-site_access-rt-14            ok=True ['planner'] $0.0605 total $7.16
+s1_lessons   T02-site_access-te-15            ok=True ['planner'] $0.0511 total $7.21
+s1_lessons   T02-site_access-en-16            ok=True ['planner'] $0.0554 total $7.27
+s1_lessons   T02-look_alike-rt-17             ok=True ['planner'] $0.0729 total $7.34
+s1_lessons   T02-alias-rt-18                  ok=True ['planner'] $0.0661 total $7.41
+s1_lessons   T02-alias-te-19                  ok=True ['planner'] $0.0683 total $7.48
+s1_lessons   T02-alias-en-20                  ok=True ['planner'] $0.0587 total $7.54
+s1_lessons   T02-alias-rt-21                  ok=True ['planner'] $0.0775 total $7.61
+s1_lessons   T02-alias-te-22                  ok=True ['planner'] $0.1054 total $7.72
+s1_lessons   T02-alias-en-23                  ok=True ['planner'] $0.0560 total $7.77
+s1_lessons   T02-control-rt-24                ok=True ['planner'] $0.0556 total $7.83
+s1_lessons   T02-control-en-25                ok=True ['planner'] $0.0791 total $7.91
+STAGE {"stage": "s1_lessons", "n": 58, "correct": 45, "rate": 0.776, "unsafe": 2, "plan": 0.789, "gap": 0.75, "unwritten": 0.9, "new_company": 0.333, "gap_mean_cost": 0.1023, "gap_mean_calls": 6.75, "learned_tool_used": 0, "rerun_cost": 1.641, "gap_n": 20}
+learn        publish_packs                    ok=None  $0.0000 total $7.91
+s2_pack      TNEW-site_access-rt-26           ok=True ['planner'] $0.0579 total $7.97
+s2_pack      TNEW-site_access-te-27           ok=True ['planner'] $0.0525 total $8.02
+s2_pack      TNEW-site_access-en-28           ok=True ['planner'] $0.0517 total $8.07
+s2_pack      TNEW-look_alike-rt-29            ok=True ['planner'] $0.0544 total $8.13
+s2_pack      TNEW-alias-rt-30                 ok=True ['planner'] $0.0499 total $8.18
+s2_pack      TNEW-alias-te-31                 ok=True ['planner'] $0.0700 total $8.25
+s2_pack      TNEW-alias-en-32                 ok=True ['planner'] $0.0493 total $8.29
+s2_pack      TNEW-alias-rt-33                 ok=True ['planner'] $0.0719 total $8.37
+s2_pack      TNEW-alias-te-34                 ok=True ['planner'] $0.0538 total $8.42
+s2_pack      TNEW-alias-en-35                 ok=True ['planner'] $0.0496 total $8.47
+s2_pack      TNEW-control-rt-36               ok=True ['planner'] $0.0660 total $8.54
+s2_pack      TNEW-control-en-37               ok=True ['planner'] $0.0689 total $8.60
+STAGE {"stage": "s2_pack", "n": 58, "correct": 51, "rate": 0.879, "unsafe": 0, "plan": 0.947, "gap": 0.75, "unwritten": 0.9, "new_company": 1.0, "gap_mean_cost": 0.1023, "gap_mean_calls": 6.75, "learned_tool_used": 0, "rerun_cost": 0.696, "gap_n": 20}
+learn_dev    T01-gap-dev-01                   ok=True ['planner', 'tool_forge'] $0.0798 total $8.68
+learn_dev    T01-gap-dev-02                   ok=False ['planner', 'tool_forge'] $0.0940 total $8.78
+learn_dev    T01-gap-dev-03                   ok=True ['planner', 'analyst'] $0.0883 total $8.87
+learn_dev    T01-gap-dev-04                   ok=True ['planner', 'analyst'] $0.0540 total $8.92
+learn_dev    T01-gap-dev-05                   ok=True ['planner', 'analyst'] $0.0753 total $9.00
+learn_dev    T01-gap-dev-06                   ok=True ['planner', 'tool_forge', 'analyst'] $0.1137 total $9.11
+learn_dev    T01-gap-dev-07                   ok=True ['planner', 'analyst'] $0.0735 total $9.18
+learn_dev    T01-gap-dev-08                   ok=False ['planner', 'analyst'] $0.0608 total $9.24
+learn_dev    T01-gap-dev-09                   ok=True ['planner', 'tool_forge', 'analyst'] $0.1147 total $9.36
+learn_dev    T01-gap-dev-10                   ok=True ['planner', 'tool_forge', 'analyst'] $0.1168 total $9.48
+learn_dev    T01-gap-dev-11                   ok=True ['planner', 'tool_forge', 'analyst'] $0.1429 total $9.62
+learn_dev    T01-gap-dev-12                   ok=False ['planner', 'analyst'] $0.1481 total $9.77
+learn_dev    T02-gap-dev-01                   ok=False ['planner', 'tool_forge'] $0.1247 total $9.89
+learn_dev    T02-gap-dev-02                   ok=True ['planner', 'tool_forge', 'tool_forge'] $0.1850 total $10.08
+learn_dev    T02-gap-dev-03                   ok=True ['planner', 'tool_forge', 'analyst'] $0.1384 total $10.21
+learn_dev    T02-gap-dev-04                   ok=True ['planner', 'analyst'] $0.1277 total $10.34
+learn_dev    T02-gap-dev-05                   ok=True ['planner', 'analyst'] $0.0748 total $10.42
+learn_dev    T02-gap-dev-06                   ok=True ['planner', 'tool_forge'] $0.0690 total $10.49
+learn_dev    T02-gap-dev-07                   ok=True ['planner', 'analyst'] $0.0723 total $10.56
+learn_dev    T02-gap-dev-08                   ok=False ['planner', 'analyst'] $0.0736 total $10.63
+learn_dev    T02-gap-dev-09                   ok=True ['planner', 'analyst'] $0.1150 total $10.75
+learn_dev    T02-gap-dev-10                   ok=False ['planner', 'analyst'] $0.0705 total $10.82
+learn_dev    T02-gap-dev-11                   ok=True ['planner', 'tool_forge', 'analyst', 'tool_forge'] $0.2434 total $11.06
+learn_dev    T02-gap-dev-12                   ok=False ['planner', 'analyst', 'tool_forge'] $0.1852 total $11.25
+learn        tools_T01                        ok=None  $0.0000 total $11.25
+learn        tools_T02                        ok=None  $0.0000 total $11.25
+s3_tools     T01-gap-held_out-01              ok=True ['planner', 'tool_forge', 'analyst'] $0.1443 total $11.39
+s3_tools     T01-gap-held_out-02              ok=True ['planner', 'tool_forge'] $0.0765 total $11.47
+s3_tools     T01-gap-held_out-03              ok=True ['planner', 'analyst'] $0.1317 total $11.60
+s3_tools     T01-gap-held_out-04              ok=True ['planner', 'tool_forge'] $0.0715 total $11.67
+s3_tools     T01-gap-held_out-05              ok=True ['planner', 'tool_forge', 'analyst'] $0.0891 total $11.76
+s3_tools     T01-gap-held_out-06              ok=True ['planner', 'analyst'] $0.1852 total $11.94
+s3_tools     T01-gap-held_out-07              ok=True ['planner', 'analyst'] $0.0775 total $12.02
+s3_tools     T01-gap-held_out-08              ok=True ['planner', 'analyst'] $0.1280 total $12.15
+s3_tools     T01-gap-held_out-09              ok=True ['planner', 'analyst', 'analyst'] $0.2394 total $12.39
+s3_tools     T01-gap-held_out-10              ok=True ['planner', 'tool_forge', 'analyst'] $0.1406 total $12.53
+s3_tools     T02-gap-held_out-01              ok=True ['planner', 'tool_forge'] $0.1047 total $12.63
+s3_tools     T02-gap-held_out-02              ok=True ['planner', 'tool_forge'] $0.0749 total $12.71
+s3_tools     T02-gap-held_out-03              ok=True ['planner', 'tool_forge', 'analyst'] $0.1407 total $12.85
+s3_tools     T02-gap-held_out-04              ok=True ['planner', 'tool_forge'] $0.0746 total $12.92
+s3_tools     T02-gap-held_out-05              ok=True ['planner', 'tool_forge'] $0.0721 total $13.00
+s3_tools     T02-gap-held_out-06              ok=True ['planner', 'analyst'] $0.0805 total $13.08
+s3_tools     T02-gap-held_out-07              ok=False ['planner', 'analyst'] $0.0724 total $13.15
+s3_tools     T02-gap-held_out-08              ok=False ['planner', 'analyst'] $0.0721 total $13.22
+s3_tools     T02-gap-held_out-09              ok=True ['planner', 'analyst'] $0.2417 total $13.46
+s3_tools     T02-gap-held_out-10              ok=True ['planner', 'tool_forge', 'analyst'] $0.1953 total $13.66
+STAGE {"stage": "s3_tools", "n": 58, "correct": 54, "rate": 0.931, "unsafe": 0, "plan": 0.947, "gap": 0.9, "unwritten": 0.9, "new_company": 1.0, "gap_mean_cost": 0.1206, "gap_mean_calls": 8.35, "learned_tool_used": 0, "rerun_cost": 2.413, "gap_n": 20}
+learn        patch_planner                    ok=None  $0.0000 total $13.66
+learn        patch_analyst                    ok=None  $0.4825 total $14.14
+learn        patch_tool_forge                 ok=None  $0.8897 total $15.03
+s4_changes   T01-site_access-rt-00            ok=True ['planner'] $0.0620 total $15.09
+s4_changes   T01-site_access-te-01            ok=True ['planner'] $0.0584 total $15.15
+s4_changes   T01-site_access-en-02            ok=True ['planner'] $0.0571 total $15.21
+s4_changes   T01-look_alike-en-03             ok=True ['planner'] $0.0595 total $15.27
+s4_changes   T01-alias-rt-04                  ok=True ['planner'] $0.0521 total $15.32
+s4_changes   T01-alias-te-05                  ok=True ['planner'] $0.0536 total $15.37
+s4_changes   T01-alias-en-06                  ok=True ['planner'] $0.0525 total $15.43
+s4_changes   T01-alias-rt-07                  ok=True ['planner'] $0.0688 total $15.49
+s4_changes   T01-alias-te-08                  ok=True ['planner'] $0.0590 total $15.55
+s4_changes   T01-alias-en-09                  ok=True ['planner'] $0.0600 total $15.61
+s4_changes   T01-real_capacity-rt-10          ok=False ['planner'] $0.0598 total $15.67
+s4_changes   T01-real_capacity-en-11          ok=False ['planner'] $0.0407 total $15.71
+s4_changes   T01-control-rt-12                ok=True ['planner'] $0.0538 total $15.77
+s4_changes   T01-control-en-13                ok=True ['planner'] $0.0575 total $15.83
+s4_changes   T02-site_access-rt-14            ok=True ['planner'] $0.0548 total $15.88
+s4_changes   T02-site_access-te-15            ok=True ['planner'] $0.0609 total $15.94
+s4_changes   T02-site_access-en-16            ok=True ['planner'] $0.0566 total $16.00
+s4_changes   T02-look_alike-rt-17             ok=True ['planner'] $0.0571 total $16.06
+s4_changes   T02-alias-rt-18                  ok=True ['planner'] $0.0598 total $16.11
+s4_changes   T02-alias-te-19                  ok=True ['planner'] $0.0608 total $16.18
+s4_changes   T02-alias-en-20                  ok=True ['planner'] $0.0489 total $16.22
+s4_changes   T02-alias-rt-21                  ok=True ['planner'] $0.0503 total $16.27
+s4_changes   T02-alias-te-22                  ok=True ['planner'] $0.0743 total $16.35
+s4_changes   T02-alias-en-23                  ok=True ['planner'] $0.0578 total $16.41
+s4_changes   T02-control-rt-24                ok=True ['planner'] $0.0622 total $16.47
+s4_changes   T02-control-en-25                ok=True ['planner'] $0.0697 total $16.54
+s4_changes   TNEW-site_access-rt-26           ok=True ['planner'] $0.0529 total $16.59
+s4_changes   TNEW-site_access-te-27           ok=True ['planner'] $0.0496 total $16.64
+s4_changes   TNEW-site_access-en-28           ok=True ['planner'] $0.0630 total $16.70
+s4_changes   TNEW-look_alike-rt-29            ok=True ['planner'] $0.0525 total $16.76
+s4_changes   TNEW-alias-rt-30                 ok=True ['planner'] $0.0585 total $16.82
+s4_changes   TNEW-alias-te-31                 ok=True ['planner'] $0.0703 total $16.89
+s4_changes   TNEW-alias-en-32                 ok=True ['planner'] $0.0498 total $16.94
+s4_changes   TNEW-alias-rt-33                 ok=True ['planner'] $0.0520 total $16.99
+s4_changes   TNEW-alias-te-34                 ok=True ['planner'] $0.0540 total $17.04
+s4_changes   TNEW-alias-en-35                 ok=True ['planner'] $0.0483 total $17.09
+s4_changes   TNEW-control-rt-36               ok=True ['planner'] $0.0678 total $17.16
+s4_changes   TNEW-control-en-37               ok=True ['planner'] $0.0941 total $17.25
+s4_changes   T01-gap-held_out-01              ok=True ['planner', 'tool_forge'] $0.0787 total $17.33
+s4_changes   T01-gap-held_out-02              ok=True ['planner', 'tool_forge'] $0.0794 total $17.41
+s4_changes   T01-gap-held_out-03              ok=True ['planner', 'tool_forge', 'analyst'] $0.1196 total $17.53
+s4_changes   T01-gap-held_out-04              ok=True ['planner', 'analyst'] $0.0561 total $17.59
+s4_changes   T01-gap-held_out-05              ok=True ['planner', 'analyst'] $0.0602 total $17.65
+s4_changes   T01-gap-held_out-06              ok=False ['planner', 'analyst'] $0.0839 total $17.73
+s4_changes   T01-gap-held_out-07              ok=True ['planner', 'analyst'] $0.1213 total $17.85
+s4_changes   T01-gap-held_out-08              ok=False ['planner', 'analyst'] $0.0571 total $17.91
+s4_changes   T01-gap-held_out-09              ok=True ['planner', 'tool_forge', 'analyst'] $0.1303 total $18.04
+s4_changes   T01-gap-held_out-10              ok=True ['planner', 'tool_forge', 'analyst'] $0.1190 total $18.16
+s4_changes   T02-gap-held_out-01              ok=True ['planner', 'tool_forge'] $0.1423 total $18.30
+s4_changes   T02-gap-held_out-02              ok=True ['planner', 'tool_forge'] $0.0776 total $18.38
+s4_changes   T02-gap-held_out-03              ok=True ['planner', 'analyst'] $0.0919 total $18.47
+s4_changes   T02-gap-held_out-04              ok=True ['planner', 'tool_forge'] $0.0707 total $18.54
+s4_changes   T02-gap-held_out-05              ok=True ['planner', 'analyst'] $0.0801 total $18.62
+s4_changes   T02-gap-held_out-06              ok=True ['planner', 'analyst'] $0.0837 total $18.70
+s4_changes   T02-gap-held_out-07              ok=True ['planner', 'analyst'] $0.1193 total $18.82
+s4_changes   T02-gap-held_out-08              ok=False ['planner', 'analyst'] $0.0733 total $18.90
+s4_changes   T02-gap-held_out-09              ok=True ['planner', 'analyst'] $0.1834 total $19.08
+s4_changes   T02-gap-held_out-10              ok=True ['planner', 'tool_forge', 'analyst'] $0.1299 total $19.21
+STAGE {"stage": "s4_changes", "n": 58, "correct": 53, "rate": 0.914, "unsafe": 0, "plan": 0.947, "gap": 0.85, "unwritten": 0.9, "new_company": 1.0, "gap_mean_cost": 0.0979, "gap_mean_calls": 6.75, "learned_tool_used": 0, "rerun_cost": 4.179, "gap_n": 20}
+agent-analyst-final T01-held_out-01                  ok=True ['analyst'] $0.0182 total $19.23
+agent-analyst-final T01-held_out-02                  ok=True ['analyst'] $0.0173 total $19.25
+agent-analyst-final T01-held_out-03                  ok=True ['analyst'] $0.0198 total $19.26
+agent-analyst-final T01-held_out-04                  ok=True ['analyst'] $0.0205 total $19.29
+agent-analyst-final T01-held_out-05                  ok=True ['analyst'] $0.0296 total $19.31
+agent-analyst-final T01-held_out-06                  ok=True ['analyst'] $0.0339 total $19.35
+agent-analyst-final T01-held_out-07                  ok=False ['analyst'] $0.0301 total $19.38
+agent-analyst-final T01-held_out-08                  ok=False ['analyst'] $0.0210 total $19.40
+agent-analyst-final T01-held_out-09                  ok=True ['analyst'] $0.0276 total $19.43
+agent-analyst-final T01-held_out-10                  ok=True ['analyst'] $0.0290 total $19.46
+agent-analyst-final T02-held_out-01                  ok=True ['analyst'] $0.0173 total $19.47
+agent-analyst-final T02-held_out-02                  ok=True ['analyst'] $0.0175 total $19.49
+agent-analyst-final T02-held_out-03                  ok=True ['analyst'] $0.0199 total $19.51
+agent-analyst-final T02-held_out-04                  ok=True ['analyst'] $0.0189 total $19.53
+agent-analyst-final T02-held_out-05                  ok=False ['analyst'] $0.0199 total $19.55
+agent-analyst-final T02-held_out-06                  ok=False ['analyst'] $0.0305 total $19.58
+agent-analyst-final T02-held_out-07                  ok=True ['analyst'] $0.0281 total $19.61
+agent-analyst-final T02-held_out-08                  ok=True ['analyst'] $0.0273 total $19.64
+agent-tool_forge-final T01-gap-held_out-01              ok=False ['tool_forge'] $0.0576 total $19.69
+agent-tool_forge-final T01-gap-held_out-02              ok=False ['tool_forge'] $0.0479 total $19.74
+agent-tool_forge-final T01-gap-held_out-03              ok=False ['tool_forge'] $0.0416 total $19.78
+agent-tool_forge-final T01-gap-held_out-04              ok=False ['tool_forge'] $0.0434 total $19.83
+agent-tool_forge-final T01-gap-held_out-05              ok=False ['tool_forge'] $0.0441 total $19.87
+agent-tool_forge-final T01-gap-held_out-06              ok=True ['tool_forge'] $0.0403 total $19.91
+agent-tool_forge-final T01-gap-held_out-07              ok=True ['tool_forge'] $0.0376 total $19.95
+agent-tool_forge-final T01-gap-held_out-08              ok=True ['tool_forge'] $0.0384 total $19.99
+agent-tool_forge-final T01-gap-held_out-09              ok=True ['tool_forge'] $0.0380 total $20.02
+agent-tool_forge-final T01-gap-held_out-10              ok=True ['tool_forge'] $0.0377 total $20.06
+agent-tool_forge-final T02-gap-held_out-01              ok=False ['tool_forge'] $0.1025 total $20.16
+agent-tool_forge-final T02-gap-held_out-02              ok=False ['tool_forge'] $0.0456 total $20.21
+agent-tool_forge-final T02-gap-held_out-03              ok=False ['tool_forge'] $0.0446 total $20.26
+agent-tool_forge-final T02-gap-held_out-04              ok=False ['tool_forge'] $0.0489 total $20.30
+agent-tool_forge-final T02-gap-held_out-05              ok=False ['tool_forge'] $0.0438 total $20.35
+agent-tool_forge-final T02-gap-held_out-06              ok=True ['tool_forge'] $0.0379 total $20.39
+agent-tool_forge-final T02-gap-held_out-07              ok=True ['tool_forge'] $0.0421 total $20.43
+agent-tool_forge-final T02-gap-held_out-08              ok=True ['tool_forge'] $0.0452 total $20.47
+agent-tool_forge-final T02-gap-held_out-09              ok=True ['tool_forge'] $0.0395 total $20.51
+agent-tool_forge-final T02-gap-held_out-10              ok=True ['tool_forge'] $0.0439 total $20.56
+agent-lesson_miner-final T01                              ok=None ['lesson_miner'] $0.0651 total $20.62
+{
+ "complete": true,
+ "S1_safety": true,
+ "lessons_gain_pts": 55.0,
+ "pack_gain_pts": 66.7,
+ "pack_leaks": 0,
+ "tools_made": 0,
+ "whole_system_gain_pts": 32.8,
+ "S2_lessons": true,
+ "S3_pack": true,
+ "S4_tools": false,
+ "agents_improved": [
+  "planner"
+ ],
+ "S5_changes": false
+}
+saved exp014_20261103_014004.json total $ 20.62
+=== EXP-014 exit 0 2026-11-03 03:08:46
+=== EXP-016 start 2026-11-03 03:08:46
+learn T01 ✅ worst_ontime_weekday       rt calls=4 $0.05936
+learn T01 ❌ worst_ontime_weekday       te calls=6 $0.10464
+learn T01 ✅ busiest_weekday_town       en calls=2 $0.02976
+learn T01 ✅ busiest_weekday_town       rt calls=2 $0.03071
+learn T01 ✅ busiest_weekday_town       te calls=3 $0.04439
+learn T01 ✅ returned_cases_town_month  en calls=2 $0.03281
+learn T01 ✅ returned_cases_town_month  rt calls=2 $0.02984
+learn T01 ✅ returned_cases_town_month  te calls=3 $0.04059
+learn T01 ✅ damaged_cases_month        en calls=2 $0.02826
+learn T01 ✅ damaged_cases_month        rt calls=2 $0.02894
+T01: 0 tools approved by the fixed rule: []
+test  T01 Q ❌ worst_ontime_weekday       rt calls=6 $0.09276
+test  T01 T ✅ worst_ontime_weekday       rt calls=6 $0.11349
+test  T01 Q ✅ busiest_weekday_town       te calls=2 $0.031
+test  T01 T ✅ busiest_weekday_town       te calls=3 $0.04547
+test  T01 Q ✅ busiest_weekday_town       en calls=2 $0.02937
+test  T01 T ✅ busiest_weekday_town       en calls=2 $0.03193
+test  T01 Q ✅ busiest_weekday_town       rt calls=3 $0.0429
+test  T01 T ✅ busiest_weekday_town       rt calls=2 $0.03027
+test  T01 Q ✅ returned_cases_town_month  te calls=4 $0.03716
+test  T01 T ✅ returned_cases_town_month  te calls=4 $0.03913
+test  T01 Q ✅ returned_cases_town_month  en calls=2 $0.02997
+test  T01 T ✅ returned_cases_town_month  en calls=2 $0.03301
+test  T01 Q ✅ returned_cases_town_month  rt calls=4 $0.03599
+test  T01 T ✅ returned_cases_town_month  rt calls=4 $0.04322
+test  T01 Q ✅ damaged_cases_month        te calls=4 $0.03984
+test  T01 T ✅ damaged_cases_month        te calls=4 $0.04011
+learn T02 ❌ worst_ontime_weekday       rt calls=6 $0.10358
+learn T02 ❌ worst_ontime_weekday       te calls=5 $0.11112
+learn T02 ✅ busiest_weekday_town       en calls=3 $0.04124
+learn T02 ✅ busiest_weekday_town       rt calls=2 $0.03056
+learn T02 ✅ busiest_weekday_town       te calls=3 $0.04301
+learn T02 ✅ returned_cases_town_month  en calls=3 $0.03255
+learn T02 ✅ returned_cases_town_month  rt calls=5 $0.05468
+learn T02 ✅ returned_cases_town_month  te calls=3 $0.04114
+learn T02 ✅ damaged_cases_month        en calls=2 $0.02891
+learn T02 ✅ damaged_cases_month        rt calls=3 $0.03615
+T02: 0 tools approved by the fixed rule: []
+test  T02 Q ✅ worst_ontime_weekday       rt calls=4 $0.06018
+test  T02 T ✅ worst_ontime_weekday       rt calls=3 $0.04598
+test  T02 Q ✅ busiest_weekday_town       te calls=3 $0.04077
+test  T02 T ✅ busiest_weekday_town       te calls=3 $0.04177
+test  T02 Q ✅ busiest_weekday_town       en calls=2 $0.03042
+test  T02 T ✅ busiest_weekday_town       en calls=2 $0.02968
+test  T02 Q ✅ busiest_weekday_town       rt calls=3 $0.0483
+test  T02 T ✅ busiest_weekday_town       rt calls=2 $0.02978
+test  T02 Q ✅ returned_cases_town_month  te calls=4 $0.03254
+test  T02 T ✅ returned_cases_town_month  te calls=5 $0.03504
+test  T02 Q ✅ returned_cases_town_month  en calls=4 $0.03289
+test  T02 T ✅ returned_cases_town_month  en calls=4 $0.03385
+test  T02 Q ✅ returned_cases_town_month  rt calls=3 $0.03133
+test  T02 T ✅ returned_cases_town_month  rt calls=6 $0.05349
+test  T02 Q ✅ damaged_cases_month        te calls=2 $0.02997
+test  T02 T ✅ damaged_cases_month        te calls=2 $0.0311
+{
+ "learned": {
+  "T01": [],
+  "T02": []
+ },
+ "learn": {
+  "n": 20,
+  "answer_ok": 0.85,
+  "right": 17,
+  "mean_tool_calls": 3.15,
+  "mean_cost": 0.0476,
+  "cost_usd": 0.952
+ },
+ "arms": {
+  "Q": {
+   "n": 16,
+   "answer_ok": 0.938,
+   "right": 15,
+   "mean_tool_calls": 3.25,
+   "mean_cost": 0.0403,
+   "cost_usd": 0.645
+  },
+  "T": {
+   "n": 16,
+   "answer_ok": 1.0,
+   "right": 16,
+   "mean_tool_calls": 3.38,
+   "mean_cost": 0.0423,
+   "cost_usd": 0.677
+  }
+ },
+ "decision": {
+  "R2_learned_tools_cheaper_not_worse": false,
+  "R2b_learned_tools_used": false,
+  "learned_tool_used_in": "0/16"
+ },
+ "cost_usd": 2.275
+}
+saved artifacts\benchmark\exp016_20261103_030847.json
+=== EXP-016 exit 0 2026-11-03 03:17:54
+=== batch done 2026-11-03 03:17:54
