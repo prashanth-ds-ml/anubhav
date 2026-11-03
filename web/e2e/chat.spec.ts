@@ -156,7 +156,7 @@ test("a run that stops to ask a person shows the question, and is labelled as sc
   await page.getByRole("button", { name: AMBIGUOUS }).click();
   await expect(page.locator(".bubble.answer strong", { hasText: "Waiting for you" })).toBeVisible();
   await expect(page.locator(".bubble.answer")).toContainText("Warangal lo ae site ki load veltundi?");
-  await expect(page.locator(".bubble.answer")).toContainText("Replying needs live mode");
+  await expect(page.locator(".bubble.answer")).toContainText("Replying needs a live run");
   await expect(page.getByRole("note").filter({ hasText: "Scripted example." })).toBeVisible();
   await expect(page.locator(".recorded")).toHaveCount(0);
 });

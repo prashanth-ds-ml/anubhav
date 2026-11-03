@@ -97,7 +97,7 @@ export default function App() {
     <div className="strips">
       {!narrow && companyEl}
       <ModelPicker />
-      <WorkspaceSwitch />
+      <WorkspaceSwitch onFresh={() => chatActions.current?.freshStart() ?? Promise.resolve()} />
       <ol className="loop" aria-label="Closed loop">
         {LOOP.map((l) => {
           const lit = reached.includes(l.step as LoopStep);

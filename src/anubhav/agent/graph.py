@@ -133,7 +133,9 @@ def build(broker, client, knowledge=(), limits: Limits = Limits(), hints=None, r
         for tc in last.get("tool_calls", []):
             n += 1
             name = tc["function"]["name"]
-            failed = sum(1 for x in trace if x["type"] == "tool" and x["name"] == name and not x["ok"]) if retry_cap else 0
+            # the budget running out is not the tool failing: it never counts towards the retry cap or the hand-off
+            failed = sum(1 for x in trace if x["type"] == "tool" and x["name"] == name and not x["ok"]
+                         and (x.get("error") or {}).get("code") != "LIMIT") if retry_cap else 0
             if hooks:
                 hooks.tool_call(name, tc["function"]["arguments"], min(failed, retry_cap) + 1 if failed else 1)
             if n > limits.max_tool_calls:
@@ -147,9 +149,11 @@ def build(broker, client, knowledge=(), limits: Limits = Limits(), hints=None, r
                     handoff = handoff or {"rule": "question", "question": out["result"]["question"]}
             else:
                 out = broker.call(name, tc["function"]["arguments"])
-            if supervised and not out["ok"] and not handoff and failed + 1 == retry_cap:
+            if supervised and not out["ok"] and not handoff and failed + 1 == retry_cap and out["error"].get("code") != "LIMIT":
                 handoff = {"rule": "tool_refused", "tool": name, "last_error": out.get("error"),
-                           "question": f"{name} was refused {retry_cap} times, last with: {(out.get('error') or {}).get('message', 'an error')}. What should the agent do?"}
+                           "question": f"The agent tried {name} {retry_cap} times and the system refused each time (last: "
+                                       f"{(out.get('error') or {}).get('message', 'an error')}). Should it try again a different way, or stop "
+                                       "and answer with what it found?"}
             if supervised and out["ok"] and name == "delegate" and out["result"].get("handoff"):
                 handoff = handoff or out["result"]["handoff"]       # a stuck teammate stops the whole request
             if out["ok"] and name == "delegate":      # a teammate's spend counts against this run's budget
@@ -286,9 +290,10 @@ def run(broker, client, request: str, knowledge=(), limits: Limits = Limits(), h
     if agent is None or agent.voice:
         sysmsg = SYSTEM.format(company=broker.C.company, today=broker.C.today, plan_date=plan_date)
         if agent is not None:
-            sysmsg += "\n\n" + agent.instructions + broker.team.describe(agent.agent_id)
+            sysmsg += "\n\n" + agent.instructions + broker.team.describe(agent.agent_id) + agent.skills_text()
     else:
-        sysmsg = agent.instructions.format(company=broker.C.company, today=broker.C.today) + broker.team.describe(agent.agent_id)
+        sysmsg = (agent.instructions.format(company=broker.C.company, today=broker.C.today) + broker.team.describe(agent.agent_id)
+                  + agent.skills_text())
     if supervised and broker.depth == 0:
         sysmsg += ASK
     if about:                                   # the business profile (onboarding); empty in frozen experiments

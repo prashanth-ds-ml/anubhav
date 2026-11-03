@@ -6,6 +6,7 @@ import { useSettings } from "../lib/ctx";
 import { plainReason, Reply } from "../lib/text";
 import { focusOn } from "../lib/focus";
 import { PlanCard } from "./PlanCard";
+import { AskPerson, type Ask } from "./AskPerson";
 import { Mic } from "./Mic";
 import { closest } from "../lib/match";
 import type { RunEvent } from "../types";
@@ -176,13 +177,13 @@ export function Chat({ onEvents, prefill, ask, scenario, onStartScenario, action
     setMsgs((m) => m.map((x) => (x.kind === "run" && x.id === id ? f(x) : x)));
 
   /** Start a run; the promise settles when it ends (or is replaced, or has no recording), so a scenario step can wait for it. */
-  function run(request: string, lessons: boolean, extra?: string, liveRun = false, label?: string): Promise<void> {
+  function run(request: string, lessons: boolean, extra?: string, liveRun = false, label?: string, resumeFrom?: string): Promise<void> {
     stop.current();
     let finish = () => {};
     const ended = new Promise<void>((r) => { finish = r; });
     const id = nextId.current++;
     setMsgs((m) => [...m, { kind: "user", text: request }, ...(extra ? [{ kind: "note" as const, text: extra }] : []), { kind: "run", id, events: [], ended: false, useLessons: lessons, live: liveRun, label }]);
-    const halt = startRun(request, { company, useLessons: lessons, team: session?.default_team ?? true, live: liveRun, model }, {
+    const halt = startRun(request, { company, useLessons: lessons, team: session?.default_team ?? true, live: liveRun, model, resumeFrom }, {
       onEvent: (e) => patch(id, (x) => ({ ...x, events: [...x.events, e] })),
       onRun: (info) => patch(id, (x) => ({ ...x, info, live: info.mode === "live" })),
       onNote: setBanner,
@@ -356,12 +357,8 @@ export function Chat({ onEvents, prefill, ask, scenario, onStartScenario, action
                 <summary>Show how it got there ({m.events.length} steps)</summary>
                 {m.events.length === 0 ? <p className="muted small">Starting…</p> : <Timeline events={m.events} />}
               </details>
-              {waiting && (
-                <div className="bubble agent answer" role="status">
-                  <strong>Waiting for you</strong>
-                  <Reply text={String(waiting.payload.question)} />
-                  <span className="small muted">The run stops here until a person replies. Replying needs live mode, which is off in this demo.</span>
-                </div>
+              {waiting && m.info?.run_id && (
+                <AskPerson ask={waiting.payload as unknown as Ask} onReply={(text) => run(text, m.useLessons, undefined, true, undefined, m.info!.run_id)} />
               )}
               {done && !waiting ? (
                 <div className="bubble agent answer">
@@ -370,6 +367,10 @@ export function Chat({ onEvents, prefill, ask, scenario, onStartScenario, action
                   <span className="small muted">Plans are drafts only; nothing is dispatched without a person.</span>
                 </div>
               ) : null}
+              {done && !waiting && m.live && done.payload.stop === "limit" && m.info?.run_id && (
+                <AskPerson ask={{ rule: "limit", question: "", tool_calls: Number(done.payload.tool_calls ?? 0) || undefined }}
+                  onReply={(text) => run(text, m.useLessons, undefined, true, undefined, m.info!.run_id)} />
+              )}
               {done && !waiting && m.info?.run_id && m.events.some((e) => e.type === "draft_created") ? (
                 <PlanCard runId={m.info.run_id} lessonsOn={m.useLessons} />
               ) : (

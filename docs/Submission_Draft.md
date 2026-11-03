@@ -75,6 +75,11 @@ The main result was measured on both Muse Spark models. Code checks everything a
 
 All 20 experiments, with their verdicts, failures included: `docs/trackers/experiments.md` and the app's Proof tab.
 
+## What's next (roadmap)
+- **Proposed changes, approved by a person.** Today agents only make drafts. Next, they propose everyday changes to the business's records, such as a new delivery site or a new order: code checks each proposal (required fields, likely duplicates, the site and products exist, sensible quantities), a person approves, rejects or edits it, and only then is it written, with an audit entry of who approved it and from which run.
+- **Learned tools on Muse Spark 1.3.** Tool Forge now has its own skills (one general query, debugging SQL, repairing a tool that failed its checks) and code re-checks approved tools; whether that makes Spark 1.3 build tools it reuses needs a new pre-registered experiment.
+- **A real dispatcher's review** of the mined lessons, and data from a real fleet.
+
 ## Links
 - **Code:** https://github.com/prashanth-ds-ml/anubhav
 - **Hosted demo:** https://huggingface.co/spaces/KPrashanth/anubhav (an earlier replay-only version: anubhav-metahackathon.streamlit.app)

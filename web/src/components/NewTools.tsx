@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { api, ApiError, type Compare, type CompareSide, type NewTool, type ToolCandidate } from "../lib/api";
+import { api, ApiError, modelName, type Compare, type CompareSide, type NewTool, type ToolCandidate } from "../lib/api";
 import { go } from "../lib/route";
 import { useApi } from "../lib/useApi";
 import { useSettings } from "../lib/ctx";
@@ -40,6 +40,31 @@ function Checks({ t }: { t: NewTool }) {
       </li>
       {t.checks.reasons.map((r) => <li key={r} className="err-text">{r}</li>)}
     </ul>
+  );
+}
+
+/** Tool Forge's repair, try by try: what it changed and what code found each time. */
+function RepairTrail({ t }: { t: NewTool }) {
+  const r = t.checks.repair;
+  if (!r) return null;
+  const last = r.attempts[r.attempts.length - 1];
+  return (
+    <details className="repair-trail" open>
+      <summary className="small">
+        Tool Forge's repair{r.model ? ` (${modelName(r.model)})` : ""}: {r.attempts.length} tr{r.attempts.length === 1 ? "y" : "ies"},{" "}
+        {last?.pass ? <span className="ok-text">code checks passed: waiting for a person</span> : <span className="err-text">still failing</span>}
+        {` · $${r.cost_usd.toFixed(3)}`}
+      </summary>
+      <ol className="small">
+        {r.attempts.map((a) => (
+          <li key={a.try}>
+            {a.error ?? (a.pass ? "✓ passed every check" : `✕ ${(a.reasons ?? []).join("; ")}`)}
+            {a.template && <pre className="mono small">{a.template}</pre>}
+          </li>
+        ))}
+      </ol>
+      {r.from_template && <details><summary className="small">The query before the repair</summary><pre className="mono small">{r.from_template}</pre></details>}
+    </details>
   );
 }
 
@@ -106,7 +131,16 @@ function Benchmark() {
 
 /** Repeated questions, how one becomes a tool, and what changed once a person approved it. */
 export function NewTools({ onAsk }: { onAsk: (label: string) => void }) {
-  const { company, requests, bumpData } = useSettings();
+  const { company, requests, bumpData, live, model, modelLabel } = useSettings();
+  const repair = (t: NewTool) => (
+    <div className="actions">
+      <button type="button" className="chip" disabled={busy !== null || !live.ok} title={live.ok ? undefined : live.reason ?? undefined}
+        onClick={() => act(t.tool_id, () => api.repairTool(company, t.tool_id, model))}>
+        {busy === t.tool_id ? "Tool Forge is repairing it…" : `Ask Tool Forge to repair it (live, ${modelLabel})`}
+      </button>
+      <span className="small muted">{live.ok ? "At most 2 tries; code re-checks each, and a person approves." : live.reason}</span>
+    </div>
+  );
   const [version, setVersion] = useState(0);
   const [busy, setBusy] = useState<string | null>(null);
   const [problem, setProblem] = useState<string | null>(null);
@@ -163,7 +197,11 @@ export function NewTools({ onAsk }: { onAsk: (label: string) => void }) {
               <div className="card-head"><strong>{toolTitle(t)}</strong> <span className="mono small muted">{t.name}</span><span className={`pill ${t.checks.pass ? "ok" : "err"}`}>{t.checks.pass ? "Checks passed" : "Checks failed"}</span></div>
               <p>{t.description}</p>
               <Checks t={t} />
-              <p className="small muted">A tool that failed its checks cannot be approved.</p>
+              <RepairTrail t={t} />
+              {!t.checks.pass && <>
+                <p className="small muted">A tool that failed its checks cannot be approved. Tool Forge can try to repair it.</p>
+                {repair(t)}
+              </>}
               <div className="actions">
                 <button type="button" className="send" disabled={busy !== null || !t.checks.pass} onClick={() => act(t.tool_id, () => api.decideTool(company, t.tool_id, true, "Approved in the web app."))}>
                   {busy === t.tool_id ? "Working…" : "Approve as a tool"}
@@ -178,10 +216,22 @@ export function NewTools({ onAsk }: { onAsk: (label: string) => void }) {
           {active.length > 0 && (
             <>
               <h4>Approved tools ({active.length})</h4>
+              <div className="actions">
+                <button type="button" className="chip" disabled={busy !== null} onClick={() => act("health", () => api.toolsHealth(company))}>
+                  {busy === "health" ? "Re-checking…" : "Re-check approved tools"}
+                </button>
+                <span className="small muted">Code runs each one again on its example and on new values, and counts its failures in real runs. Free.</span>
+              </div>
               {active.map((t) => (
                 <article key={t.tool_id} className="panel" aria-label={`Approved ${t.name}`}>
                   <div className="card-head"><strong>{toolTitle(t)}</strong> <span className="mono small muted">{t.name}</span><span className="pill ok">Active: the agent can call it</span></div>
                   <p>{t.description}</p>
+                  {t.checks.health && (
+                    <p className={`small ${t.checks.health.ok ? "ok-text" : "err-text"}`}>
+                      {t.checks.health.ok ? "✓ Still works" : `✕ Needs repair: ${t.checks.health.reasons.join("; ")}`} (re-checked {t.checks.health.checked.replace("T", " ").slice(0, 16)})
+                    </p>
+                  )}
+                  {t.checks.health && !t.checks.health.ok && repair(t)}
                   <div className="actions">
                     {story && <button type="button" className="send" onClick={() => onAsk("New tool")}>Ask the question again</button>}
                     <button type="button" className="chip" disabled={busy !== null} onClick={() => act(t.tool_id, () => api.retireTool(company, t.tool_id, "Retired in the web app."))}>Retire</button>

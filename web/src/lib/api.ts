@@ -64,7 +64,7 @@ const q = (company: string, extra: Record<string, string | boolean | undefined> 
   return p.toString();
 };
 
-export interface RunRow { run_id: string; saved_at: string; label: string; company: string; model: string; request: string; mode: string; agents: string[]; tool_calls: number; drafts: string[]; stop: string; cost_usd: number; issues: string; mistakes?: number; fixed?: number }
+export interface RunRow { run_id: string; saved_at: string; label: string; company: string; model: string; request: string; mode: string; recorded?: boolean; agents: string[]; tool_calls: number; drafts: string[]; stop: string; cost_usd: number; issues: string; mistakes?: number; fixed?: number }
 
 export interface TripRow { date: string; hour: number; weekday: number; vehicle_id: string; vehicle_class: string; length_ft: number | null; status: string; status_seen: string | null; wait_min: number }
 export type Evidence =
@@ -95,6 +95,8 @@ export const api = {
   /** A person approves a live draft (code re-checks it first) or rejects it with a note. Neither dispatches. */
   decideDraft: (c: string, id: string, body: { decision: "approve" | "reject"; notes?: string; revise?: boolean }) =>
     post<{ draft_id: string; status: string }>(`/api/dashboard/drafts/${encodeURIComponent(id)}/decide?${q(c)}`, body),
+  repairTool: (c: string, id: string, model: ModelKey = "spark") => post<NewTool & { repaired: boolean }>(`/api/tools/${encodeURIComponent(id)}/repair?${q(c)}&model=${model}`, {}),
+  toolsHealth: (c: string) => post<ToolHealth[]>(`/api/tools/health?${q(c)}`, {}),
   decideTool: (c: string, id: string, approve: boolean, note: string) => post<NewTool>(`/api/tools/${encodeURIComponent(id)}/decide?${q(c)}`, { approve, note }),
   retireTool: (c: string, id: string, note: string) => post<NewTool>(`/api/tools/${encodeURIComponent(id)}/retire?${q(c)}`, { note }),
   proof: () => read<ProofEntry[]>("/api/proof", []),
@@ -118,7 +120,8 @@ export const api = {
   compare: (c: string, request: string) => read<Compare | null>(`/api/compare?${q(c, { request })}`, null),
 };
 
-export interface AgentRow { agent: string; name: string; purpose: string; status: string; model: string; version: string; versions_tried: number; knowledge_items: number; }
+export interface AgentRow { agent: string; name: string; purpose: string; status: string; model: string; version: string; versions_tried: number; knowledge_items: number;
+  tools?: { categories?: string[]; names?: string[]; actions?: string[] } | null; skills?: { name: string; description: string }[] }
 export interface Lesson {
   lesson_id: string; claim: string; what: string; state: string; effect: string; source: string; created: string; reviewer: string;
   kind?: string; params?: Record<string, any>; valid_from?: string | null; valid_to?: string | null;
@@ -142,8 +145,14 @@ export interface NewTool {
     same_rows: { request: string; rows: number; same: boolean }[];
     held_out: { values: Record<string, string>; ok: boolean; rows: number }[];
     reasons: string[];
+    /** The last re-check of an approved tool (code only). */
+    health?: { ok: boolean; reasons: string[]; checked: string };
+    /** Tool Forge's repair: each try, with what code found. */
+    repair?: { by: string; model?: string | null; cost_usd: number; from_template?: string; attempts: { try: number; template?: string; pass?: boolean; reasons?: string[]; error?: string }[] };
   };
+  template?: string;
 }
+export interface ToolHealth { tool_id: string; name: string; ok: boolean; reasons: string[]; checked: string }
 export interface ProofEntry {
   id: string; measured_on: string; file?: string; pooled?: Record<string, any>; arms?: any; decision?: Record<string, any>; replicated?: Record<string, boolean>;
   repeats?: any[]; learning_round?: any; cost_usd?: number; world?: string; runs?: number; pack_leaks?: number; model?: string; learned?: Record<string, unknown[]>;
@@ -184,7 +193,7 @@ export function modelName(id?: string): string {
   return id;
 }
 
-export interface RunOptions { company: string; useLessons: boolean; team: boolean; live?: boolean; model?: ModelKey }
+export interface RunOptions { company: string; useLessons: boolean; team: boolean; live?: boolean; model?: ModelKey; resumeFrom?: string }
 export type ModelKey = "spark" | "open";
 export const MODEL_LABEL: Record<ModelKey, string> = { spark: "Muse Spark 1.3", open: "Muse Spark Open" };
 export interface RunHandlers {
@@ -214,10 +223,14 @@ export function startRun(message: string, opt: RunOptions, h: RunHandlers): () =
     }, 450);
   };
 
-  call<{ run_id: string; mode: string; replay_of?: string; reason?: string }>("/api/chat", {
-    method: "POST", headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ company: opt.company, message, mode: opt.live ? "live" : "replay", ...(opt.live ? { model: opt.model ?? "spark" } : {}), use_lessons: opt.useLessons, team: opt.team }),
-  })
+  (opt.resumeFrom
+    // a person's reply to a run that stopped for them continues that run (a live run)
+    ? call<{ run_id: string; mode: string; replay_of?: string; reason?: string }>(`/api/runs/${encodeURIComponent(opt.resumeFrom)}/resume`, {
+      method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ reply: message, model: opt.model ?? "spark" }) })
+    : call<{ run_id: string; mode: string; replay_of?: string; reason?: string }>("/api/chat", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ company: opt.company, message, mode: opt.live ? "live" : "replay", ...(opt.live ? { model: opt.model ?? "spark" } : {}), use_lessons: opt.useLessons, team: opt.team }),
+    }))
     .then((r) => {
       if (stopped) return;
       h.onNote(r.reason ?? null);

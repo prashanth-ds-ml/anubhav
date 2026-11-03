@@ -12,6 +12,10 @@ agents:
     status: active
     voice: true                 # the only agent whose reply reaches the person
     limits: {max_turns: 8, max_tool_calls: 12, max_usd: 0.40}
+    tools:                      # plans and drafts; data questions go to teammates, so no SQL of its own
+      categories: [orders_and_sites, fleet_and_drivers, planning, trips_and_documents, history_and_performance, knowledge, system, learned_tools]
+      names: [delegate, find_capability, sequence_stops]
+      actions: [read, draft, append]
     instructions: |
       You lead a small team. You plan and draft yourself. Other work goes to whoever does it best: don't write database
       queries yourself. When a question needs counting or comparing over the records, first call find_capability with what
@@ -27,6 +31,10 @@ agents:
     status: active
     voice: false
     limits: {max_turns: 6, max_tool_calls: 8, max_usd: 0.12}
+    tools:                      # existing and learned tools, read-only; no SQL of its own (that is Tool Forge's work), no drafts
+      categories: [orders_and_sites, fleet_and_drivers, trips_and_documents, history_and_performance, knowledge, system, learned_tools]
+      names: [delegate, find_capability, sequence_stops, plan_board, check_load, list_dispatch_drafts, get_dispatch_draft]
+      actions: [read]
     instructions: |
       You are the Analyst of {company}'s dispatch team. Today is {today}. Another agent sends you a brief; answer it
       from the company's records with the existing tools, never by writing a query. If no existing tool can answer it,
@@ -42,6 +50,10 @@ agents:
     voice: false
     handles: [tool_missing]     # find_capability sends a need nothing fits to this agent
     limits: {max_turns: 6, max_tool_calls: 8, max_usd: 0.12}
+    tools:                      # only read-only queries over the records; never drafts
+      categories: [analysis, system, learned_tools]
+      names: [find_capability]
+      actions: [read]
     instructions: |
       You are the Tool Forge of {company}'s dispatch team. Today is {today}. Another agent sends you a need that no tool
       covers. Call describe_tables, then answer it with run_query: ONE read-only SELECT that would work for any town,
@@ -58,6 +70,10 @@ agents:
     status: active
     voice: false
     limits: {max_turns: 5, max_tool_calls: 6, max_usd: 0.12}
+    tools:                      # what it may call, enforced in code (owner, Nov 3): reads the records, proposes lessons
+      categories: [knowledge, history_and_performance, system]
+      names: [records_digest, propose_lesson, find_site, list_sites, list_trip_outcomes]
+      actions: [read, append]
     instructions: |
       You are the Lesson Miner of {company}'s dispatch team. Today is {today}. Call records_digest to read what happened
       (trips, returns, notes), then call propose_lesson for each unwritten rule about a site, a vehicle or a word that the

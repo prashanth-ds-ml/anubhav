@@ -78,16 +78,25 @@ test("lessons on screen name the godown in full; the gate lesson reads as a pers
     .toHaveText(/Lakshmi Agencies \(.+, Jangaon · site C0003\): no truck longer than 22 ft gets in/);
 });
 
-test("the workspace switch in the header: start from zero, then back to the recorded lessons", async ({ page }) => {
+test("the workspace switch: Fresh start (with Reset), then After learning", async ({ page }) => {
   await page.goto("/#learning");
   const sw = page.getByRole("group", { name: "Workspace" });
-  await expect(sw.getByRole("button", { name: "With recorded lessons" })).toHaveAttribute("aria-pressed", "true");
-  await sw.getByRole("button", { name: "Start from zero" }).click();
-  await expect(sw.getByRole("button", { name: "Start from zero" })).toHaveAttribute("aria-pressed", "true");
+  await expect(sw.getByRole("button", { name: "After learning" })).toHaveAttribute("aria-pressed", "true");
+  await sw.getByRole("button", { name: "Fresh start" }).click();
+  await expect(sw.getByRole("button", { name: "Fresh start" })).toHaveAttribute("aria-pressed", "true");
   await expect(sw).toContainText("0 lessons · 0 tools");
   await expect(page.getByRole("status", { name: "What this workspace knows" })).toContainText("started fresh");
-  await sw.getByRole("button", { name: "With recorded lessons" }).click();
-  await expect(sw.getByRole("button", { name: "With recorded lessons" })).toHaveAttribute("aria-pressed", "true");
+  await expect(sw.getByRole("button", { name: "Reset" })).toBeVisible();
+  await sw.getByRole("button", { name: "Reset" }).click();
+  await expect(sw).toContainText("0 lessons · 0 tools");
+  await page.getByRole("tab", { name: "Runs" }).click();
+  await expect(page.getByText("No runs in this workspace yet.")).toBeVisible();      // the recorded runs belong to After learning
+  await page.getByRole("tab", { name: "Proof & audit" }).click();
+  await expect(page.getByText(/same in both workspaces/)).toBeVisible();
+  await page.getByRole("tab", { name: "Learning" }).click();
+  await sw.getByRole("button", { name: "After learning" }).click();
+  await expect(sw.getByRole("button", { name: "Reset" })).toHaveCount(0);
+  await expect(sw.getByRole("button", { name: "After learning" })).toHaveAttribute("aria-pressed", "true");
   await expect(sw).toContainText(/[1-9]\d* lessons/);           // "10 lessons" also contains "0 lessons"
   await page.goto("/#learning/L-T01-002");
   await expect(page.getByRole("article", { name: "Lesson L-T01-002" })).toBeVisible();

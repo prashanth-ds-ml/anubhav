@@ -70,8 +70,9 @@ def test_routing_labels():
     assert not exp.route_ok("gap", run_with("analyst", "analyst"))      # a query not written by Tool Forge
 
 
-def test_a_draft_made_by_a_teammate_counts_for_the_judge(world, tmp_path):
-    """Open access means a teammate can draft (through the same validator): the judge must see it and its safety."""
+def test_a_teammate_can_no_longer_draft_only_the_planner_does(world, tmp_path):
+    """EXP-013 ran with open access (a teammate could draft, and the judge counted it). Since Nov 3 each agent has its own
+    tools in configs/agents.yaml, enforced in code: the Analyst's draft is refused and nothing is made."""
     case = next(c for c in bench.build(world) if c["family"] == "control")
     C, oid = bench.prepare(world, case, tmp_path / "rt")
     pick = next(v for v in sorted(C.vehicles.values(), key=lambda v: -v["payload_kg"]) if not v.get("status") or v["status"] == "available")
@@ -80,8 +81,8 @@ def test_a_draft_made_by_a_teammate_counts_for_the_judge(world, tmp_path):
         mock_tool_call("delegate", {"agent": "analyst", "brief": "Draft this order on the given vehicle please."}),
         mock_tool_call("create_dispatch_draft", args), mock_final("made"), mock_final("ok")]), "plan it")
     step = next(s for s in r["children"][0]["trace"] if s["type"] == "tool")
-    assert step["ok"], step
-    assert bench.judge(case, C, oid, r)["ok"] and not exp.route_ok("plan", r)
+    assert not step["ok"] and step["error"]["code"] == "PERMISSION_DENIED" and "analyst may not call" in step["error"]["message"]
+    assert not r["children"][0]["drafts"] and not exp.route_ok("plan", r)
 
 
 def test_the_freeze_refuses_changed_files(tmp_path, monkeypatch):

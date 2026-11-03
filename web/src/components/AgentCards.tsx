@@ -149,6 +149,18 @@ export function AgentCards() {
                 <span className="pill" title={`Saved as ${a.version}`}>Version {v}</span>
               </header>
               <p className="small">{a.purpose}</p>
+              {a.tools && (
+                <p className="small muted" title="Enforced in code: a call outside this list is refused">
+                  <strong>May use:</strong> {[...(a.tools.categories ?? []).map((c) => c.replace(/_/g, " ")), ...(a.tools.names ?? [])].join(", ")}
+                  {" "}· {(a.tools.actions ?? ["read"]).join(", ")} only
+                </p>
+              )}
+              {!!a.skills?.length && (
+                <details className="skills">
+                  <summary className="small"><strong>Skills ({a.skills.length})</strong>: loaded when it needs one</summary>
+                  <ul className="small">{a.skills.map((s) => <li key={s.name}><span className="mono">{s.name}</span>: {s.description}</li>)}</ul>
+                </details>
+              )}
               <h4 className="eyebrow">How it learns</h4>
               <p className="small">{HOW[a.agent] ?? "Not described."}</p>
               <p className="small muted">{a.versions_tried === 0 ? "No instruction changes tried yet." : `${a.versions_tried} instruction change${a.versions_tried === 1 ? "" : "s"} tried.`} Knows {a.knowledge_items} thing{a.knowledge_items === 1 ? "" : "s"} about this company. Live runs use the model chosen at the top (now {modelLabel}).</p>

@@ -19,7 +19,6 @@ const PICKED: Record<string, string> = {
   "demo:team:miner": "The Lesson Miner reads the records",
   "golden_path:ambiguous": "It asks when unsure (Warangal)",
 };
-const ORDER = Object.keys(PICKED);
 const ALL_AGENTS = Object.keys(AGENT_STYLE).filter((a) => a !== "code");
 
 const andList = (xs: string[]) => (xs.length < 2 ? xs.join("") : `${xs.slice(0, -1).join(", ")} and ${xs[xs.length - 1]}`);
@@ -31,7 +30,7 @@ function RunItem({ r, on }: { r: RunRow; on: boolean }) {
       <button type="button" className={`run-row ${on ? "on" : ""}`} aria-current={on ? "true" : undefined} onClick={() => go(`runs/${r.run_id}`)}>
         <strong className="run-title">{title(r)}</strong>
         <span className="small muted">
-          {r.agents.map(label).join(" → ")} · {r.tool_calls} call{r.tool_calls === 1 ? "" : "s"}{r.model ? <> · {modelName(r.model)}</> : null}
+          {shortTime(r.saved_at)} · {r.recorded ? "recorded" : "your run"} · {r.agents.map(label).join(" → ")} · {r.tool_calls} call{r.tool_calls === 1 ? "" : "s"}{r.model ? <> · {modelName(r.model)}</> : null}
           {r.mistakes ? <> · <span className="err-text">{r.mistakes} mistake{r.mistakes === 1 ? "" : "s"}</span></> : null}
           {r.fixed ? <> · <span className="ok-text">{r.fixed === r.mistakes ? "fixed" : `${r.fixed} fixed`}</span></> : null}
         </span>
@@ -144,10 +143,9 @@ function Detail({ id, example }: { id: string; example?: { fix: FixPair; from: s
 export function Runs({ item }: { item?: string | null }) {
   const { company } = useSettings();
   const list = useApi(() => api.runs(company), [company]);
-  const rows = list.data ?? [];
-  const picked = rows.filter((r) => r.label && PICKED[r.label]).sort((a, b) => ORDER.indexOf(a.label) - ORDER.indexOf(b.label));
-  const rest = rows.filter((r) => !picked.includes(r));
-  const current = rows.find((r) => r.run_id === item) ?? picked[0] ?? rows[0];
+  // One list, newest first (owner, Nov 3). In "Fresh start" the server sends only this workspace's runs.
+  const rows = [...(list.data ?? [])].sort((a, b) => (b.saved_at ?? "").localeCompare(a.saved_at ?? ""));
+  const current = rows.find((r) => r.run_id === item) ?? rows[0];
   // A run with a fixed mistake, shown as the example when the open run has none.
   const withFix = rows.find((r) => (r.fixed ?? 0) > 0 && r.run_id !== current?.run_id);
   const ex = useApi(() => (withFix ? api.steps(withFix.run_id) : Promise.resolve(null)), [withFix?.run_id]);
@@ -160,16 +158,10 @@ export function Runs({ item }: { item?: string | null }) {
     <div className="runs-page">
       <nav className="panel runs-list" aria-labelledby="runs-title">
         <h2 id="runs-title">Runs you can inspect</h2>
-        {list.loading ? <div className="skeleton" aria-busy="true" /> : rows.length === 0 ? <p className="empty">No runs for this company yet.</p> : (
+        {list.loading ? <div className="skeleton" aria-busy="true" /> : rows.length === 0 ? <p className="empty">No runs in this workspace yet. Ask something on the Dispatch Desk, or switch the workspace to "After learning" to see the recorded runs.</p> : (
           <>
-            {picked.length > 0 && <ul className="plain">{picked.map((r) => <RunItem key={r.run_id} r={r} on={r.run_id === current?.run_id} />)}</ul>}
-            {rest.length > 0 && (
-              <details open={!!item && rest.some((r) => r.run_id === item)}>
-                <summary className="small">All other runs ({rest.length})</summary>
-                <ul className="plain">{rest.map((r) => <RunItem key={r.run_id} r={r} on={r.run_id === current?.run_id} />)}</ul>
-              </details>
-            )}
-            <p className="small muted">{rows.length} runs, recorded and your own live ones. Every one opens as its raw JSON record too.</p>
+            <p className="small muted">{rows.length} run{rows.length === 1 ? "" : "s"}, newest first. Every one opens as its raw JSON record too.</p>
+            <ul className="plain">{rows.map((r) => <RunItem key={r.run_id} r={r} on={r.run_id === current?.run_id} />)}</ul>
           </>
         )}
       </nav>

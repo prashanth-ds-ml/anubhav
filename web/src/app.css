@@ -656,3 +656,6 @@ table.custody td, table.custody th { vertical-align: top; text-align: left; }
 .ws-switch button:disabled { cursor: progress; }
 .model-pick { display: inline-flex; align-items: center; gap: 6px; }
 .model-pick select { min-height: 36px; padding: 0 8px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); color: var(--text); font: inherit; font-size: 14px; }
+.ws-switch .ws-reset { display: inline-flex; align-items: center; gap: 4px; }
+.repair-trail pre { white-space: pre-wrap; word-break: break-word; background: var(--bg); padding: 6px 8px; border-radius: 6px; margin: 4px 0; }
+.agent-card .skills ul { margin: 4px 0 8px; padding-left: 18px; }

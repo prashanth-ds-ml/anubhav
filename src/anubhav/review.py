@@ -108,6 +108,8 @@ def review(C, store, runs, feedback, client=None, actor="nightly review", since=
         proposed.append({"tool_id": tid, "requests": len(g["requests"]), "checks_passed": checks["pass"], "reasons": checks["reasons"],
                          "named_by": named["named_by"], "agents": sorted({u["agent"] for u in g["uses"]})})
     report["new_tools"] = {"candidates": proposed, "route": "New tools page: a person approves" if proposed else "no reused queries"}
+    # Learned tools still work? Re-checked by code; a failing one is marked for repair, a person decides
+    report["tool_health"] = newtools.health(store, cid, sb, runs)
     report["missing_tools"] = missing_tools(runs)     # needs nothing fitted; reused queries above show what got built
 
     # Loop B: facts people stated → Muse proposes → the evidence gate over the records → reviewer

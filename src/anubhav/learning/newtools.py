@@ -292,6 +292,8 @@ def check(g, sb):
     from ..runtime.query import QueryError
     reasons, same = [], []
     for u in g["uses"]:
+        if not u.get("sql"):            # a tool rebuilt from its store row has no original query to compare with
+            continue
         try:
             orig = sb.run(u["sql"])
             new = sb.run(g["template"], params={p["name"]: p["value"] for p in u["params"]})
@@ -360,6 +362,59 @@ def propose(store, company, g, checks, name, description):
                      json.dumps([{"run_id": u["run_id"], "request": u["request"]} for u in g["uses"]], ensure_ascii=False),
                      datetime.now().isoformat(timespec="seconds"), None, None, ""))
     return tid
+
+
+def as_group(t):
+    """A stored tool shaped like a query group, so the checks can run on it (its original queries may be gone)."""
+    params = [{"name": p["name"], "kind": p["kind"], "column": p["column"], "value": p["example"]} for p in t.get("params") or []]
+    return {"key": t["tool_id"].rsplit("-", 1)[-1], "template": t["template"], "requests": [s["request"] for s in t.get("source") or []],
+            "uses": [{"params": params, "sql": None, "request": "", "run_id": "", "agent": ""}]}
+
+
+def _steps(r):
+    yield from r.get("trace") or []
+    for c in r.get("children") or []:
+        yield from _steps(c)
+
+
+def health(store, company, sb, runs=()):
+    """Re-check every active tool: it still runs on its own example and on values it never saw, and how often it failed
+    in real runs (a budget limit is not the tool failing). A failing tool is marked as needing repair; a person decides,
+    nothing is retired automatically."""
+    from ..runtime.query import QueryError
+    out = []
+    for t in tools(store, company, "active"):
+        g, reasons = as_group(t), []
+        try:
+            sb.run(t["template"], params={p["name"]: p["value"] for p in g["uses"][0]["params"]})
+        except QueryError as e:
+            reasons.append(f"fails on its own example: {e.message}")
+        bad = 0
+        for s in held_out_values(g, sb):
+            try:
+                sb.run(t["template"], params=s)
+            except QueryError:
+                bad += 1
+        if bad:
+            reasons.append(f"fails on {bad} held-out value set(s)")
+        errors = sum(1 for r in runs if r.get("company") == company for s in _steps(r)
+                     if s.get("type") == "tool" and s.get("name") == t["name"] and not s.get("ok")
+                     and (s.get("error") or {}).get("code") not in ("LIMIT", "RETRY_LIMIT", "PERMISSION_DENIED"))
+        if errors:
+            reasons.append(f"failed {errors} time(s) in real runs")
+        h = {"ok": not reasons, "reasons": reasons, "checked": datetime.now().isoformat(timespec="seconds")}
+        with _con(store) as con:
+            con.execute("update tools set checks = ? where tool_id = ?",
+                        (json.dumps((t["checks"] or {}) | {"health": h}, ensure_ascii=False, default=str), t["tool_id"]))
+        out.append({"tool_id": t["tool_id"], "name": t["name"], **h})
+    return out
+
+
+def revise(store, tool_id, template, checks, repair):
+    """A repaired template replaces the old one. It goes back to being a candidate: a person approves it again."""
+    with _con(store) as con:
+        con.execute("update tools set template = ?, checks = ?, status = 'candidate', decided_by = null, decided = null where tool_id = ?",
+                    (template, json.dumps(checks | {"repair": repair}, ensure_ascii=False, default=str), tool_id))
 
 
 def decide(store, tool_id, by, approve, note=""):

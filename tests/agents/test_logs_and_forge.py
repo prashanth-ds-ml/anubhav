@@ -7,6 +7,7 @@ import json
 import pytest
 
 from anubhav import events, mcp_server, review, trace
+from anubhav.agent import graph
 from anubhav.agents import forge, registry, team
 from anubhav.data import generate
 from anubhav.harness import loop
@@ -111,8 +112,9 @@ def test_a_query_becomes_a_candidate_at_three_different_requests_not_before(C):
 def test_queries_from_different_agents_count_together(C):
     t = towns_of(C)
     runs = [forge_run(C, t[0], "returns in A?"), forge_run(C, t[1], "returns in B?"),
-            team.run(C, Session("T01"), MockClient([mock_tool_call("run_query", {"sql": Q.format(t[2]), "purpose": "returned"}),
-                                                    mock_final("3")]), "returns in C?")]
+            # the Planner on its own (as in the frozen experiments); in a team it has no SQL of its own (owner, Nov 3)
+            graph.run(Broker(C, Session("T01"), analysis=True), MockClient([mock_tool_call("run_query", {"sql": Q.format(t[2]), "purpose": "returned"}),
+                                                                         mock_final("3")]), "returns in C?")]
     (g,) = nt.candidates(runs, "T01", Sandbox(C))
     assert {u["agent"] for u in g["uses"]} == {"tool_forge", "planner"}
 

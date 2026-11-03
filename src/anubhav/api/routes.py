@@ -344,7 +344,8 @@ def run_feedback(run_id: str, body: Feedback, ws: Workspace = Ws):
 # ---------- agents
 def _agent_row(a, H, sizes):
     return {"agent": a.agent_id, "name": a.name, "purpose": a.purpose, "status": a.status, "voice": a.voice, "model": a.model, "handles": list(a.handles),
-            "version": H.active(a.agent_id)["version_id"], "versions_tried": len(H.versions(a.agent_id)) - 1, "knowledge_items": sizes.get(a.agent_id, 0)}
+            "version": H.active(a.agent_id)["version_id"], "versions_tried": len(H.versions(a.agent_id)) - 1, "knowledge_items": sizes.get(a.agent_id, 0),
+            "tools": a.tools, "skills": [{"name": s.name, "description": s.description} for s in a.skills]}
 
 
 @api.get("/agents")
@@ -539,6 +540,45 @@ def tool_decide(tool_id: str, body: ToolDecision, company: str = Cid, ws: Worksp
         raise ApiError(404, "NOT_FOUND", f"{company} has no tool {tool_id}")
     nt.decide(S, tool_id, "owner", body.approve, body.note)
     return next(t for t in nt.tools(S, company) if t["tool_id"] == tool_id)
+
+
+@api.post("/tools/health")
+def tools_health(company: str = Cid, ws: Workspace = Ws):
+    """Re-check every approved tool (code only, free). A failing one is marked as needing repair; nothing is retired."""
+    return nt.health(ws.store(), company, sandbox(ws.company(company)), runs.recent_runs(500, ws))
+
+
+@api.post("/tools/{tool_id}/repair")
+def tool_repair(tool_id: str, company: str = Cid, model: Literal["open", "spark"] = AGENT_MODEL, ws: Workspace = Ws):
+    """Tool Forge revises a tool that failed its checks (at most 2 tries; code re-checks each). A live run. The result
+    goes back to being a candidate: a person approves it again."""
+    S = ws.store()
+    t = next((x for x in nt.tools(S, company) if x["tool_id"] == tool_id), None)
+    if not t:
+        raise ApiError(404, "NOT_FOUND", f"{company} has no tool {tool_id}")
+    checks = t["checks"] or {}
+    broken = (t["status"] == "candidate" and not checks.get("pass")) or (t["status"] == "active" and not (checks.get("health") or {"ok": True})["ok"])
+    if not broken:
+        raise ApiError(409, "NOTHING_TO_REPAIR", "its checks pass; there is nothing to repair")
+    client, blocked = ws.live_client(model)
+    if blocked:
+        raise ApiError(409, "NO_KEY", blocked)
+    sb = sandbox(ws.company(company))
+    key = tool_id.rsplit("-", 1)[-1]
+    g = next((x for x in nt.groups(runs.recent_runs(500, ws), company, sb) if x["key"][:8] == key), None) or nt.as_group(t)
+    if t["status"] == "active":
+        checks = {**checks, "reasons": (checks.get("health") or {}).get("reasons", [])}
+    spec = registry.load().get("tool_forge")
+    sk = spec.skill("repair-a-tool")
+    out = forge.repair_tool(client, ws.company(company), g, checks, sb, spec=spec, skill=sk.body() if sk else "")
+    trail = {"by": "tool_forge", "model": getattr(client, "model", None), "attempts": out["attempts"], "cost_usd": out["cost_usd"],
+             "from_template": t["template"]}
+    if out["pass"]:
+        nt.revise(S, tool_id, out["template"], out["checks"], trail)
+    else:
+        with nt._con(S) as con:
+            con.execute("update tools set checks = ? where tool_id = ?", (json.dumps(checks | {"repair": trail}, ensure_ascii=False, default=str), tool_id))
+    return {**next(x for x in nt.tools(S, company) if x["tool_id"] == tool_id), "repaired": out["pass"]}
 
 
 @api.post("/tools/{tool_id}/retire")
@@ -785,7 +825,7 @@ def log_runs(company: str | None = None, limit: int = 60, ws: Workspace = Ws):
         Cid.dependency(company)
     rows = [r for r in runs.recent_runs(min(limit, 500), ws) if not company or r["company"] == company]
     return [{"run_id": r["run_id"], "saved_at": r.get("saved_at"), "label": r.get("label"), "company": r["company"], "model": r.get("model"), "request": r["request"],
-             "mode": r.get("mode", "single"), **views.team_parts(r), "drafts": r.get("drafts", []), "stop": r.get("stop"), "cost_usd": r.get("cost_usd"),
+             "mode": r.get("mode", "single"), "recorded": r.get("recorded", False), **views.team_parts(r), "drafts": r.get("drafts", []), "stop": r.get("stop"), "cost_usd": r.get("cost_usd"),
              "issues": logs.run_issues(r), **run_view.counts(r)} for r in rows]
 
 

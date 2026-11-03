@@ -13,7 +13,8 @@ test("the S2 team run shows the Planner handing off to Tool Forge, with 2 and 4 
   await page.goto("/#runs");
   await expect(page.getByRole("heading", { name: "Runs you can inspect" })).toBeVisible();
   const open = page.getByRole("button", { name: /^Busiest weekday, as a team/ });
-  await expect(open).toHaveAttribute("aria-current", "true"); // the demo's team run opens first
+  await open.click();                                          // one list, newest first: the team run is chosen from it
+  await expect(open).toHaveAttribute("aria-current", "true");
   const lanes = page.getByRole("region", { name: "Every step, one lane per agent, in time order" });
   await expect(lanes.getByRole("group", { name: "Planner: 2 tool calls" })).toBeVisible();
   await expect(lanes.getByRole("group", { name: "Tool Forge, asked by Planner: 4 tool calls" })).toBeVisible();

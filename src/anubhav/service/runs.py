@@ -25,10 +25,18 @@ def visible(r, ws=None, path=None):
     return not (ws and ws.public) or path == DEMO_RUNS or (r.get("visitor") is not None and r.get("visitor") == ws.sid)
 
 
+def in_workspace(r, ws, path):
+    """In a "Fresh start" workspace the lists and counts hold only this visitor's runs since it was started or reset;
+    the recorded runs belong to the "After learning" workspace. A recorded run can still be replayed by id."""
+    since = ws.state.get("fresh_since") if ws is not None and ws.public and any(ws.state.get("fresh", {}).values()) else None
+    return since is None or (path != DEMO_RUNS and (r.get("saved_at") or "") >= since)
+
+
 def recent_runs(limit=60, ws=None):
     rows = []
     for p in trace_files():
-        rows += [r for r in (json.loads(x) for x in reversed(p.read_text(encoding="utf-8").splitlines()) if x.strip()) if visible(r, ws, p)]
+        rows += [{**r, "recorded": p == DEMO_RUNS} for r in (json.loads(x) for x in reversed(p.read_text(encoding="utf-8").splitlines()) if x.strip())
+                 if visible(r, ws, p) and in_workspace(r, ws, p)]
         if len(rows) >= limit:
             break
     return rows[:limit]

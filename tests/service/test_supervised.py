@@ -131,6 +131,20 @@ def test_three_refusals_stop_the_run_for_a_person(C):
     assert r["tool_calls"] == 3 and len(client.calls) == 3
 
 
+def test_running_out_of_tool_calls_is_not_a_refusal_the_agent_answers_with_what_it_has(C):
+    """A week's distances asked site by site (Nov 3, on the Space): 15 calls at once against a budget of 12. The last
+    three are turned away by the budget, which used to read as "get_route_info was refused 3 times" and stop for a person."""
+    sites = list(C.sites)[:15]
+    many = muse.ModelResponse(None, [muse.ToolCall(f"c{i}", "get_route_info", json.dumps({"site_id": x})) for i, x in enumerate(sites)],
+                              "tool_calls", "mock")
+    client = MockClient([many, mock_final("Distances for 12 of 15 sites; the rest need one query over the records.")])
+    r = graph.run(planner(C), client, "how many km this week", supervised=True)
+    limited = [t for t in r["trace"] if t["type"] == "tool" and not t["ok"]]
+    assert len(limited) == 3 and all(t["error"]["code"] == "LIMIT" for t in limited)
+    assert r["stop"] != "needs_person" and not r.get("handoff")
+    assert "12 of 15" in r["reply"]
+
+
 def test_a_stuck_teammate_stops_the_whole_request_and_events_match_the_saved_run(C):
     brief = {"agent": "analyst", "brief": "Find this order and return its site."}
     client = MockClient([mock_tool_call("delegate", brief)] + [mock_tool_call("get_order", {"order_id": f"NOPE{i}"}) for i in range(3)])

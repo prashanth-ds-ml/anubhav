@@ -80,7 +80,7 @@ def test_the_route_list_above_is_complete(env):
              "/api/runs/{run_id}", "/api/runs/{run_id}/feedback", "/api/learning/lessons/{lesson_id}/decide", "/api/tools/candidates/{key}/check",
              "/api/tools/{tool_id}/decide", "/api/tools/{tool_id}/retire", "/api/packs/publish", "/api/packs/revoke", "/api/review/run",
              "/api/dashboard/drafts/{draft_id}/decide", "/api/handoffs", "/api/runs/{run_id}/resume", "/api/compare", "/api/agents/{agent_id}", "/api/harness/{version_id}/probe", "/api/harness/{version_id}/decide", "/api/logs/runs/{run_id}", "/api/voice", "/api/learning/lessons/{lesson_id}/evidence",
-             "/api/runs/{run_id}/steps", "/api/fresh/status", "/api/fresh/start", "/api/fresh/restore", "/api/fresh/set-aside", "/api/fresh/records", "/api/fresh/learn"}
+             "/api/runs/{run_id}/steps", "/api/fresh/status", "/api/fresh/start", "/api/fresh/restore", "/api/fresh/set-aside", "/api/tools/health", "/api/tools/{tool_id}/repair", "/api/fresh/records", "/api/fresh/learn"}
     normal = {p.replace("/analyst", "/{agent_id}").replace("/h-001/", "/{version_id}/") for p in tested}
     assert paths <= normal | other, paths - normal - other
 
@@ -727,3 +727,38 @@ def test_a_live_draft_says_which_run_and_model_made_it(env, monkeypatch):
     assert drafts[0]["run_id"] == run["run_id"] and drafts[0]["model"]
     one = c.get(f"/api/dashboard/drafts?run_id={run['run_id']}").json()["drafts"]
     assert one[0]["model"] == drafts[0]["model"]
+
+
+def test_a_fresh_start_workspace_lists_only_its_own_runs_and_reset_empties_the_list(env, monkeypatch):
+    c = client(env)
+    c.get("/api/session")
+    recorded = c.get("/api/logs/runs?company=T01").json()
+    assert recorded, "the After learning workspace shows the recorded runs"
+    assert all(r["recorded"] for r in recorded)
+    c.post("/api/fresh/start?company=T01")
+    assert c.get("/api/logs/runs?company=T01").json() == []
+    assert all(t["runs"] == 0 for t in c.get("/api/logs/agents?company=T01").json())
+    live_env(monkeypatch, [mock_final("Nothing to plan.")])
+    run = c.post("/api/chat", json={"message": "anything to plan?", "mode": "live", "use_lessons": False}).json()
+    list(stream.follow(run["run_id"]))
+    mine = c.get("/api/logs/runs?company=T01").json()
+    assert [r["run_id"] for r in mine] == [run["run_id"]] and mine[0]["recorded"] is False
+    assert c.get(f"/api/runs/{recorded[0]['run_id']}").status_code == 200        # a recorded run still opens by id
+    import time
+    time.sleep(1.1)                                                              # Reset counts from the next second
+    c.post("/api/fresh/start?company=T01")
+    assert c.get("/api/logs/runs?company=T01").json() == []
+    c.post("/api/fresh/restore?company=T01")
+    after = {r["run_id"] for r in c.get("/api/logs/runs?company=T01").json()}
+    assert run["run_id"] in after and recorded[0]["run_id"] in after
+
+
+def test_agents_show_their_tools_and_skills_and_the_tool_routes_answer(env):
+    c = client(env)
+    c.get("/api/session")
+    rows = {a["agent"]: a for a in c.get("/api/agents?company=T01").json()}
+    assert "run_query" not in str(rows["analyst"]["tools"]) and rows["analyst"]["tools"]["actions"] == ["read"]
+    assert {s["name"] for s in rows["tool_forge"]["skills"]} >= {"debug-sql", "repair-a-tool"}
+    assert all(rows[a]["skills"] for a in ("planner", "analyst", "tool_forge", "lesson_miner"))
+    assert c.post("/api/tools/health?company=T01").json() == []                     # no approved tools yet
+    assert c.post("/api/tools/NT-T01-nope/repair?company=T01").status_code == 404

@@ -82,6 +82,12 @@ def start_all(ws) -> None:
     ws.store()                    # created (and seeded) first, so it can't be re-seeded after emptying
     ws.clear_lessons()
     ws.state["fresh"] = {c: True for c in COMPANIES}
+    ws.state["fresh_since"] = _now()
+
+
+def _now():
+    from datetime import datetime
+    return datetime.now().isoformat(timespec="seconds")
 
 
 def start_fresh(ws, cid) -> dict:
@@ -92,6 +98,7 @@ def start_fresh(ws, cid) -> dict:
     ws.state.pop("conversation", None)
     from .session import COMPANIES
     ws.state["fresh"] = {c: True for c in COMPANIES}      # the store is shared by all companies, so all are empty now
+    ws.state["fresh_since"] = _now()                       # runs before this leave the lists (Reset starts the count again)
     return status(ws, cid)
 
 

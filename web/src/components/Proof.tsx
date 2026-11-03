@@ -387,6 +387,7 @@ export function Proof({ item }: { item?: string | null }) {
             className={`subtab ${tab === k ? "on" : ""}`} onClick={() => go(`proof/${k}`)}>{label}</button>
         ))}
       </div>
+      <p className="small muted">Measured evidence from the pre-registered experiments, on synthetic companies. It is the same in both workspaces: switching to "Fresh start" or resetting doesn't change it.</p>
       <div id="proof-panel" role="tabpanel" aria-labelledby={`proof-tab-${tab}`}>
         {tab === "bench" ? <Benchmarks proof={proof} reg={reg} /> : <Claims proof={proof} reg={reg} />}
       </div>

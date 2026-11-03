@@ -165,7 +165,11 @@ class Broker:
 
     # ---------- registry
     def allowed(self, tool):
-        return tool.action in ROLES.get(self.s.role, set())
+        if tool.action not in ROLES.get(self.s.role, set()):
+            return False
+        # in a team each agent has its own tools (configs/agents.yaml), so its role is enforced in code, not only asked
+        spec = self.team.roster.get(self.s.agent) if self.team is not None and self.s.agent else None
+        return spec is None or spec.permits(tool)
 
     def list_tools(self):
         return [t for t in self.tools.values() if self.allowed(t)]
@@ -193,7 +197,8 @@ class Broker:
             if not tool:
                 raise ToolError("NOT_FOUND", f"unknown tool {name}")
             if not self.allowed(tool):
-                raise ToolError("PERMISSION_DENIED", f"role {self.s.role} may not call {name}")
+                who = self.s.agent if self.team is not None and self.s.agent else f"role {self.s.role}"
+                raise ToolError("PERMISSION_DENIED", f"{who} may not call {name}; that is another agent's work (use delegate)")
             spoof = SPOOF_KEYS & set(args)
             if spoof:
                 raise ToolError("PERMISSION_DENIED", f"company/role come from the session, not arguments ({', '.join(sorted(spoof))})")

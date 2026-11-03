@@ -224,6 +224,11 @@ archive/       first prototypes and experiments EXP-001–006 (Oct 27–28)
 tests/         data, runtime, learning, harness, safety (adversarial), eval
 ```
 
+## What's next
+- **Proposed changes, approved by a person.** Today agents only make drafts. Next, they propose everyday changes to the business's records, such as a new delivery site or a new order: code checks each proposal (required fields, likely duplicates, the site and products exist, sensible quantities), a person approves, rejects or edits it, and only then is it written, with an audit entry of who approved it and from which run.
+- **Learned tools on Muse Spark 1.3.** Tool Forge now has its own skills (one general query, debugging SQL, repairing a tool that failed its checks) and code re-checks approved tools; whether that makes Spark 1.3 build tools it reuses needs a new pre-registered experiment.
+- **A real dispatcher's review** of the mined lessons, and data from a real fleet.
+
 ## Built during the hackathon
 Everything in this repository was written during the event, starting Oct 27, 2026. The commit history shows it day by day. Third-party open-source libraries are used as dependencies only; see [LICENSES_AND_ATTRIBUTION.md](LICENSES_AND_ATTRIBUTION.md).
 
