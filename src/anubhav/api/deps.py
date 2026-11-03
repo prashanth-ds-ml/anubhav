@@ -8,9 +8,11 @@ from collections import OrderedDict
 
 from fastapi import Depends, Request, Response
 
+from ..service import fresh
 from ..service.session import COMPANIES, Workspace, prune_visitors
 
 COOKIE = "anubhav_sid"
+HEADER = "X-Anubhav-Visitor"
 SID = re.compile(r"[0-9a-f]{12}")       # a sid names files on disk: only this exact shape is ever accepted
 MAX_VISITORS = 2000
 
@@ -51,11 +53,20 @@ def workspace(request: Request, response: Response) -> Workspace:
     cfg = request.app.state
     if not cfg.public:          # locally the demo is one shared workspace
         return Workspace("shared", False, cfg.visitors.state("shared"), cfg.world)
-    sid = request.cookies.get(COOKIE) or ""
+    # Inside the Hugging Face Space page the app is in a cross-site iframe, where browsers drop the cookie; so the page
+    # also sends the id it was given as a header (or, for the event stream, a query parameter). Either one wins.
+    sid = request.headers.get(HEADER) or request.query_params.get("visitor") or request.cookies.get(COOKIE) or ""
     if not SID.fullmatch(sid):
         sid = uuid.uuid4().hex[:12]
-        response.set_cookie(COOKIE, sid, httponly=True, samesite="lax", max_age=7 * 24 * 3600)
+        https = request.headers.get("x-forwarded-proto", request.url.scheme) == "https"
+        response.set_cookie(COOKIE, sid, httponly=True, samesite="none" if https else "lax", secure=https, max_age=7 * 24 * 3600)
         cfg.visitors.prune(cfg.world)
+        ws = Workspace(sid, True, cfg.visitors.state(sid), cfg.world)
+        if getattr(cfg, "start_fresh", False):
+            fresh.start_all(ws)
+        response.headers[HEADER] = sid
+        return ws
+    response.headers[HEADER] = sid
     return Workspace(sid, True, cfg.visitors.state(sid), cfg.world)
 
 

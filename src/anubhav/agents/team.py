@@ -192,7 +192,7 @@ def _propose_lesson(b, a: LessonProposal):
     store = b.team.lesson_store
     if store is None:
         raise ToolError("NOT_AVAILABLE", "lessons can't be proposed in this session")
-    ids = store.add_proposals(b.C.company, digests.Facts(b.C), [a.model_dump()], {"agent": b.s.agent}, source=f"agent:{b.s.agent}")
+    ids = store.add_proposals(b.C.company, digests.Facts(b.C), [a.model_dump()], {"agent": b.s.agent, "model": getattr(b.team.client, "model", None)}, source=f"agent:{b.s.agent}")
     if not ids:
         return {"already_known": True}
     les = store.get(ids[0])

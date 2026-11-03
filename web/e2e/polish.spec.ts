@@ -20,17 +20,12 @@ test("tabs follow the keyboard pattern: arrows, Home and End, one tab stop", asy
   await expect(page.getByRole("tabpanel")).toHaveAttribute("aria-labelledby", /tab-/);
 });
 
-test("theme toggle switches and remembers the choice", async ({ page }) => {
-  await page.emulateMedia({ colorScheme: "light" });
+test("one theme: the page stays white even when the system asks for dark, and there is no theme switch", async ({ page }) => {
+  await page.emulateMedia({ colorScheme: "dark" });
   await page.goto("/");
-  await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
-  await page.getByRole("button", { name: "Switch to dark theme" }).click();
-  await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
-  const bg = await page.evaluate(() => getComputedStyle(document.body).backgroundColor);
-  expect(bg).not.toBe("rgb(246, 248, 248)"); // not the light background
-  await page.reload();
-  await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
-  await expect(page.getByRole("button", { name: "Switch to light theme" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Try it: seven scenarios" })).toBeVisible();
+  expect(await page.evaluate(() => getComputedStyle(document.body).backgroundColor)).toBe("rgb(246, 248, 248)");
+  await expect(page.getByRole("button", { name: /theme/i })).toHaveCount(0);
 });
 
 test("on a phone the explainer folds away and the chat input is near the top", async ({ page }) => {
@@ -93,7 +88,7 @@ test("page has a favicon, a description and a descriptive title", async ({ page,
 
 test("touch targets are at least 44px tall for the main controls", async ({ page }) => {
   await page.goto("/");
-  for (const loc of [page.getByRole("tab", { name: "Orders" }), page.getByRole("button", { name: "Send" }), page.getByRole("button", { name: "Record a voice message" }), page.getByRole("button", { name: /Switch to/ })]) {
+  for (const loc of [page.getByRole("tab", { name: "Orders" }), page.getByRole("button", { name: "Send" }), page.getByRole("button", { name: "Record a voice message" }), page.getByRole("button", { name: "About" })]) {
     const box = await loc.boundingBox();
     expect(box!.height).toBeGreaterThanOrEqual(43.5);
   }
@@ -111,3 +106,26 @@ for (const width of [1024, 1440]) {
     await expect(page.getByRole("row").first()).toContainText(/Order/);
   });
 }
+
+test("inside a cross-site frame (the Hugging Face Space page) the visitor is kept from one request to the next", async ({ page }) => {
+  // Browsers drop the cookie in a cross-site iframe; the page sends the id the server gave it as a header instead.
+  await page.route("**/api/**", async (r) => {
+    const h = { ...r.request().headers() };
+    delete h["cookie"];                                   // as a browser does in a cross-site frame
+    if (!r.request().url().includes("/api/session")) return r.continue({ headers: h });
+    try {                                                 // shown as live-capable, so S0 can start (nothing here calls a model)
+      const res = await r.fetch({ headers: h });
+      const s = await res.json();
+      await r.fulfill({ response: res, json: { ...s, models: { ...s.models, "Muse Spark 1.3": { available: true, reason: null } }, live_runs_left: 8 } });
+    } catch { /* the test ended while this was in flight */ }
+  });
+  await page.goto("/");
+  await page.getByRole("button", { name: "Start S0" }).click();
+  const guide = page.getByRole("region", { name: /Scenario S0/ });
+  await guide.getByRole("button", { name: "Start fresh" }).click();
+  await expect(guide.getByRole("status")).toContainText("Started fresh: 0 lessons");
+  await page.getByRole("tab", { name: "Learning" }).click();
+  const knows = page.getByRole("status", { name: "What this workspace knows" });
+  await expect(knows).toContainText("0 lessons");          // a new visitor would have the 10 recorded lessons
+  await expect(knows).toContainText("started fresh");
+});

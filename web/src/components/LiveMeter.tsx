@@ -3,8 +3,8 @@ import { useSettings } from "../lib/ctx";
 /** What the live budget looks like right now, from the server's session. Null when this host has no model key. */
 export function liveBudget(session: ReturnType<typeof useSettings>["session"]) {
   if (!session) return null;
-  const m = session.models["Muse Spark 1.3"];
-  if (!m || (!m.available && /no `[^`]+` set/.test(m.reason ?? ""))) return null; // no key: replay only, no meter
+  const ms = Object.values(session.models);
+  if (!ms.some((m) => m.available || !/no `[^`]+` set/.test(m.reason ?? ""))) return null; // no key for any model: replay only, no meter
   const perVisit = session.caps.per_session;
   const used = session.live_runs_used ?? perVisit - session.live_runs_left;
   const visitLeft = Math.max(0, perVisit - used);
@@ -14,7 +14,7 @@ export function liveBudget(session: ReturnType<typeof useSettings>["session"]) {
 
 /** Always on screen in the header when live mode exists: how many live runs this visit has left, and why none when none. */
 export function LiveMeter({ compact = false }: { compact?: boolean }) {
-  const { session } = useSettings();
+  const { session, modelLabel } = useSettings();
   const b = liveBudget(session);
   if (!b) {
     return (
@@ -29,8 +29,8 @@ export function LiveMeter({ compact = false }: { compact?: boolean }) {
       ? "No live runs left in this visit. Recorded scenarios still work."
       : `${b.visitLeft} of ${b.perVisit} live runs left in this visit`;
   return (
-    <div className={`live-meter ${b.left === 0 ? "empty" : ""}`} role="status" aria-live="polite" aria-label={`Live mode, Muse Spark 1.3. ${label}`}>
-      <span className="live-badge"><span className="live-dot" aria-hidden /> LIVE · Muse Spark 1.3</span>
+    <div className={`live-meter ${b.left === 0 ? "empty" : ""}`} role="status" aria-live="polite" aria-label={`Live mode, ${modelLabel}. ${label}`}>
+      <span className="live-badge"><span className="live-dot" aria-hidden /> LIVE · {modelLabel}</span>
       {b.left > 0 && (
         <span className="live-blocks" aria-hidden>
           {Array.from({ length: b.perVisit }, (_, i) => <span key={i} className={i < b.perVisit - b.visitLeft ? "used" : "left"} />)}

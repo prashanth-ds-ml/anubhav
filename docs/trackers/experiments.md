@@ -656,3 +656,22 @@ Order: EXP-015, then EXP-014, then EXP-016, one after the other. The batch runs 
 ### EXP-017 (planned, not pre-registered): hand-written questions before and after learning
 - 40 owner-written questions (tool traps, false premises, ambiguous requests), Muse Spark 1.3. Protocol, rules and status: [[benchmark_data_guide]]. Pre-registration and freeze only after the questions pass the checker and the scorers are tested.
 
+### EXP-018: does learning get better as the company has more history? (scaling check; frozen 2026-11-03 20:58 before any model call)
+- **Question:** mine the demo world's T01 from its first 30, 60 and 90 days of records. Are more hidden rules found, without losing precision or admitting traps? (EXP-017 is taken by the hand-written questions above.)
+- **Protocol:** records cut at the end of 2026-08-30, 2026-09-29, 2026-10-29, applied to the company view itself (digest, staff edits, planner messages, the miner's "today" and the gate's expiry dates all as of that day). digest → `miner.mine` (Muse Spark 1.3, Meta API, temperature 0) → evidence gate on the same cut records, each run into an empty store; 3 repeats per length (9 calls). Scored with `evaluate.score` unchanged (EXP-008/009b). At 90 days this is the live path (the only record left out is one phone-number staff edit dated 10-30, which the digest ignores).
+- **Decision rules (fixed before the first call):** **B1** mean recall at 90 days ≥ at 30 days (fixed denominator: the 11 rules learnable over all 90 days). **B2** pooled precision at 90 days ≥ 85%. **B3** 0 trap rules admitted in every run at every length. Met only if all three.
+- **Reported, not judged:** 60 days; recall against only the rules with any evidence by the cutoff (the same learnable definition, restricted to records up to then): **9 of 11 at 30 days** (no evidence yet for the Parkal Tuesday closure H-16 or the moved godown H-17), 11 of 11 at 60 and 90.
+- **Frozen** (`artifacts/benchmark/exp018_frozen.json`, plan inside, plan sha `ecbbe0c19ec45fad`): `exp018_scaling.py` `2e0a37268cdd593e` · `gate.py` `1791a70e0541172b` · `digest.py` `bd4cf8088894c7bc` · `miner.py` `0a6e8f5c89910ca9` · `store.py` `9e93ccd47f0506d2` · `evaluate.py` `8e87da48e77846ce` · `muse.py` `61510b04154c3e70` · `company.py` `a16b7e35ccd110c7` (and the usual core files). Not committed yet: custody rests on the frozen file's timestamp until the owner commits it.
+- **Budget:** cap $1.50 total: 1 smoke call + main run stopped by the script at $1.40. Meta only, Baseten key blanked. Run: `baseten_api_key= uv run python scripts/exp018_scaling.py --budget 1.40`.
+- **Result (2026-11-03 20:59 → 21:11, `artifacts/learning/exp018_20261103_205939.json`, report `exp018_20261103_205939.md`; 9 runs, $0.495 + $0.051 smoke = $0.546 Meta):**
+
+| History | Rules with evidence | Recall (of 11) | Recall (of those with evidence) | Precision (pooled) | Traps | Passed / proposed | Cost |
+|---|---|---|---|---|---|---|---|
+| 30 days | 9 | 72.7% (8/11, every run) | 88.9% | 100% (24/24) | 0 | 24 / 27 | $0.139 |
+| 60 days | 11 | 81.8% (9/11, every run) | 81.8% | 100% (27/27) | 0 | 27 / 30 | $0.170 |
+| 90 days | 11 | 81.8% (9/11, every run) | 81.8% | 100% (27/27) | 0 | 27 / 32 | $0.187 |
+
+- **Verdict (rules fixed above):** **met.** B1 81.8% ≥ 72.7% · B2 100% · B3 0 traps in 9 of 9 runs.
+- **What more history added:** the Parkal Tuesday closure (H-16), which has no evidence in the first 30 days, found in every 60- and 90-day run. The other 8 rules (Lakshmi Agencies 22 ft, three nicknames, the Kazipet closure, V13's real capacity, Sri Durga at month end, the night-only site) were found in every run at every length. **Missed at every length:** the nickname "Chowrasta load" (H-04) and the moved godown (H-17); the miner never proposed them. Recall stops rising after 60 days.
+- **Caveats:** the repeats gave identical rule sets (temperature 0): stability, not spread. The miner proposed no trap rule in any run, so B3 shows none got through, not that the gate was tested against traps here; the gate rejected two non-matching habits (a receiving-hours cutoff, a vendor at month end). Against the rules with evidence, recall is slightly *higher* at 30 days (8/9) than at 90 (9/11). One company, one generated world, rules from our own generator.
+

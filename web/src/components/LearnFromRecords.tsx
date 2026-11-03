@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { api, ApiError, type FreshLearned, type FreshRecords } from "../lib/api";
+import { api, ApiError, modelName, type FreshLearned, type FreshRecords } from "../lib/api";
 import { useApi } from "../lib/useApi";
 import { useSettings } from "../lib/ctx";
 import { useFocusTarget } from "../lib/focus";
@@ -33,7 +33,7 @@ export function KnowsNow() {
 }
 
 export function LearnFromRecords() {
-  const { company, live, bumpData, refreshSession, dataVersion } = useSettings();
+  const { company, live, bumpData, refreshSession, dataVersion, model, modelLabel } = useSettings();
   const ref = useFocusTarget<HTMLElement>("learn", true);
   const st = useApi(() => api.freshStatus(company), [company, dataVersion], { keep: true });
   const [stage, setStage] = useState<"idle" | "reading" | "mining" | "done">("idle");
@@ -50,7 +50,7 @@ export function LearnFromRecords() {
     setRecords(await api.freshRecords(company));
     setStage("mining");
     try {
-      setOut(await api.freshLearn(company));
+      setOut(await api.freshLearn(company, model));
       setStage("done");
       bumpData();
       refreshSession();
@@ -67,12 +67,12 @@ export function LearnFromRecords() {
         <KnowsNow />
       </div>
       <p className="small muted">
-        Muse Spark 1.3 reads 90 days of this company's trips, drivers' notes and messages, and proposes rules nobody wrote down.
+        {modelLabel} reads 90 days of this company's trips, drivers' notes and messages, and proposes rules nobody wrote down.
         Code then checks each one against the full records. A person approves what passes; nothing changes a plan before that.
       </p>
       <div className="actions">
         <button type="button" className="send" disabled={stage === "reading" || stage === "mining" || !!blocked} onClick={go}>
-          {stage === "reading" ? "Reading the records…" : stage === "mining" ? "Muse Spark 1.3 is proposing rules…" : "Learn from the records (live)"}
+          {stage === "reading" ? "Reading the records…" : stage === "mining" ? `${modelLabel} is proposing rules…` : "Learn from the records (live)"}
         </button>
         {left != null && <span className="small muted">{left} of 1 left in this visit · counts as one live run</span>}
       </div>
@@ -84,7 +84,7 @@ export function LearnFromRecords() {
           <li className="ok-text">✓ Read the records: {records.stops.toLocaleString("en-IN")} delivery stops on {records.trips.toLocaleString("en-IN")} trips,
             {" "}{records.drivers_notes} drivers' notes ({Object.entries(records.notes_by_language).map(([k, v]) => `${v} ${({ te: "Telugu", en: "English", rt: "Roman Telugu" } as Record<string, string>)[k] ?? k}`).join(", ")}),
             {" "}{records.planner_messages} planner messages, {records.from} to {records.to}.</li>
-          <li className={stage === "mining" ? "" : "ok-text"}>{stage === "mining" ? "… Muse Spark 1.3 is reading a digest of them and proposing rules (about a minute)." : "✓ Muse Spark 1.3 proposed rules."}</li>
+          <li className={stage === "mining" ? "" : "ok-text"}>{stage === "mining" ? `… ${modelLabel} is reading a digest of them and proposing rules (about a minute).` : `✓ ${modelName(out?.model) || modelLabel} proposed rules.`}</li>
           {out && <li className="ok-text">✓ Code checked each rule against the full records: {out.counts.CANDIDATE ?? 0} hold, {out.counts.REJECTED ?? 0} rejected, {out.counts.EXPIRED ?? 0} already over. ({out.latency_s} s · ${out.cost_usd.toFixed(3)})</li>}
         </ol>
       )}

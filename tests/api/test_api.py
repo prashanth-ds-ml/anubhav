@@ -667,3 +667,63 @@ def test_asking_again_sets_the_first_draft_aside_so_the_order_is_free(env, monke
     other = client(env)
     other.get("/api/session")
     assert other.post("/api/fresh/set-aside").json()["cancelled"] == []     # another visitor's drafts are theirs
+
+
+def test_without_the_cookie_the_visitor_header_keeps_the_same_workspace(env):
+    """In the Hugging Face Space page the app is in a cross-site iframe and the cookie is dropped; the header carries it."""
+    c = client(env)
+    sid = c.get("/api/session").headers["X-Anubhav-Visitor"]
+    c.post("/api/fresh/start?company=T01")
+    c.cookies.clear()
+    same = c.get("/api/fresh/status?company=T01", headers={"X-Anubhav-Visitor": sid})
+    assert same.json()["fresh"] is True and same.headers["X-Anubhav-Visitor"] == sid
+    assert c.get(f"/api/fresh/status?company=T01&visitor={sid}").json()["fresh"] is True     # the event stream's way
+    c.cookies.clear()
+    other = c.get("/api/fresh/status?company=T01", headers={"X-Anubhav-Visitor": "not-an-id!"})
+    assert other.json()["fresh"] is False and other.headers["X-Anubhav-Visitor"] != sid
+
+
+def test_on_the_hosted_demo_a_new_visitor_starts_from_zero_and_can_switch_to_the_recorded_lessons(env):
+    c = TestClient(api_app.create_app(public=True, world=env, replay_pace=0, start_fresh=True), raise_server_exceptions=False)
+    c.get("/api/session")
+    for cid in ("T01", "TNEW"):
+        s = c.get(f"/api/fresh/status?company={cid}").json()
+        assert s["fresh"] is True and s["lessons"] == 0 and s["tools"] == 0
+    assert c.get("/api/learning/lessons?company=T01").json() == []
+    back = c.post("/api/fresh/restore?company=T01").json()
+    assert back["fresh"] is False and back["lessons"] > 0
+    again = c.post("/api/fresh/start?company=T01").json()
+    assert again["fresh"] is True and again["lessons"] == 0
+    assert client(env).get("/api/fresh/status?company=T01").json()["fresh"] is False     # without the flag: recorded lessons
+
+
+def test_session_names_the_default_model_and_each_models_key(env):
+    s = client(env).get("/api/session").json()
+    assert s["default_model"] == "spark"
+    assert s["models"]["Muse Spark 1.3"]["key"] == "spark" and s["models"]["Muse Spark Open"]["key"] == "open"
+
+
+def test_learning_from_the_records_takes_the_chosen_model(env):
+    c = client(env)
+    c.get("/api/session")
+    for m in ("spark", "open"):
+        r = c.post(f"/api/fresh/learn?company=T01&model={m}")
+        assert r.status_code == 409 and r.json()["error"]["code"] == "NO_KEY"       # no keys in tests: nothing is called
+    assert c.post("/api/fresh/learn?company=T01&model=gpt").status_code == 422
+
+
+def test_a_live_draft_says_which_run_and_model_made_it(env, monkeypatch):
+    c = client(env)
+    c.get("/api/session")
+    orders = c.get("/api/dashboard/orders").json()["orders"]
+    free = sorted((v for v in c.get("/api/dashboard/fleet").json()["vehicles"] if v["free"]), key=lambda v: -v["payload_kg"])
+    args = next(({"order_ids": [o["order_id"]], "vehicle_id": v["vehicle_id"]}) for o in orders for v in free if o["kg"] <= v["payload_kg"])
+    live_env(monkeypatch, [mock_tool_call("create_dispatch_draft", args), mock_final("draft")])
+    run = c.post("/api/chat", json={"message": "plan it", "mode": "live", "use_lessons": False}).json()
+    list(stream.follow(run["run_id"]))
+    drafts = c.get("/api/dashboard/drafts").json()["drafts"]
+    if not drafts:
+        pytest.skip("validator refused the picked pair")
+    assert drafts[0]["run_id"] == run["run_id"] and drafts[0]["model"]
+    one = c.get(f"/api/dashboard/drafts?run_id={run['run_id']}").json()["drafts"]
+    assert one[0]["model"] == drafts[0]["model"]

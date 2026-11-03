@@ -106,7 +106,7 @@ function Totals({ t }: { t?: AgentTotal }) {
 
 /** Agents: how each one learns, what has been measured, its work in this company's runs, and what is not measured yet. */
 export function AgentCards() {
-  const { company } = useSettings();
+  const { company, modelLabel } = useSettings();
   const agents = useApi(() => api.agents(company), [company]);
   const totals = useApi(() => api.agentTotals(company), [company]);
   const proofApi = useApi(() => api.proof(), []);
@@ -151,7 +151,7 @@ export function AgentCards() {
               <p className="small">{a.purpose}</p>
               <h4 className="eyebrow">How it learns</h4>
               <p className="small">{HOW[a.agent] ?? "Not described."}</p>
-              <p className="small muted">{a.versions_tried === 0 ? "No instruction changes tried yet." : `${a.versions_tried} instruction change${a.versions_tried === 1 ? "" : "s"} tried.`} Knows {a.knowledge_items} thing{a.knowledge_items === 1 ? "" : "s"} about this company. Live runs use {a.model === "spark" ? modelName("muse-spark-1.3") : a.model}.</p>
+              <p className="small muted">{a.versions_tried === 0 ? "No instruction changes tried yet." : `${a.versions_tried} instruction change${a.versions_tried === 1 ? "" : "s"} tried.`} Knows {a.knowledge_items} thing{a.knowledge_items === 1 ? "" : "s"} about this company. Live runs use the model chosen at the top (now {modelLabel}).</p>
               <h4 className="eyebrow">Measured</h4>
               {measured(a.agent, proof, reg, c ?? undefined)}
               <Totals t={totals.data?.find((t) => t.agent === a.agent)} />

@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
-import { api } from "./api";
+import { api, MODEL_LABEL, type ModelKey } from "./api";
 import { BUNDLED } from "./fixtures";
 import type { CompanyRow, Session, Suggestion } from "../types";
 
@@ -11,7 +11,9 @@ export interface Settings {
   requests: { label: string; request: string; on: boolean; off: boolean }[];
   /** False until the saved requests have arrived: matching a typed request before then would wrongly find nothing. */
   ready: boolean;
-  /** Muse Spark 1.3 can run here now, and why not when it can't. */
+  /** The model live runs use (header picker), and its name. */
+  model: ModelKey; setModel: (m: ModelKey) => void; modelLabel: string;
+  /** The chosen model can run here now, and why not when it can't. */
   live: { ok: boolean; reason: string | null };
   refreshSession: () => void;
   /** Bumped when something outside a tab changes this visitor's data (a scenario step retiring a lesson, say). */
@@ -30,6 +32,18 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
   const [offList, setOff] = useState<Suggestion[]>([]);
   const [loaded, setLoaded] = useState(false);
   const [dataVersion, setDataVersion] = useState(0);
+  const [picked, setPicked] = useState<ModelKey | null>(() => {
+    try { const v = sessionStorage.getItem("anubhav-model"); return v === "spark" || v === "open" ? v : null; } catch { return null; }
+  });
+  // Until the visitor picks one: the host's default if it can run here, else any model that can, else the default.
+  const model: ModelKey = useMemo(() => {
+    if (picked) return picked;
+    const ms = Object.values(session?.models ?? {});
+    const def = (session?.default_model ?? "spark") as ModelKey;
+    if (ms.some((m) => m.key === def && m.available)) return def;
+    return (ms.find((m) => m.available)?.key as ModelKey | undefined) ?? def;
+  }, [picked, session]);
+  const setModel = (m: ModelKey) => { setPicked(m); try { sessionStorage.setItem("anubhav-model", m); } catch { /* kept for this page */ } };
 
   useEffect(() => { api.companies().then(setCompanies); api.session().then(setSession); }, []);
   useEffect(() => {
@@ -52,16 +66,17 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
   }, [loaded, onList, offList]);
 
   const live = useMemo(() => {
-    const m = session?.models["Muse Spark 1.3"];
+    const m = session?.models[MODEL_LABEL[model]];
     if (!m) return { ok: false, reason: "Live mode is off here." };
     if (!m.available) return { ok: false, reason: m.reason };
     if (session!.live_runs_left <= 0) return { ok: false, reason: "This visit has used its live runs." };
     return { ok: true, reason: null };
-  }, [session]);
+  }, [session, model]);
   const refreshSession = () => { api.session().then(setSession); };
   const bumpData = () => setDataVersion((v) => v + 1);
 
-  const value = useMemo(() => ({ company, setCompany, useLessons, setUseLessons, companies, session, requests, ready: loaded, live, refreshSession, dataVersion, bumpData }),
-    [company, useLessons, companies, session, requests, loaded, live, dataVersion]);
+  const value = useMemo(() => ({ company, setCompany, useLessons, setUseLessons, companies, session, requests, ready: loaded, live, refreshSession, dataVersion, bumpData,
+    model, setModel, modelLabel: MODEL_LABEL[model] }),
+    [company, useLessons, companies, session, requests, loaded, live, dataVersion, model]);
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
 }

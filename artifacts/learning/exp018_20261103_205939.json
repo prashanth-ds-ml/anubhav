@@ -1,0 +1,220 @@
+{
+ "stamp": "20261103_205939",
+ "tag": "exp018",
+ "plan": {
+  "id": "EXP-018",
+  "question": "Does learning get better as the company has more history? (scaling check)",
+  "world": "data/worlds/full_seed20261104 (demo world), company T01; records 2026-08-01 to 2026-10-29",
+  "arms": "history length 30, 60, 90 days: records cut at the end of 2026-08-30, 2026-09-29, 2026-10-29; company 'today' = the day after the cutoff (90 days = the live path unchanged)",
+  "pipeline": "digest (5 digests, as digest.build) -> miner.mine with Muse Spark 1.3 on the Meta API, temperature 0 -> evidence gate (store.add_proposals) checking against the same cut records; each run into an empty store",
+  "repeats": "3 per length (9 mining calls), order rep0: 30,60,90; rep1: 30,60,90; rep2: 30,60,90",
+  "scoring": "evaluate.score unchanged (EXP-008/009b): passed = CANDIDATE, NEEDS_EVIDENCE or EXPIRED; recall = hidden learnable rules found / learnable rules over all 90 days (fixed denominator); precision = passed lessons matching a non-trap hidden rule / passed; traps = trap rules (habit, contradiction, look_alike, one_off, cold_chain) among passed lessons",
+  "bar": {
+   "B1": "mean recall at 90 days >= mean recall at 30 days (fixed denominator, mean over the 3 repeats)",
+   "B2": "precision at 90 days >= 0.85, pooled over the 3 repeats (true passed / passed)",
+   "B3": "0 trap rules admitted in every run at every length",
+   "verdict": "met only if B1, B2 and B3 are all met; a miss is reported as a miss"
+  },
+  "reported_not_judged": "60 days; recall against only the rules with any evidence by the cutoff (same learnable definition as evaluate.Truth, restricted to records up to the cutoff); rules found per length; proposals, passed, false lessons; digest size; cost",
+  "partial": "if the budget stops the run, only lengths with at least one completed repeat are judged and the result is labelled partial",
+  "budget": "hard cap $1.50 total Meta spend: 1 smoke call (30 days, not part of the result) + main run capped at $1.40 in the script (stops before a call that could pass it). Meta API only; baseten_api_key blanked.",
+  "caveats": "one company, one generated world, hidden rules from our own generator; temperature 0 so repeats measure only API nondeterminism; fewer rules have any evidence in 30 days, so fixed-denominator recall mixes 'not learnable yet' with 'missed'; the visible-by-cutoff recall separates them."
+ },
+ "model": "muse-spark-1.3",
+ "world": "data\\worlds\\full_seed20261104",
+ "company": "T01",
+ "cutoffs": {
+  "30": "2026-08-30",
+  "60": "2026-09-29",
+  "90": "2026-10-29"
+ },
+ "per_length": {
+  "30": {
+   "runs": 3,
+   "cutoff": "2026-08-30",
+   "recall_mean": 0.727,
+   "recall_per_run": [
+    0.727,
+    0.727,
+    0.727
+   ],
+   "recall_visible_mean": 0.889,
+   "visible_rules": [
+    "H-01",
+    "H-03",
+    "H-04",
+    "H-05",
+    "H-06",
+    "H-10",
+    "H-14",
+    "H-15",
+    "H-18"
+   ],
+   "learnable_all": [
+    "H-01",
+    "H-03",
+    "H-04",
+    "H-05",
+    "H-06",
+    "H-10",
+    "H-14",
+    "H-15",
+    "H-16",
+    "H-17",
+    "H-18"
+   ],
+   "precision_pooled": 1.0,
+   "precision_per_run": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "passed": 24,
+   "true_passed": 24,
+   "proposed": 27,
+   "traps_admitted": [],
+   "found_any_run": [
+    "H-01",
+    "H-03",
+    "H-05",
+    "H-06",
+    "H-10",
+    "H-14",
+    "H-15",
+    "H-18"
+   ],
+   "false_lessons": 0,
+   "cost_usd": 0.1385
+  },
+  "60": {
+   "runs": 3,
+   "cutoff": "2026-09-29",
+   "recall_mean": 0.818,
+   "recall_per_run": [
+    0.818,
+    0.818,
+    0.818
+   ],
+   "recall_visible_mean": 0.818,
+   "visible_rules": [
+    "H-01",
+    "H-03",
+    "H-04",
+    "H-05",
+    "H-06",
+    "H-10",
+    "H-14",
+    "H-15",
+    "H-16",
+    "H-17",
+    "H-18"
+   ],
+   "learnable_all": [
+    "H-01",
+    "H-03",
+    "H-04",
+    "H-05",
+    "H-06",
+    "H-10",
+    "H-14",
+    "H-15",
+    "H-16",
+    "H-17",
+    "H-18"
+   ],
+   "precision_pooled": 1.0,
+   "precision_per_run": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "passed": 27,
+   "true_passed": 27,
+   "proposed": 30,
+   "traps_admitted": [],
+   "found_any_run": [
+    "H-01",
+    "H-03",
+    "H-05",
+    "H-06",
+    "H-10",
+    "H-14",
+    "H-15",
+    "H-16",
+    "H-18"
+   ],
+   "false_lessons": 0,
+   "cost_usd": 0.1699
+  },
+  "90": {
+   "runs": 3,
+   "cutoff": "2026-10-29",
+   "recall_mean": 0.818,
+   "recall_per_run": [
+    0.818,
+    0.818,
+    0.818
+   ],
+   "recall_visible_mean": 0.818,
+   "visible_rules": [
+    "H-01",
+    "H-03",
+    "H-04",
+    "H-05",
+    "H-06",
+    "H-10",
+    "H-14",
+    "H-15",
+    "H-16",
+    "H-17",
+    "H-18"
+   ],
+   "learnable_all": [
+    "H-01",
+    "H-03",
+    "H-04",
+    "H-05",
+    "H-06",
+    "H-10",
+    "H-14",
+    "H-15",
+    "H-16",
+    "H-17",
+    "H-18"
+   ],
+   "precision_pooled": 1.0,
+   "precision_per_run": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "passed": 27,
+   "true_passed": 27,
+   "proposed": 32,
+   "traps_admitted": [],
+   "found_any_run": [
+    "H-01",
+    "H-03",
+    "H-05",
+    "H-06",
+    "H-10",
+    "H-14",
+    "H-15",
+    "H-16",
+    "H-18"
+   ],
+   "false_lessons": 0,
+   "cost_usd": 0.1869
+  }
+ },
+ "verdict": {
+  "B1": true,
+  "B2": true,
+  "B3": true,
+  "met": true,
+  "partial": false
+ },
+ "stopped": null,
+ "cost_usd": 0.4952,
+ "runs": 9
+}

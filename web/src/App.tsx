@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from "react";
 import { Dashboard } from "./components/Dashboard";
 import { Chat } from "./components/Chat";
 import { Roster } from "./components/Roster";
-import { ThemeToggle } from "./components/ThemeToggle";
 import { About } from "./components/About";
 import { Learning } from "./components/Learning";
 import { NewTools } from "./components/NewTools";
@@ -10,6 +9,8 @@ import { AgentCards } from "./components/AgentCards";
 import { Proof } from "./components/Proof";
 import { Runs } from "./components/Runs";
 import { LiveMeter } from "./components/LiveMeter";
+import { WorkspaceSwitch } from "./components/WorkspaceSwitch";
+import { ModelPicker } from "./components/ModelPicker";
 import { MainNav, MAIN_LABEL } from "./components/MainNav";
 import { ScenarioGuide, SCENARIOS, type LoopStep, type ScenarioActions } from "./components/Scenarios";
 import { Info } from "lucide-react";
@@ -95,6 +96,8 @@ export default function App() {
   const stripsEl = (
     <div className="strips">
       {!narrow && companyEl}
+      <ModelPicker />
+      <WorkspaceSwitch />
       <ol className="loop" aria-label="Closed loop">
         {LOOP.map((l) => {
           const lit = reached.includes(l.step as LoopStep);
@@ -125,7 +128,6 @@ export default function App() {
           <MainNav current={route.main} narrow={narrow} />
           <LiveMeter compact={narrow} />
           <button type="button" className="aboutbtn" onClick={() => setAboutOpen(true)}><Info size={16} aria-hidden /> <span className="about-label">About</span></button>
-          <ThemeToggle />
         </div>
         {narrow ? (
           <details className="about">

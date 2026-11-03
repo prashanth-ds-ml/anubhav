@@ -99,7 +99,7 @@ export function Chat({ onEvents, prefill, ask, scenario, onStartScenario, action
   onEvents: (e: RunEvent[], runId: string | null) => void; prefill: { text: string; n: number }; ask: { label: string; n: number };
   scenario: string | null; onStartScenario: (id: string) => void; actionsRef: MutableRefObject<ScenarioActions | null>;
 }) {
-  const { company, setCompany, useLessons, setUseLessons, requests, session, ready, live, refreshSession, bumpData } = useSettings();
+  const { company, setCompany, useLessons, setUseLessons, requests, session, ready, live, refreshSession, bumpData, model, modelLabel } = useSettings();
   const pending = useRef<{ label: string; lessons?: boolean; done: () => void } | null>(null); // a saved request a scenario asked for before the list loaded
   const waiting = useRef<string | null>(null); // text sent before the saved requests loaded
   const [msgs, setMsgs] = useState<Msg[]>([]);
@@ -182,7 +182,7 @@ export function Chat({ onEvents, prefill, ask, scenario, onStartScenario, action
     const ended = new Promise<void>((r) => { finish = r; });
     const id = nextId.current++;
     setMsgs((m) => [...m, { kind: "user", text: request }, ...(extra ? [{ kind: "note" as const, text: extra }] : []), { kind: "run", id, events: [], ended: false, useLessons: lessons, live: liveRun, label }]);
-    const halt = startRun(request, { company, useLessons: lessons, team: session?.default_team ?? true, live: liveRun }, {
+    const halt = startRun(request, { company, useLessons: lessons, team: session?.default_team ?? true, live: liveRun, model }, {
       onEvent: (e) => patch(id, (x) => ({ ...x, events: [...x.events, e] })),
       onRun: (info) => patch(id, (x) => ({ ...x, info, live: info.mode === "live" })),
       onNote: setBanner,
@@ -422,7 +422,7 @@ export function Chat({ onEvents, prefill, ask, scenario, onStartScenario, action
             <input type="checkbox" checked={useLessons} onChange={(e) => setUseLessons(e.target.checked)} />
             <span>Use approved lessons <span className="muted small">(turn off to see what the agent does without them)</span></span>
           </label>
-          {live.ok && <p className="small live-hint">Live: Muse Spark 1.3 answers any request · {session?.live_runs_left ?? 0} live runs left in this visit</p>}
+          {live.ok && <p className="small live-hint">Live: {modelLabel} answers any request · {session?.live_runs_left ?? 0} live runs left in this visit</p>}
           <p className="small muted">{live.ok ? "" : "Replay answers saved requests only · "}Enter sends · Shift+Enter adds a line</p>
         </form>
       </div>

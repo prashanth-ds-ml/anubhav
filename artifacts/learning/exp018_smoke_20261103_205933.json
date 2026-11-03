@@ -1,0 +1,189 @@
+{
+ "meta": {
+  "model": "muse-spark-1.3",
+  "cost_usd": 0.05068025,
+  "tokens_in": 12977,
+  "tokens_out": 8108,
+  "latency_s": 71.927,
+  "prompt_chars": 37386
+ },
+ "proposals": [
+  {
+   "kind": "site_access",
+   "params": {
+    "site_id": "C0003",
+    "max_length_ft": 22
+   },
+   "claim": "Lakshmi Agencies Jangaon cannot accept 32ft trucks, max 22ft.",
+   "evidence": [
+    "3x 32ft returned could_not_enter 2026-08-19 to 2026-08-21 with gate notes",
+    "10ft ok x3 and 22ft ok x2 delivered, no 32ft success",
+    "staff edit 2026-08-21 changed max to 22ft"
+   ],
+   "counter_evidence": [],
+   "alternatives": [
+    "temporary obstruction on those 3 days",
+    "copied notes"
+   ],
+   "confidence": "high"
+  },
+  {
+   "kind": "night_only",
+   "params": {
+    "site_id": "C0012",
+    "from_hour": 22,
+    "to_hour": 6
+   },
+   "claim": "Sri Rama Warehousing Jangaon receives only at night 22-06.",
+   "evidence": [
+    "4 daytime arrivals waited 454-1041 min until ~22:00",
+    "notes on 4 visits: only receives after 10 pm / raatri 10 tarvate"
+   ],
+   "counter_evidence": [
+    "staff edit 2026-08-18 changed night_only to any time"
+   ],
+   "alternatives": [
+    "long queue not night rule",
+    "staff edit correct and rule ended"
+   ],
+   "confidence": "high"
+  },
+  {
+   "kind": "alias",
+   "params": {
+    "phrase": "nalla lorry",
+    "target_kind": "vehicle",
+    "target_id": "V11"
+   },
+   "claim": "nalla lorry means vehicle V11.",
+   "evidence": [
+    "14 messages with nalla lorry all assigned V11 Kakatiya Logistics",
+    "same mapping across Hanamkonda, Suryapet, Mahabubabad, Warangal, Kazipet"
+   ],
+   "counter_evidence": [],
+   "alternatives": [
+    "nalla means black, could describe colour generally"
+   ],
+   "confidence": "high"
+  },
+  {
+   "kind": "alias",
+   "params": {
+    "phrase": "anna vallu",
+    "target_kind": "vendor",
+    "target_id": "SVR Transport"
+   },
+   "claim": "anna vallu means vendor SVR Transport.",
+   "evidence": [
+    "11 messages with anna vallu assigned V08 or V13",
+    "both V08 and V13 belong to SVR Transport"
+   ],
+   "counter_evidence": [
+    "maps to two vehicles not one vehicle"
+   ],
+   "alternatives": [
+    "could refer to driver name not vendor"
+   ],
+   "confidence": "high"
+  },
+  {
+   "kind": "alias",
+   "params": {
+    "phrase": "pedda godown",
+    "target_kind": "site",
+    "target_id": "C0045"
+   },
+   "claim": "pedda godown means C0045 Venkata Sri Traders Warangal.",
+   "evidence": [
+    "6 messages with Pedda godown all resolve to C0045",
+    "different vehicles V02 V09 V11 V12 V03 V08 same site"
+   ],
+   "counter_evidence": [],
+   "alternatives": [
+    "pedda means big, could mean any big godown"
+   ],
+   "confidence": "high"
+  },
+  {
+   "kind": "real_capacity",
+   "params": {
+    "vehicle_id": "V13",
+    "max_kg": 12000
+   },
+   "claim": "V13 safely carries max 12000kg not 15000kg.",
+   "evidence": [
+    "6 weighbridge offloads all reduced to 12000kg e.g. 14997-2997, 14993-2993, 12968-968",
+    "paper payload 15000kg"
+   ],
+   "counter_evidence": [
+    "1 load >80% without offload"
+   ],
+   "alternatives": [
+    "route weighbridge limit not vehicle limit",
+    "enforcement variation"
+   ],
+   "confidence": "high"
+  },
+  {
+   "kind": "vendor_reliability",
+   "params": {
+    "vendor": "Sri Durga Roadlines",
+    "condition": "month_end"
+   },
+   "claim": "Sri Durga Roadlines often fails to place trucks at month end.",
+   "evidence": [
+    "month_end 3 no-shows /6 bookings vs 0/12 other days",
+    "message Sri Durga Roadlines vallu malli bandi pettaledu"
+   ],
+   "counter_evidence": [
+    "small sample 6 month-end bookings"
+   ],
+   "alternatives": [
+    "random cluster",
+    "month-end demand surge"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "kind": "vendor_reliability",
+   "params": {
+    "vendor": "market",
+    "condition": "month_end"
+   },
+   "claim": "market trucks often fail to turn up at month end.",
+   "evidence": [
+    "month_end 5 no-shows /17 bookings vs 1/18 other days",
+    "messages market vallu malli bandi pettaledu and market truck didn't turn up"
+   ],
+   "counter_evidence": [],
+   "alternatives": [
+    "random cluster"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "kind": "closure",
+   "params": {
+    "town": "Kazipet",
+    "what": "bridge",
+    "valid_from": "2026-08-01",
+    "valid_to": "2026-08-30"
+   },
+   "claim": "Kazipet bridge closed with detour 40 min late Aug 1-30.",
+   "evidence": [
+    "12 Kazipet delays 2026-08-01 to 2026-08-30 bridge work/detour",
+    "5 Warangal trips same cause Kazipet bridge closed detour",
+    "C0001 2026-08-30 still reports detour"
+   ],
+   "counter_evidence": [
+    "2026-08-10 bandh roads closed may be separate strike",
+    "2026-08-04 konchem late vague"
+   ],
+   "alternatives": [
+    "multiple separate works conflated",
+    "bandh vs bridge work"
+   ],
+   "confidence": "medium"
+  }
+ ]
+}

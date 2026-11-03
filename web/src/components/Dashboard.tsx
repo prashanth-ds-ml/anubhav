@@ -1,4 +1,4 @@
-import { api } from "../lib/api";
+import { api, modelName } from "../lib/api";
 import { useApi } from "../lib/useApi";
 import { useSettings } from "../lib/ctx";
 import { Ledger } from "./Ledger";
@@ -110,6 +110,7 @@ export function Dashboard({ panel, refreshKey, runId, onPlan }: { panel: Desk; r
                   <strong className="mono">{x.draft_id}</strong> on <span className="mono">{x.vehicle_id}</span>
                   {v && <span className="pill">{v.length_ft} ft · {v.class}</span>}
                   {x.source === "live" && <span className="pill live">Live draft</span>}
+                  {x.model && <span className="small muted">{modelName(x.model)}</span>}
                   <Verdict v={x.why?.checks?.every((k) => k.pass) === false ? "fail" : "pass"} />
                 </header>
                 {g && <GateLine g={g} />}

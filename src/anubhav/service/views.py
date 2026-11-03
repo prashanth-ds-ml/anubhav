@@ -158,7 +158,8 @@ def drafts_for(ws, cid, runs_seen=()):
     out = []
     for row in b.C.runtime.drafts():
         verdict = json.loads(row["verdict"]) if row.get("verdict") else {}
-        out.append({"draft_id": row["draft_id"], "status": row["status"], "vehicle_id": row["vehicle_id"], "delivery_date": row["delivery_date"],
+        made_by = next((r for r in runs_seen if any(d["draft_id"] == row["draft_id"] for d in drafts(r))), None)
+        out.append({"draft_id": row["draft_id"], "run_id": made_by and made_by["run_id"], "model": made_by and made_by.get("model"), "status": row["status"], "vehicle_id": row["vehicle_id"], "delivery_date": row["delivery_date"],
                     "orders": json.loads(row["order_ids"]), "load": verdict.get("load"), "warnings": verdict.get("warnings", []),
                     "stops": _stops(b, draft_id=row["draft_id"]) if row["status"] in ("draft", "approved") else None, "decisions": b.C.runtime.decisions(row["draft_id"]),
                     "why": next((w for r in runs_seen if (w := why_plan(r, row["draft_id"]))), None), "source": "live"})
@@ -173,7 +174,7 @@ def drafts_of_run(ws, cid, run):
     for d in drafts(run):
         sites = list(dict.fromkeys(b.C.orders[o]["site_id"] for o in d.get("orders", []) if o in b.C.orders))
         row = b.C.runtime.draft(d["draft_id"])
-        out.append({"draft_id": d["draft_id"], "status": row["status"] if row else "draft (not dispatched)", "vehicle_id": d.get("vehicle_id"),
+        out.append({"draft_id": d["draft_id"], "run_id": run["run_id"], "model": run.get("model"), "status": row["status"] if row else "draft (not dispatched)", "vehicle_id": d.get("vehicle_id"),
                     "delivery_date": d.get("delivery_date"), "orders": d.get("orders"), "load": d.get("load"), "warnings": d.get("warnings", []),
                     "stops": _stops(b, site_ids=sites) if sites else None, "why": why_plan(run, d["draft_id"]),
                     **({"decisions": b.C.runtime.decisions(d["draft_id"])} if row else {}), "source": "live" if row else "run"})

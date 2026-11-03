@@ -1,6 +1,7 @@
 """The FastAPI app: one error shape, per-visitor state, routes under /api. The built web app will be served from / here."""
 
 import logging
+import os
 
 from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
@@ -22,7 +23,7 @@ def _error(status, code, message, **extra):
     return JSONResponse({"error": {"code": code, "message": message, **extra}}, status_code=status)
 
 
-def create_app(public=None, world=None, replay_pace=0.05) -> FastAPI:
+def create_app(public=None, world=None, replay_pace=0.05, start_fresh=None) -> FastAPI:
     app = FastAPI(title="Anubhav API", version="1.0.0", description="See contracts/api.md. Drafts only; nothing is dispatched.")
     app.state.public = session.PUBLIC if public is None else public
     app.state.world = session.ensure_world(world or session.WORLD)
@@ -30,6 +31,9 @@ def create_app(public=None, world=None, replay_pace=0.05) -> FastAPI:
     if app.state.public:
         app.state.visitors.prune(app.state.world, force=True)     # leftovers from before a restart
     app.state.replay_pace = replay_pace
+    # On the hosted demo a new visitor opens on an empty workspace (0 lessons, 0 tools) and can switch to the recorded
+    # lessons in the header (owner, Nov 3). Locally and in the tests the recorded lessons stay the default.
+    app.state.start_fresh = (os.environ.get("ANUBHAV_START_FRESH") == "1") if start_fresh is None else start_fresh
 
     @app.exception_handler(ApiError)
     def api_error(_: Request, e: ApiError):

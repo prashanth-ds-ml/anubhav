@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { api, type CompareSide, type Lesson } from "../lib/api";
+import { api, modelName, type CompareSide, type Lesson, withVisitor } from "../lib/api";
 import { LessonActions } from "./LessonActions";
 import { useApi } from "../lib/useApi";
 import { useSettings } from "../lib/ctx";
@@ -61,6 +61,7 @@ function Detail({ x, onChanged }: { x: Lesson; onChanged: () => void }) {
         {x.kind && <span className="pill">{KIND[x.kind] ?? x.kind}</span>}
       </div>
       <h3 className="lesson-title">{x.display || x.what || x.claim}</h3>
+      <p className="small muted">{x.miner?.model ? `Mined by ${modelName(x.miner.model)}` : "Not mined by a model here"}{x.created ? ` · ${x.created.slice(0, 10)}` : ""}</p>
       <p className="small muted">Evidence check: {x.gate.reason}</p>
       <LessonActions lesson={x} onChanged={onChanged} />
       {ev.loading ? <div className="skeleton" aria-busy="true" /> : e?.kind === "trips" ? <TripStrip e={e} target={target && `${target}/chart`} />
@@ -70,7 +71,7 @@ function Detail({ x, onChanged }: { x: Lesson; onChanged: () => void }) {
           <details><summary>Evidence the miner cited</summary><ul>{x.miner.evidence.map((m) => <li key={m}>{m}</li>)}</ul></details>
         ) : null}
       {e && e.kind !== "none" && e.kind !== "imported" && (
-        <p className="small"><a href={`/api/learning/lessons/${encodeURIComponent(x.lesson_id)}/evidence?company=${encodeURIComponent(company)}`} target="_blank" rel="noreferrer">This evidence as data (JSON)</a></p>
+        <p className="small"><a href={withVisitor(`/api/learning/lessons/${encodeURIComponent(x.lesson_id)}/evidence?company=${encodeURIComponent(company)}`)} target="_blank" rel="noreferrer">This evidence as data (JSON)</a></p>
       )}
       <LifeCycle lesson={x} target={target && `${target}/life`} />
     </article>

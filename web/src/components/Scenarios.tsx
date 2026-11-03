@@ -1,5 +1,6 @@
 import { CheckCircle2, ChevronDown, ChevronUp, Circle, Film, Play, X } from "lucide-react";
 import { useEffect, useState } from "react";
+import { withVisitor } from "../lib/api";
 import { useSettings } from "../lib/ctx";
 import { plainReason } from "../lib/text";
 import { liveBudget } from "./LiveMeter";
@@ -325,7 +326,7 @@ export function ScenarioGuide({ id, actions, runId, onClose, onLoop, onStart }: 
           <details className="sc-evidence" open>
             <summary>Check it yourself</summary>
             <ul className="plain small">
-              {runId && <li><a href={`/api/runs/${encodeURIComponent(runId)}`} target="_blank" rel="noreferrer">The full record of the run on screen (JSON)</a></li>}
+              {runId && <li><a href={withVisitor(`/api/runs/${encodeURIComponent(runId)}`)} target="_blank" rel="noreferrer">The full record of the run on screen (JSON)</a></li>}
               {s.evidence.map((e) => <li key={e.href}><a href={e.href} target="_blank" rel="noreferrer">{e.label}</a></li>)}
             </ul>
           </details>

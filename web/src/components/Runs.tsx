@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { api, modelName, type FixPair, type RunRow, type RunSteps } from "../lib/api";
+import { api, modelName, type FixPair, type RunRow, type RunSteps, withVisitor } from "../lib/api";
 import { useApi } from "../lib/useApi";
 import { useSettings } from "../lib/ctx";
 import { errorText, Reply, resultText, shortTime } from "../lib/text";
@@ -31,7 +31,7 @@ function RunItem({ r, on }: { r: RunRow; on: boolean }) {
       <button type="button" className={`run-row ${on ? "on" : ""}`} aria-current={on ? "true" : undefined} onClick={() => go(`runs/${r.run_id}`)}>
         <strong className="run-title">{title(r)}</strong>
         <span className="small muted">
-          {r.agents.map(label).join(" → ")} · {r.tool_calls} call{r.tool_calls === 1 ? "" : "s"}
+          {r.agents.map(label).join(" → ")} · {r.tool_calls} call{r.tool_calls === 1 ? "" : "s"}{r.model ? <> · {modelName(r.model)}</> : null}
           {r.mistakes ? <> · <span className="err-text">{r.mistakes} mistake{r.mistakes === 1 ? "" : "s"}</span></> : null}
           {r.fixed ? <> · <span className="ok-text">{r.fixed === r.mistakes ? "fixed" : `${r.fixed} fixed`}</span></> : null}
         </span>
@@ -119,7 +119,7 @@ function Detail({ id, example }: { id: string; example?: { fix: FixPair; from: s
             {live ? "Live run" : "Recorded"} · {modelName(run.model ?? undefined)}{run.saved_at ? ` · ${shortTime(run.saved_at)}` : ""}
             {run.latency_s ? ` · ${run.latency_s.toFixed(1)} s` : ""}{run.cost_usd != null ? ` · $${run.cost_usd.toFixed(3)}` : ""}
           </p>
-          <a className="small" href={`/api/runs/${encodeURIComponent(run.run_id)}`} target="_blank" rel="noreferrer">Raw record (JSON)</a>
+          <a className="small" href={withVisitor(`/api/runs/${encodeURIComponent(run.run_id)}`)} target="_blank" rel="noreferrer">Raw record (JSON)</a>
         </header>
         <Swimlane run={run} selected={chosen?.call.seq ?? null} onSelect={setSel} fixedSeqs={fixedSeqs} />
         <div className="run-body">

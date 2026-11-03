@@ -1,7 +1,7 @@
 import { test, expect, type Page } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 
-// Sprint 7: every main tab passes the accessibility check in light and dark, and no page scrolls sideways on a laptop or
+// Sprint 7: every main tab passes the accessibility check (with the system set to light, and to dark: the page stays white), and no page scrolls sideways on a laptop or
 // a phone (a wide chart scrolls inside its own box instead).
 
 const TABS: [string, string][] = [

@@ -16,13 +16,34 @@ export class ApiError extends Error {
  * gate also makes that first read alone. This is a workaround; once the server seeds under a lock it is harmless and can go.
  */
 let sessionStarted: Promise<unknown> | null = null;
-const started = () => (sessionStarted ??= fetch("/api/session").then(() => fetch("/api/tools?company=T01")).catch(() => null));
+const started = () => (sessionStarted ??= vfetch("/api/session").then(() => vfetch("/api/tools?company=T01")).catch(() => null));
+
+/**
+ * Inside the Hugging Face Space page the app runs in a cross-site iframe, where the browser drops the cookie, so every
+ * request would be a new visitor (their runs, drafts and lessons gone from the other tabs). The server also sends the id
+ * as a header; the page keeps it and sends it back on every request.
+ */
+const VISITOR = "X-Anubhav-Visitor";
+let visitor: string | null = (() => { try { return sessionStorage.getItem("anubhav-visitor"); } catch { return null; } })();
+async function vfetch(path: string, init: RequestInit = {}): Promise<Response> {
+  const headers = new Headers(init.headers);
+  if (visitor) headers.set(VISITOR, visitor);
+  const r = await fetch(path, { ...init, headers });
+  const id = r.headers.get(VISITOR);
+  if (id && id !== visitor) {
+    visitor = id;
+    try { sessionStorage.setItem("anubhav-visitor", id); } catch { /* the id still lives for this page */ }
+  }
+  return r;
+}
+/** For the event stream, which can't send headers. */
+export const withVisitor = (url: string) => (visitor ? `${url}${url.includes("?") ? "&" : "?"}visitor=${visitor}` : url);
 
 /** One place for every request: JSON in, JSON out, the server's one error shape turned into an ApiError. */
 async function call<T>(path: string, init?: RequestInit): Promise<T> {
   await started();
   let r: Response;
-  try { r = await fetch(path, init); } catch { throw new ApiError("NETWORK", "The server could not be reached."); }
+  try { r = await vfetch(path, init); } catch { throw new ApiError("NETWORK", "The server could not be reached."); }
   const body = await r.json().catch(() => ({}));
   if (!r.ok) throw new ApiError(body?.error?.code ?? "ERROR", body?.error?.message ?? `Request failed (${r.status}).`, body?.error ?? {});
   return body as T;
@@ -91,7 +112,7 @@ export const api = {
   /** Stage 1 of learning, no model: what the miner will read. */
   freshRecords: (c: string) => read<FreshRecords | null>(`/api/fresh/records?${q(c)}`, null),
   /** Stage 2: Muse Spark 1.3 proposes rules and the evidence gate checks each one (a live run). */
-  freshLearn: (c: string) => post<FreshLearned>(`/api/fresh/learn?${q(c)}`, {}),
+  freshLearn: (c: string, model: ModelKey = "spark") => post<FreshLearned>(`/api/fresh/learn?${q(c)}&model=${model}`, {}),
   /** Calls, errors and cost per agent over this company's runs. */
   agentTotals: (c: string) => read<AgentTotal[]>(`/api/logs/agents?${q(c)}`, []),
   compare: (c: string, request: string) => read<Compare | null>(`/api/compare?${q(c, { request })}`, null),
@@ -163,7 +184,9 @@ export function modelName(id?: string): string {
   return id;
 }
 
-export interface RunOptions { company: string; useLessons: boolean; team: boolean; live?: boolean }
+export interface RunOptions { company: string; useLessons: boolean; team: boolean; live?: boolean; model?: ModelKey }
+export type ModelKey = "spark" | "open";
+export const MODEL_LABEL: Record<ModelKey, string> = { spark: "Muse Spark 1.3", open: "Muse Spark Open" };
 export interface RunHandlers {
   onEvent: (e: RunEvent) => void;
   onRun: (info: { run_id: string; mode: string; replay_of?: string; bundled?: boolean }) => void;
@@ -193,14 +216,14 @@ export function startRun(message: string, opt: RunOptions, h: RunHandlers): () =
 
   call<{ run_id: string; mode: string; replay_of?: string; reason?: string }>("/api/chat", {
     method: "POST", headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ company: opt.company, message, mode: opt.live ? "live" : "replay", ...(opt.live ? { model: "spark" } : {}), use_lessons: opt.useLessons, team: opt.team }),
+    body: JSON.stringify({ company: opt.company, message, mode: opt.live ? "live" : "replay", ...(opt.live ? { model: opt.model ?? "spark" } : {}), use_lessons: opt.useLessons, team: opt.team }),
   })
     .then((r) => {
       if (stopped) return;
       h.onNote(r.reason ?? null);
       h.onRun(r);
       const open = () => {
-        es = new EventSource(`/api/chat/stream?run_id=${encodeURIComponent(r.run_id)}&after=${last}`);
+        es = new EventSource(withVisitor(`/api/chat/stream?run_id=${encodeURIComponent(r.run_id)}&after=${last}`));
         const take = (m: MessageEvent) => {
           const e: RunEvent = JSON.parse(m.data);
           last = e.seq;
@@ -242,7 +265,7 @@ export async function voiceStatus(): Promise<{ available: boolean; reason: strin
 /** Send a 16 kHz mono WAV for transcription. Never throws: failures come back as { ok: false }. */
 export async function sendVoice(wav: ArrayBuffer): Promise<VoiceResult> {
   try {
-    const r = await fetch("/api/voice", { method: "POST", headers: { "Content-Type": "audio/wav" }, body: wav });
+    const r = await vfetch("/api/voice", { method: "POST", headers: { "Content-Type": "audio/wav" }, body: wav });
     const body = await r.json();
     if (!r.ok) return { ok: false, code: body?.error?.code ?? "ERROR", message: body?.error?.message ?? "Something went wrong." };
     return { ok: true, ...body };

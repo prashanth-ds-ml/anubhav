@@ -102,7 +102,8 @@ def health():
 def session(ws: Workspace = Ws):
     keys = {name: ws.live_ready(key) for name, key in MODELS.items() if key}
     why_voice = voice_words(ws.live_ready("spark"))
-    return {"public": ws.public, "default_mode": "replay", "default_team": True, "models": {k: {"available": not why, "reason": why} for k, why in keys.items()},
+    return {"public": ws.public, "default_mode": "replay", "default_team": True, "default_model": AGENT_MODEL,
+            "models": {k: {"available": not why, "reason": why, "key": MODELS[k]} for k, why in keys.items()},
             "voice": {"available": why_voice is None, "reason": why_voice},
             "live_runs_left": ws.live_runs_left(), "live_runs_used": ws.state.get("live_runs", 0),
             "live_runs_left_today": max(0, LIVE_CALLS_PER_DAY - ws.calls_today()),
@@ -417,10 +418,10 @@ def fresh_records(company: str = Cid, ws: Workspace = Ws):
 
 
 @api.post("/fresh/learn")
-def fresh_learn(company: str = Cid, ws: Workspace = Ws):
+def fresh_learn(company: str = Cid, model: Literal["open", "spark"] = AGENT_MODEL, ws: Workspace = Ws):
     """Stage 2: Muse Spark 1.3 proposes rules from the records and the evidence gate checks each one. A live run;
     once per visit on a public host."""
-    out, blocked = fresh.learn(ws, company)
+    out, blocked = fresh.learn(ws, company, model)
     if blocked:
         raise ApiError(409, "CAP_REACHED" if ("used" in blocked or "already" in blocked) else "NO_KEY", blocked)
     return out

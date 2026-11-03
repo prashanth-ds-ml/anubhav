@@ -1,0 +1,14 @@
+30d rep0: proposed 9, passed 8, precision 1.0, recall 0.727 (visible 0.889; found ['H-01', 'H-03', 'H-05', 'H-06', 'H-10', 'H-14', 'H-15', 'H-18']), traps [], false 0, $0.0441 (total $0.044)
+60d rep0: proposed 10, passed 9, precision 1.0, recall 0.818 (visible 0.818; found ['H-01', 'H-03', 'H-05', 'H-06', 'H-10', 'H-14', 'H-15', 'H-16', 'H-18']), traps [], false 0, $0.0603 (total $0.104)
+90d rep0: proposed 11, passed 9, precision 1.0, recall 0.818 (visible 0.818; found ['H-01', 'H-03', 'H-05', 'H-06', 'H-10', 'H-14', 'H-15', 'H-16', 'H-18']), traps [], false 0, $0.0626 (total $0.167)
+30d rep1: proposed 9, passed 8, precision 1.0, recall 0.727 (visible 0.889; found ['H-01', 'H-03', 'H-05', 'H-06', 'H-10', 'H-14', 'H-15', 'H-18']), traps [], false 0, $0.0468 (total $0.214)
+60d rep1: proposed 10, passed 9, precision 1.0, recall 0.818 (visible 0.818; found ['H-01', 'H-03', 'H-05', 'H-06', 'H-10', 'H-14', 'H-15', 'H-16', 'H-18']), traps [], false 0, $0.0558 (total $0.270)
+90d rep1: proposed 10, passed 9, precision 1.0, recall 0.818 (visible 0.818; found ['H-01', 'H-03', 'H-05', 'H-06', 'H-10', 'H-14', 'H-15', 'H-16', 'H-18']), traps [], false 0, $0.0607 (total $0.330)
+30d rep2: proposed 9, passed 8, precision 1.0, recall 0.727 (visible 0.889; found ['H-01', 'H-03', 'H-05', 'H-06', 'H-10', 'H-14', 'H-15', 'H-18']), traps [], false 0, $0.0475 (total $0.378)
+60d rep2: proposed 10, passed 9, precision 1.0, recall 0.818 (visible 0.818; found ['H-01', 'H-03', 'H-05', 'H-06', 'H-10', 'H-14', 'H-15', 'H-16', 'H-18']), traps [], false 0, $0.0537 (total $0.432)
+90d rep2: proposed 11, passed 9, precision 1.0, recall 0.818 (visible 0.818; found ['H-01', 'H-03', 'H-05', 'H-06', 'H-10', 'H-14', 'H-15', 'H-16', 'H-18']), traps [], false 0, $0.0636 (total $0.495)
+30 days: recall 0.727 (visible 0.889), precision 1.0, traps [], $0.1385
+60 days: recall 0.818 (visible 0.818), precision 1.0, traps [], $0.1699
+90 days: recall 0.818 (visible 0.818), precision 1.0, traps [], $0.1869
+verdict: {'B1': True, 'B2': True, 'B3': True, 'met': True, 'partial': False} | stopped: None | $0.495
+saved artifacts\learning\exp018_20261103_205939.json

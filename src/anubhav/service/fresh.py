@@ -76,13 +76,22 @@ def status(ws, cid) -> dict:
             "mined_here": bool(ws.state.get("mined", {}).get(cid)), "mines_left": mines_left(ws, cid)}
 
 
+def start_all(ws) -> None:
+    """A new visitor on the hosted demo: no lessons and no tools, for every company (one store holds them all)."""
+    from .session import COMPANIES
+    ws.store()                    # created (and seeded) first, so it can't be re-seeded after emptying
+    ws.clear_lessons()
+    ws.state["fresh"] = {c: True for c in COMPANIES}
+
+
 def start_fresh(ws, cid) -> dict:
     """Empty this visitor's lessons and tools (one store) and the company's drafts. The records are untouched."""
     ws.store()                    # a new visitor's store is created (and seeded) first, so it can't be re-seeded after emptying
     ws.clear_lessons()
     ws.company(cid).runtime.reset()
     ws.state.pop("conversation", None)
-    ws.state.setdefault("fresh", {})[cid] = True
+    from .session import COMPANIES
+    ws.state["fresh"] = {c: True for c in COMPANIES}      # the store is shared by all companies, so all are empty now
     return status(ws, cid)
 
 
@@ -113,12 +122,12 @@ def mines_left(ws, cid) -> int | None:
     return max(0, MINES_PER_VISIT - int(ws.state.get("mined", {}).get(cid, 0)))
 
 
-def learn(ws, cid) -> tuple[dict | None, str | None]:
-    """Stage 2: Muse Spark 1.3 reads the digest and proposes rules; the evidence gate checks each against the full
+def learn(ws, cid, model="spark") -> tuple[dict | None, str | None]:
+    """Stage 2: the chosen model (Muse Spark 1.3 by default) reads the digest and proposes rules; the evidence gate checks each against the full
     records. Returns (result, None) or (None, why not). Counts as one live run, and once per visit when hosted."""
     if ws.public and mines_left(ws, cid) == 0:
         return None, "This visit has already learned from the records once. Start fresh again in a new visit, or run it locally."
-    client, blocked = ws.live_client("spark")
+    client, blocked = ws.live_client(model)
     if blocked:
         return None, blocked
     C = ws.company(cid)

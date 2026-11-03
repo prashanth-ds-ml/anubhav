@@ -647,3 +647,12 @@ table.custody td, table.custody th { vertical-align: top; text-align: left; }
 .learned-row.v-err .learned-what, .learned-row.v-expired .learned-what { font-weight: 400; } /* not in use: plainer, same contrast */
 .learned-row > .small { grid-column: 2; }
 @media (max-width: 700px) { .learned-row { grid-template-columns: 1fr; } .learned-row > .small { grid-column: 1; } }
+
+/* Workspace switch (owner, Nov 3): start from zero, or the recorded lessons */
+.ws-switch { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.ws-switch button { min-height: 36px; padding: 0 12px; border: 1px solid var(--border); border-radius: 999px; background: var(--surface); color: var(--text); font: inherit; font-size: 14px; cursor: pointer; }
+.ws-switch button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 600; }
+.ws-switch button:hover:not([aria-pressed="true"]) { border-color: var(--accent); }
+.ws-switch button:disabled { cursor: progress; }
+.model-pick { display: inline-flex; align-items: center; gap: 6px; }
+.model-pick select { min-height: 36px; padding: 0 8px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); color: var(--text); font: inherit; font-size: 14px; }

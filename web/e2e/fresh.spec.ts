@@ -77,3 +77,36 @@ test("lessons on screen name the godown in full; the gate lesson reads as a pers
   await expect(page.getByRole("article", { name: "Lesson L-T01-002" }).getByRole("heading", { level: 3 }))
     .toHaveText(/Lakshmi Agencies \(.+, Jangaon · site C0003\): no truck longer than 22 ft gets in/);
 });
+
+test("the workspace switch in the header: start from zero, then back to the recorded lessons", async ({ page }) => {
+  await page.goto("/#learning");
+  const sw = page.getByRole("group", { name: "Workspace" });
+  await expect(sw.getByRole("button", { name: "With recorded lessons" })).toHaveAttribute("aria-pressed", "true");
+  await sw.getByRole("button", { name: "Start from zero" }).click();
+  await expect(sw.getByRole("button", { name: "Start from zero" })).toHaveAttribute("aria-pressed", "true");
+  await expect(sw).toContainText("0 lessons · 0 tools");
+  await expect(page.getByRole("status", { name: "What this workspace knows" })).toContainText("started fresh");
+  await sw.getByRole("button", { name: "With recorded lessons" }).click();
+  await expect(sw.getByRole("button", { name: "With recorded lessons" })).toHaveAttribute("aria-pressed", "true");
+  await expect(sw).toContainText(/[1-9]\d* lessons/);           // "10 lessons" also contains "0 lessons"
+  await page.goto("/#learning/L-T01-002");
+  await expect(page.getByRole("article", { name: "Lesson L-T01-002" })).toBeVisible();
+});
+
+test("the model picker: Spark 1.3 chosen, a model this host can't run is disabled, and the header names the choice", async ({ page }) => {
+  await liveOn(page);
+  await page.goto("/");
+  const pick = page.getByRole("combobox", { name: "Model for live runs" });
+  await expect(pick).toHaveValue("spark");
+  await expect(pick.locator("option[value=open]")).toHaveJSProperty("disabled", true);
+  await expect(page.getByRole("status", { name: /Live mode, Muse Spark 1\.3/ })).toBeVisible();
+});
+
+test("without live mode there is nothing to choose, and lessons and runs still say which model made them", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.getByRole("combobox", { name: "Model for live runs" })).toHaveCount(0);
+  await page.goto("/#learning/L-T01-002");
+  await expect(page.getByRole("article", { name: "Lesson L-T01-002" })).toContainText("Mined by Muse Spark 1.3");
+  await page.goto("/#runs");
+  await expect(page.locator(".run-row").first()).toContainText(/Muse Spark (Open|1\.3)/);
+});

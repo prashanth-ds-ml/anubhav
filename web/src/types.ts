@@ -26,6 +26,8 @@ export interface Vehicle {
 }
 export interface Draft {
   draft_id: string; status: string; vehicle_id: string; delivery_date: string; orders: string[];
+  /** The run that made it, and the model that run used. */
+  run_id?: string | null; model?: string | null;
   load: { kg: number; m3: number; value_rs: number; stops: number; sites: string[]; handling_classes: string[] };
   warnings: { code: string; message: string }[];
   /** "live": a draft in this visitor's workspace, which a person can approve or reject; "run": rebuilt from a recording. */
@@ -47,8 +49,8 @@ export interface Company {
 export interface Suggestion { label: string; request: string; has_replay: boolean; }
 export interface CompanyRow { company: string; name: string; sites: number; vehicles: number; towns: number; plan_date: string; }
 export interface Session {
-  public: boolean; default_mode: string; default_team: boolean;
-  models: Record<string, { available: boolean; reason: string | null }>;
+  public: boolean; default_mode: string; default_team: boolean; default_model?: string;
+  models: Record<string, { available: boolean; reason: string | null; key?: string }>;
   voice: { available: boolean; reason: string | null };
   /** The smaller of this visit's and today's runs left. */
   live_runs_left: number;

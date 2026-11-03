@@ -1,6 +1,6 @@
 import { CheckCircle2, Truck, XCircle } from "lucide-react";
 import { useEffect, useState } from "react";
-import { api, ApiError, type Lesson } from "../lib/api";
+import { api, ApiError, modelName, type Lesson } from "../lib/api";
 import { TruckScale } from "./TruckScale";
 import { useApi } from "../lib/useApi";
 import { useSettings } from "../lib/ctx";
@@ -136,7 +136,7 @@ export function PlanCard({ runId, lessonsOn }: { runId: string; lessonsOn: boole
               </div>
               <div className="plan-meta small">
                 <span className="mono">{x.draft_id}</span> · {x.orders.join(", ")}<br />
-                <span className="muted">{x.source === "live" ? "Live draft, not dispatched" : "Draft only, not dispatched"}</span>
+                <span className="muted">{x.source === "live" ? "Live draft, not dispatched" : "Draft only, not dispatched"}{x.model ? ` · ${modelName(x.model)}` : ""}</span>
               </div>
             </div>
             {g && v && <TruckScale rows={[{ vehicle: x.vehicle_id, length_ft: v.length_ft }]} limit={limitOf(g)} lesson={g.rule} />}
