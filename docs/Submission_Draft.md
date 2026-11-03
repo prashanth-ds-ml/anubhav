@@ -38,7 +38,7 @@ Every experiment was pre-registered, and its files were frozen by hash before an
 
 ## What was built during the hackathon
 - **Everything in the repository was built during the event.** The first commit (`9ca6143`) is Oct 27, 2026, 01:50 IST, which is Oct 26, 4:20 PM ET, after the kickoff. The git history (134 commits so far) shows the work day by day.
-- **Built:** the synthetic world generator, the 27-tool broker and MCP server, the LangGraph agent, the safety validator, the lesson miner and evidence gate, domain packs with the leak check, the tool-use (harness) loop, learned tools, the agent team, the React web app and API, the Streamlit app, 19 pre-registered experiments and 563 tests.
+- **Built:** the synthetic world generator, the 27-tool broker and MCP server, the LangGraph agent, the safety validator, the lesson miner and evidence gate, domain packs with the leak check, the tool-use (harness) loop, learned tools, the agent team, the React web app and API, the Streamlit app, 20 pre-registered experiments and 751 tests (597 Python, 141 end-to-end, 13 unit).
 - **Methods we adapted (reimplemented, no code copied):**
   - **Harness²** (Google Research, "Harness^2: Recursive Agent Harnessing for an Open World", arXiv 2610.14224). Our tool-use loop adapts its Propose–Probe–Compose method in a bounded form: small text patches, a paired old-vs-new test and human approval. We make no claim to that research.
   - **Meta's legal-agent-workshop** (`meta-models/legal-agent-workshop`): client timeout and retries, a clean stop when a model call fails, and a code check of the reply's claims.
@@ -73,7 +73,7 @@ The main result was measured on both Muse Spark models. Code checks everything a
 - Mining misses about 3 in 10 hidden rules, and every lesson still needs a person.
 - The leak check is our own token check, not a formal privacy guarantee.
 
-All 19 experiments, with their verdicts, failures included: `docs/trackers/experiments.md` and the app's Proof tab.
+All 20 experiments, with their verdicts, failures included: `docs/trackers/experiments.md` and the app's Proof tab.
 
 ## Links
 - **Code:** https://github.com/prashanth-ds-ml/anubhav

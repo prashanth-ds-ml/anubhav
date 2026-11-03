@@ -172,7 +172,7 @@ date: 2026-11-03
    📷 Screen 7.1: measured on both models
 
    ![Screen 7.1: Check our claims](demo_screens/7-1-claims.png)
-2. **Benchmarks**: the world it had never seen (T01 21/42 → 36/42, unsafe 2 → 0), then scroll the scoreboard of 19 pre-registered experiments; pause on a red ✕.
+2. **Benchmarks**: the world it had never seen (T01 21/42 → 36/42, unsafe 2 → 0), then scroll the scoreboard of 20 pre-registered experiments; pause on a red ✕.
 
    📷 Screen 7.2: Benchmarks
 
