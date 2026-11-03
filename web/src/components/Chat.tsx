@@ -304,6 +304,7 @@ export function Chat({ onEvents, prefill, ask, scenario, onStartScenario, action
                   A dispatcher near Warangal knows a 32 ft truck can't get into one Jangaon godown. No system records that, so an AI
                   connected to the company's data still sends the truck. Anubhav finds such rules in past trips, and code checks the
                   evidence before a person sees them. All companies and records here are synthetic.
+                  {" "}A former FMCG logistics manager told us one truck plan can take 1–1.5 hours, with up to 10 re-plans a day in festival season.
                 </p>
                 <Impact className="impact-alt" />
               </details>

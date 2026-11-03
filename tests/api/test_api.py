@@ -628,3 +628,21 @@ def test_lessons_carry_a_display_text_for_people_and_the_agents_text_is_unchange
     rows = client(env).get("/api/learning/lessons?company=T01").json()
     gate = next(l for l in rows if l["kind"] == "site_access")
     assert "gets in" in gate["display"] and "cannot enter" in gate["what"]        # the agent keeps the measured wording
+
+
+def test_on_a_public_host_rejecting_never_starts_a_live_revise(env, monkeypatch):
+    c = client(env)
+    c.get("/api/session")
+    orders = c.get("/api/dashboard/orders").json()["orders"]
+    free = sorted((v for v in c.get("/api/dashboard/fleet").json()["vehicles"] if v["free"]), key=lambda v: -v["payload_kg"])
+    args = next(({"order_ids": [o["order_id"]], "vehicle_id": v["vehicle_id"]}) for o in orders for v in free if o["kg"] <= v["payload_kg"])
+    live_env(monkeypatch, [mock_tool_call("create_dispatch_draft", args), mock_final("draft")])
+    run = c.post("/api/chat", json={"message": "plan it", "mode": "live", "use_lessons": False}).json()
+    list(stream.follow(run["run_id"]))
+    drafts = c.get("/api/dashboard/drafts").json()["drafts"]
+    if not drafts:
+        pytest.skip("validator refused the picked pair")
+    used = c.get("/api/session").json()["live_runs_used"]
+    out = c.post(f"/api/dashboard/drafts/{drafts[0]['draft_id']}/decide", json={"decision": "reject", "notes": "too long for the gate", "revise": True}).json()
+    assert out["status"] == "rejected" and out["revise_run_id"] is None and "local run" in out["reason"]
+    assert c.get("/api/session").json()["live_runs_used"] == used          # nothing spent

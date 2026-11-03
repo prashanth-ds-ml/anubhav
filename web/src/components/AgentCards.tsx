@@ -125,6 +125,7 @@ export function AgentCards() {
         <div>
           <h2 id="ag-title">Each agent has its own way to learn</h2>
           <p className="small muted">Agents propose changes; code checks them; a person approves. The numbers below are measured. Where nothing is measured yet, it says so.</p>
+          <p className="small muted">Changes to an agent's own instructions follow Google Research's Harness² method (Propose–Probe–Compose), in a bounded form.</p>
         </div>
         {team?.M0 && team.M1 && (
           <div className="team-line" aria-label="The team, EXP-013">

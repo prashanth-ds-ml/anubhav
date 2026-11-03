@@ -185,6 +185,8 @@ def dash_decide(draft_id: str, body: DraftDecision, company: str = Cid, ws: Work
     out = {"draft_id": draft_id, "status": ws.company(company).runtime.draft(draft_id)["status"], "revise_run_id": None}
     if body.decision == "approve" or not body.revise:
         return out
+    if ws.public:      # sending the notes back would start a live run; the hosted page never asks for it
+        return {**out, "reason": "on the hosted demo the notes are saved; sending them back to the agent needs a local run"}
     cp = checkpoints.for_draft(ws.sid, company, draft_id)
     if not cp:
         return {**out, "reason": "no saved conversation for this plan, so the agent can't revise it"}
