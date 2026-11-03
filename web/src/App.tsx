@@ -16,6 +16,7 @@ import { Info } from "lucide-react";
 import { useNarrow } from "./lib/useNarrow";
 import { useSettings } from "./lib/ctx";
 import { go, useRoute } from "./lib/route";
+import { api } from "./lib/api";
 import type { RunEvent } from "./types";
 
 // Each step says what it means. Approve and Improve happen outside a run (a person approves what was learned),
@@ -38,7 +39,7 @@ const STEP: Record<string, string> = {
 export default function App() {
   const [events, setEvents] = useState<RunEvent[]>([]);
   const [runId, setRunId] = useState<string | null>(null);
-  const { company, setCompany, companies } = useSettings();
+  const { company, setCompany, companies, bumpData } = useSettings();
   const route = useRoute();
   const [prefill, setPrefill] = useState({ text: "", n: 0 });
   const [ask, setAsk] = useState({ label: "", n: 0 }); // a tab asks the chat to run a saved request
@@ -58,6 +59,8 @@ export default function App() {
     focusBox: () => { toDesk(); chatActions.current?.focusBox(); },
     toolApproved: () => chatActions.current!.toolApproved(),
     gateActive: () => chatActions.current!.gateActive(),
+    freshStart: () => { toDesk(); return chatActions.current!.freshStart(); },
+    mined: () => chatActions.current!.mined(),
   };
   const [reached, setReached] = useState<LoopStep[]>([]); // Approve and Improve, once a scenario reaches them
   function startScenario(id: string) {
@@ -65,6 +68,8 @@ export default function App() {
     if (!s) return;
     setScenario(id);
     setReached([]);
+    // The recorded scenarios assume the recorded lessons: if this visitor started fresh, bring those back first.
+    if (id !== "S0") void api.freshStatus(s.company).then((st) => (st?.fresh ? api.freshRestore(s.company).then(() => bumpData()) : undefined));
     toDesk();
     if (s.id !== "S3" && s.company !== company) setCompany(s.company); // S3 switches company as its first step
   }

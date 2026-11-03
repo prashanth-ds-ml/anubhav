@@ -83,6 +83,14 @@ export const api = {
   curve: () => read<{ measured: boolean; note?: string; [k: string]: unknown }>("/api/proof/curve", { measured: false }),
   /** A run laid out for inspection: its events, each agent's work, and each mistake an agent fixed itself. */
   steps: (runId: string) => read<RunSteps | null>(`/api/runs/${encodeURIComponent(runId)}/steps`, null),
+  /** Start from nothing: this visitor's lessons, tools and the agents' versions. */
+  freshStatus: (c: string) => read<FreshStatus | null>(`/api/fresh/status?${q(c)}`, null),
+  freshStart: (c: string) => post<FreshStatus>(`/api/fresh/start?${q(c)}`, {}),
+  freshRestore: (c: string) => post<FreshStatus>(`/api/fresh/restore?${q(c)}`, {}),
+  /** Stage 1 of learning, no model: what the miner will read. */
+  freshRecords: (c: string) => read<FreshRecords | null>(`/api/fresh/records?${q(c)}`, null),
+  /** Stage 2: Muse Spark 1.3 proposes rules and the evidence gate checks each one (a live run). */
+  freshLearn: (c: string) => post<FreshLearned>(`/api/fresh/learn?${q(c)}`, {}),
   /** Calls, errors and cost per agent over this company's runs. */
   agentTotals: (c: string) => read<AgentTotal[]>(`/api/logs/agents?${q(c)}`, []),
   compare: (c: string, request: string) => read<Compare | null>(`/api/compare?${q(c, { request })}`, null),
@@ -92,6 +100,8 @@ export interface AgentRow { agent: string; name: string; purpose: string; status
 export interface Lesson {
   lesson_id: string; claim: string; what: string; state: string; effect: string; source: string; created: string; reviewer: string;
   kind?: string; params?: Record<string, any>; valid_from?: string | null; valid_to?: string | null;
+  /** The lesson in full, for people (godown by name, type and town). The agent reads `what`, the measured wording. */
+  display?: string;
   gate: { verdict: string; reason: string; support: number; counter: number; strength: string; enforceable?: boolean };
   miner: { evidence?: string[]; counter_evidence?: string[]; confidence?: string; model?: string } | null;
   events: { ts: string; actor: string; action: string; from_state: string | null; to_state: string; note: string }[];
@@ -134,6 +144,13 @@ export interface RunSteps {
   cost_usd: number | null; latency_s: number | null; events: RunEvent[]; agents: AgentTurn[]; fixes: FixPair[];
 }
 export interface AgentTotal { agent: string; runs: number; answered: number; stopped_early: number; tool_calls: number; tool_errors: number; cost_usd: number }
+export interface FreshStatus {
+  fresh: boolean; lessons: number; active_lessons: number; waiting_lessons: number; tools: number;
+  agent_versions: Record<string, number>; mined_here: boolean; mines_left: number | null;
+}
+export interface FreshRecords { trips: number; stops: number; drivers_notes: number; notes_by_language: Record<string, number>; planner_messages: number; sites: number; vehicles: number; from: string | null; to: string | null; days: number }
+export interface FreshLesson { lesson_id: string; kind: string; state: string; display: string; what: string; reason: string; enforceable?: boolean | null }
+export interface FreshLearned { model: string; cost_usd: number; latency_s: number; lessons: FreshLesson[]; counts: Record<string, number> }
 export interface Compare { request: string; cold: CompareSide | null; with_lessons: CompareSide | null; with_learned_tools: CompareSide | null; }
 
 /** "meta-models/muse-spark-open-1026" -> "Muse Spark Open". Scripted test runs say so. */

@@ -20,7 +20,7 @@ from ..learning.store import describe
 from ..runtime.broker import Broker, Session
 from ..runtime.company import CompanyData
 from ..runtime.query import sandbox
-from ..service import checkpoints, evidence, knowledge, proof as proof_files, run_view, runs, stream, views
+from ..service import checkpoints, evidence, fresh, knowledge, proof as proof_files, run_view, runs, stream, views
 from ..service.session import AGENT_MODEL, COMPANIES, LIVE_CALLS_PER_DAY, LIVE_RUNS_PER_SESSION, MODELS, SUGGESTIONS, Workspace, harness_store
 from ..ui import logs
 from .deps import ApiError, Cid, LocalOnly, Ws, live
@@ -376,7 +376,42 @@ def agent_detail(agent_id: str, company: str = Cid, ws: Workspace = Ws):
 @api.get("/learning/lessons")
 def lessons(company: str = Cid, state: str | None = None, ws: Workspace = Ws):
     C, S = ws.company(company), ws.store()
-    return [dict(l, what=describe(l, C), events=S.events(l["lesson_id"])) for l in S.list(company, {state} if state else None)]
+    return [dict(l, what=describe(l, C), display=fresh.display(l, C), events=S.events(l["lesson_id"])) for l in S.list(company, {state} if state else None)]
+
+
+# ---------- start from nothing (final demo plan): only this visitor's workspace changes
+@api.get("/fresh/status")
+def fresh_status(company: str = Cid, ws: Workspace = Ws):
+    """What this workspace has learned now: lessons, tools, the agents' versions, and whether it was started fresh."""
+    return fresh.status(ws, company)
+
+
+@api.post("/fresh/start")
+def fresh_start(company: str = Cid, ws: Workspace = Ws):
+    """Empty this visitor's lessons, learned tools and drafts. The company's records are untouched."""
+    return fresh.start_fresh(ws, company)
+
+
+@api.post("/fresh/restore")
+def fresh_restore(company: str = Cid, ws: Workspace = Ws):
+    """Back to the lessons the recorded runs and the measured results used."""
+    return fresh.restore(ws, company)
+
+
+@api.get("/fresh/records")
+def fresh_records(company: str = Cid, ws: Workspace = Ws):
+    """Stage 1 of learning, no model: what the miner reads, counted from the records."""
+    return fresh.records(ws, company)
+
+
+@api.post("/fresh/learn")
+def fresh_learn(company: str = Cid, ws: Workspace = Ws):
+    """Stage 2: Muse Spark 1.3 proposes rules from the records and the evidence gate checks each one. A live run;
+    once per visit on a public host."""
+    out, blocked = fresh.learn(ws, company)
+    if blocked:
+        raise ApiError(409, "CAP_REACHED" if ("used" in blocked or "already" in blocked) else "NO_KEY", blocked)
+    return out
 
 
 @api.get("/learning/lessons/{lesson_id}/evidence")

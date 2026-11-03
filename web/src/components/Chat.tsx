@@ -258,6 +258,15 @@ export function Chat({ onEvents, prefill, ask, scenario, onStartScenario, action
     setCompany: (c) => { if (c !== company) setCompany(c); },
     gateRule: (decision) => gateRule(decision),
     gateActive: async () => !!(await gateLesson())?.state.startsWith("ACTIVE"),
+    freshStart: async () => {
+      stop.current();
+      const s = await api.freshStart(company);
+      setMsgs([]);
+      bumpData();
+      const v = Object.values(s.agent_versions);
+      return `Started fresh: ${s.lessons} lessons · ${s.tools} tools · agents at version ${v.length && v.every((x) => x === v[0]) ? v[0] : "1"}.`;
+    },
+    mined: async () => !!(await api.freshStatus(company))?.mined_here,
     focusBox: () => field.current?.focus(),
     toolApproved: async () => (await api.tools(company)).some((t) => t.status === "active"),
   };

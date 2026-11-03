@@ -19,7 +19,7 @@ const save = async (p, name) => { await p.mouse.move(2, 2); await p.waitForTimeo
 // The first screen, and S1 from start to finish.
 let p = await page(1440, 900);
 await p.goto(BASE);
-await p.getByRole("heading", { name: "Try it: six scenarios" }).waitFor({ timeout: 90_000 });
+await p.getByRole("heading", { name: "Try it: seven scenarios" }).waitFor({ timeout: 90_000 });
 await save(p, "start");
 await p.getByRole("button", { name: "Start S1" }).click();
 const g = p.getByRole("region", { name: /Scenario S1/ });

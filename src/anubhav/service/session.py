@@ -152,7 +152,9 @@ class Workspace:
         """Copy the EXP-008 lesson store (mined by Muse, approved by the fixed review rule) into this demo store."""
         dst = dst or self.store_path()
         if EXP008:
-            shutil.copy(EXP008[-1], dst)
+            # SQLite's own backup, not a file copy: a page reading this store at the same moment never sees it half-written
+            with closing(sqlite3.connect(EXP008[-1])) as src, closing(sqlite3.connect(dst)) as out:
+                src.backup(out)
             return True
         bundle = DEMO / "exp008_lessons.json"
         if not bundle.exists():

@@ -80,7 +80,7 @@ def test_the_route_list_above_is_complete(env):
              "/api/runs/{run_id}", "/api/runs/{run_id}/feedback", "/api/learning/lessons/{lesson_id}/decide", "/api/tools/candidates/{key}/check",
              "/api/tools/{tool_id}/decide", "/api/tools/{tool_id}/retire", "/api/packs/publish", "/api/packs/revoke", "/api/review/run",
              "/api/dashboard/drafts/{draft_id}/decide", "/api/handoffs", "/api/runs/{run_id}/resume", "/api/compare", "/api/agents/{agent_id}", "/api/harness/{version_id}/probe", "/api/harness/{version_id}/decide", "/api/logs/runs/{run_id}", "/api/voice", "/api/learning/lessons/{lesson_id}/evidence",
-             "/api/runs/{run_id}/steps"}
+             "/api/runs/{run_id}/steps", "/api/fresh/status", "/api/fresh/start", "/api/fresh/restore", "/api/fresh/records", "/api/fresh/learn"}
     normal = {p.replace("/analyst", "/{agent_id}").replace("/h-001/", "/{version_id}/") for p in tested}
     assert paths <= normal | other, paths - normal - other
 
@@ -587,3 +587,44 @@ def test_proof_adds_open_weights_and_demo_world_mining(env):
     assert all("muse-spark-open" in a["spark_open"]["model"] and a["spark_open"]["runs"] == 96 for a in ow)
     m = entries["EXP-008"]
     assert len(m["repeats"]) == 2 and 0 < m["pooled"]["precision"] <= 1 and m["pooled"]["traps_admitted"] == 0
+
+
+# ---------- start from nothing (final demo plan, Nov 3)
+def test_start_fresh_empties_only_this_visitors_lessons_and_restore_brings_them_back(env):
+    c, other = client(env), client(env)
+    before = c.get("/api/fresh/status?company=T01").json()
+    assert before["lessons"] > 0 and before["fresh"] is False and before["agent_versions"]["planner"] >= 1
+    after = c.post("/api/fresh/start?company=T01").json()
+    assert after == {**after, "fresh": True, "lessons": 0, "tools": 0}
+    assert c.get("/api/learning/lessons?company=T01").json() == []
+    assert other.get("/api/fresh/status?company=T01").json()["lessons"] > 0          # another visitor keeps theirs
+    back = c.post("/api/fresh/restore?company=T01").json()
+    assert back["lessons"] == before["lessons"] and back["fresh"] is False
+
+
+def test_the_records_stage_counts_what_the_miner_reads_without_a_model(env):
+    r = client(env).get("/api/fresh/records?company=T01").json()
+    assert r["stops"] > 0 and r["drivers_notes"] > 0 and r["sites"] > 0 and r["from"] < r["to"]
+
+
+def test_learning_needs_live_mode_and_runs_once_per_visit_when_hosted(env, monkeypatch):
+    from anubhav.service import fresh
+    c = client(env)
+    c.post("/api/fresh/start?company=T01")
+    assert c.post("/api/fresh/learn?company=T01").json()["error"]["code"] == "NO_KEY"   # no key: nothing spent
+    monkeypatch.setenv(muse.KEYS["spark"], "test")
+    monkeypatch.setattr(muse, "client", lambda name: MockClient([]))
+    prop = {"kind": "site_access", "params": {"site_id": "C0003", "max_length_ft": 22}, "claim": "C0003 max 22 ft", "evidence": "returns"}
+    monkeypatch.setattr(fresh.miner, "mine", lambda client, C, d: ([prop], {"model": "mock", "cost_usd": 0.01, "latency_s": 1}))
+    r = c.post("/api/fresh/learn?company=T01").json()
+    assert len(r["lessons"]) == 1 and r["lessons"][0]["display"] and r["lessons"][0]["reason"]
+    assert c.get("/api/fresh/status?company=T01").json()["mines_left"] == 0
+    again = c.post("/api/fresh/learn?company=T01").json()
+    assert again["error"]["code"] == "CAP_REACHED"
+    assert c.get("/api/session").json()["live_runs_used"] == 1                       # mining counted as one live run
+
+
+def test_lessons_carry_a_display_text_for_people_and_the_agents_text_is_unchanged(env):
+    rows = client(env).get("/api/learning/lessons?company=T01").json()
+    gate = next(l for l in rows if l["kind"] == "site_access")
+    assert "gets in" in gate["display"] and "cannot enter" in gate["what"]        # the agent keeps the measured wording

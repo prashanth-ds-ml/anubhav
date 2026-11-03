@@ -9,6 +9,7 @@ import { FOCUS_EVENT, peekFocus, useFocusTarget } from "../lib/focus";
 import { go } from "../lib/route";
 import { ClosureStory, TripStrip } from "./EvidenceChart";
 import { LifeCycle } from "./LifeCycle";
+import { LearnFromRecords } from "./LearnFromRecords";
 
 const STATE: Record<string, { text: string; cls: string }> = {
   ACTIVE_POLICY: { text: "Active rule: code enforces it", cls: "ok" },
@@ -59,7 +60,7 @@ function Detail({ x, onChanged }: { x: Lesson; onChanged: () => void }) {
         <span className={`pill ${st.cls}`}>{st.text}</span>
         {x.kind && <span className="pill">{KIND[x.kind] ?? x.kind}</span>}
       </div>
-      <h3 className="lesson-title">{x.what || x.claim}</h3>
+      <h3 className="lesson-title">{x.display || x.what || x.claim}</h3>
       <p className="small muted">Evidence check: {x.gate.reason}</p>
       <LessonActions lesson={x} onChanged={onChanged} />
       {ev.loading ? <div className="skeleton" aria-busy="true" /> : e?.kind === "trips" ? <TripStrip e={e} target={target && `${target}/chart`} />
@@ -77,7 +78,7 @@ function Detail({ x, onChanged }: { x: Lesson; onChanged: () => void }) {
 }
 
 export function Learning({ item }: { item?: string | null }) {
-  const { company, requests, dataVersion } = useSettings();
+  const { company, requests, dataVersion, bumpData } = useSettings();
   const [version, setVersion] = useState(0); // a decision on a lesson reloads the lessons and the timeline
   const t = useApi(() => api.timeline(company), [company, version, dataVersion], { keep: true });
   const l = useApi(() => api.lessons(company), [company, version, dataVersion], { keep: true });
@@ -115,6 +116,7 @@ export function Learning({ item }: { item?: string | null }) {
       <h3>What it has learned</h3>
       <p className="small muted">The Lesson Miner proposes, code checks the evidence, and a person approves each lesson before it changes any plan.
         You can undo an approval, retire a lesson or approve it again. That changes your own workspace and what live runs use; the saved runs stay as they were recorded.</p>
+      <LearnFromRecords />
       {l.loading ? <div className="skeleton" aria-busy="true" /> : lessons.length === 0 ? <p className="empty">Nothing learned yet for this company.</p> : (
         <div className="learning-panes">
           <nav className="lesson-list" aria-label="Lessons">
@@ -130,7 +132,7 @@ export function Learning({ item }: { item?: string | null }) {
                         <button type="button" className={`lesson-row ${on ? "on" : ""}`} aria-current={on ? "true" : undefined}
                           title={st.text} onClick={() => go(`learning/${x.lesson_id}`)}>
                           <span className="mono small">{x.lesson_id}</span><span className="sr-only">: </span>
-                          <span className="lesson-row-text">{x.what || x.claim}</span>
+                          <span className="lesson-row-text">{x.display || x.what || x.claim}</span>
                           <span className={`pill ${st.cls}`}>{KIND[x.kind ?? ""] ?? st.text}</span>
                         </button>
                       </li>
@@ -140,7 +142,7 @@ export function Learning({ item }: { item?: string | null }) {
               </section>
             ))}
           </nav>
-          {selected && <Detail key={selected.lesson_id} x={selected} onChanged={() => setVersion((v) => v + 1)} />}
+          {selected && <Detail key={selected.lesson_id} x={selected} onChanged={() => { setVersion((v) => v + 1); bumpData(); }} />}
         </div>
       )}
 

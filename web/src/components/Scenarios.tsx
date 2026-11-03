@@ -27,6 +27,10 @@ export interface ScenarioActions {
   toolApproved: () => Promise<boolean>;
   /** True while this visitor's gate-size rule is active. */
   gateActive: () => Promise<boolean>;
+  /** Empty this visitor's lessons, tools and drafts. Returns what the workspace knows now, in words. */
+  freshStart: () => Promise<string>;
+  /** True once this visitor has learned from the records for this company. */
+  mined: () => Promise<boolean>;
 }
 
 /** The two loop steps that happen outside a run; a scenario lights them when it reaches them. */
@@ -56,6 +60,26 @@ export interface Scenario {
 }
 
 export const SCENARIOS: Scenario[] = [
+  {
+    id: "S0", title: "Start from nothing", kind: "live", minutes: 3, company: "T01",
+    blurb: "Ask, watch it learn from the records, approve a rule, ask again: 32 ft, then 22 ft.",
+    proves: "It learns a company's unwritten rules from its own records, live: code checks the evidence, you approve, and the next plan changes.",
+    honest: "Live on Muse Spark 1.3; uses 3 live runs (two questions and one learning). In our check the gate rule was found in 3 of 3 fresh runs; a model can answer differently.",
+    steps: [
+      { label: "Start fresh", caption: "Empties your own lessons, tools and drafts. The company's records stay as they are.", act: (a) => a.freshStart() },
+      { label: "Ask for a truck", caption: "In Telugu, by voice or typed: \"Repu Jangaon Lakshmi Agencies load ki bandi pettu.\" Every tool call shows what it asked and what came back. With nothing learned, it can't know this gate's limit.", live: true, act: (a) => a.runLive(JANGAON_TEXT) },
+      { label: "Learn from the records", caption: "In Learning, press Learn from the records. Muse Spark 1.3 reads 90 days of trips and drivers' notes and proposes rules; code checks each one against the full records.", live: true,
+        act: (a) => a.openTab("learning", "learn"), until: (a) => a.mined(), auto: true },
+      { label: "Approve the gate rule", caption: "Find Lakshmi Agencies, Jangaon: no truck longer than 22 ft gets in. Look at its evidence, then approve it as a rule (code will enforce it) and say what you checked.",
+        act: (a) => a.openTab("learning", "lesson:site_access"), until: (a) => a.gateActive(), auto: true, loop: "Approve" },
+      { label: "Ask again", caption: "The same request. Now it should pick a 22 ft truck and name the rule it followed.", live: true, act: (a) => a.runLive(JANGAON_TEXT), loop: "Improve" },
+    ],
+    finaleLine: "Same model, same question. The only difference is one rule it learned from the company's records just now, checked by code and approved by you.",
+    evidence: [
+      { label: "The check behind it: the gate rule found in 3 of 3 fresh runs (experiments log)", href: `${REPO}docs/trackers/experiments.md` },
+      { label: "How the evidence gate decides (learning/gate.py)", href: `${REPO}src/anubhav/learning/gate.py` },
+    ],
+  },
   {
     id: "S1", title: "The rule nobody wrote down", kind: "recorded", minutes: 1, company: "T01", blurb: "Asked in Telugu, Roman Telugu or English: 32 ft, then 22 ft after one lesson.",
     proves: "It learns a rule from the company's own records, a person approves it, and the next plan changes.",
@@ -149,10 +173,11 @@ export function ScenarioCards({ onStart }: { onStart: (id: string) => void }) {
   const budget = liveBudget(session);
   return (
     <section className="scenarios" aria-labelledby="sc-title">
-      <h2 id="sc-title">Try it: six scenarios</h2>
-      <p className="small muted sc-sub">Four replay real recordings and cost nothing. Two run the model live, so you can test what we claim.</p>
+      <h2 id="sc-title">Try it: seven scenarios</h2>
+      <p className="small muted sc-sub">Four replay real recordings and cost nothing. Three run the model live, so you can test what we claim.</p>
       <ul className="sc-grid">
-        {SCENARIOS.map((s) => {
+        {/* With live mode on, "Start from nothing" leads; without it, the free recorded ones come first. */}
+        {[...SCENARIOS].sort((a, b) => (live.ok ? 0 : Number(a.id === "S0") - Number(b.id === "S0"))).map((s) => {
           const off = s.kind === "live" && !live.ok;
           return (
             <li key={s.id} className={`sc-card is-${s.kind}`}>

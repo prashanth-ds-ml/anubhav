@@ -633,3 +633,17 @@ table.custody td, table.custody th { vertical-align: top; text-align: left; }
 .agent-score.up > .small:nth-of-type(1) { color: var(--ok); font-weight: 700; }
 .agent-score.down > .small:nth-of-type(1) { color: var(--err); font-weight: 700; }
 @media (max-width: 600px) { .stage-bars { grid-template-columns: repeat(5, minmax(56px, 1fr)); gap: 4px; } .stage-track { height: 100px; } }
+
+/* Start from nothing (final demo plan): learn from the records, with the gate's verdicts */
+.learn-panel { border-left: 4px solid var(--accent); }
+.learn-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 16px; }
+.learn-head h3 { margin: 0; }
+.knows-now { margin: 0; font-size: 0.9rem; display: inline-flex; flex-wrap: wrap; gap: 4px; align-items: center; }
+.knows-now .pill { margin-left: 6px; }
+.learn-stages { display: grid; gap: 4px; margin: 10px 0; font-size: 0.92rem; }
+.learned-list { display: grid; gap: 6px; margin: 8px 0; }
+.learned-row { display: grid; grid-template-columns: minmax(170px, auto) 1fr; gap: 2px 10px; align-items: baseline; padding: 6px 8px; border: 1px solid var(--border); border-radius: 8px; }
+.learned-row .learned-what { font-weight: 600; }
+.learned-row.v-err .learned-what, .learned-row.v-expired .learned-what { font-weight: 400; } /* not in use: plainer, same contrast */
+.learned-row > .small { grid-column: 2; }
+@media (max-width: 700px) { .learned-row { grid-template-columns: 1fr; } .learned-row > .small { grid-column: 1; } }

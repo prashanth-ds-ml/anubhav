@@ -5,7 +5,7 @@ import AxeBuilder from "@axe-core/playwright";
 
 async function home(page: Page) {
   await page.goto("/");
-  await expect(page.getByRole("heading", { name: "Try it: six scenarios" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Try it: seven scenarios" })).toBeVisible();
 }
 
 /** Make the real session say Muse Spark 1.3 can run, without any key. */
@@ -17,10 +17,10 @@ async function liveOn(page: Page) {
   });
 }
 
-test("six scenarios, each saying whether it is recorded or live; without keys the live ones say why and stay closed", async ({ page }) => {
+test("seven scenarios, each saying whether it is recorded or live; without keys the live ones say why and stay closed", async ({ page }) => {
   await home(page);
   const cards = page.locator(".sc-card article");
-  await expect(cards).toHaveCount(6);
+  await expect(cards).toHaveCount(7);
   for (const id of ["S1", "S2", "S3"]) {
     const c = page.getByRole("article", { name: new RegExp(`^${id} `) });
     await expect(c).toContainText("Recorded · watch it");
@@ -30,7 +30,8 @@ test("six scenarios, each saying whether it is recorded or live; without keys th
   const s6 = page.getByRole("article", { name: /^S6 / });
   await expect(s6).toContainText("Recorded data · explore it");
   await expect(s6).toContainText("free");
-  for (const id of ["S4", "S5"]) {
+  await expect(cards.last()).toHaveAccessibleName(/^S0 Start from nothing/);   // without live mode it goes last
+  for (const id of ["S0", "S4", "S5"]) {
     const c = page.getByRole("article", { name: new RegExp(`^${id} `) });
     await expect(c).toContainText("Live · you run it");
     await expect(c).toContainText(/Live mode is off on this demo/);

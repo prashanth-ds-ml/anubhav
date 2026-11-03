@@ -135,7 +135,7 @@ test("the first screen fits a 1280×720 laptop: the problem, what it is built on
   await page.setViewportSize({ width: 1280, height: 720 });
   await page.goto("/");
   await expect(page.getByRole("list", { name: "Built on Meta Muse" })).toContainText("Spark Open");
-  await expect(page.getByRole("heading", { name: "Try it: six scenarios" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Try it: seven scenarios" })).toBeVisible();
   for (const id of ["S1", "S2", "S3"]) {
     const b = await page.getByRole("button", { name: `Start ${id}` }).boundingBox();
     const log = await page.locator(".chat-log").boundingBox();

@@ -108,7 +108,15 @@ export function DraftDecision({ d, onDecided }: { d: Draft; onDecided: () => voi
 export function PlanCard({ runId, lessonsOn }: { runId: string; lessonsOn: boolean }) {
   const { company, dataVersion, bumpData } = useSettings();
   const d = useApi(() => api.drafts(company, runId), [company, runId, dataVersion], { keep: true });
-  const f = useApi(() => api.fleet(company), [company]);
+  // A busy server can miss the fleet lookup (the card would show a bare id instead of "32 ft"): ask again, up to 3 times.
+  const [tries, setTries] = useState(0);
+  const f = useApi(() => api.fleet(company), [company, tries], { keep: true });
+  const missing = !f.loading && (d.data?.drafts ?? []).some((x) => !f.data?.vehicles.some((v) => v.vehicle_id === x.vehicle_id));
+  useEffect(() => {
+    if (!missing || tries >= 3) return;
+    const t = setTimeout(() => setTries((n) => n + 1), 1500);
+    return () => clearTimeout(t);
+  }, [missing, tries]);
   const l = useApi(() => api.lessons(company), [company, dataVersion], { keep: true });
   const drafts: Draft[] = d.data?.drafts ?? [];
   if (drafts.length === 0) return null;
@@ -123,7 +131,7 @@ export function PlanCard({ runId, lessonsOn }: { runId: string; lessonsOn: boole
             <div className="plan-truck">
               <Truck size={28} aria-hidden />
               <div>
-                <p className="plan-size">{v ? `${v.length_ft} ft` : x.vehicle_id}</p>
+                <p className="plan-size">{v ? `${v.length_ft} ft` : f.loading || (missing && tries < 3) ? "…" : x.vehicle_id}</p>
                 <p className="small muted">{x.vehicle_id}{v ? ` · ${v.class} · ${v.payload_kg.toLocaleString("en-IN")} kg payload` : ""}</p>
               </div>
               <div className="plan-meta small">
