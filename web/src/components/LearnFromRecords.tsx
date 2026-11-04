@@ -3,7 +3,9 @@ import { api, ApiError, modelName, type FreshLearned, type FreshRecords } from "
 import { useApi } from "../lib/useApi";
 import { useSettings } from "../lib/ctx";
 import { useFocusTarget } from "../lib/focus";
-import { plainReason } from "../lib/text";
+import { plainReason, usd } from "../lib/text";
+
+const num = (x: unknown) => (typeof x === "number" ? x.toLocaleString("en-IN") : "—");
 
 // Start from nothing (final demo plan): the visitor sees what this workspace knows, lets Muse Spark 1.3 read the
 // company's records, and sees each proposed rule with the evidence gate's verdict. Approving happens in the list below.
@@ -21,7 +23,7 @@ export function KnowsNow() {
   const { company, dataVersion } = useSettings();
   const s = useApi(() => api.freshStatus(company), [company, dataVersion], { keep: true });
   if (!s.data) return null;
-  const v = Object.values(s.data.agent_versions);
+  const v = Object.values(s.data.agent_versions ?? {});
   const same = v.length && v.every((x) => x === v[0]);
   return (
     <p className="knows-now" role="status" aria-label="What this workspace knows">
@@ -81,17 +83,17 @@ export function LearnFromRecords() {
 
       {records && (
         <ol className="plain learn-stages" aria-label="Learning, step by step">
-          <li className="ok-text">✓ Read the records: {records.stops.toLocaleString("en-IN")} delivery stops on {records.trips.toLocaleString("en-IN")} trips,
-            {" "}{records.drivers_notes} drivers' notes ({Object.entries(records.notes_by_language).map(([k, v]) => `${v} ${({ te: "Telugu", en: "English", rt: "Roman Telugu" } as Record<string, string>)[k] ?? k}`).join(", ")}),
-            {" "}{records.planner_messages} planner messages, {records.from} to {records.to}.</li>
+          <li className="ok-text">✓ Read the records: {num(records.stops)} delivery stops on {num(records.trips)} trips,
+            {" "}{records.drivers_notes} drivers' notes ({Object.entries(records.notes_by_language ?? {}).map(([k, v]) => `${v} ${({ te: "Telugu", en: "English", rt: "Roman Telugu" } as Record<string, string>)[k] ?? k}`).join(", ")}),
+            {" "}{records.planner_messages} planner messages, {records.from ?? "—"} to {records.to ?? "—"}.</li>
           <li className={stage === "mining" ? "" : "ok-text"}>{stage === "mining" ? `… ${modelLabel} is reading a digest of them and proposing rules (about a minute).` : `✓ ${modelName(out?.model) || modelLabel} proposed rules.`}</li>
-          {out && <li className="ok-text">✓ Code checked each rule against the full records: {out.counts.CANDIDATE ?? 0} hold, {out.counts.REJECTED ?? 0} rejected, {out.counts.EXPIRED ?? 0} already over. ({out.latency_s} s · ${out.cost_usd.toFixed(3)})</li>}
+          {out && <li className="ok-text">✓ Code checked each rule against the full records: {out.counts?.CANDIDATE ?? 0} hold, {out.counts?.REJECTED ?? 0} rejected, {out.counts?.EXPIRED ?? 0} already over. ({out.latency_s ?? "—"} s · {usd(out.cost_usd)})</li>}
         </ol>
       )}
 
       {out && (
         <ul className="plain learned-list" aria-label="What it proposed, with the gate's verdict">
-          {out.lessons.map((l) => {
+          {(out.lessons ?? []).map((l) => {
             const [label, cls] = VERDICT[l.state] ?? [l.state, ""];
             return (
               <li key={l.lesson_id} className={`learned-row v-${cls}`}>

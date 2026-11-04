@@ -18,10 +18,10 @@ export function LessonActions({ lesson: x, onChanged }: { lesson: Lesson; onChan
   const [problem, setProblem] = useState<string | null>(null);
 
   const waiting = WAITING.has(x.state);
-  const active = x.state.startsWith("ACTIVE");
+  const active = String(x.state ?? "").startsWith("ACTIVE");
   // "Undo" needs a state to go back to: a lesson that was only ever proposed (for example one that expired on arrival) has none.
-  const canUndo = x.events.filter((e) => e.action !== "rollback").length >= 2;
-  const canRule = waiting && x.state === "CANDIDATE" && x.gate.enforceable === true;
+  const canUndo = (x.events ?? []).filter((e) => e.action !== "rollback").length >= 2;
+  const canRule = waiting && x.state === "CANDIDATE" && x.gate?.enforceable === true;
 
   async function send(body: LessonDecision) {
     setBusy(true);

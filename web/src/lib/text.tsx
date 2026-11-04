@@ -51,12 +51,16 @@ function describeResult(v: any): string {
   return "";
 }
 
-export const errorText = (e: any): string => (e && typeof e === "object" ? `${e.code ?? "Error"}: ${e.message ?? ""}` : String(e ?? ""));
+/** A cost in dollars, or "—" when the record has none (never "$NaN"). */
+export const usd = (x: unknown, digits = 3): string => (typeof x === "number" && Number.isFinite(x) ? `$${x.toFixed(digits)}` : "—");
+
+export const errorText =(e: any): string => (e && typeof e === "object" ? `${e.code ?? "Error"}: ${e.message ?? ""}` : String(e ?? ""));
 
 /** "busiest_weekday_in_town" → "Busiest weekday in town". */
-export const humanName = (s: string) => {
-  const t = s.replace(/[_-]+/g, " ").trim();
-  return t ? t[0].toUpperCase() + t.slice(1) : s;
+export const humanName = (s: string | null | undefined) => {
+  if (s == null) return "—";                 // a field the record does not have
+  const t = String(s).replace(/[_-]+/g, " ").trim();
+  return t ? t[0].toUpperCase() + t.slice(1) : String(s);
 };
 
 /** "2026-10-29T19:44:05" → "29 Oct, 19:44". */
@@ -79,14 +83,14 @@ function inline(line: string): ReactNode[] {
 }
 
 /** Chat replies use a little markdown (bold, "* " or "- " bullets, "#" headings, blank lines). Show it without a library. */
-export function Reply({ text }: { text: string }): ReactNode {
+export function Reply({ text }: { text: string | null | undefined }): ReactNode {
   const blocks: ReactNode[] = [];
   let items: string[] = [];
   const flush = () => {
     if (items.length) blocks.push(<ul key={`u${blocks.length}`}>{items.map((x, i) => <li key={i}>{inline(x)}</li>)}</ul>);
     items = [];
   };
-  for (const raw of text.split("\n")) {
+  for (const raw of String(text ?? "").split("\n")) {
     const line = raw.trimEnd();
     const bullet = line.match(/^\s*[*-]\s+(.*)$/);
     if (bullet) { items.push(bullet[1]); continue; }

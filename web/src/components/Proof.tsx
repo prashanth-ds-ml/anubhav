@@ -4,6 +4,7 @@ import { ModelTags } from "./ModelTags";
 import { useApi } from "../lib/useApi";
 import { useFocusTarget } from "../lib/focus";
 import { go } from "../lib/route";
+import { usd } from "../lib/text";
 
 // Proof & audit. Every figure here is read from /api/proof (the committed result files) or /api/proof/registry (the
 // pre-registered experiments with their plan and result commits); nothing is typed into the page.
@@ -12,11 +13,15 @@ const GH = "https://github.com/prashanth-ds-ml/anubhav";
 const blob = (path: string, at = "main") => `${GH}/blob/${at}/${path}`;
 const commit = (h: string) => `${GH}/commit/${h}`;
 const pct = (x: number) => `${Math.round(x * 100)}%`;
-const frac = (s: string) => { const [a, b] = s.split("/").map(Number); return { a, b, v: b ? a / b : 0 }; };
+const frac = (s: unknown) => { const [a = 0, b = 0] = String(s ?? "").split("/").map((x) => Number(x) || 0); return { a, b, v: b ? a / b : 0 }; };
 const MARK: Record<string, [string, string, string]> = {
   met: ["✓", "bar met", "met"], not_met: ["✕", "bar not met", "not-met"], finding: ["●", "finding, set direction", "finding"], not_run: ["○", "not run", "not-run"],
 };
-const num = (id: string) => id.replace(/^EXP-/, "");
+const num = (id: string) => String(id ?? "").replace(/^EXP-/, "");
+/** A number with fixed decimals, or "—" when the result file has none. */
+const fixed = (x: unknown, d: number) => (typeof x === "number" && Number.isFinite(x) ? x.toFixed(d) : "—");
+/** A commit link, or "—" when the registry has no commit for it. */
+const CommitLink = ({ h }: { h?: string }) => (h ? <a href={commit(h)} target="_blank" rel="noreferrer" className="mono">{h}</a> : <>—</>);
 const day = (d?: string) => (d ? new Date(d.replace(" ", "T")).toLocaleString("en-IN", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit", hour12: false }) : "");
 
 /** EXP-011R per company: without lessons (raw-note search) against with approved lessons, unsafe drafts beside. */
@@ -34,7 +39,7 @@ function Dumbbell({ e }: { e: ProofEntry }) {
     for (const [fam, v] of Object.entries(C)) { const a = frac(v), b = frac(B[fam] ?? "0/0"); if (a.b && (a.a === 0 || a.v < b.v)) worse.push(`${fam.replace(/_/g, " ")}, ${a.a} of ${a.b} with lessons at ${c}`); }
   }
   const X0 = 150, X1 = 560, x = (v: number) => X0 + v * (X1 - X0), RH = 54, H = 40 + rows.length * RH;
-  const said = rows.map((r) => `${r.name}: ${r.before.ok} to ${r.after.ok}, unsafe ${r.before.unsafe} to ${r.after.unsafe}`).join("; ");
+  const said = rows.map((r) => `${r.name}: ${r.before.ok ?? "—"} to ${r.after.ok ?? "—"}, unsafe ${r.before.unsafe} to ${r.after.unsafe}`).join("; ");
   return (
     <section ref={ref} className="panel" aria-labelledby="dumb-title">
       <h3 id="dumb-title">On a world it had never seen, learning made every company's plans correct more often, with no unsafe drafts</h3>
@@ -84,7 +89,7 @@ function Mining({ proof, reg }: { proof: Record<string, ProofEntry>; reg: Record
     .map(([id, where]) => {
       const e = proof[id];
       const m = id === "EXP-008" ? e?.repeats?.[0] : e?.pooled;
-      return m ? { id, where, precision: m.precision as number, recall: m.recall as number, traps: Array.isArray(m.traps_admitted) ? m.traps_admitted.length : m.traps_admitted, bar: reg[id]?.bar?.precision } : null;
+      return m && typeof m.precision === "number" ? { id, where, precision: m.precision as number, recall: m.recall as number, traps: Array.isArray(m.traps_admitted) ? m.traps_admitted.length : m.traps_admitted, bar: reg[id]?.bar?.precision } : null;
     }).filter((r): r is NonNullable<typeof r> => !!r);
   if (rows.length === 0) return null;
   const last = rows[rows.length - 1];
@@ -117,7 +122,8 @@ function Mining({ proof, reg }: { proof: Record<string, ProofEntry>; reg: Record
 
 /** EXP-004: the open-weights model against Spark 1.3 on tool-calling tasks. */
 function OpenWeights({ e }: { e?: ProofEntry }) {
-  const arms = (e?.arms ?? []) as { tools: number; spark_open: { mean_success: number; mean_latency_s: number; runs: number }; spark_1_3: { mean_success: number; mean_latency_s: number } }[];
+  type Arm = { tools: number; spark_open: { mean_success: number; mean_latency_s: number; runs: number }; spark_1_3: { mean_success: number; mean_latency_s: number } };
+  const arms = (Array.isArray(e?.arms) ? e!.arms : []).filter((a: Partial<Arm> | null) => a?.spark_open && a?.spark_1_3) as Arm[];
   if (arms.length === 0) return null;
   const close = arms.every((a) => Math.abs(a.spark_open.mean_success - a.spark_1_3.mean_success) <= 0.015);
   return (
@@ -127,7 +133,7 @@ function OpenWeights({ e }: { e?: ProofEntry }) {
       <table className="fit small">
         <thead><tr><th>Task</th><th>Spark Open</th><th>Spark 1.3</th></tr></thead>
         <tbody>{arms.map((a) => (
-          <tr key={a.tools}><td>{a.tools} tools</td><td>{(a.spark_open.mean_success * 100).toFixed(1)}% · {a.spark_open.mean_latency_s.toFixed(0)} s</td><td>{(a.spark_1_3.mean_success * 100).toFixed(1)}% · {a.spark_1_3.mean_latency_s.toFixed(0)} s</td></tr>
+          <tr key={a.tools}><td>{a.tools} tools</td><td>{fixed(a.spark_open.mean_success * 100, 1)}% · {fixed(a.spark_open.mean_latency_s, 0)} s</td><td>{fixed(a.spark_1_3.mean_success * 100, 1)}% · {fixed(a.spark_1_3.mean_latency_s, 0)} s</td></tr>
         ))}</tbody>
       </table>
       <p className="small muted">That is why the recorded runs and the benchmarks up to EXP-013, including the main one (EXP-011R), use the open-weights model; EXP-014 to EXP-019 and all live runs use Muse Spark 1.3 (each claim carries its model). Success is the share of tasks done right; seconds are the average per task.</p>
@@ -155,9 +161,9 @@ function Scoreboard({ rows }: { rows: RegistryRow[] }) {
                 <summary><span aria-hidden>{m}</span><span className="sr-only">{t}: </span> <strong>{num(r.id)}</strong> {r.summary ?? r.question}</summary>
                 <p className="small"><strong>{r.id}</strong> · {r.question} <ModelTags m={r.models} /></p>
                 {r.bar && <p className="small">Bar fixed in advance: {r.bar.text}</p>}
-                <p className="small">Plan: {day(r.plan?.date)} · <a href={commit(r.plan!.commit)} target="_blank" rel="noreferrer" className="mono">{r.plan?.commit}</a></p>
+                <p className="small">Plan: {day(r.plan?.date) || "—"} · <CommitLink h={r.plan?.commit} /></p>
                 {r.result ? (
-                  <p className="small">Result: {day(r.result.date)} · <a href={commit(r.result.commit)} target="_blank" rel="noreferrer" className="mono">{r.result.commit}</a> · <a href={blob(r.result.file)} target="_blank" rel="noreferrer">result file</a></p>
+                  <p className="small">Result: {day(r.result.date) || "—"} · <CommitLink h={r.result.commit} />{r.result.file ? <> · <a href={blob(r.result.file)} target="_blank" rel="noreferrer">result file</a></> : null}</p>
                 ) : <p className="small muted">Not run yet.</p>}
                 {r.custody === "same_commit" && <p className="small muted">Plan and result landed in one commit, so git cannot show which came first.</p>}
                 {r.note && r.custody !== "same_commit" && <p className="small muted">{r.note}</p>}
@@ -228,13 +234,13 @@ function Custody({ rows }: { rows: RegistryRow[] }) {
             return (
               <tr key={r.id}>
                 <td><strong>{r.id}</strong> {r.question} <ModelTags m={r.models} /></td>
-                <td className="nowrap">{day(r.plan?.date)} · <a className="mono" href={commit(r.plan!.commit)} target="_blank" rel="noreferrer">{r.plan?.commit}</a></td>
-                <td>{r.result ? [r.runs ? `${r.runs} runs` : "", r.cost_usd ? `$${r.cost_usd.toFixed(2)}` : ""].filter(Boolean).join(" · ") || "—" : "not run yet"}</td>
-                <td className="nowrap">{r.result ? <>{day(r.result.date)} · <a className="mono" href={commit(r.result.commit)} target="_blank" rel="noreferrer">{r.result.commit}</a>{r.custody === "same_commit" ? " (same commit)" : ""}</> : "—"}</td>
+                <td className="nowrap">{day(r.plan?.date) || "—"} · <CommitLink h={r.plan?.commit} /></td>
+                <td>{r.result ? [r.runs ? `${r.runs} runs` : "", typeof r.cost_usd === "number" && r.cost_usd ? `$${r.cost_usd.toFixed(2)}` : ""].filter(Boolean).join(" · ") || "—" : "not run yet"}</td>
+                <td className="nowrap">{r.result ? <>{day(r.result.date) || "—"} · <CommitLink h={r.result.commit} />{r.custody === "same_commit" ? " (same commit)" : ""}</> : "—"}</td>
                 <td className={`v-${cls}`}><span aria-hidden>{m} </span>{r.summary}</td>
                 <td className="nowrap">
-                  {r.result && <><a href={blob(r.result.file)} target="_blank" rel="noreferrer">result file</a> · </>}
-                  <a href={blob("docs/trackers/experiments.md", r.plan!.commit)} target="_blank" rel="noreferrer">plan</a>
+                  {r.result?.file && <><a href={blob(r.result.file)} target="_blank" rel="noreferrer">result file</a> · </>}
+                  <a href={blob("docs/trackers/experiments.md", r.plan?.commit ?? "main")} target="_blank" rel="noreferrer">plan</a>
                 </td>
               </tr>
             );
@@ -258,7 +264,7 @@ function Team({ e, reg }: { e?: ProofEntry; reg?: RegistryRow }) {
         <table className="fit small">
           <thead><tr><th>Arm</th><th>Correct</th><th>Unsafe</th><th>Cost a case</th><th>Right agent chosen</th></tr></thead>
           <tbody>{rows.map(([n, r, team]) => (
-            <tr key={n}><td>{n}</td><td>{r.ok}/{r.n}</td><td>{r.unsafe}</td><td>${r.mean_cost.toFixed(3)}</td><td>{team ? pct(r.routing) : "n/a"}</td></tr>
+            <tr key={n}><td>{n}</td><td>{r.ok}/{r.n}</td><td>{r.unsafe}</td><td>{usd(r.mean_cost)}</td><td>{team ? pct(r.routing) : "n/a"}</td></tr>
           ))}</tbody>
         </table>
       </div>
@@ -336,7 +342,7 @@ function Claims({ proof, reg }: { proof: Record<string, ProofEntry>; reg: Regist
   return (
     <>
       <BothModels proof={proof} reg={byId} />
-      {p && reps.length > 0 && (
+      {p && reps.length > 0 && typeof p.raw_notes_B === "number" && typeof p.lessons_C === "number" && (
         <div className="proof-top even">
           <Slope title={`Approved lessons lifted unwritten-rule accuracy from ${pct(p.raw_notes_B)} to ${pct(p.lessons_C)}`}
             sub={`EXP-011R · ${reps[0].n_unwritten} cases a repeat, ${reps.length} repeats · each line is one repeat · single Planner`}
@@ -361,8 +367,8 @@ function Claims({ proof, reg }: { proof: Record<string, ProofEntry>; reg: Regist
         <div className="note-box small"><strong>Reproduce without keys</strong><br /><code>uv run pytest -q</code>: every test runs without a model call.</div>
         <div className="note-box small"><strong>Frozen files can't drift</strong><br />The EXP-013 to EXP-019 scripts refuse to run if a frozen file's hash has changed. EXP-017 is reserved for a hand-written benchmark that has not been run.</div>
         <div className="note-box small"><strong>Not improved, and said so</strong><br />
-          {cap ? `Real truck capacity: ${cap.replace("/", " of ")} with lessons. ` : ""}
-          {team?.S && team.M1 ? `Team accuracy: ${team.M1.ok} of ${team.M1.n}, not better than one Planner (${team.S.ok}). ` : ""}
+          {cap ? `Real truck capacity: ${String(cap).replace("/", " of ")} with lessons. ` : ""}
+          {team?.S && typeof team.M1?.ok === "number" ? `Team accuracy: ${team.M1.ok} of ${team.M1.n}, not better than one Planner (${team.S.ok}). ` : ""}
           {byId["EXP-014"]?.verdict === "not_met" ? `EXP-014: ${byId["EXP-014"].summary}. ` : ""}
           {byId["EXP-016"]?.verdict === "not_met" ? `EXP-016: ${byId["EXP-016"].summary}. ` : ""}
           {byId["EXP-019"]?.verdict === "not_met" ? `EXP-019: ${byId["EXP-019"].summary}. ` : ""}

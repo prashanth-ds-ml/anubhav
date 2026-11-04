@@ -58,6 +58,55 @@ async function read<T>(path: string, fallback: T): Promise<T> {
   try { return await call<T>(path); } catch { return fallback; }
 }
 
+/** A read of a list: anything that is not a list (an odd answer, a proxy's error page) reads as an empty one. */
+async function list<T>(path: string, each: (x: any) => T = (x) => x): Promise<T[]> {
+  const v = await read<unknown>(path, []);
+  return Array.isArray(v) ? v.filter((x) => x != null).map(each) : [];
+}
+
+const arr = <T>(x: unknown): T[] => (Array.isArray(x) ? (x as T[]) : []);
+const obj = <T extends object>(x: unknown, fallback: T): T => (x && typeof x === "object" && !Array.isArray(x) ? (x as T) : fallback);
+
+/**
+ * The shapes below are what the pages read. Each one is made whole here once, so a missing list or object in an answer
+ * (an older record, a run made by another tool) shows as empty instead of breaking the page that draws it.
+ */
+/** One draft, whichever tool made it: create_dispatch_drafts names the orders `order_ids`. */
+export function oneDraft<D extends Partial<Draft>>(d: D): D & { orders: string[]; warnings: { code: string; message: string }[] } {
+  const raw = d as D & { order_ids?: unknown };
+  const why = raw.why && typeof raw.why === "object"
+    ? { ...raw.why, lessons: arr(raw.why.lessons).filter((x) => x != null), agents: arr<string>(raw.why.agents), tools: arr<string>(raw.why.tools),
+        checks: arr<NonNullable<Draft["why"]>["checks"][number]>(raw.why.checks).filter((x) => x && typeof x === "object") }
+    : raw.why ? undefined : raw.why;
+  return { ...d, orders: arr<string>(raw.orders ?? raw.order_ids), warnings: arr<{ code: string; message: string }>(raw.warnings).filter(Boolean), why };
+}
+const draftsOf = <D extends Partial<Draft>>(v: unknown) => {
+  const r = obj<{ drafts?: unknown; source?: string }>(v, {});
+  return { drafts: arr<D>(r.drafts).filter((d) => d && typeof d === "object").map(oneDraft) as (D & Draft)[], source: r.source ?? "live" };
+};
+const oneLesson = (l: any): Lesson => ({ ...l, state: String(l.state ?? ""), events: arr(l.events), gate: l.gate && typeof l.gate === "object" ? l.gate : null,
+  miner: l.miner && typeof l.miner === "object" ? l.miner : null });
+const oneTool = (t: any): NewTool => {
+  const c = obj<Partial<NewTool["checks"]>>(t.checks, {});
+  return { ...t, name: String(t.name ?? t.tool_id ?? ""), description: String(t.description ?? ""), params: arr(t.params),
+    checks: { ...c, pass: !!c.pass, same_rows: arr(c.same_rows), held_out: arr(c.held_out), reasons: arr(c.reasons) } };
+};
+const oneSide = <S extends CompareSide>(s: unknown): S | null => {
+  if (!s || typeof s !== "object") return null;
+  const x = s as S;
+  return { ...x, reply: String(x.reply ?? ""), drafts: arr<CompareSide["drafts"][number]>(x.drafts).map(oneDraft) };
+};
+const oneSession = (s: Session | null): Session | null => s && {
+  ...s, models: obj(s.models, {}), voice: obj(s.voice, { available: false, reason: null }),
+  caps: { per_session: 0, per_day: 0, ...obj(s.caps, {}) }, live_runs_left: Number(s.live_runs_left ?? 0) || 0,
+};
+const oneEvidence = (e: Evidence | null): Evidence | null => {
+  if (!e || typeof e !== "object") return null;
+  if (e.kind === "trips") return { ...e, rows: arr(e.rows), limit: obj(e.limit, {}), window: obj(e.window, { from: null, to: "" }), site: obj(e.site, { site_id: "", name: "", town: "" }) };
+  if (e.kind === "closure") return { ...e, weeks: arr(e.weeks), notes: arr(e.notes), window: obj(e.window, { from: null, to: null }) };
+  return e;
+};
+
 const q = (company: string, extra: Record<string, string | boolean | undefined> = {}) => {
   const p = new URLSearchParams({ company });
   for (const [k, v] of Object.entries(extra)) if (v !== undefined && v !== "") p.set(k, String(v));
@@ -76,24 +125,27 @@ export type Evidence =
   | { kind: "none"; lesson_kind: string };
 
 export const api = {
-  evidence: (c: string, id: string) => read<Evidence | null>(`/api/learning/lessons/${encodeURIComponent(id)}/evidence?${q(c)}`, null),
-  runs: (c: string) => read<RunRow[]>(`/api/logs/runs?${q(c)}`, []),
-  session: () => read<Session | null>("/api/session", null),
-  companies: () => read<CompanyRow[]>("/api/companies", []),
-  suggestions: (company: string, useLessons: boolean) => read<Suggestion[]>(`/api/suggestions?${q(company, { use_lessons: useLessons })}`, []),
-  orders: (c: string) => read<{ delivery_date: string; orders: Order[] }>(`/api/dashboard/orders?${q(c)}`, { delivery_date: "", orders: [] }),
-  fleet: (c: string) => read<{ delivery_date: string; vehicles: Vehicle[] }>(`/api/dashboard/fleet?${q(c)}`, { delivery_date: "", vehicles: [] }),
-  drafts: (c: string, runId?: string) => read<{ drafts: Draft[]; source: string }>(`/api/dashboard/drafts?${q(c, { run_id: runId })}`, { drafts: [], source: "live" }),
+  evidence: (c: string, id: string) => read<Evidence | null>(`/api/learning/lessons/${encodeURIComponent(id)}/evidence?${q(c)}`, null).then(oneEvidence),
+  runs: (c: string) => list<RunRow>(`/api/logs/runs?${q(c)}`, (r) => ({ ...r, request: String(r.request ?? ""), agents: arr<string>(r.agents), drafts: arr<string>(r.drafts) })),
+  session: () => read<Session | null>("/api/session", null).then(oneSession),
+  companies: () => list<CompanyRow>("/api/companies"),
+  suggestions: (company: string, useLessons: boolean) => list<Suggestion>(`/api/suggestions?${q(company, { use_lessons: useLessons })}`),
+  orders: (c: string) => read<{ delivery_date: string; orders: Order[] }>(`/api/dashboard/orders?${q(c)}`, { delivery_date: "", orders: [] })
+    .then((r) => ({ delivery_date: obj<{ delivery_date?: string }>(r, {}).delivery_date ?? "", orders: arr<Order>(r?.orders) })),
+  fleet: (c: string) => read<{ delivery_date: string; vehicles: Vehicle[] }>(`/api/dashboard/fleet?${q(c)}`, { delivery_date: "", vehicles: [] })
+    .then((r) => ({ delivery_date: obj<{ delivery_date?: string }>(r, {}).delivery_date ?? "", vehicles: arr<Vehicle>(r?.vehicles) })),
+  drafts: (c: string, runId?: string) => read<unknown>(`/api/dashboard/drafts?${q(c, { run_id: runId })}`, {}).then((r) => draftsOf<Draft>(r)),
   /** Every draft in this visitor's workspace, any status, newest delivery date and newest made first. */
-  workspaceDrafts: (c: string) => read<{ drafts: WorkspaceDraft[]; source: string }>(`/api/dashboard/drafts?${q(c)}`, { drafts: [], source: "live" }),
-  company: (c: string) => read<Company | null>(`/api/dashboard/company?${q(c)}`, null),
-  ledger: (c: string, agent = "", type = "") => read<RunEvent[]>(`/api/ledger?${q(c, { agent, type })}`, []),
-  agents: (c: string) => read<AgentRow[]>(`/api/agents?${q(c)}`, []),
-  lessons: (c: string) => read<Lesson[]>(`/api/learning/lessons?${q(c)}`, []),
-  timeline: (c: string) => read<TimelineRow[]>(`/api/learning/timeline?${q(c)}`, []),
-  toolCandidates: (c: string) => read<ToolCandidate[]>(`/api/tools/candidates?${q(c)}`, []),
+  workspaceDrafts: (c: string) => read<unknown>(`/api/dashboard/drafts?${q(c)}`, {}).then((r) => draftsOf<WorkspaceDraft>(r)),
+  company: (c: string) => read<Company | null>(`/api/dashboard/company?${q(c)}`, null)
+    .then((r) => (r && typeof r === "object" ? { ...r, facts: obj(r.facts, {}), written_rules: arr<Company["written_rules"][number]>(r.written_rules) } : null)),
+  ledger: (c: string, agent = "", type = "") => list<RunEvent>(`/api/ledger?${q(c, { agent, type })}`, (e) => ({ ...e, payload: obj(e.payload, {}) })),
+  agents: (c: string) => list<AgentRow>(`/api/agents?${q(c)}`, (a) => ({ ...a, version: String(a.version ?? "") })),
+  lessons: (c: string) => list<Lesson>(`/api/learning/lessons?${q(c)}`, oneLesson),
+  timeline: (c: string) => list<TimelineRow>(`/api/learning/timeline?${q(c)}`),
+  toolCandidates: (c: string) => list<ToolCandidate>(`/api/tools/candidates?${q(c)}`, (x) => ({ ...x, requests: arr<string>(x.requests), suggested_description: String(x.suggested_description ?? "") })),
   decideLesson: (c: string, id: string, body: LessonDecision) => post<Lesson>(`/api/learning/lessons/${encodeURIComponent(id)}/decide?${q(c)}`, body),
-  tools: (c: string) => read<NewTool[]>(`/api/tools?${q(c)}`, []),
+  tools: (c: string) => list<NewTool>(`/api/tools?${q(c)}`, oneTool),
   // The three actions on a repeated question. They change this visitor's own workspace only; a person is always the one who approves.
   checkTool: (c: string, key: string) => post<NewTool>(`/api/tools/candidates/${encodeURIComponent(key)}/check?${q(c)}`, {}),
   /** A person approves a live draft (code re-checks it first) or rejects it with a note. Neither dispatches. */
@@ -103,27 +155,32 @@ export const api = {
   toolsHealth: (c: string) => post<ToolHealth[]>(`/api/tools/health?${q(c)}`, {}),
   decideTool: (c: string, id: string, approve: boolean, note: string) => post<NewTool>(`/api/tools/${encodeURIComponent(id)}/decide?${q(c)}`, { approve, note }),
   retireTool: (c: string, id: string, note: string) => post<NewTool>(`/api/tools/${encodeURIComponent(id)}/retire?${q(c)}`, { note }),
-  proof: () => read<ProofEntry[]>("/api/proof", []),
+  proof: () => list<ProofEntry>("/api/proof", (p) => ({ ...p, id: String(p.id ?? "") })),
   /** Every pre-registered experiment: question, verdict, plan and result commits. */
-  registry: () => read<{ experiments: RegistryRow[] }>("/api/proof/registry", { experiments: [] }),
+  registry: () => read<{ experiments: RegistryRow[] }>("/api/proof/registry", { experiments: [] })
+    .then((r) => ({ experiments: arr<RegistryRow>(r?.experiments).filter((x) => x && typeof x === "object").map((x) => ({ ...x, id: String(x.id ?? ""), question: String(x.question ?? "") })) })),
   /** EXP-014: the whole team at each learning stage and each agent's score, or { measured: false } until it has run. */
-  curve: () => read<{ measured: boolean; note?: string; [k: string]: unknown }>("/api/proof/curve", { measured: false }),
+  curve: () => read<{ measured: boolean; note?: string; [k: string]: unknown }>("/api/proof/curve", { measured: false }).then((r) => obj(r, { measured: false })),
   /** A run laid out for inspection: its events, each agent's work, and each mistake an agent fixed itself. */
-  steps: (runId: string) => read<RunSteps | null>(`/api/runs/${encodeURIComponent(runId)}/steps`, null),
+  steps: (runId: string) => read<RunSteps | null>(`/api/runs/${encodeURIComponent(runId)}/steps`, null)
+    .then((r) => (r && typeof r === "object" ? { ...r, request: String(r.request ?? ""), events: arr<RunEvent>(r.events).map((e) => ({ ...e, payload: obj(e.payload, {}) })), agents: arr<AgentTurn>(r.agents), fixes: arr<FixPair>(r.fixes) } : null)),
   /** Start from nothing: this visitor's lessons, tools and the agents' versions. */
-  freshStatus: (c: string) => read<FreshStatus | null>(`/api/fresh/status?${q(c)}`, null),
-  freshStart: (c: string) => post<FreshStatus>(`/api/fresh/start?${q(c)}`, {}),
+  freshStatus: (c: string) => read<FreshStatus | null>(`/api/fresh/status?${q(c)}`, null).then((s) => (s && typeof s === "object" ? { ...s, agent_versions: obj(s.agent_versions, {}) } : null)),
+  freshStart: (c: string) => post<FreshStatus>(`/api/fresh/start?${q(c)}`, {}).then((s) => ({ ...s, agent_versions: obj(s?.agent_versions, {}) })),
   freshSetAside: (c: string) => post<{ cancelled: string[] }>(`/api/fresh/set-aside?${q(c)}`, {}),
   freshRestore: (c: string) => post<FreshStatus>(`/api/fresh/restore?${q(c)}`, {}),
   /** Stage 1 of learning, no model: what the miner will read. */
-  freshRecords: (c: string) => read<FreshRecords | null>(`/api/fresh/records?${q(c)}`, null),
+  freshRecords: (c: string) => read<FreshRecords | null>(`/api/fresh/records?${q(c)}`, null).then((r) => (r && typeof r === "object" ? { ...r, notes_by_language: obj(r.notes_by_language, {}) } : null)),
   /** Stage 2: Muse Spark 1.3 proposes rules and the evidence gate checks each one (a live run). */
-  freshLearn: (c: string, model: ModelKey = "spark") => post<FreshLearned>(`/api/fresh/learn?${q(c)}&model=${model}`, {}),
+  freshLearn: (c: string, model: ModelKey = "spark") => post<FreshLearned>(`/api/fresh/learn?${q(c)}&model=${model}`, {})
+    .then((r) => ({ ...r, lessons: arr<FreshLesson>(r?.lessons), counts: obj(r?.counts, {}) })),
   /** Calls, errors and cost per agent over this company's runs. */
-  agentTotals: (c: string) => read<AgentTotal[]>(`/api/logs/agents?${q(c)}`, []),
-  compare: (c: string, request: string) => read<Compare | null>(`/api/compare?${q(c, { request })}`, null),
+  agentTotals: (c: string) => list<AgentTotal>(`/api/logs/agents?${q(c)}`),
+  compare: (c: string, request: string) => read<Compare | null>(`/api/compare?${q(c, { request })}`, null)
+    .then((r) => (r && typeof r === "object" ? { ...r, cold: oneSide(r.cold), with_lessons: oneSide(r.with_lessons), with_learned_tools: oneSide(r.with_learned_tools) } : null)),
   /** This workspace's own before-and-after pairs: a request without lessons, then again with approved lessons. */
-  ownPairs: (c: string) => read<OwnPair[]>(`/api/compare?${q(c)}`, []).then((x) => (Array.isArray(x) ? x : (x as unknown as { pairs?: OwnPair[] }).pairs ?? [])),
+  ownPairs: (c: string) => read<OwnPair[]>(`/api/compare?${q(c)}`, []).then((x) => arr<OwnPair>(Array.isArray(x) ? x : (x as unknown as { pairs?: OwnPair[] })?.pairs)
+    .map((p) => ({ ...p, before: oneSide<OwnSide>(p?.before)!, after: oneSide<OwnSide>(p?.after)! })).filter((p) => p.before && p.after)),
 };
 
 export interface OwnSide extends CompareSide { model?: string | null; saved_at?: string | null }
@@ -136,7 +193,8 @@ export interface Lesson {
   kind?: string; params?: Record<string, any>; valid_from?: string | null; valid_to?: string | null;
   /** The lesson in full, for people (godown by name, type and town). The agent reads `what`, the measured wording. */
   display?: string;
-  gate: { verdict: string; reason: string; support: number; counter: number; strength: string; enforceable?: boolean };
+  /** The evidence gate's verdict; null on a lesson stored without one. */
+  gate: { verdict?: string; reason?: string; support?: number; counter?: number; strength?: string; enforceable?: boolean } | null;
   miner: { evidence?: string[]; counter_evidence?: string[]; confidence?: string; model?: string } | null;
   events: { ts: string; actor: string; action: string; from_state: string | null; to_state: string; note: string }[];
 }

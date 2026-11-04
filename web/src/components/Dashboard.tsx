@@ -64,7 +64,7 @@ export function Dashboard({ panel, refreshKey, runId, onPlan }: { panel: Desk; r
   const date = o.data?.delivery_date ?? "";
   // The newest draft holding an order (waiting or approved), else its newest draft of any status.
   const draftOf = (id: string) =>
-    drafts.find((x) => isLive(x) && x.orders.includes(id) && (!x.delivery_date || !date || x.delivery_date === date)) ?? drafts.find((x) => x.orders.includes(id));
+    drafts.find((x) => isLive(x) && (x.orders ?? []).includes(id) && (!x.delivery_date || !date || x.delivery_date === date)) ?? drafts.find((x) => (x.orders ?? []).includes(id));
   const needsTruck = (x: (typeof orders)[number]) => (d.data ? !(draftOf(x.order_id) && isLive(draftOf(x.order_id)!)) : !x.in_draft);
   const need = orders.filter(needsTruck);
   const waiting = drafts.filter((x) => x.status === "draft");
@@ -187,7 +187,7 @@ export function Dashboard({ panel, refreshKey, runId, onPlan }: { panel: Desk; r
             <tbody>
               {vehicles.map((v) => (
                 <tr key={v.vehicle_id}>
-                  <td className="mono">{v.vehicle_id}</td><td>{v.class}</td><td>{v.length_ft} ft</td><td>{v.payload_kg.toLocaleString("en-IN")}</td>
+                  <td className="mono">{v.vehicle_id}</td><td>{v.class}</td><td>{v.length_ft} ft</td><td>{v.payload_kg != null ? v.payload_kg.toLocaleString("en-IN") : "–"}</td>
                   <td>{v.free ? "Free" : vehicleReason(v.reason ?? v.status)}</td><td>{humanName(v.owner)}</td>
                 </tr>
               ))}

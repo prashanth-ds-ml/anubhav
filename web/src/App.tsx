@@ -11,6 +11,7 @@ import { Runs } from "./components/Runs";
 import { LiveMeter } from "./components/LiveMeter";
 import { WorkspaceSwitch } from "./components/WorkspaceSwitch";
 import { ModelPicker } from "./components/ModelPicker";
+import { ErrorBoundary } from "./components/ErrorBoundary";
 import { MainNav, MAIN_LABEL } from "./components/MainNav";
 import { ScenarioGuide, SCENARIOS, type LoopStep, type ScenarioActions } from "./components/Scenarios";
 import { Info } from "lucide-react";
@@ -139,11 +140,12 @@ export default function App() {
           stripsEl
         )}
       </header>
-      {scenario && <ScenarioGuide key={scenario} id={scenario} actions={actions} runId={runId} onClose={() => { setScenario(null); setReached([]); }}
-        onLoop={setReached} onStart={startScenario} />}
+      {scenario && <ErrorBoundary name="The scenario guide" resetKey={scenario}><ScenarioGuide key={scenario} id={scenario} actions={actions} runId={runId} onClose={() => { setScenario(null); setReached([]); }}
+        onLoop={setReached} onStart={startScenario} /></ErrorBoundary>}
       <div className={`body ${onDesk ? "" : "full"}`} id="page">
         {/* The chat stays mounted on every tab, so a conversation and a scenario's runs survive a visit to Learning. */}
         <main className="center" hidden={!onDesk}>
+          <ErrorBoundary name="The chat">
           <Chat
             onEvents={(e, id) => { setEvents(e); setRunId(id); }}
             prefill={prefill}
@@ -152,20 +154,25 @@ export default function App() {
             onStartScenario={startScenario}
             actionsRef={chatActions}
           />
+          </ErrorBoundary>
         </main>
         {onDesk ? (
           <aside className="right" aria-label="Company data">
-            <Dashboard panel={route.desk} refreshKey={events.length} runId={runId} onPlan={(text) => setPrefill((p) => ({ text, n: p.n + 1 }))} />
+            <ErrorBoundary name="This panel" resetKey={`${route.desk}:${runId}`}>
+              <Dashboard panel={route.desk} refreshKey={events.length} runId={runId} onPlan={(text) => setPrefill((p) => ({ text, n: p.n + 1 }))} />
+            </ErrorBoundary>
           </aside>
         ) : (
           <main className="page">
             <section role="tabpanel" aria-labelledby={`main-tab-${route.main}`}>
             <h2 className="sr-only">{MAIN_LABEL[route.main]}</h2>
+            <ErrorBoundary name="This page" resetKey={`${route.main}:${route.item ?? ""}`}>
             {route.main === "learning" && <Learning item={route.item} />}
             {route.main === "tools" && <NewTools onAsk={(label) => { go("desk"); setAsk((a) => ({ label, n: a.n + 1 })); }} />}
             {route.main === "agents" && <AgentCards />}
             {route.main === "runs" && <Runs item={route.item} />}
             {route.main === "proof" && <Proof item={route.item} />}
+            </ErrorBoundary>
             </section>
           </main>
         )}

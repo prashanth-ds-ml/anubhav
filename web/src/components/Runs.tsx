@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { api, modelName, type FixPair, type RunRow, type RunSteps, withVisitor } from "../lib/api";
 import { useApi } from "../lib/useApi";
 import { useSettings } from "../lib/ctx";
-import { errorText, Reply, resultText, shortTime } from "../lib/text";
+import { errorText, Reply, resultText, shortTime, usd } from "../lib/text";
 import { AGENT_STYLE, label } from "../agents";
 import { go } from "../lib/route";
 import { blocksOf, StepDetail, Swimlane } from "./Swimlane";
@@ -42,8 +42,8 @@ function RunItem({ r, on }: { r: RunRow; on: boolean }) {
 /** The line of a SQL query (or other argument) where the failed and the fixed call differ: what the agent changed. */
 function changed(fix: FixPair): [string, string] | null {
   const text = (a: Record<string, unknown>) => Object.values(a ?? {}).filter((v) => typeof v === "string").join("\n");
-  const x = text(fix.failed.arguments).split("\n");
-  const y = text(fix.fixed.arguments).split("\n");
+  const x = text(fix.failed?.arguments).split("\n");
+  const y = text(fix.fixed?.arguments).split("\n");
   for (let i = 0; i < Math.max(x.length, y.length); i++) if ((x[i] ?? "").trim() !== (y[i] ?? "").trim()) return [(x[i] ?? "").trim(), (y[i] ?? "").trim()];
   return null;
 }
@@ -55,15 +55,15 @@ function FixCard({ fix, from }: { fix: FixPair; from?: string }) {
       <h3 id="fix-title">A real mistake, fixed by the agent itself</h3>
       {from && <p className="small muted">From “{from}” · {label(fix.agent)}</p>}
       <div className="fix-step bad">
-        <p><strong>Step {fix.failed.step} · <span className="mono">{fix.tool}</span> ✕ failed</strong></p>
+        <p><strong>Step {fix.failed?.step ?? "—"} · <span className="mono">{fix.tool}</span> ✕ failed</strong></p>
         {d && <pre className="sl-args" tabIndex={0} aria-label="The line it sent">… {d[0]} …</pre>}
-        <p className="small">{errorText(fix.failed.error)}</p>
+        <p className="small">{errorText(fix.failed?.error)}</p>
       </div>
       <p className="fix-arrow" aria-hidden>↓</p>
       <div className="fix-step good">
-        <p><strong>Step {fix.fixed.step} · <span className="mono">{fix.tool}</span> ✓ corrected</strong></p>
+        <p><strong>Step {fix.fixed?.step ?? "—"} · <span className="mono">{fix.tool}</span> ✓ corrected</strong></p>
         {d && <pre className="sl-args" tabIndex={0} aria-label="The line it corrected">… {d[1]} …</pre>}
-        <p className="small">{resultText(fix.fixed.result)}</p>
+        <p className="small">{resultText(fix.fixed?.result)}</p>
       </div>
       <p className="small muted">The tool refused the call and said why; the agent read the error and fixed it on a later call. No person stepped in.</p>
     </section>
@@ -71,7 +71,7 @@ function FixCard({ fix, from }: { fix: FixPair; from?: string }) {
 }
 
 function WorkBars({ run }: { run: RunSteps }) {
-  const top = Math.max(1, ...run.agents.map((a) => a.tool_calls));
+  const top = Math.max(1, ...run.agents.map((a) => Number(a.tool_calls) || 0));
   const idle = ALL_AGENTS.filter((a) => !run.agents.some((t) => t.agent === a));
   return (
     <section className="work" aria-labelledby="work-title">
@@ -84,7 +84,7 @@ function WorkBars({ run }: { run: RunSteps }) {
               <span className="work-name" style={{ color }}>{label(t.agent)}</span>
               <span className="work-track"><span className="work-bar" style={{ width: `${(100 * t.tool_calls) / top}%`, background: color }} /></span>
               <span className="small">
-                {t.tool_calls} call{t.tool_calls === 1 ? "" : "s"}{t.tool_errors ? <> · <span className="err-text">{t.tool_errors} failed</span></> : ""} · ${t.own_cost_usd.toFixed(3)}
+                {t.tool_calls} call{t.tool_calls === 1 ? "" : "s"}{t.tool_errors ? <> · <span className="err-text">{t.tool_errors} failed</span></> : ""} · {usd(t.own_cost_usd)}
               </span>
             </li>
           );
@@ -104,19 +104,19 @@ function Detail({ id, example }: { id: string; example?: { fix: FixPair; from: s
   const run = s.data;
   if (!run) return <p className="empty">This run's record could not be read.</p>;
   const blocks = blocksOf(run.events);
-  const fixedSeqs = new Set(run.fixes.map((f) => f.fixed.seq));
-  const firstBad = run.fixes[0] ? blocks.find((b) => b.result?.seq === run.fixes[0].failed.seq) : undefined;
+  const fixedSeqs = new Set(run.fixes.map((f) => f.fixed?.seq));
+  const firstBad = run.fixes[0] ? blocks.find((b) => b.result?.seq === run.fixes[0].failed?.seq) : undefined;
   const chosen = blocks.find((b) => b.call.seq === sel) ?? firstBad ?? blocks[blocks.length - 1];
   const live = /^ui:/.test(run.label ?? ""); // a visitor's own live run; the demo's recordings are replays
   return (
     <>
       <section className="panel run-main" aria-labelledby="run-title">
         <header className="run-head">
-          <h2 id="run-title">“{run.request}”</h2>
+          <h2 id="run-title">{run.request ? `“${run.request}”` : "A run with no recorded request"}</h2>
           <p className="small muted">
             {title(run) !== run.request ? <><strong>{title(run)}</strong> · </> : null}
             {live ? "Live run" : "Recorded"} · {modelName(run.model ?? undefined)}{run.saved_at ? ` · ${shortTime(run.saved_at)}` : ""}
-            {run.latency_s ? ` · ${run.latency_s.toFixed(1)} s` : ""}{run.cost_usd != null ? ` · $${run.cost_usd.toFixed(3)}` : ""}
+            {typeof run.latency_s === "number" && run.latency_s ? ` · ${run.latency_s.toFixed(1)} s` : ""}{typeof run.cost_usd === "number" ? ` · ${usd(run.cost_usd)}` : ""}
           </p>
           <a className="small" href={withVisitor(`/api/runs/${encodeURIComponent(run.run_id)}`)} target="_blank" rel="noreferrer">Raw record (JSON)</a>
         </header>
@@ -149,7 +149,7 @@ export function Runs({ item }: { item?: string | null }) {
   // A run with a fixed mistake, shown as the example when the open run has none.
   const withFix = rows.find((r) => (r.fixed ?? 0) > 0 && r.run_id !== current?.run_id);
   const ex = useApi(() => (withFix ? api.steps(withFix.run_id) : Promise.resolve(null)), [withFix?.run_id]);
-  const example = ex.data?.fixes[0] && withFix ? { fix: ex.data.fixes[0], from: title(withFix) } : undefined;
+  const example = ex.data?.fixes?.[0] && withFix ? { fix: ex.data.fixes[0], from: title(withFix) } : undefined;
   // On a narrow screen the run opens below the list: bring it into view when one is chosen.
   useEffect(() => {
     if (item && window.matchMedia("(max-width: 900px)").matches) document.querySelector(".runs-detail")?.scrollIntoView({ block: "start" });

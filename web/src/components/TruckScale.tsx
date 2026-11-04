@@ -8,7 +8,7 @@ export interface TruckRow { label?: string; vehicle: string; length_ft: number }
 export function useTurnedBack(lesson: Lesson | undefined): number | null {
   const { company } = useSettings();
   const e = useApi(() => (lesson ? api.evidence(company, lesson.lesson_id) : Promise.resolve(null)), [company, lesson?.lesson_id]);
-  return e.data?.kind === "trips" ? e.data.rows.filter((r) => r.status === "returned").length : null;
+  return e.data?.kind === "trips" ? (e.data.rows ?? []).filter((r) => r.status === "returned").length : null;
 }
 
 /** Trucks drawn to scale against a gate's learned length limit. The bars are a picture of the same facts the words say:

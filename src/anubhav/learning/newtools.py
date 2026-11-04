@@ -335,7 +335,11 @@ def _con(store):
 
 
 def _row(r):
-    return dict(r) | {k: json.loads(r[k]) if r[k] else None for k in ("params", "checks", "source")}
+    d = dict(r) | {k: json.loads(r[k]) if r[k] else None for k in ("params", "checks", "source")}
+    # one shape for every stored tool: a row saved without checks (or with only a health re-check) reads as not checked
+    d["checks"] = {"pass": False, "same_rows": [], "held_out": [], "reasons": []} | (d["checks"] or {})
+    d["params"] = d["params"] or []
+    return d
 
 
 def tools(store, company, status=None):

@@ -9,7 +9,7 @@ const WEEKDAY = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 const STATUS: Record<string, string> = { delivered: "delivered", partial: "part delivered", returned: "turned back" };
 const W = 760, H = 210, L = 56, R = 12, T = 14, B = 26;
 const day = (d: string) => new Date(d + "T00:00").getTime();
-const fmt = (d: string) => new Date(d + "T00:00").toLocaleDateString("en-IN", { day: "numeric", month: "short" });
+const fmt = (d: string) => { const t = new Date(d + "T00:00"); return Number.isNaN(t.getTime()) ? "—" : t.toLocaleDateString("en-IN", { day: "numeric", month: "short" }); };
 
 interface Axis { title: string; label: string; value: (r: TripRow) => number; min: number; max: number; ticks: { v: number; t: string }[];
   guides: { v: number; t: string }[]; band?: [number, number][]; bandLabel?: string }
@@ -56,9 +56,9 @@ function Mark({ r, x, y }: { r: TripRow; x: number; y: number }) {
 export function TripStrip({ e, target }: { e: Extract<Evidence, { kind: "trips" }>; target: string | null }) {
   const ref = useFocusTarget<HTMLElement>(target, true);
   const a = axisFor(e);
-  const rows = e.rows;
+  const rows = (e.rows ?? []).filter((r) => r && typeof r.date === "string");   // a trip with no date cannot be placed on the chart
   if (rows.length === 0) return <p className="empty">No trips to this site in the records.</p>;
-  const x0 = day(rows[0].date.slice(0, 8) + "01"), x1 = Math.max(day(e.window.to), day(rows[rows.length - 1].date) + 86400000);
+  const x0 = day(rows[0].date.slice(0, 8) + "01"), x1 = Math.max(day(e.window?.to ?? "") || 0, day(rows[rows.length - 1].date) + 86400000);
   const sx = (d: string) => L + ((day(d) - x0) / (x1 - x0)) * (W - L - R);
   const sy = (v: number) => T + (1 - (v - a.min) / (a.max - a.min)) * (H - T - B);
   const refused = rows.filter((r) => r.status === "returned");
@@ -67,7 +67,7 @@ export function TripStrip({ e, target }: { e: Extract<Evidence, { kind: "trips" 
   return (
     <figure ref={ref} className="ev-chart" aria-label="Evidence: every trip to this site">
       <figcaption>
-        <strong>Every trip to {e.site.name}, by {a.title}</strong>
+        <strong>Every trip to {e.site?.name || "this site"}, by {a.title}</strong>
         <span className="small muted"> · {rows.length} trips from the company's own records</span>
       </figcaption>
       <div className="ev-scroll"><svg viewBox={`0 0 ${W} ${H}`} className="ev-svg" role="img"
@@ -110,16 +110,18 @@ export function TripStrip({ e, target }: { e: Extract<Evidence, { kind: "trips" 
 export function ClosureStory({ e, target }: { e: Extract<Evidence, { kind: "closure" }>; target: string | null }) {
   const chartRef = useFocusTarget<HTMLElement>(target && `${target}/chart`, true);
   const notesRef = useFocusTarget<HTMLElement>(target && `${target}/notes`, true);
-  const weeks = e.weeks;
+  const weeks = (e.weeks ?? []).filter((w) => w && typeof w.week === "string");
+  const notes = (e.notes ?? []).filter(Boolean).map((n) => ({ ...n, ts: String(n.ts ?? ""), text: String(n.text ?? "") }));
+  const win = e.window ?? { from: null, to: null };
   if (weeks.length === 0) return <p className="empty">No closure delays in the records.</p>;
   const max = Math.max(1, ...weeks.map((w) => w.delays));
   const step = (W - L - R) / weeks.length;
   const PIN = 14; // a row for the drivers' notes, above the bars
   const sy = (v: number) => T + PIN + 18 + (1 - v / max) * (H - T - B - PIN - 18);
   const wx = (iso: string) => L + ((day(iso) - day(weeks[0].week)) / (7 * 86400000)) * step;
-  const end = e.window.to;
+  const end = win.to;
   const after = weeks.filter((w) => end && w.week > end);
-  const inside = e.window.from && end ? [wx(e.window.from), wx(end) + step / 7] : null;
+  const inside = win.from && end ? [wx(win.from), wx(end) + step / 7] : null;
   return (
     <>
       <figure ref={chartRef} className="ev-chart" aria-label="Closure delays by week">
@@ -128,7 +130,7 @@ export function ClosureStory({ e, target }: { e: Extract<Evidence, { kind: "clos
           <span className="small muted"> · delays recorded as a closure, per week, on trips through {e.place}</span>
         </figcaption>
         <div className="ev-scroll"><svg viewBox={`0 0 ${W} ${H}`} className="ev-svg" role="img"
-          aria-label={`Closure delays per week near ${e.place}: ${weeks.map((w) => w.delays).join(", ")}. ${e.notes.length} drivers' notes on those trips.`}>
+          aria-label={`Closure delays per week near ${e.place}: ${weeks.map((w) => w.delays).join(", ")}. ${notes.length} drivers' notes on those trips.`}>
           {inside && <rect x={inside[0]} width={Math.max(0, inside[1] - inside[0])} y={T + PIN} height={H - T - B - PIN} fill="var(--chart-band)" />}
           <line x1={L} x2={W - R} y1={H - B} y2={H - B} className="ev-axis" />
           {weeks.map((w, i) => (
@@ -142,7 +144,7 @@ export function ClosureStory({ e, target }: { e: Extract<Evidence, { kind: "clos
           {after.length > 0 && after.every((w) => w.delays === 0) && (
             <text x={wx(after[0].week) + 4} y={H - B - 8} className="ev-ok-label">0 after it ended</text>
           )}
-          {e.notes.map((n, i) => (
+          {notes.map((n, i) => (
             <g key={i}><title>{`${fmt(n.ts.slice(0, 10))} · ${n.text}`}</title>
               <path d={`M${wx(n.ts.slice(0, 10))} ${T + 8}l-4 -7h8z`} fill="var(--chart-bar)" opacity={0.85} /></g>
           ))}
@@ -150,7 +152,7 @@ export function ClosureStory({ e, target }: { e: Extract<Evidence, { kind: "clos
         <ul className="ev-legend small" aria-label="Legend">
           <li><svg width="14" height="14" aria-hidden><rect x="2" y="2" width="10" height="10" rx="2" fill="var(--chart-bar)" /></svg> closure delays in the week</li>
           <li><svg width="14" height="14" aria-hidden><path d="M7 11l-4 -7h8z" fill="var(--chart-bar)" /></svg> a driver's note</li>
-          <li><svg width="14" height="14" aria-hidden><rect x="1" y="1" width="12" height="12" fill="var(--chart-band)" /></svg> the closure{e.window.from && end ? `, ${fmt(e.window.from)} – ${fmt(end)}` : ""}</li>
+          <li><svg width="14" height="14" aria-hidden><rect x="1" y="1" width="12" height="12" fill="var(--chart-band)" /></svg> the closure{win.from && end ? `, ${fmt(win.from)} – ${fmt(end)}` : ""}</li>
         </ul>
         <details className="ev-table">
           <summary>See the weeks as a table</summary>
@@ -159,10 +161,10 @@ export function ClosureStory({ e, target }: { e: Extract<Evidence, { kind: "clos
         </details>
       </figure>
       <section ref={notesRef} className="ev-notes" aria-label="What the drivers wrote">
-        <h4>What drivers wrote on the delayed trips ({e.notes.length})</h4>
+        <h4>What drivers wrote on the delayed trips ({notes.length})</h4>
         <p className="small muted">As written, in their own languages. Linked to the delays by trip and stop in the records; not every note is about the road.</p>
-        <ol className="plain notes-list" tabIndex={0} aria-label={`${e.notes.length} drivers' notes`}>
-          {e.notes.map((n, i) => (
+        <ol className="plain notes-list" tabIndex={0} aria-label={`${notes.length} drivers' notes`}>
+          {notes.map((n, i) => (
             <li key={i} lang={n.lang === "te" ? "te" : "en"}>
               <span className="note-text">{n.text}</span>
               <span className="small muted">{fmt(n.ts.slice(0, 10))} · {n.lang === "te" ? "Telugu" : n.lang === "rt" ? "Roman Telugu" : n.lang === "en" ? "English" : n.lang} · {n.source}</span>

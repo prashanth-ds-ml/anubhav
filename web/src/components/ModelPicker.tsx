@@ -6,7 +6,7 @@ import { MODEL_LABEL, type ModelKey } from "../lib/api";
 export function ModelPicker() {
   const { session, model, setModel } = useSettings();
   if (!session) return null;
-  const rows = (Object.keys(MODEL_LABEL) as ModelKey[]).map((k) => ({ k, m: session.models[MODEL_LABEL[k]] }));
+  const rows = (Object.keys(MODEL_LABEL) as ModelKey[]).map((k) => ({ k, m: session.models?.[MODEL_LABEL[k]] }));
   if (!rows.some((r) => r.m?.available)) return null;      // no model can run here: replay only, nothing to choose
   return (
     <label className="model-pick">

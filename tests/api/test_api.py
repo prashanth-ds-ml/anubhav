@@ -886,3 +886,86 @@ def test_a_fresh_start_workspace_counts_only_its_own_knowledge_and_timeline(env)
     assert c.get("/api/review/history?company=T01").json() == []
     assert [e for e in c.get("/api/logs/events?company=T01").json() if e["stream"] in ("run", "lesson", "harness", "feedback")] == []
     assert c.get("/api/tools?company=T01").json() == [] and c.get("/api/tools/candidates?company=T01").json() == []
+
+
+def test_drafts_made_by_the_several_drafts_tool_have_the_same_fields_as_any_other(env, monkeypatch):
+    """Nov 4 bug: create_dispatch_drafts names its orders order_ids and keeps no date per draft, so the drafts panel got
+    orders: null and the page went blank. Every draft now has orders, a delivery date and warnings, however it was made."""
+    c = client(env)
+    c.get("/api/session")
+    orders = c.get("/api/dashboard/orders").json()["orders"]
+    free = sorted((v for v in c.get("/api/dashboard/fleet").json()["vehicles"] if v["free"]), key=lambda v: -v["payload_kg"])
+    pairs, used = [], set()
+    for o in orders:
+        v = next((v for v in free if v["vehicle_id"] not in used and o["kg"] <= v["payload_kg"]), None)
+        if v:
+            used.add(v["vehicle_id"])
+            pairs.append({"order_ids": [o["order_id"]], "vehicle_id": v["vehicle_id"]})
+        if len(pairs) == 2:
+            break
+    live_env(monkeypatch, [mock_tool_call("create_dispatch_drafts", {"assignments": pairs}), mock_final("two drafts")])
+    run = c.post("/api/chat", json={"message": "plan both", "mode": "live", "use_lessons": False}).json()
+    list(stream.follow(run["run_id"]))
+    for url in ("/api/dashboard/drafts", f"/api/dashboard/drafts?run_id={run['run_id']}"):
+        ds = c.get(url).json()["drafts"]
+        if not ds:
+            pytest.skip("the validator refused the picked pairs")
+        for d in ds:
+            assert isinstance(d["orders"], list) and d["orders"], (url, d)
+            assert d["delivery_date"] and isinstance(d["warnings"], list), (url, d)
+
+
+# ---------- one shape per kind of object, whichever tool or record made it (the page reads these without guessing)
+def _several_drafts_run():
+    """A saved run whose drafts came from create_dispatch_drafts: orders named order_ids, one date for all, one refused."""
+    return {"run_id": "r-shape", "request": "plan both", "reply": "two drafts", "trace": [
+        {"type": "tool", "name": "create_dispatch_drafts", "arguments": {}, "ok": True, "result": {
+            "delivery_date": "2026-11-05", "created": 1, "failed": 1, "results": [
+                {"vehicle_id": "V-1", "order_ids": ["O-1", "O-2"], "ok": True, "draft_id": "DR-AAA111", "load": {"kg": 900, "sites": []}, "warnings": []},
+                {"vehicle_id": "V-2", "order_ids": ["O-3"], "ok": False, "error": {"code": "OVERLOAD", "message": "too heavy"}}]}}]}
+
+
+def test_a_draft_event_from_the_several_drafts_tool_names_its_orders():
+    from anubhav import events
+    from anubhav.service import views
+    ev = events.from_run(_several_drafts_run())
+    made = [e["payload"] for e in ev if e["type"] == "draft_created"]
+    assert made == [{"draft_id": "DR-AAA111", "vehicle_id": "V-1", "orders": ["O-1", "O-2"], "load": {"kg": 900, "sites": []}}]
+    assert [d["orders"] for d in views.drafts(_several_drafts_run())] == [["O-1", "O-2"]]
+    assert views.drafts(_several_drafts_run())[0]["delivery_date"] == "2026-11-05"
+
+
+def test_the_ledger_and_the_run_inspector_list_a_several_drafts_runs_orders(env, monkeypatch):
+    c = client(env)
+    c.get("/api/session")
+    orders = c.get("/api/dashboard/orders").json()["orders"]
+    free = sorted((v for v in c.get("/api/dashboard/fleet").json()["vehicles"] if v["free"]), key=lambda v: -v["payload_kg"])
+    args = next(({"order_ids": [o["order_id"]], "vehicle_id": v["vehicle_id"]}) for o in orders for v in free if o["kg"] <= v["payload_kg"])
+    live_env(monkeypatch, [mock_tool_call("create_dispatch_drafts", {"assignments": [args]}), mock_final("one draft")])
+    run = c.post("/api/chat", json={"message": "plan it", "mode": "live", "use_lessons": False}).json()
+    list(stream.follow(run["run_id"]))
+    steps = c.get(f"/api/runs/{run['run_id']}/steps").json()
+    made = [e["payload"] for e in steps["events"] if e["type"] == "draft_created"]
+    if not made:
+        pytest.skip("validator refused the picked pair")
+    assert made[0]["orders"] == args["order_ids"]
+    led = [e for e in c.get("/api/ledger?company=T01&type=draft_created").json() if e["run_id"] == run["run_id"]]
+    assert led and all(isinstance(e["payload"]["orders"], list) and e["payload"]["orders"] for e in led)
+
+
+def test_a_run_with_an_empty_trace_still_lays_out_for_the_inspector():
+    from anubhav.service import run_view
+    v = run_view.run_view({"run_id": "r-empty", "request": "hello", "trace": []})
+    assert v["events"] and v["fixes"] == [] and [a["agent"] for a in v["agents"]] == ["planner"]
+    assert v["reply"] is None and v["cost_usd"] is None        # missing, not invented: the page shows its own fallback
+
+
+def test_a_stored_tool_always_reads_with_every_check_field():
+    row = {"tool_id": "T01-tool-abc12345", "name": "x", "params": None, "checks": None, "source": None}
+    t = nt._row(row)
+    assert t["checks"] == {"pass": False, "same_rows": [], "held_out": [], "reasons": []} and t["params"] == []
+    only_health = dict(row, checks=json.dumps({"health": {"ok": False, "reasons": ["r"], "checked": "2026-11-04T10:00:00"}}))
+    t = nt._row(only_health)
+    assert t["checks"]["same_rows"] == [] and t["checks"]["health"]["ok"] is False and t["checks"]["pass"] is False
+    full = dict(row, checks=json.dumps({"pass": True, "same_rows": [{"request": "q", "rows": 2, "same": True}], "held_out": [], "reasons": []}))
+    assert nt._row(full)["checks"]["pass"] is True         # a real verdict is never overwritten by the defaults

@@ -6,6 +6,7 @@ import { AGENT_STYLE } from "../agents";
 import { go } from "../lib/route";
 import { AgentScores, TeamCurve, type Curve } from "./TeamCurve";
 import { ModelTags } from "./ModelTags";
+import { usd } from "../lib/text";
 
 // How each agent learns: a description of the design, for people. The numbers beside it come from the result files.
 const HOW: Record<string, string> = {
@@ -66,7 +67,7 @@ function fromCurve(agent: string, c?: Curve): ReactNode {
 function measured(agent: string, proof: Record<string, ProofEntry>, reg: Record<string, RegistryRow>, c?: Curve): ReactNode {
   const more = fromCurve(agent, c);
   if (agent === "planner" && proof["EXP-011R"]?.repeats?.length) {
-    const r = proof["EXP-011R"].repeats!;
+    const r = proof["EXP-011R"].repeats!.filter(Boolean);
     return (
       <>
         <p className="small">Unwritten rules handled, single Planner:</p>
@@ -81,12 +82,13 @@ function measured(agent: string, proof: Record<string, ProofEntry>, reg: Record<
       </>
     );
   }
-  if (agent === "tool_forge" && proof["EXP-012b"]?.arms) {
-    const { Q, T } = proof["EXP-012b"].arms as Record<string, { mean_tool_calls: number; n: number; answer_ok: number }>;
+  const arms = (proof["EXP-012b"]?.arms ?? {}) as Record<string, { mean_tool_calls: number; n: number; answer_ok: number } | undefined>;
+  if (agent === "tool_forge" && arms.Q && arms.T) {
+    const { Q, T } = arms as Record<string, { mean_tool_calls: number; n: number; answer_ok: number }>;
     const used = proof["EXP-012b"].decision?.learned_tool_used_in as string | undefined;
     return (
       <>
-        {used && <p className="small">Learned tool used: <strong>{used.replace("/", " of ")}</strong> questions</p>}
+        {used && <p className="small">Learned tool used: <strong>{String(used).replace("/", " of ")}</strong> questions</p>}
         <p className="small">Tool calls: {Q.mean_tool_calls} → {T.mean_tool_calls} a question ({Math.round(100 * (1 - T.mean_tool_calls / Q.mean_tool_calls))}% fewer)</p>
         <p className="small muted">EXP-012b · {Q.n} held-out questions <ModelTags m={reg["EXP-012b"]?.models} /></p>
         <Verdict r={reg["EXP-012b"]} />
@@ -121,7 +123,7 @@ function Totals({ t, fresh }: { t?: AgentTotal; fresh?: boolean | null }) {
   if (!t || t.runs === 0) return <p className="small muted">{fresh ? "No runs in this workspace yet." : "No runs for this company yet."}</p>;
   return (
     <p className="small muted">
-      In this {fresh ? "workspace's" : "company's"} runs: {t.runs} run{t.runs === 1 ? "" : "s"} · {t.tool_calls} tool calls · {t.tool_errors} failed · ${t.cost_usd.toFixed(2)}
+      In this {fresh ? "workspace's" : "company's"} runs: {t.runs} run{t.runs === 1 ? "" : "s"} · {t.tool_calls ?? 0} tool calls · {t.tool_errors ?? 0} failed · {usd(t.cost_usd, 2)}
     </p>
   );
 }
@@ -166,11 +168,11 @@ export function AgentCards() {
       <div className="agent-cards">
         {agents.data!.map((a) => {
           const color = (AGENT_STYLE[a.agent] ?? AGENT_STYLE.code).color;
-          const v = Number(a.version.match(/(\d+)$/)?.[1] ?? 0) + 1;
+          const v = Number(String(a.version ?? "").match(/(\d+)$/)?.[1] ?? 0) + 1;
           return (
             <article key={a.agent} className="panel agent-card" style={{ borderTopColor: color }} aria-labelledby={`ag-${a.agent}`}>
               <header className="card-head">
-                <h3 id={`ag-${a.agent}`} style={{ color }}>{a.name}</h3>
+                <h3 id={`ag-${a.agent}`} style={{ color }}>{a.name || a.agent}</h3>
                 {a.agent === "planner" && <span className="pill">orchestrator</span>}
                 <span className="pill" title={`Saved as ${a.version}`}>Version {v}</span>
               </header>
@@ -189,7 +191,7 @@ export function AgentCards() {
               )}
               <h4 className="eyebrow">How it learns</h4>
               <p className="small">{HOW[a.agent] ?? "Not described."}</p>
-              <p className="small muted">{a.versions_tried === 0 ? "No instruction changes tried yet." : `${a.versions_tried} instruction change${a.versions_tried === 1 ? "" : "s"} tried in the experiments; none kept, so it is still version 1.`} Knows {a.knowledge_items} thing{a.knowledge_items === 1 ? "" : "s"} about this company{fresh ? " in this workspace" : ""}. Live runs use the model chosen at the top (now {modelLabel}).</p>
+              <p className="small muted">{!a.versions_tried ? "No instruction changes tried yet." : `${a.versions_tried} instruction change${a.versions_tried === 1 ? "" : "s"} tried in the experiments; none kept, so it is still version 1.`} Knows {a.knowledge_items ?? 0} thing{a.knowledge_items === 1 ? "" : "s"} about this company{fresh ? " in this workspace" : ""}. Live runs use the model chosen at the top (now {modelLabel}).</p>
               {!fresh && <>
                 <h4 className="eyebrow">Measured</h4>
                 {measured(a.agent, proof, reg, c ?? undefined)}
@@ -211,7 +213,7 @@ export function AgentCards() {
         ) : (
           <>
             <p className="small muted">
-              EXP-014{exp014?.plan ? ` · pre-registered ${exp014.plan.date.slice(0, 10)} (commit ${exp014.plan.commit})` : ""} · not run yet ·{" "}
+              EXP-014{exp014?.plan?.date ? ` · pre-registered ${String(exp014.plan.date).slice(0, 10)} (commit ${exp014.plan.commit ?? "—"})` : ""} · not run yet ·{" "}
               <button type="button" className="link-btn" onClick={() => go("proof")}>its plan is in Proof &amp; audit</button>
             </p>
             <div className="not-measured-grid">

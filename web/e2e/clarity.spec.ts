@@ -37,6 +37,7 @@ test("real data carries no sample badge; a draft rebuilt from a recording says s
 });
 
 test("plain-language labels replace jargon", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });   // the agent roster shows at 1440 px and wider
   await page.goto("/");
   await expect(page.getByLabel("Agent roster").getByText("Safety checks (code)")).toBeVisible();
   await page.getByRole("tab", { name: "Agents" }).click();

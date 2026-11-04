@@ -3,7 +3,7 @@ import type { RunEvent } from "../types";
 import { AgentTag, Verdict } from "./Badges";
 import { AGENT_STYLE, label } from "../agents";
 import { modelName } from "../lib/api";
-import { errorText, resultText } from "../lib/text";
+import { errorText, resultText, usd } from "../lib/text";
 
 interface Body { Icon: typeof Play; title: string; text?: string; mono?: boolean; cls?: string; role?: string; }
 
@@ -12,7 +12,8 @@ const argsText = (a: Record<string, unknown>) =>
 
 /** Plain description of a single event (used for the key moments, which get a full card). */
 export function describe(e: RunEvent): Body {
-  const p = e.payload;
+  const p = e.payload ?? {};
+  const lessons: unknown[] = Array.isArray(p.lessons) ? p.lessons : [];
   switch (e.type) {
     case "agent_start":
       return { Icon: Play, title: `Started on ${modelName(p.model)}`, text: `${p.lessons_in_prompt ?? 0} approved lessons in its instructions` };
@@ -22,14 +23,18 @@ export function describe(e: RunEvent): Body {
     case "tool_missing": return { Icon: AlertOctagon, title: "No tool for this", text: `${p.need}. ${p.next_step}`, cls: "err", role: "alert" };
     case "handoff": return { Icon: ArrowRightLeft, title: `${label(p.from)} hands off to ${label(p.to)}`, text: p.brief, cls: "handoff" };
     case "lesson_used":
-      return { Icon: BookMarked, title: `Used ${p.lessons.length === 1 ? "a lesson" : `${p.lessons.length} lessons`}`, text: p.lessons.map((l: any) => typeof l === "string" ? l : `${l.rule ?? l.text ?? ""}${l.evidence ? ` (${l.evidence})` : ""}`).join("; ") };
+      return { Icon: BookMarked, title: `Used ${lessons.length === 1 ? "a lesson" : `${lessons.length} lessons`}`, text: lessons.map((l: any) => typeof l === "string" ? l : `${l?.rule ?? l?.text ?? ""}${l?.evidence ? ` (${l.evidence})` : ""}`).join("; ") };
     case "validator_check": return checkBody(p);
-    case "draft_created": return { Icon: FileText, title: `Draft ${p.draft_id} on ${p.vehicle_id}`, text: (p.orders ?? []).join(", ") };
-    case "agent_done": return { Icon: Flag, title: `Done (${p.stop})`, text: `${p.tool_calls ?? 0} tool call${p.tool_calls === 1 ? "" : "s"}${p.cost_usd != null ? ` · $${p.cost_usd.toFixed(3)}` : ""}${(p.drafts ?? []).length ? ` · ${(p.drafts as unknown[]).length} draft` : ""}` };
+    case "draft_created": return { Icon: FileText, title: `Draft ${p.draft_id} on ${p.vehicle_id}`, text: ordersOf(p).join(", ") };
+    case "agent_done": return { Icon: Flag, title: `Done (${p.stop ?? "no stop recorded"})`, text: `${p.tool_calls ?? 0} tool call${p.tool_calls === 1 ? "" : "s"}${typeof p.cost_usd === "number" ? ` · ${usd(p.cost_usd)}` : ""}${Array.isArray(p.drafts) && p.drafts.length ? ` · ${p.drafts.length} draft` : ""}` };
     case "learning_event": return { Icon: Sparkles, title: `Learning: ${p.kind} ${String(p.decision).replace("_", " ")}`, text: p.note, cls: "ok" };
     case "needs_person": return { Icon: HelpCircle, title: "Needs a person", text: p.question, cls: "warn", role: "alert" };
+    default: return { Icon: Flag, title: String(e.type ?? "Event").replace(/_/g, " ") };   // a kind of event this page does not know yet
   }
 }
+
+/** A draft's orders, whichever tool made it (create_dispatch_drafts names them order_ids; older records may have neither). */
+const ordersOf = (p: Record<string, any>): string[] => (Array.isArray(p.orders) ? p.orders : Array.isArray(p.order_ids) ? p.order_ids : []);
 
 function checkBody(p: Record<string, any>): Body {
   const what = p.tool === "final_recheck" ? "Final re-check" : p.tool === "reply_check" ? "Reply check" : "Code check";
@@ -113,7 +118,7 @@ function Draft({ e, check }: { e: RunEvent; check?: RunEvent }) {
         <strong>Draft {p.draft_id} on {p.vehicle_id}</strong>
         {check && <Verdict v={check.payload.pass ? "pass" : "fail"} />}
       </div>
-      <p className="small">Order{(p.orders ?? []).length === 1 ? "" : "s"}: <span className="mono">{(p.orders ?? []).join(", ")}</span>{p.load ? ` · ${Math.round(p.load.kg).toLocaleString("en-IN")} kg` : ""}</p>
+      <p className="small">Order{ordersOf(p).length === 1 ? "" : "s"}: <span className="mono">{ordersOf(p).join(", ") || "—"}</span>{typeof p.load?.kg === "number" ? ` · ${Math.round(p.load.kg).toLocaleString("en-IN")} kg` : ""}</p>
       {check && <p className="small muted">Checked by code before it was saved.</p>}
       <p className="small">Draft only. Nothing is dispatched until a person confirms.</p>
       <button type="button" className="linklike" onClick={() => { window.location.hash = "plans"; }}>See it under Route plans</button>

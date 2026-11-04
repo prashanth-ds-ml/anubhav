@@ -3,17 +3,17 @@ import { api, ApiError, modelName, type Compare, type CompareSide, type NewTool,
 import { go } from "../lib/route";
 import { useApi } from "../lib/useApi";
 import { useSettings } from "../lib/ctx";
-import { humanName, Reply } from "../lib/text";
+import { humanName, Reply, usd } from "../lib/text";
 import { useFocusTarget } from "../lib/focus";
 import { ProofLine, useFreshMode } from "./AgentCards";
 
 // A candidate's tool id ends with the first eight characters of its key, which is how the two lists are matched.
-const isFor = (t: NewTool, c: ToolCandidate) => t.tool_id.endsWith(c.key.slice(0, 8));
+const isFor = (t: NewTool, c: ToolCandidate) => String(t.tool_id ?? "").endsWith(String(c.key ?? "").slice(0, 8));
 const IN_USE = (t: NewTool) => t.status === "active";
 /** A readable title: the kind of question it answers, from its description; else its name without underscores. */
 const toolTitle = (t: NewTool) => {
-  const eg = t.description.match(/e\.g\. "([^"]+)"/)?.[1];
-  return eg ? `Answers questions like “${eg}”` : humanName(t.name);
+  const eg = String(t.description ?? "").match(/e\.g\. "([^"]+)"/)?.[1];
+  return eg ? `Answers questions like “${eg}”` : humanName(String(t.name ?? t.tool_id ?? ""));
 };
 const OUT = (t: NewTool) => t.status === "rejected" || t.status === "retired";
 
@@ -22,7 +22,7 @@ function Result({ title, s }: { title: string; s: CompareSide | null }) {
   return (
     <article className="panel">
       <h4>{title}</h4>
-      <p className="small muted">{s.tool_calls} tool call{s.tool_calls === 1 ? "" : "s"} · ${s.cost_usd.toFixed(3)}</p>
+      <p className="small muted">{s.tool_calls ?? 0} tool call{s.tool_calls === 1 ? "" : "s"} · {usd(s.cost_usd)}</p>
       <Reply text={s.reply} />
     </article>
   );
@@ -37,9 +37,9 @@ function Checks({ t }: { t: NewTool }) {
         Same answers as the {t.checks.same_rows.length} questions it came from: {same} of {t.checks.same_rows.length}
       </li>
       <li className={seen === t.checks.held_out.length ? "ok-text" : "err-text"}>
-        Works on {t.checks.held_out.length} values it never saw ({t.checks.held_out.map((x) => Object.values(x.values).join(", ")).join("; ")}): {seen} of {t.checks.held_out.length}
+        Works on {t.checks.held_out.length} values it never saw ({t.checks.held_out.map((x) => Object.values(x?.values ?? {}).join(", ")).join("; ") || "—"}): {seen} of {t.checks.held_out.length}
       </li>
-      {t.checks.reasons.map((r) => <li key={r} className="err-text">{r}</li>)}
+      {t.checks.reasons.map((r, i) => <li key={i} className="err-text">{String(r)}</li>)}
     </ul>
   );
 }
@@ -48,17 +48,18 @@ function Checks({ t }: { t: NewTool }) {
 function RepairTrail({ t }: { t: NewTool }) {
   const r = t.checks.repair;
   if (!r) return null;
-  const last = r.attempts[r.attempts.length - 1];
+  const attempts = Array.isArray(r.attempts) ? r.attempts : [];
+  const last = attempts[attempts.length - 1];
   return (
     <details className="repair-trail" open>
       <summary className="small">
-        Tool Forge's repair{r.model ? ` (${modelName(r.model)})` : ""}: {r.attempts.length} tr{r.attempts.length === 1 ? "y" : "ies"},{" "}
+        Tool Forge's repair{r.model ? ` (${modelName(r.model)})` : ""}: {attempts.length} tr{attempts.length === 1 ? "y" : "ies"},{" "}
         {last?.pass ? <span className="ok-text">code checks passed: waiting for a person</span> : <span className="err-text">still failing</span>}
-        {` · $${r.cost_usd.toFixed(3)}`}
+        {` · ${usd(r.cost_usd)}`}
       </summary>
       <ol className="small">
-        {r.attempts.map((a) => (
-          <li key={a.try}>
+        {attempts.map((a, i) => (
+          <li key={a.try ?? i}>
             {a.error ?? (a.pass ? "✓ passed every check" : `✕ ${(a.reasons ?? []).join("; ")}`)}
             {a.template && <pre className="mono small">{a.template}</pre>}
           </li>
@@ -93,8 +94,8 @@ function WhatChanges({ cmp }: { cmp: Compare }) {
   return (
     <aside className="what-changes" aria-label="What approving changes, from recorded runs">
       <p><strong>What approving changes (recorded runs)</strong></p>
-      <Pair title="Tool calls for the same question" before={a.tool_calls} after={b.tool_calls} fmt={(x) => String(x)} />
-      <Pair title="Cost of the question" before={a.cost_usd} after={b.cost_usd} fmt={(x) => `$${x.toFixed(3)}`} />
+      <Pair title="Tool calls for the same question" before={a.tool_calls ?? 0} after={b.tool_calls ?? 0} fmt={(x) => String(x)} />
+      {typeof a.cost_usd === "number" && typeof b.cost_usd === "number" && <Pair title="Cost of the question" before={a.cost_usd} after={b.cost_usd} fmt={(x) => usd(x)} />}
       <p className="small muted">Both are recorded runs of Muse Spark Open; their replies are below once the tool is approved.</p>
     </aside>
   );
@@ -107,8 +108,8 @@ function Benchmark() {
   const e = proof.data?.find((x) => x.id === "EXP-012b");
   const r = reg.data?.experiments.find((x) => x.id === "EXP-012b");
   if (proof.loading) return <div className="skeleton" aria-busy="true" />;
-  if (!e?.arms) return <p className="small muted">The benchmark result file is not available here.</p>;
-  const { Q, T } = e.arms as Record<string, { n: number; answer_ok: number; mean_tool_calls: number }>;
+  const { Q, T } = (e?.arms ?? {}) as Record<string, { n: number; answer_ok: number; mean_tool_calls: number } | undefined>;
+  if (!e || !Q || !T) return <p className="small muted">The benchmark result file is not available here.</p>;
   const used = String(e.decision?.learned_tool_used_in ?? "");
   const [u, n] = used.split("/").map(Number);
   return (
@@ -150,7 +151,7 @@ export function NewTools({ onAsk }: { onAsk: (label: string) => void }) {
   const tools = useApi(() => api.tools(company), [company, version, dataVersion], { keep: true });
   const story = requests.find((r) => r.label === "New tool");
   const cmp = useApi(() => (story && fresh === false ? api.compare(company, story.request) : Promise.resolve(null)), [company, story?.request, fresh]);
-  const isStory = (t: NewTool) => !!story && t.checks.same_rows.some((r) => r.request === story.request);
+  const isStory = (t: NewTool) => !!story && t.checks.same_rows.some((r) => r?.request === story.request);
 
   async function act(key: string, f: () => Promise<unknown>) {
     setBusy(key);
@@ -182,7 +183,7 @@ export function NewTools({ onAsk }: { onAsk: (label: string) => void }) {
         <div ref={focusRef}>
           {[...open].sort((a, b) => (a === storyCand ? -1 : b === storyCand ? 1 : 0)).map((c) => (
             <article key={c.key} className={`panel ${c === storyCand ? "story" : ""}`} aria-label={`Candidate ${c.suggested_name}`}>
-              <p className="tool-title">A tool for questions like “{c.requests[0]}”</p>
+              <p className="tool-title">{c.requests[0] ? <>A tool for questions like “{c.requests[0]}”</> : "A repeated question"}</p>
               <p className="small muted">Proposed name <span className="mono">{c.suggested_name}</span>. {c.suggested_description.replace(/ Learned from .*$/, "")}</p>
               <p className="small muted">Asked {c.requests.length} time{c.requests.length === 1 ? "" : "s"}; it becomes a candidate tool at {c.threshold}. {c.reached_threshold ? "Threshold reached." : "Not yet."}</p>
               <details><summary>The questions it came from</summary><ul>{c.requests.map((r) => <li key={r}>{r}</li>)}</ul></details>
@@ -230,7 +231,7 @@ export function NewTools({ onAsk }: { onAsk: (label: string) => void }) {
                   <p>{t.description}</p>
                   {t.checks.health && (
                     <p className={`small ${t.checks.health.ok ? "ok-text" : "err-text"}`}>
-                      {t.checks.health.ok ? "✓ Still works" : `✕ Needs repair: ${t.checks.health.reasons.join("; ")}`} (re-checked {t.checks.health.checked.replace("T", " ").slice(0, 16)})
+                      {t.checks.health.ok ? "✓ Still works" : `✕ Needs repair: ${(t.checks.health.reasons ?? []).join("; ") || "no reason recorded"}`} (re-checked {String(t.checks.health.checked ?? "—").replace("T", " ").slice(0, 16)})
                     </p>
                   )}
                   {t.checks.health && !t.checks.health.ok && repair(t)}

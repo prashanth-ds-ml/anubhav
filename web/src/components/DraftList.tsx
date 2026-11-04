@@ -34,7 +34,9 @@ type Decision = { decision?: string; notes?: string; ts?: string };
 
 function DraftRow({ x, v, lessons, isNew, recorded, onDecided }: { x: WorkspaceDraft; v?: Vehicle; lessons: Lesson[]; isNew: boolean; recorded: boolean; onDecided: () => void }) {
   const g = gateCheck(lessons, x.load?.sites ?? [], v);
-  const sites = x.sites?.length ? x.sites : x.stops?.stops.map((s) => `${s.name}, ${s.town}`) ?? [];
+  const sites = x.sites?.length ? x.sites : x.stops?.stops?.map((s) => `${s.name}, ${s.town}`) ?? [];
+  const orders = x.orders ?? [];
+  const warnings = x.warnings ?? [];
   const last = ((x.decisions ?? []) as Decision[]).at(-1);
   return (
     <article id={`draft-${x.draft_id}`} tabIndex={-1} className={`panel draft-row${isNew ? " is-new" : ""}`} aria-label={`Draft ${x.draft_id}, ${statusOf(x.status).text}`}>
@@ -46,21 +48,21 @@ function DraftRow({ x, v, lessons, isNew, recorded, onDecided }: { x: WorkspaceD
       </header>
       <p className="draft-line">
         <strong className="mono">{x.draft_id}</strong> on <span className="mono">{x.vehicle_id}</span>
-        {v && <span className="muted"> · {v.length_ft} ft {v.class}, {v.payload_kg.toLocaleString("en-IN")} kg payload</span>}
+        {v && <span className="muted"> · {v.length_ft ?? "–"} ft {v.class ?? ""}, {v.payload_kg != null ? v.payload_kg.toLocaleString("en-IN") : "–"} kg payload</span>}
       </p>
-      <p className="small">{x.orders.length === 1 ? "Order" : "Orders"} <span className="mono">{x.orders.join(", ")}</span>{x.load ? ` · ${kg(x.load.kg)}` : ""}</p>
+      <p className="small">{orders.length === 1 ? "Order" : "Orders"} <span className="mono">{orders.join(", ") || "–"}</span>{x.load ? ` · ${kg(x.load.kg)}` : ""}</p>
       {sites.length > 0 && (
         <ol className="draft-sites small" aria-label="Sites in order">
           {sites.map((s, i) => <li key={`${s}-${i}`}>{s}</li>)}
         </ol>
       )}
-      {x.stops && <p className="small muted">About {x.stops.total_km} km, {Math.round(Math.max(...x.stops.stops.map((s) => s.est_minutes_total)))} min ({x.stops.method})</p>}
+      {x.stops?.stops?.length ? <p className="small muted">About {x.stops.total_km} km, {Math.round(Math.max(...x.stops.stops.map((s) => s.est_minutes_total ?? 0)))} min ({x.stops.method})</p> : null}
       <p className="small muted">
         {x.run_id ? <>Made by run <span className="mono">{x.run_id}</span></> : "Made by an agent run"}
         {x.model ? ` · ${modelName(x.model)}` : ""}
       </p>
       {g && <GateLine g={g} />}
-      {x.warnings.length > 0 && <ul className="plain small">{x.warnings.map((w) => <li key={w.code}>{w.message}</li>)}</ul>}
+      {warnings.length > 0 && <ul className="plain small">{warnings.map((w, i) => <li key={`${w.code}-${i}`}>{w.message}</li>)}</ul>}
       {last && x.status !== "draft" && (
         <p className="small">{last.decision === "approve" ? "Approved" : "Rejected"} by a person{last.notes ? <>: <q>{last.notes}</q></> : "."}{x.status === "approved" ? " It is still not dispatched." : ""}</p>
       )}

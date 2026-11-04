@@ -12,14 +12,14 @@ interface Step { title: string; text: string; state: "done" | "now" | "off" }
 
 export function lifeSteps(x: Lesson): Step[] {
   const ev = x.events ?? [];
-  const proposed = ev.find((e) => e.action === "propose");
-  const decision = [...ev].reverse().find((e) => /^(approve|reject|retire|rollback)/.test(e.action));
+  const proposed = ev.find((e) => e?.action === "propose");
+  const decision = [...ev].reverse().find((e) => /^(approve|reject|retire|rollback)/.test(String(e?.action ?? "")));
   const pack = String(x.source ?? "").startsWith("pack:");
-  const active = x.state.startsWith("ACTIVE");
+  const active = String(x.state ?? "").startsWith("ACTIVE");
   const steps: Step[] = [
     { title: "Proposed", state: "done",
       text: pack ? "Arrived in a shared regional pack from another company" : `From the company's own records${proposed ? `, ${shortTime(proposed.ts)}` : ""}` },
-    { title: "Evidence checked", state: "done", text: `By code: ${x.gate.reason}` },
+    { title: "Evidence checked", state: "done", text: `By code: ${x.gate?.reason || "no verdict recorded"}` },
   ];
   if (x.state === "EXPIRED" && !decision) {
     steps.push({ title: "Expired on arrival", state: "now", text: x.valid_to ? `Its end date, ${x.valid_to}, had already passed` : "It was already over" });

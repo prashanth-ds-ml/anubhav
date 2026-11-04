@@ -66,7 +66,7 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
   }, [loaded, onList, offList]);
 
   const live = useMemo(() => {
-    const m = session?.models[MODEL_LABEL[model]];
+    const m = session?.models?.[MODEL_LABEL[model]];
     if (!m) return { ok: false, reason: "Live mode is off here." };
     if (!m.available) return { ok: false, reason: m.reason };
     if (session!.live_runs_left <= 0) return { ok: false, reason: "This visit has used its live runs." };

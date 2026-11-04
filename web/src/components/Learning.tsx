@@ -5,7 +5,7 @@ import { LessonActions } from "./LessonActions";
 import { useApi } from "../lib/useApi";
 import { useSettings } from "../lib/ctx";
 import { AgentTag } from "./Badges";
-import { Reply, shortTime } from "../lib/text";
+import { Reply, shortTime, usd } from "../lib/text";
 import { FOCUS_EVENT, peekFocus, useFocusTarget } from "../lib/focus";
 import { go } from "../lib/route";
 import { ClosureStory, TripStrip } from "./EvidenceChart";
@@ -30,13 +30,13 @@ const KIND: Record<string, string> = {
 
 function Side({ title, s, vehicle }: { title: string; s: OwnSide | null; vehicle: (id: string) => string }) {
   if (!s) return <article className="panel"><h4>{title}</h4><p className="empty">No saved run.</p></article>;
-  const v = s.drafts[0]?.vehicle_id;
-  const n = s.lessons_in_prompt;
+  const v = s.drafts?.[0]?.vehicle_id;
+  const n = s.lessons_in_prompt ?? 0;
   return (
     <article className="panel">
       <h4>{title}</h4>
       <p><strong>{v ? `Vehicle ${v}${vehicle(v) ? `: ${vehicle(v)}` : ""}` : "No draft"}</strong></p>
-      <p className="small muted">{n} lesson{n === 1 ? "" : "s"} in its instructions · {s.tool_calls} tool call{s.tool_calls === 1 ? "" : "s"} · ${(s.cost_usd ?? 0).toFixed(3)}</p>
+      <p className="small muted">{n} lesson{n === 1 ? "" : "s"} in its instructions · {s.tool_calls ?? 0} tool call{s.tool_calls === 1 ? "" : "s"} · {usd(s.cost_usd)}</p>
       {(s.model || s.saved_at) && <p className="small muted">{s.model ? modelName(s.model) : ""}{s.model && s.saved_at ? " · " : ""}{s.saved_at ? shortTime(s.saved_at) : ""}</p>}
       <details><summary>{v ? "Its reply" : "Its answer"}</summary><Reply text={s.reply} /></details>
     </article>
@@ -50,7 +50,7 @@ function OwnPairs({ pairs, vehicle }: { pairs: OwnPair[]; vehicle: (id: string) 
       <h3 id="ba-title">Same request, with and without what it learned</h3>
       <p className="small muted">From this workspace's own runs: each request asked first without lessons, then again with the lessons you approved.</p>
       {pairs.map((p) => (
-        <div key={p.after.run_id} className="own-pair">
+        <div key={p.after?.run_id ?? p.request} className="own-pair">
           <p className="small">“{p.request}”</p>
           <div className="agent-grid">
             <Side title="Without lessons" s={p.before} vehicle={vehicle} />
@@ -83,14 +83,14 @@ function Detail({ x, onChanged }: { x: Lesson; onChanged: () => void }) {
         {x.kind && <span className="pill">{KIND[x.kind] ?? x.kind}</span>}
       </div>
       <h3 className="lesson-title">{x.display || x.what || x.claim}</h3>
-      <p className="small muted">{x.miner?.model ? `Mined by ${modelName(x.miner.model)}` : "Not mined by a model here"}{x.created ? ` · ${x.created.slice(0, 10)}` : ""}</p>
-      <p className="small muted">Evidence check: {x.gate.reason}</p>
+      <p className="small muted">{x.miner?.model ? `Mined by ${modelName(x.miner.model)}` : "Not mined by a model here"}{x.created ? ` · ${String(x.created).slice(0, 10)}` : ""}</p>
+      <p className="small muted">Evidence check: {x.gate?.reason || "—"}</p>
       <LessonActions lesson={x} onChanged={onChanged} />
       {ev.loading ? <div className="skeleton" aria-busy="true" /> : e?.kind === "trips" ? <TripStrip e={e} target={target && `${target}/chart`} />
         : e?.kind === "closure" ? <ClosureStory e={e} target={target} />
         : e?.kind === "imported" ? <p className="note-box small">{e.note}</p>
-        : x.miner?.evidence?.length ? (
-          <details><summary>Evidence the miner cited</summary><ul>{x.miner.evidence.map((m) => <li key={m}>{m}</li>)}</ul></details>
+        : Array.isArray(x.miner?.evidence) && x.miner.evidence.length ? (
+          <details><summary>Evidence the miner cited</summary><ul>{x.miner.evidence.map((m, i) => <li key={i}>{String(m)}</li>)}</ul></details>
         ) : null}
       {e && e.kind !== "none" && e.kind !== "imported" && (
         <p className="small"><a href={withVisitor(`/api/learning/lessons/${encodeURIComponent(x.lesson_id)}/evidence?company=${encodeURIComponent(company)}`)} target="_blank" rel="noreferrer">This evidence as data (JSON)</a></p>
@@ -203,7 +203,7 @@ export function Learning({ item }: { item?: string | null }) {
           <p className="empty">No learning decisions yet.</p>
         ) : (
           <ol className="plain">{t.data!.map((e, i) => (
-            <li key={i} className="panel"><AgentTag id={e.agent} /> <b>{e.kind} {e.decision.replace("_", " ")}</b>
+            <li key={i} className="panel"><AgentTag id={e.agent} /> <b>{e.kind} {String(e.decision ?? "").replace("_", " ")}</b>
               <div className="small muted">{shortTime(e.ts)} · by {e.by}</div><div>{e.what}</div>{e.note && <div className="small muted">{e.note}</div>}</li>
           ))}</ol>
         )}

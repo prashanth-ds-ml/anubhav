@@ -10,16 +10,17 @@ import type { Draft, Vehicle } from "../types";
 export function gateCheck(lessons: Lesson[], sites: string[], v?: Vehicle) {
   if (!v) return null;
   const rule = lessons.find((l) => l.kind === "site_access" && l.state !== "REJECTED" && sites.includes(l.params?.site_id) && typeof l.params?.max_length_ft === "number");
+  if (typeof v.length_ft !== "number") return null;     // a vehicle with no recorded length: nothing to compare
   if (!rule) return null;
-  return { ok: v.length_ft <= rule.params!.max_length_ft, rule, active: rule.state.startsWith("ACTIVE") };
+  return { ok: v.length_ft <= rule.params!.max_length_ft, rule, active: String(rule.state ?? "").startsWith("ACTIVE") };
 }
 
 export function GateLine({ g, lessonsOn }: { g: NonNullable<ReturnType<typeof gateCheck>>; lessonsOn?: boolean }) {
   const why = !g.active ? " The rule is retired, so the agent was not told it." : lessonsOn === false ? " Lessons were off for this run, so the agent was not told it." : "";
   return g.ok ? (
-    <p className="gate ok-text"><CheckCircle2 size={16} aria-hidden /> Fits the learned gate rule: {g.rule.what}</p>
+    <p className="gate ok-text"><CheckCircle2 size={16} aria-hidden /> Fits the learned gate rule: {g.rule.what || g.rule.display || g.rule.lesson_id}</p>
   ) : (
-    <p className="gate err-text"><XCircle size={16} aria-hidden /> Too long for this gate: {g.rule.what}.{why}</p>
+    <p className="gate err-text"><XCircle size={16} aria-hidden /> Too long for this gate: {g.rule.what || g.rule.display || g.rule.lesson_id}.{why}</p>
   );
 }
 
@@ -29,12 +30,12 @@ const limitOf = (g: NonNullable<ReturnType<typeof gateCheck>>) => g.rule.params!
 /** What plain code checked on this draft, from the run's own record (why.checks). Creating a draft runs the validator
  * (weight and volume, vehicle papers, availability, written site limits); the final re-check runs it again at the end. */
 function CodeChecks({ d, v, ruleSaysNo }: { d: Draft; v?: Vehicle; ruleSaysNo: boolean }) {
-  const checks = d.why?.checks?.filter((c) => !c.draft_id || c.draft_id === d.draft_id) ?? [];
+  const checks = (Array.isArray(d.why?.checks) ? d.why!.checks : []).filter((c) => c && (!c.draft_id || c.draft_id === d.draft_id));
   if (checks.length === 0) return null;
   const made = checks.find((c) => c.tool === "create_dispatch_draft");
   const re = checks.find((c) => c.tool === "final_recheck");
   const items: [string, boolean][] = [];
-  if (made) items.push([`Load fits${v && d.load ? ` (${Math.round(d.load.kg).toLocaleString("en-IN")} of ${v.payload_kg.toLocaleString("en-IN")} kg)` : ""}`, made.pass], ["Vehicle papers valid", made.pass]);
+  if (made) items.push([`Load fits${v && typeof d.load?.kg === "number" && v.payload_kg != null ? ` (${Math.round(d.load.kg).toLocaleString("en-IN")} of ${v.payload_kg.toLocaleString("en-IN")} kg)` : ""}`, made.pass], ["Vehicle papers valid", made.pass]);
   if (re) items.push(["Final re-check", re.pass]);
   if (items.length === 0) return null;
   const all = items.every(([, ok]) => ok);
@@ -125,17 +126,17 @@ export function PlanCard({ runId, lessonsOn }: { runId: string; lessonsOn: boole
       {drafts.map((x) => {
         const v = f.data?.vehicles.find((y) => y.vehicle_id === x.vehicle_id);
         const g = gateCheck(l.data ?? [], x.load?.sites ?? [], v);
-        const used = [...new Set((x.why?.lessons ?? []).map(lessonText))];
+        const used = [...new Set((Array.isArray(x.why?.lessons) ? x.why!.lessons : []).map(lessonText))];
         return (
           <article key={x.draft_id} className={`plan-card ${g ? (g.ok ? "good" : "bad") : ""}`} aria-label={`Plan ${x.draft_id}`}>
             <div className="plan-truck">
               <Truck size={28} aria-hidden />
               <div>
                 <p className="plan-size">{v ? `${v.length_ft} ft` : f.loading || (missing && tries < 3) ? "…" : x.vehicle_id}</p>
-                <p className="small muted">{x.vehicle_id}{v ? ` · ${v.class} · ${v.payload_kg.toLocaleString("en-IN")} kg payload` : ""}</p>
+                <p className="small muted">{x.vehicle_id}{v ? ` · ${v.class ?? "—"} · ${v.payload_kg != null ? v.payload_kg.toLocaleString("en-IN") : "—"} kg payload` : ""}</p>
               </div>
               <div className="plan-meta small">
-                <span className="mono">{x.draft_id}</span> · {x.orders.join(", ")}<br />
+                <span className="mono">{x.draft_id}</span> · {(x.orders ?? []).join(", ") || "—"}<br />
                 <span className="muted">{x.source === "live" ? "Live draft, not dispatched" : "Draft only, not dispatched"}{x.model ? ` · ${modelName(x.model)}` : ""}</span>
               </div>
             </div>
@@ -163,7 +164,7 @@ export function ComparePair({ request }: { request: string }) {
   if (!c.data?.cold || !c.data.with_lessons) return null;
   const pairs: [string, NonNullable<typeof c.data.cold>][] = [["Without lessons", c.data.cold], ["With the approved lesson", c.data.with_lessons]];
   const sides = pairs.map(([title, s]) => {
-    const dr = s.drafts[0];
+    const dr = s.drafts?.[0];
     const v = f.data?.vehicles.find((y) => y.vehicle_id === dr?.vehicle_id);
     const sites = (dr?.orders ?? []).map((id) => o.data?.orders.find((x) => x.order_id === id)?.site_id).filter(Boolean) as string[];
     return { title, dr, v, g: gateCheck(l.data ?? [], sites, v) };

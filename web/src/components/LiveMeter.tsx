@@ -3,13 +3,13 @@ import { useSettings } from "../lib/ctx";
 /** What the live budget looks like right now, from the server's session. Null when this host has no model key. */
 export function liveBudget(session: ReturnType<typeof useSettings>["session"]) {
   if (!session) return null;
-  const ms = Object.values(session.models);
+  const ms = Object.values(session.models ?? {});
   if (!ms.some((m) => m.available || !/no `[^`]+` set/.test(m.reason ?? ""))) return null; // no key for any model: replay only, no meter
-  const perVisit = session.caps.per_session;
+  const perVisit = session.caps?.per_session ?? 0;
   const used = session.live_runs_used ?? perVisit - session.live_runs_left;
   const visitLeft = Math.max(0, perVisit - used);
   const dayLeft = session.live_runs_left_today ?? session.live_runs_left;
-  return { perVisit, visitLeft, dayLeft, perDay: session.caps.per_day, left: Math.min(visitLeft, dayLeft) };
+  return { perVisit, visitLeft, dayLeft, perDay: session.caps?.per_day ?? 0, left: Math.min(visitLeft, dayLeft) };
 }
 
 /** Always on screen in the header when live mode exists: how many live runs this visit has left, and why none when none. */

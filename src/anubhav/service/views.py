@@ -53,12 +53,22 @@ def drafts(r):
     out = []
     for s in tool_steps(r):
         if s["name"] == "create_dispatch_draft" and s["ok"]:
-            out.append(s["result"])
+            out.append(_one_shape(s["result"]))
         if s["name"] == "create_dispatch_drafts" and s["ok"]:
-            out += [x for x in s["result"]["results"] if x["ok"]]
+            # the several-drafts tool names the orders order_ids and keeps the date once, for all of them
+            out += [_one_shape(x, s["result"].get("delivery_date")) for x in s["result"]["results"] if x.get("ok")]
         if s["name"] == "cancel_dispatch_draft" and s["ok"]:
             out = [d for d in out if d["draft_id"] != (s.get("result") or {}).get("draft_id")]
     return out
+
+
+def _one_shape(d, date=None):
+    """One draft, the same fields whichever tool made it (and when a retry returned the earlier draft)."""
+    d = dict(d)
+    d["orders"] = list(d.get("orders") or d.get("order_ids") or [])
+    d.setdefault("delivery_date", date)
+    d["warnings"] = list(d.get("warnings") or [])
+    return d
 
 
 def lessons_used(r):
@@ -185,8 +195,11 @@ def drafts_of_run(ws, cid, run):
     b, _ = ws.broker(cid, False)
     out = []
     for d in drafts(run):
-        sites = list(dict.fromkeys(b.C.orders[o]["site_id"] for o in d.get("orders", []) if o in b.C.orders))
         row = b.C.runtime.draft(d["draft_id"])
+        if row:                                  # the stored draft is the record: prefer it over the trace
+            d = {**d, "orders": json.loads(row["order_ids"]) if row.get("order_ids") else d["orders"],
+                 "vehicle_id": row.get("vehicle_id") or d.get("vehicle_id"), "delivery_date": row.get("delivery_date") or d.get("delivery_date")}
+        sites = list(dict.fromkeys(b.C.orders[o]["site_id"] for o in d["orders"] if o in b.C.orders))
         out.append({"draft_id": d["draft_id"], "run_id": run["run_id"], "model": run.get("model"), "status": row["status"] if row else "draft (not dispatched)", "vehicle_id": d.get("vehicle_id"),
                     "delivery_date": d.get("delivery_date"), "created_at": row["created_at"] if row else None, "orders": d.get("orders"), "load": d.get("load"),
                     "warnings": d.get("warnings", []), "sites": _site_names(b, sites),

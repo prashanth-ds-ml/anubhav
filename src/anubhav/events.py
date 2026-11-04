@@ -92,8 +92,9 @@ class Emitter:
             for d in [res] if name == "create_dispatch_draft" else res.get("results", []):
                 if d.get("draft_id"):
                     self.emit("validator_check", {"tool": name, "pass": True, "draft_id": d["draft_id"]})
+                    # one shape whichever tool made it: create_dispatch_drafts names the orders order_ids
                     self.emit("draft_created", {"draft_id": d["draft_id"], "vehicle_id": d.get("vehicle_id"),
-                                                "orders": d.get("orders"), "load": d.get("load")})
+                                                "orders": list(d.get("orders") or d.get("order_ids") or []), "load": d.get("load")})
                 else:
                     self.emit("validator_check", {"tool": name, "pass": False, "error": d.get("error") or d.get("errors")})
 
