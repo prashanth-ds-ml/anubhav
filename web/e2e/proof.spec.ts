@@ -22,12 +22,12 @@ test("Benchmarks: the per-company chart and the mining bars come from the result
   await expect(page.getByRole("region", { name: /Open weights match/ }).locator("tbody tr")).toHaveCount(2);
 });
 
-test("the scoreboard lists all 20 pre-registered experiments, and every missed bar is marked ✕", async ({ page }) => {
+test("the scoreboard lists all 21 pre-registered experiments, and every missed bar is marked ✕", async ({ page }) => {
   const reg = (await (await page.request.get("/api/proof/registry")).json()).experiments as { id: string; verdict: string }[];
-  expect(reg).toHaveLength(20);
+  expect(reg).toHaveLength(21);
   await page.goto("/#proof");
-  const board = page.getByRole("list", { name: "20 experiments" });
-  await expect(board.locator("details")).toHaveCount(20);
+  const board = page.getByRole("list", { name: "21 experiments" });
+  await expect(board.locator("details")).toHaveCount(21);
   await expect(board.locator("details.v-not-met")).toHaveCount(reg.filter((r) => r.verdict === "not_met").length);
   await expect(board.locator("details.v-met")).toHaveCount(reg.filter((r) => r.verdict === "met").length);
   for (const r of reg.filter((x) => x.verdict === "not_met")) {
@@ -52,10 +52,10 @@ test("Check our claims: one line per repeat, and a plan → result chain for eve
   await expect(lessons).toContainText("bar set in advance: +25");
   await expect(page.getByRole("region", { name: /A new company went from/ })).toContainText("100% · all 3 repeats");
   const custody = page.getByRole("region", { name: /Check our claims: each one was fixed in advance/ });
-  await expect(custody.locator("tbody tr")).toHaveCount(20);
+  await expect(custody.locator("tbody tr")).toHaveCount(21);
   // Every row links its plan commit; every run experiment links its result commit and file.
-  await expect(custody.locator('a[href*="/commit/"]')).toHaveCount(20 + 20); // every experiment has now run
-  await expect(custody.getByRole("link", { name: "result file" })).toHaveCount(20);
+  await expect(custody.locator('a[href*="/commit/"]')).toHaveCount(21 + 21); // every experiment has now run
+  await expect(custody.getByRole("link", { name: "result file" })).toHaveCount(21);
   await expect(custody.locator("tbody tr").filter({ hasText: "EXP-009b" })).toContainText("(same commit)");
 });
 

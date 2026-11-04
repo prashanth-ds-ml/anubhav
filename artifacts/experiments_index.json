@@ -70,6 +70,10 @@
     {"id": "EXP-018", "models": {"learning": "spark"}, "question": "Does learning get better as the company has more history?", "verdict": "met", "summary": "T01 mined from 30, 60, 90 days: recall 72.7% to 81.8% to 81.8%, precision 100%, 0 traps (none were proposed, so the gate's trap check was not tested)",
      "bar": {"text": "Recall at 90 days ≥ at 30 days; precision at 90 days ≥ 85%; 0 traps at every length", "precision": 0.85},
      "plan": {"commit": "e754752", "date": "2026-11-03 20:58", "file": "artifacts/benchmark/exp018_frozen.json"}, "result": {"commit": "e754752", "date": "2026-11-03 21:11", "file": "artifacts/learning/exp018_20261103_205939.json"},
-     "custody": "same_commit", "runs": 9, "cost_usd": 0.55, "note": "Plan and result committed together; the frozen plan file was written at 20:58, before the first model call (20:59)."}
+     "custody": "same_commit", "runs": 9, "cost_usd": 0.55, "note": "Plan and result committed together; the frozen plan file was written at 20:58, before the first model call (20:59)."},
+    {"id": "EXP-019", "models": {"agent": "spark"}, "question": "With only Tool Forge writing SQL (the team), does Muse Spark 1.3 make learned tools, use them, and need fewer calls?", "verdict": "not_met", "summary": "Still no tools made (0 of 16 used). Tool Forge wrote all 47 queries and the query shapes halved, but no query served 3 different requests; the team took 7.9 calls a question against 3.3 for the Planner alone",
+     "bar": {"text": "EXP-016's: calls ≤ 0.7 × the query arm's and answers not worse; learned tools used on at least half the questions; secondary: at least 1 tool made", "call_ratio": 0.7},
+     "plan": {"commit": "362fd04", "date": "2026-11-04 07:25", "file": "artifacts/benchmark/exp019_frozen.json"}, "result": {"commit": "362fd04", "date": "2026-11-04 08:11", "file": "artifacts/benchmark/exp019_20261104_072608.json"},
+     "custody": "same_commit", "runs": 52, "cost_usd": 4.32, "note": "Plan and result committed together; the frozen plan file was written at 07:25:01, before the first model call (07:25:07)."}
   ]
 }

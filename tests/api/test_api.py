@@ -544,7 +544,7 @@ def _git(*args):
 def test_the_experiment_registry_points_at_real_files_and_commits():
     reg = client_free_registry()
     rows = reg["experiments"]
-    assert len(rows) == 20 and len({r["id"] for r in rows}) == 20
+    assert len(rows) == 21 and len({r["id"] for r in rows}) == 21
     assert {r["verdict"] for r in rows} <= {"met", "not_met", "finding", "not_run"}
     for r in rows:
         if r["result"]:
