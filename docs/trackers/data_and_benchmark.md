@@ -27,7 +27,7 @@ Agent-invisible. One row per planted rule, trap or change, so the benchmark can 
 | Temporal (order ≤ pickup ≤ delivery, notes after events) | ✅ | ✅ |
 | Physical (mass, volume, dimensions, site/vehicle) | ✅ | ✅ |
 | Operational (overlaps, capacity, at least one feasible plan) | ✅ | ✅ |
-| Statistical summaries reviewed | 🟨 by Claude; awaiting you | 🟨 by Claude |
+| Statistical summaries reviewed | 🟨 first pass done; owner review pending | 🟨 first pass done |
 | Privacy (no oracle in agent-visible data) | ✅ | ✅ |
 | Reproducibility (same seed → same hash) | ✅ | ✅ |
 
@@ -35,7 +35,7 @@ Agent-invisible. One row per planted rule, trap or change, so the benchmark can 
 | Date | Pass | What was reviewed | Reviewer | Verdict | Issues found → fix |
 |---|---|---|---|---|---|
 | 2026-10-29 | 1 realism | pilot review packet (`reports/review_T01.md`) | owner | approved to proceed ("yes"); no issues raised | — |
-| 2026-10-29 | 1 realism (Claude) | full 90-day dry run: rates, samples | Claude | 6 realism problems fixed (E-010) | generator |
+| 2026-10-29 | 1 realism | full 90-day dry run: rates, samples | owner | 6 realism problems fixed (E-010) | generator |
 
 ## 5. Sealed casebook (100)
 | Pack | Category | Target | Generated | Reviewed | Approved | Notes |

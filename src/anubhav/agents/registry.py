@@ -11,7 +11,7 @@ from ..agent.graph import Limits
 from ..data.config import ROOT
 
 PATH = ROOT / "configs" / "agents.yaml"
-SKILLS = ROOT / "configs" / "skills"        # configs/skills/<agent>/<skill>/SKILL.md, like Claude skills
+SKILLS = ROOT / "configs" / "skills"        # configs/skills/<agent>/<skill>/SKILL.md: a name and description, loaded on demand
 ALWAYS = {"load_skill"}                     # every agent may read its own skills
 
 

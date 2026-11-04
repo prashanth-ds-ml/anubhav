@@ -51,7 +51,7 @@ pythonpath = ["src", "archive/prototype_experiments/src"]
 [tool.ruff]
 line-length = 200
 target-version = "py312"
-extend-exclude = ["archive", "Other_assistant", "scripts/exp*.py"]   # frozen experiments stay byte for byte as they ran
+extend-exclude = ["archive", "scripts/exp*.py"]   # frozen experiments stay byte for byte as they ran
 
 [tool.ruff.lint]
 select = ["E4", "E7", "E9", "F", "B"]

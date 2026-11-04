@@ -127,7 +127,6 @@ All experiments were pre-registered: tasks, data and code were frozen and hashed
 - [ ] Submitted on Cerebral Valley by **Nov 4, 9 PM ET (Nov 5, 7:30 AM IST)**
 - [ ] README: problem, Meta models used, architecture diagram, setup, results, limits
 - [ ] No keys or secrets in the git history
-- [ ] No Claude co-author trailer
 
 ---
 

@@ -15,7 +15,7 @@ This is the normal case, not an edge case. India has about 12.5 million trucks r
 
 Muse already handles Telugu, Roman Telugu and tool calls well. What it can't know is the local, unwritten part. Anubhav lets the agent earn that knowledge from the business's own records, with proof, and only after a person agrees.
 
-**Built for small fleets first.** Anubhav is built first for small and mid-size fleets and distributors, where rules live in notes and people's heads. We expect the same loop to get stronger as a company grows: more trips give the evidence gate more to prove, repeated questions become tools sooner, and every company in a region adds to what the next one learns on day one. This is a hypothesis. We haven't measured it yet; it's the next experiment.
+**Built for small fleets first.** Anubhav is built first for small and mid-size fleets and distributors, where rules live in notes and people's heads. We expect the same loop to get stronger as a company grows: more trips give the evidence gate more to prove, repeated questions become tools sooner, and every company in a region adds to what the next one learns on day one. This is a hypothesis. A first check (EXP-018, Muse Spark 1.3) mined one company from 30, 60 and 90 days of records: recall rose from 72.7% to 81.8% at 60 days and stayed there, with 100% precision; one company and one generated world, so it is a start, not proof.
 
 ## Results (pre-registered; files frozen by hash before any model call; read the [limitations](#limitations))
 
@@ -37,7 +37,8 @@ Muse already handles Telugu, Roman Telugu and tool calls well. What it can't kno
 **New tools (EXP-012 and EXP-012b, unseen world 5279, 16 held-out questions no built tool was designed for).**
 - With the read-only query tool the agent answered 13/16 vs 11/16 with built-in tools only: +12.5 points, short of the pre-registered +25 (EXP-012).
 - In EXP-012 it never called the tools it had learned (0/16), because each was named after the one request it came from. With general names (EXP-012b) it used them in **14/16** questions, answered 15/16 (vs 14/16 without them), with 20% fewer tool calls and 24% lower cost. The pre-registered bar was 30% fewer calls: **not met**.
-- **On Muse Spark 1.3 (EXP-016): no learned tools.** It wrote a query in all 20 learning runs, but none became a tool, so none was used (0/16); both rules missed. It answered these questions well without them (15/16 and 16/16, about 3 calls each). Why no query was reused across 3 requests is not checked yet.
+- **On Muse Spark 1.3 (EXP-016): no learned tools.** It wrote a query in all 20 learning runs, but none became a tool, so none was used (0/16); both rules missed. It answered these questions well without them (15/16 and 16/16, about 3 calls each). A diagnostic found why: Spark 1.3 writes the same question as a different query each time, so no query reached 3 requests.
+- **On Muse Spark 1.3 with the team (EXP-019, Nov 4):** with Tool Forge writing every query, the number of different query shapes halved, but still no query served 3 requests, so no tool was made (0/16); the team needed 7.9 tool calls a question against 3.3 for the Planner alone. All bars missed. Learned tools have so far been made and used only on Muse Spark Open.
 
 **Does it learn the right things?** Mining is scored against the generator's hidden rules, which the system never sees.
 
@@ -62,7 +63,7 @@ Muse already handles Telugu, Roman Telugu and tool calls well. What it can't kno
 - **Met:** no unsafe drafts, within 5 points of one planner (−1.9), within 1.5× the cost (1.36×). By the rule fixed beforehand, the team is the API's default.
 - **The team is not more accurate or cheaper than one planner.** Planning cases are the same (36/38 in every arm). On data questions the arms got 12, 11 and 10 of 16. What it adds is visible hand-offs, tool creation and per-agent learning, not better answers.
 - **Learning round, not met:** routing +7.4 points against a bar of +15 (M0 was already at 91%, so +15 was out of reach). Two changes passed their paired tests and cost per case fell 5%, but answers did not improve.
-- **The team's demo bundle isn't recorded yet:** hosted replays are single-Planner runs.
+- **Recorded runs:** 6 of the 32 hosted replays are team runs; the rest are single-Planner runs.
 
 **The team as it learns, EXP-014 (Nov 3, unseen world 7919, one repeat, 58 test cases never seen by a learning step, Muse Spark 1.3 agents, 283 runs, $20.62 Meta).** Each stage adds one kind of learning:
 
@@ -85,7 +86,7 @@ Muse already handles Telugu, Roman Telugu and tool calls well. What it can't kno
 - **Lessons were mined before the gate changed.** EXP-011R re-ran the shipped agent, broker and validator, but used the lessons mined and gated in EXP-009b; the gate's generic-vehicle-word change ([D-038](docs/trackers/decisions.md)) was not re-measured.
 - **Mining misses about 3 in 10 hidden rules** (recall 69–74%), and every lesson still needs a person.
 - **The tool-use loop has not yet improved anything.** In EXP-010 its one patch was correctly rejected (no held-out gain). In EXP-014 a change that passed its paired test made Tool Forge worse, so the paired test is not yet a reliable guard.
-- **The Nov 3 experiments (EXP-014 to EXP-016) ran the version that ships,** which changed after EXP-011R; the code, not only the model, differs from Oct 30. All three were frozen by hash and committed before their first call ([D-054](docs/trackers/decisions.md)).
+- **The Nov 3–4 experiments (EXP-014 to EXP-019) ran the version that ships at that point,** which changed after EXP-011R; the code, not only the model, differs from Oct 30. Each plan was frozen by hash before its first call ([D-054](docs/trackers/decisions.md)); EXP-018 and EXP-019 were committed with their results, so for those two the frozen file's timestamp is the evidence.
 - **The leak check is our own token check** against the source company's ids, names and vendors, not a formal privacy guarantee.
 
 Details: [experiments log](docs/trackers/experiments.md) · [decisions](docs/trackers/decisions.md) · [errors and fixes](docs/trackers/errors_and_fixes.md).
@@ -95,7 +96,7 @@ Details: [experiments log](docs/trackers/experiments.md) · [decisions](docs/tra
 ```mermaid
 flowchart TB
   U["Dispatcher · text or voice<br/>Roman Telugu / Telugu / English"] -->|Muse Voice Transcribe| A
-  subgraph Agent["Agent · Muse Spark Open · LangGraph bounded loop"]
+  subgraph Agent["Agents · Muse Spark 1.3 live, Muse Spark Open in benchmarks · LangGraph bounded loop"]
     A[Plan with tools] --> T[27 generic MCP tools in 7 groups<br/>orders & sites · fleet & drivers · planning · trips & documents<br/>history & performance · knowledge]
     T --> D[Draft only: never dispatches]
     D --> V{{Deterministic safety check<br/>enforces approved rules}}
@@ -116,7 +117,7 @@ flowchart TB
 ```
 
 1. **Records:** trips, staff corrections, driver notes and outcomes, in each client's own format. Adapters map them to one canonical view.
-2. **Generic tools:** 27 tools in 7 groups (orders & sites, fleet & drivers, planning, trips & documents, history & performance, knowledge, system) work on any client's data through an MCP server. They come from an audit of what planners actually ask. `plan_board` shows a whole day in one call, `check_load` tests a plan without committing, and `list_lessons` lets the agent explain what it has learned. Tool lists are filtered by role, and every call goes through one broker that enforces company and role.
+2. **Generic tools:** 27 tools in 7 groups (orders & sites, fleet & drivers, planning, trips & documents, history & performance, knowledge, system) work on any client's data through an MCP server. They come from an audit of what planners actually ask. `plan_board` shows a whole day in one call, `check_load` tests a plan without committing, and `list_lessons` lets the agent explain what it has learned. Tool lists are filtered by role and by agent, and every call goes through one broker that enforces company, role and agent.
 3. **Mine:** Muse Spark 1.3 reads a digest of the history and proposes lessons, such as "32 ft trucks can't enter the Jangaon godown".
 4. **Check:** the evidence gate is code. It needs supporting observations, rejects contradictions, tests vendor reliability statistically and rejects habits that only look like rules.
 5. **Review:** a person approves each lesson as advice or as an enforced rule. Lessons expire, can be challenged by new outcomes and can be rolled back. Every step is audited.
@@ -125,6 +126,7 @@ flowchart TB
 8. **Make new tools:** when no tool fits, the agent writes one read-only SQL query over its own company's records (SELECT only, in a sandbox with time and row limits). A query it needed for other requests too becomes a candidate tool: code turns its values into parameters, checks that it gives the same answers and works on inputs it never saw, and a person approves it. Then the agent calls it in one step.
 9. **Review its own runs:** a nightly review reads the agent's runs and feedback, and code sends each problem to its fix: tool use to the harness loop, reused queries to new tools, facts people stated to the miner and the evidence gate. Nothing becomes active without a person.
 10. **Know the business:** a business profile counted from the records (sites, fleet, volumes, goods, languages), plus what the owner adds, is given to the agent as information.
+11. **A team with roles and skills:** the Planner leads and hands work to the Analyst (existing tools), Tool Forge (read-only queries) and the Lesson Miner. Each agent's tools are set in `configs/agents.yaml` and enforced in code (only the Planner makes drafts; only Tool Forge writes SQL). Each agent also has skills in `configs/skills/`, short written methods it loads when it needs one. When a run must go past a limit, it stops and asks a person: approve, decline, or give other instructions.
 
 Before the planner reads a reply, code checks it: every draft, vehicle and order id in it must come from that run, and it must never claim a dispatch. A refusal for a load that doesn't fit names free vehicles that would.
 
@@ -141,7 +143,7 @@ Nothing in the runtime is hand-coded world knowledge: no word lists, no site rul
 **Measured on both models:** the recorded runs and the benchmarks EXP-011 to EXP-013 ran on **Muse Spark Open**, the open-weights model, served by Baseten. Live mode runs **Muse Spark 1.3** on the Meta API (D-050), and EXP-015 repeated the main benchmark on it with the same result. Muse Spark 1.3 also proposes lessons and patches, and code checks everything it proposes; Muse Voice Transcribe turns speech into text.
 
 ## Try it
-**Hosted demo:** **[huggingface.co/spaces/KPrashanth/anubhav](https://huggingface.co/spaces/KPrashanth/anubhav)** (app: [kprashanth-anubhav.hf.space](https://kprashanth-anubhav.hf.space/)). Recorded scenarios are free; live mode runs Muse Spark 1.3, 8 live runs and one learning run per visit. Each visitor gets their own drafts and lessons. The first open after a quiet spell can take about a minute while the Space wakes up.
+**Hosted demo:** **[huggingface.co/spaces/KPrashanth/anubhav](https://huggingface.co/spaces/KPrashanth/anubhav)** (app: [kprashanth-anubhav.hf.space](https://kprashanth-anubhav.hf.space/)). It opens on a **Fresh start** workspace (no lessons, no tools); **After learning** loads the lessons the recorded runs used, and **Reset** empties your workspace again. Recorded scenarios are free; live mode runs Muse Spark 1.3, 8 live runs and one learning run per visit. Each visitor gets their own drafts and lessons. The first open after a quiet spell can take about a minute while the Space wakes up.
 
 An earlier replay-only version: [anubhav-metahackathon.streamlit.app](https://anubhav-metahackathon.streamlit.app/).
 
@@ -188,7 +190,7 @@ The earlier Streamlit app still runs with `uv run streamlit run streamlit_app.py
 
 **Other commands**
 ```bash
-uv run pytest -q                                              # 563 tests, no model calls
+uv run pytest -q                                              # 609 tests, no model calls
 cd web && npm ci && npm run build && npx playwright test      # build the web app and run its browser tests
 uv run uvicorn anubhav.api.app:app --port 7860                # the API, serving the built web app at /; docs at /docs
 uv run python scripts/exp013_team.py                          # the team vs one planner (~$14)
@@ -215,18 +217,18 @@ src/anubhav/
   ui/          Streamlit helpers and graphs
 app_pages/, streamlit_app.py   the Streamlit demo app
 web/           React app, built into web/dist and served by the API
-scripts/       pre-registered experiments (EXP-008 … EXP-011), demo export
+scripts/       pre-registered experiments (EXP-008 … EXP-019), demo export
 artifacts/     experiment results (JSON, logs)
 demo/          small bundle for the hosted replay
-configs/       world and client-schema configs
-docs/          PRD, data spec, blueprint, trackers (Obsidian vault)
+configs/       world and client-schema configs, agents and their skills
+docs/          PRD, data spec, design notes, experiment and decision logs
 archive/       first prototypes and experiments EXP-001–006 (Oct 27–28)
 tests/         data, runtime, learning, harness, safety (adversarial), eval
 ```
 
 ## What's next
 - **Proposed changes, approved by a person.** Today agents only make drafts. Next, they propose everyday changes to the business's records, such as a new delivery site or a new order: code checks each proposal (required fields, likely duplicates, the site and products exist, sensible quantities), a person approves, rejects or edits it, and only then is it written, with an audit entry of who approved it and from which run.
-- **Learned tools on Muse Spark 1.3.** Tool Forge now has its own skills (one general query, debugging SQL, repairing a tool that failed its checks) and code re-checks approved tools; whether that makes Spark 1.3 build tools it reuses needs a new pre-registered experiment.
+- **Learned tools on Muse Spark 1.3.** Routing every query through Tool Forge was not enough (EXP-019). Next: show Tool Forge an earlier query for the same kind of question, or let a person approve a query after 2 requests, each as its own pre-registered experiment.
 - **A real dispatcher's review** of the mined lessons, and data from a real fleet.
 
 ## Built during the hackathon

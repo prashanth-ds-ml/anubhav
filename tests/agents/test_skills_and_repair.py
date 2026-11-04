@@ -71,7 +71,7 @@ def test_each_agent_may_call_only_its_own_tools(C):
     assert alone.call("run_query", {"sql": "SELECT 1 AS one", "purpose": "x"})["ok"]
 
 
-# ---------- skills like Claude skills
+# ---------- skills: listed in the prompt, loaded on demand
 def test_every_agent_has_skills_listed_in_its_prompt_and_loads_one_in_full(C):
     roster = registry.load()
     want = {"planner": "route-data-questions", "analyst": "hand-to-tool-forge", "tool_forge": "repair-a-tool", "lesson_miner": "revise-after-gate"}

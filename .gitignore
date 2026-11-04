@@ -56,3 +56,31 @@ docs/Implementation_Plan_Sprints.md
 
 # Benchmark per-case runtimes
 /artifacts/benchmark/rt/
+
+# Internal working notes: planning, daily logs, demo recording aids and submission drafts (kept locally)
+docs/.obsidian/
+docs/daily/
+docs/sessions/
+docs/review_kit/
+docs/templates/
+docs/demo_screens/
+docs/audit/
+docs/Demo_Plan_Final.md
+docs/demo_plan.md
+docs/Demo_Script.md
+docs/Submission_Draft.md
+docs/Handoff_Web_to_AI_Engineer.md
+docs/Build_Plan_Demo_v1.md
+docs/UX_Revision_Plan_v1.md
+docs/Home.md
+docs/trackers/todo.md
+docs/trackers/risks.md
+docs/trackers/rubric_scorecard.md
+docs/trackers/submission_checklist.md
+docs/trackers/smoke_tests.md
+docs/trackers/build_in_public.md
+docs/trackers/demo_video.md
+docs/trackers/ideas_parking_lot.md
+docs/trackers/progress.md
+docs/trackers/questions.md
+docs/benchmark_data_guide.md

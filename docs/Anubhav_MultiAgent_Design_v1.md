@@ -10,7 +10,7 @@ History and discussion trail: `React_UI_Brainstorm.md` (git history). Related: [
 Deadline: Thu Nov 5, 7:30 AM IST (Nov 4, 9 PM ET). Target submit: Nov 4.
 
 ## 1. Understanding summary
-- Build an **orchestrated multi-agent system** for the logistics domain: a **Planner** (orchestrator) delegates to fixed sub-agents **Analyst, Tool Forge, Lesson Miner**, collects results and gives the user one reply (Claude-workflow style).
+- Build an **orchestrated multi-agent system** for the logistics domain: a **Planner** (orchestrator) delegates to fixed sub-agents **Analyst, Tool Forge, Lesson Miner**, collects results and gives the user one reply (an orchestrator–worker pattern).
 - Agents are **not hardcoded**: they are specs in a registry; tools are in a registry. **Any agent can discover and call any tool and any other agent**, within limits. Routing is **learned**.
 - **Each agent has its own instructions, knowledge base and learning loop** (propose patch -> paired test -> human approval -> rollback). No fine-tuning.
 - Code stays authoritative: **Validator, Evidence Gate, Reply Checker, Leak Check** are not agents. Harness Coach + Judge are shared machinery for the loops. Humans approve everything that becomes active.
