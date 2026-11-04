@@ -1,0 +1,31 @@
+{
+ "hashes": {
+  "scripts/exp020_shipped_team.py": "dbf2110eb5862efb",
+  "configs/agents.yaml": "c2e66ba9a4cb36bb",
+  "src/anubhav/agent/graph.py": "a090ee41775ae0b1",
+  "src/anubhav/agents/team.py": "ea3deab9d75f670a",
+  "src/anubhav/agents/registry.py": "ad02a720481d2798",
+  "src/anubhav/runtime/broker.py": "608489236ff09f04",
+  "src/anubhav/eval/bench.py": "9833d76159b55021",
+  "src/anubhav/harness/practice.py": "a9795619de8cdcaa",
+  "configs/skills/analyst/answer-with-tools/SKILL.md": "625f026fde6d75dd",
+  "configs/skills/analyst/check-your-numbers/SKILL.md": "bda3a04c5f2f4a31",
+  "configs/skills/analyst/hand-to-tool-forge/SKILL.md": "6cef16b76eb7727a",
+  "configs/skills/lesson_miner/mine-unwritten-rules/SKILL.md": "18360d7a15c1992b",
+  "configs/skills/lesson_miner/revise-after-gate/SKILL.md": "936785317cdaeb61",
+  "configs/skills/planner/finish-within-budget/SKILL.md": "a5caf9c481bf84dd",
+  "configs/skills/planner/plan-a-truck/SKILL.md": "d8a868ae008f6282",
+  "configs/skills/planner/rebrief-teammate/SKILL.md": "9a3b60bdd3a99a64",
+  "configs/skills/planner/route-data-questions/SKILL.md": "30431f8a7a1467ab",
+  "configs/skills/tool_forge/debug-sql/SKILL.md": "a6fd60ce1df6f202",
+  "configs/skills/tool_forge/repair-a-tool/SKILL.md": "2599ed3a42d03aa6",
+  "configs/skills/tool_forge/write-one-query/SKILL.md": "74f000cf9c03cfaf"
+ },
+ "bars": {
+  "plan_ok_min": 34,
+  "gap_ok_min": 13,
+  "routing_min": 0.9
+ },
+ "budget_usd": 8.0,
+ "frozen_at": "2026-11-05T04:14:19"
+}
