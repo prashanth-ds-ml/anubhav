@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { api, modelName, type ProofEntry, type RegistryRow } from "../lib/api";
+import { ModelTags } from "./ModelTags";
 import { useApi } from "../lib/useApi";
 import { useFocusTarget } from "../lib/focus";
 import { go } from "../lib/route";
@@ -152,7 +153,7 @@ function Scoreboard({ rows }: { rows: RegistryRow[] }) {
             <li key={r.id}>
               <details className={`score-card v-${cls}`}>
                 <summary><span aria-hidden>{m}</span><span className="sr-only">{t}: </span> <strong>{num(r.id)}</strong> {r.summary ?? r.question}</summary>
-                <p className="small"><strong>{r.id}</strong> · {r.question}</p>
+                <p className="small"><strong>{r.id}</strong> · {r.question} <ModelTags m={r.models} /></p>
                 {r.bar && <p className="small">Bar fixed in advance: {r.bar.text}</p>}
                 <p className="small">Plan: {day(r.plan?.date)} · <a href={commit(r.plan!.commit)} target="_blank" rel="noreferrer" className="mono">{r.plan?.commit}</a></p>
                 {r.result ? (
@@ -226,7 +227,7 @@ function Custody({ rows }: { rows: RegistryRow[] }) {
             const [m, , cls] = MARK[r.verdict] ?? ["", "", ""];
             return (
               <tr key={r.id}>
-                <td><strong>{r.id}</strong> {r.question}</td>
+                <td><strong>{r.id}</strong> {r.question} <ModelTags m={r.models} /></td>
                 <td className="nowrap">{day(r.plan?.date)} · <a className="mono" href={commit(r.plan!.commit)} target="_blank" rel="noreferrer">{r.plan?.commit}</a></td>
                 <td>{r.result ? [r.runs ? `${r.runs} runs` : "", r.cost_usd ? `$${r.cost_usd.toFixed(2)}` : ""].filter(Boolean).join(" · ") || "—" : "not run yet"}</td>
                 <td className="nowrap">{r.result ? <>{day(r.result.date)} · <a className="mono" href={commit(r.result.commit)} target="_blank" rel="noreferrer">{r.result.commit}</a>{r.custody === "same_commit" ? " (same commit)" : ""}</> : "—"}</td>

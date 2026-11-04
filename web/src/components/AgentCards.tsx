@@ -5,6 +5,7 @@ import { useSettings } from "../lib/ctx";
 import { AGENT_STYLE } from "../agents";
 import { go } from "../lib/route";
 import { AgentScores, TeamCurve, type Curve } from "./TeamCurve";
+import { ModelTags } from "./ModelTags";
 
 // How each agent learns: a description of the design, for people. The numbers beside it come from the result files.
 const HOW: Record<string, string> = {
@@ -44,7 +45,7 @@ function fromCurve(agent: string, c?: Curve): ReactNode {
     : agent === "planner" ? `unwritten rules ${pct(a.v0?.unwritten ?? 0)} → ${pct(a.final?.unwritten ?? 0)} as learning was added`
     : `${pct(a.v0?.rate ?? 0)} → ${pct(a.final?.rate ?? 0)} on its own ${a.v0?.n} questions`;
   const cls = g == null || g === 0 ? "" : g > 0 ? "ok-text" : "err-text";
-  return <p className={`small ${cls}`}><span aria-hidden>{mark} </span>EXP-014 on Muse Spark 1.3: {text}{agent === "tool_forge" && g != null && g < 0 ? ", after its approved change" : ""}</p>;
+  return <p className={`small ${cls}`}><span aria-hidden>{mark} </span><ModelTags m={{ agent: "spark" }} /> EXP-014: {text}{agent === "tool_forge" && g != null && g < 0 ? ", after its approved change" : ""}</p>;
 }
 
 function measured(agent: string, proof: Record<string, ProofEntry>, reg: Record<string, RegistryRow>, c?: Curve): ReactNode {
@@ -56,10 +57,10 @@ function measured(agent: string, proof: Record<string, ProofEntry>, reg: Record<
         <p className="small">Unwritten rules handled, single Planner:</p>
         <Bar label="given the raw notes" value={mean(r.map((x) => x.raw_notes_B))} tone="base" />
         <Bar label="with approved lessons" value={mean(r.map((x) => x.lessons_C))} tone="now" />
-        <p className="small muted">EXP-011R · {r.length} repeats · Muse Spark Open</p>
+        <p className="small muted">EXP-011R · {r.length} repeats <ModelTags m={reg["EXP-011R"]?.models} /></p>
         <Verdict r={reg["EXP-011R"]} />
         {proof["EXP-015"]?.pooled && (
-          <p className="small">On Muse Spark 1.3, the live model (EXP-015): <strong>{pct(proof["EXP-015"].pooled.raw_notes_B)} → {pct(proof["EXP-015"].pooled.lessons_C)}</strong>, {reg["EXP-015"]?.verdict === "met" ? "✓ replicated" : "not replicated"} in {proof["EXP-015"].repeats?.length} repeats</p>
+          <p className="small"><ModelTags m={reg["EXP-015"]?.models} /> the live model (EXP-015): <strong>{pct(proof["EXP-015"].pooled.raw_notes_B)} → {pct(proof["EXP-015"].pooled.lessons_C)}</strong>, {reg["EXP-015"]?.verdict === "met" ? "✓ replicated" : "not replicated"} in {proof["EXP-015"].repeats?.length} repeats</p>
         )}
         {more}
       </>
@@ -72,9 +73,15 @@ function measured(agent: string, proof: Record<string, ProofEntry>, reg: Record<
       <>
         {used && <p className="small">Learned tool used: <strong>{used.replace("/", " of ")}</strong> questions</p>}
         <p className="small">Tool calls: {Q.mean_tool_calls} → {T.mean_tool_calls} a question ({Math.round(100 * (1 - T.mean_tool_calls / Q.mean_tool_calls))}% fewer)</p>
-        <p className="small muted">EXP-012b · {Q.n} held-out questions · Muse Spark Open</p>
+        <p className="small muted">EXP-012b · {Q.n} held-out questions <ModelTags m={reg["EXP-012b"]?.models} /></p>
         <Verdict r={reg["EXP-012b"]} />
-        {proof["EXP-016"] && <p className="small err-text"><span aria-hidden>✕ </span>On Muse Spark 1.3 (EXP-016): no tool was made, so learned tools were used on {String(proof["EXP-016"].decision?.learned_tool_used_in ?? "0").replace("/", " of ")} questions</p>}
+        <p className="small muted">Since then (Nov 4): its own skills (one general query, debugging SQL, repairing a tool that failed its checks), the Planner no longer writes SQL itself, and approved tools are re-checked by code.{reg["EXP-019"] ? "" : " Not yet measured."}</p>
+        {reg["EXP-019"] && (
+          <p className={`small ${reg["EXP-019"].verdict === "met" ? "ok-text" : "err-text"}`}>
+            <span aria-hidden>{reg["EXP-019"].verdict === "met" ? "✓ " : "✕ "}</span><ModelTags m={reg["EXP-019"].models} /> EXP-019, measured after those changes: {reg["EXP-019"].summary}
+          </p>
+        )}
+        {proof["EXP-016"] && <p className="small err-text"><span aria-hidden>✕ </span><ModelTags m={reg["EXP-016"]?.models} /> EXP-016: no tool was made, so learned tools were used on {String(proof["EXP-016"].decision?.learned_tool_used_in ?? "0").replace("/", " of ")} questions</p>}
         {more}
       </>
     );
@@ -86,7 +93,7 @@ function measured(agent: string, proof: Record<string, ProofEntry>, reg: Record<
         <p className="small">Precision <strong>{pct(p.precision)}</strong> ({p.true_passed} of {p.passed} passed were real)</p>
         <p className="small">Recall <strong>{pct(p.recall)}</strong> ({p.found} of {p.learnable} findable)</p>
         <p className="small">Trap rules admitted: <strong>{Array.isArray(p.traps_admitted) ? p.traps_admitted.length : p.traps_admitted}</strong></p>
-        <p className="small muted">EXP-009b · offline mining on an unseen world</p>
+        <p className="small muted">EXP-009b · offline mining on an unseen world <ModelTags m={reg["EXP-009b"]?.models} /></p>
         <Verdict r={reg["EXP-009b"]} />
         {more}
       </>

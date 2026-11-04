@@ -1,0 +1,49 @@
+{
+ "tag": "exp019",
+ "smoke": true,
+ "model": "muse-spark-1.3",
+ "cost_usd": 0.066,
+ "row": {
+  "id": "T01-gap-dev-01",
+  "company": "T01",
+  "type": "worst_ontime_weekday",
+  "lang": "rt",
+  "question": "September lo ae weekday lo on-time deliveries worst ga unnayi?",
+  "answer_ok": false,
+  "right_tool": true,
+  "tools": [
+   "load_skill",
+   "find_capability",
+   "delegate",
+   "load_skill",
+   "describe_tables",
+   "run_query"
+  ],
+  "cost_usd": 0.066,
+  "tool_calls": 6,
+  "lead_calls": 3,
+  "delegations": [
+   "tool_forge"
+  ],
+  "run_query_by": [
+   "tool_forge"
+  ],
+  "used_learned": [],
+  "stop": "answered",
+  "reply": "September 2026 (Sep 1-30) lo Thursday worst ga undi — 38 deliveries lo 35 on-time, 92.1%.\n\nMigatha days: Monday 100% (42/42), Tuesday 100% (50/50), Wednesday 98.4% (60/61), Friday 100% (46/46), Saturday 100% (35/35), Sunday 100% (6/6).\n\nCounting: arrived date <= delivery date ayithe on-time ga lekkesaru, delivered/partial trips matrame.\n",
+  "run_id": "957a692e45"
+ },
+ "tools_by_agent": {
+  "planner": [
+   "delegate",
+   "find_capability",
+   "load_skill"
+  ],
+  "tool_forge": [
+   "describe_tables",
+   "load_skill",
+   "run_query"
+  ]
+ },
+ "children_cost": 0.02772
+}

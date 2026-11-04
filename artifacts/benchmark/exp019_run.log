@@ -1,0 +1,207 @@
+smoke spent $0.066; this run may spend up to $5.934 (stops before a request when spent + $0.45 would pass it)
+learn T01 BAD worst_ontime_weekday       rt calls=13 lead=6 to=['tool_forge', 'tool_forge'] sql_by=['tool_forge', 'tool_forge'] $0.1537 total=$0.154
+learn T01 BAD worst_ontime_weekday       te calls=6 lead=3 to=['tool_forge'] sql_by=['tool_forge'] $0.0714 total=$0.225
+learn T01 ok  busiest_weekday_town       en calls=6 lead=3 to=['tool_forge'] sql_by=['tool_forge'] $0.0574 total=$0.282
+learn T01 ok  busiest_weekday_town       rt calls=6 lead=3 to=['tool_forge'] sql_by=['tool_forge'] $0.0568 total=$0.339
+learn T01 ok  busiest_weekday_town       te calls=8 lead=3 to=['tool_forge'] sql_by=['tool_forge', 'tool_forge'] $0.0826 total=$0.422
+learn T01 ok  returned_cases_town_month  en calls=8 lead=3 to=['analyst'] sql_by=[] $0.0625 total=$0.484
+learn T01 BAD returned_cases_town_month  rt calls=10 lead=3 to=['analyst'] sql_by=[] $0.0924 total=$0.577
+learn T01 BAD returned_cases_town_month  te calls=10 lead=3 to=['analyst'] sql_by=[] $0.0937 total=$0.670
+learn T01 ok  damaged_cases_month        en calls=8 lead=5 to=['tool_forge', 'tool_forge'] sql_by=['tool_forge'] $0.0797 total=$0.750
+learn T01 ok  damaged_cases_month        rt calls=6 lead=3 to=['tool_forge'] sql_by=['tool_forge'] $0.0478 total=$0.798
+T01: 7 groups, requests per group [2, 1, 1, 1, 1, 1, 1], 0 candidates, 0 tools approved: []
+test  T01 Q ok  worst_ontime_weekday       rt calls=6 lead=3 to=['tool_forge'] learned=[] $0.0645 total=$0.862
+test  T01 T BAD worst_ontime_weekday       rt calls=6 lead=3 to=['tool_forge'] learned=[] $0.0639 total=$0.926
+test  T01 Q ok  busiest_weekday_town       te calls=6 lead=3 to=['tool_forge'] learned=[] $0.0663 total=$0.993
+test  T01 T ok  busiest_weekday_town       te calls=6 lead=3 to=['tool_forge'] learned=[] $0.0629 total=$1.056
+test  T01 Q ok  busiest_weekday_town       en calls=6 lead=3 to=['tool_forge'] learned=[] $0.0626 total=$1.118
+test  T01 T ok  busiest_weekday_town       en calls=6 lead=3 to=['tool_forge'] learned=[] $0.0592 total=$1.177
+test  T01 Q ok  busiest_weekday_town       rt calls=6 lead=3 to=['tool_forge'] learned=[] $0.0612 total=$1.239
+test  T01 T ok  busiest_weekday_town       rt calls=6 lead=3 to=['tool_forge'] learned=[] $0.0609 total=$1.300
+test  T01 Q BAD returned_cases_town_month  te calls=14 lead=3 to=['tool_forge', 'analyst'] learned=[] $0.1542 total=$1.454
+test  T01 T ok  returned_cases_town_month  te calls=13 lead=3 to=['tool_forge', 'analyst'] learned=[] $0.1499 total=$1.604
+test  T01 Q ok  returned_cases_town_month  en calls=6 lead=3 to=['tool_forge'] learned=[] $0.0609 total=$1.665
+test  T01 T ok  returned_cases_town_month  en calls=6 lead=3 to=['tool_forge'] learned=[] $0.0652 total=$1.730
+test  T01 Q ok  returned_cases_town_month  rt calls=19 lead=5 to=['analyst', 'analyst'] learned=[] $0.1642 total=$1.894
+test  T01 T ok  returned_cases_town_month  rt calls=6 lead=3 to=['tool_forge'] learned=[] $0.0546 total=$1.949
+test  T01 Q ok  damaged_cases_month        te calls=8 lead=5 to=['tool_forge', 'tool_forge'] learned=[] $0.0777 total=$2.026
+test  T01 T ok  damaged_cases_month        te calls=15 lead=4 to=['analyst', 'tool_forge'] learned=[] $0.1697 total=$2.196
+learn T02 BAD worst_ontime_weekday       rt calls=6 lead=3 to=['tool_forge'] sql_by=['tool_forge'] $0.0615 total=$2.258
+learn T02 ok  worst_ontime_weekday       te calls=6 lead=3 to=['tool_forge'] sql_by=['tool_forge'] $0.0682 total=$2.326
+learn T02 ok  busiest_weekday_town       en calls=6 lead=3 to=['tool_forge'] sql_by=['tool_forge'] $0.0609 total=$2.387
+learn T02 ok  busiest_weekday_town       rt calls=6 lead=3 to=['tool_forge'] sql_by=['tool_forge'] $0.0648 total=$2.451
+learn T02 ok  busiest_weekday_town       te calls=6 lead=3 to=['tool_forge'] sql_by=['tool_forge'] $0.0663 total=$2.518
+learn T02 ok  returned_cases_town_month  en calls=6 lead=3 to=['tool_forge'] sql_by=['tool_forge'] $0.0612 total=$2.579
+learn T02 ok  returned_cases_town_month  rt calls=14 lead=5 to=['analyst', 'tool_forge'] sql_by=['tool_forge'] $0.2011 total=$2.780
+learn T02 BAD returned_cases_town_month  te calls=9 lead=3 to=['analyst'] sql_by=[] $0.0851 total=$2.865
+learn T02 ok  damaged_cases_month        en calls=8 lead=5 to=['tool_forge', 'tool_forge'] sql_by=['tool_forge'] $0.0779 total=$2.943
+learn T02 ok  damaged_cases_month        rt calls=6 lead=3 to=['tool_forge'] sql_by=['tool_forge'] $0.0606 total=$3.004
+T02: 8 groups, requests per group [2, 1, 1, 1, 1, 1, 1, 1], 0 candidates, 0 tools approved: []
+test  T02 Q BAD worst_ontime_weekday       rt calls=7 lead=3 to=['tool_forge'] learned=[] $0.0789 total=$3.083
+test  T02 T BAD worst_ontime_weekday       rt calls=8 lead=3 to=['tool_forge'] learned=[] $0.0828 total=$3.165
+test  T02 Q ok  busiest_weekday_town       te calls=6 lead=3 to=['tool_forge'] learned=[] $0.0737 total=$3.239
+test  T02 T ok  busiest_weekday_town       te calls=6 lead=3 to=['tool_forge'] learned=[] $0.0678 total=$3.307
+test  T02 Q ok  busiest_weekday_town       en calls=7 lead=3 to=['tool_forge'] learned=[] $0.0747 total=$3.382
+test  T02 T ok  busiest_weekday_town       en calls=6 lead=3 to=['tool_forge'] learned=[] $0.0625 total=$3.444
+test  T02 Q ok  busiest_weekday_town       rt calls=6 lead=3 to=['tool_forge'] learned=[] $0.0660 total=$3.510
+test  T02 T ok  busiest_weekday_town       rt calls=6 lead=3 to=['tool_forge'] learned=[] $0.0637 total=$3.574
+test  T02 Q ok  returned_cases_town_month  te calls=10 lead=3 to=['analyst'] learned=[] $0.0846 total=$3.658
+test  T02 T BAD returned_cases_town_month  te calls=9 lead=3 to=['analyst'] learned=[] $0.0833 total=$3.742
+test  T02 Q ok  returned_cases_town_month  en calls=6 lead=3 to=['tool_forge'] learned=[] $0.0614 total=$3.803
+test  T02 T ok  returned_cases_town_month  en calls=12 lead=5 to=['analyst', 'tool_forge'] learned=[] $0.1285 total=$3.932
+test  T02 Q ok  returned_cases_town_month  rt calls=8 lead=3 to=['analyst'] learned=[] $0.0737 total=$4.005
+test  T02 T ok  returned_cases_town_month  rt calls=15 lead=5 to=['analyst', 'analyst'] learned=[] $0.1407 total=$4.146
+test  T02 Q ok  damaged_cases_month        te calls=6 lead=3 to=['tool_forge'] learned=[] $0.0500 total=$4.196
+test  T02 T ok  damaged_cases_month        te calls=6 lead=3 to=['tool_forge'] learned=[] $0.0595 total=$4.255
+{
+ "complete": true,
+ "learned": {
+  "T01": [],
+  "T02": []
+ },
+ "groups": {
+  "T01": {
+   "queries_written": 8,
+   "run_query_calls_by_agent": {
+    "tool_forge": 9
+   },
+   "groups": 7,
+   "group_requests": [
+    2,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+   ],
+   "group_uses": [
+    2,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+   ],
+   "largest_group": 2,
+   "candidates": 0,
+   "checks": []
+  },
+  "T02": {
+   "queries_written": 9,
+   "run_query_calls_by_agent": {
+    "tool_forge": 9
+   },
+   "groups": 8,
+   "group_requests": [
+    2,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+   ],
+   "group_uses": [
+    2,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+   ],
+   "largest_group": 2,
+   "candidates": 0,
+   "checks": []
+  }
+ },
+ "learn": {
+  "n": 20,
+  "answer_ok": 0.7,
+  "right": 14,
+  "mean_tool_calls": 7.7,
+  "mean_lead_calls": 3.45,
+  "mean_cost": 0.0803,
+  "cost_usd": 1.606,
+  "learned_used": 0
+ },
+ "arms": {
+  "Q": {
+   "n": 16,
+   "answer_ok": 0.875,
+   "right": 14,
+   "mean_tool_calls": 7.94,
+   "mean_lead_calls": 3.25,
+   "mean_cost": 0.0797,
+   "cost_usd": 1.275,
+   "learned_used": 0
+  },
+  "T": {
+   "n": 16,
+   "answer_ok": 0.812,
+   "right": 13,
+   "mean_tool_calls": 8.25,
+   "mean_lead_calls": 3.31,
+   "mean_cost": 0.0859,
+   "cost_usd": 1.375,
+   "learned_used": 0
+  }
+ },
+ "by_company": {
+  "T01:Q": {
+   "n": 8,
+   "answer_ok": 0.875,
+   "right": 7,
+   "mean_tool_calls": 8.88,
+   "mean_lead_calls": 3.5,
+   "mean_cost": 0.089,
+   "cost_usd": 0.712,
+   "learned_used": 0
+  },
+  "T01:T": {
+   "n": 8,
+   "answer_ok": 0.875,
+   "right": 7,
+   "mean_tool_calls": 8.0,
+   "mean_lead_calls": 3.12,
+   "mean_cost": 0.0858,
+   "cost_usd": 0.686,
+   "learned_used": 0
+  },
+  "T02:Q": {
+   "n": 8,
+   "answer_ok": 0.875,
+   "right": 7,
+   "mean_tool_calls": 7.0,
+   "mean_lead_calls": 3.0,
+   "mean_cost": 0.0704,
+   "cost_usd": 0.563,
+   "learned_used": 0
+  },
+  "T02:T": {
+   "n": 8,
+   "answer_ok": 0.75,
+   "right": 6,
+   "mean_tool_calls": 8.5,
+   "mean_lead_calls": 3.5,
+   "mean_cost": 0.0861,
+   "cost_usd": 0.689,
+   "learned_used": 0
+  }
+ },
+ "decision": {
+  "R2_learned_tools_cheaper_not_worse": false,
+  "R2b_learned_tools_used": false,
+  "S1_at_least_one_tool_made": false,
+  "learned_tool_used_in": "0/16",
+  "tools_made": 0,
+  "calls_ratio_T_over_Q": 1.039
+ },
+ "cost_usd": 4.2554,
+ "total_meta_usd": 4.3214
+}
+saved artifacts\benchmark\exp019_20261104_072608.json

@@ -163,6 +163,8 @@ export interface RegistryRow {
   id: string; question: string; verdict: "met" | "not_met" | "finding" | "not_run"; summary?: string; note?: string; runs?: number; cost_usd?: number;
   bar?: { text: string; precision?: number; gain_pts?: number; call_ratio?: number };
   plan?: { commit: string; date: string }; result?: { commit: string; date: string; file: string }; custody?: string;
+  /** Which model answered or acted (agent), and which mined lessons or proposed changes (learning). */
+  models?: { agent?: "open" | "spark" | "both"; learning?: "spark" | "open" };
 }
 export interface AgentTurn { agent_run_id: string; agent: string; depth: number; caller: string | null; model: string | null; tool_calls: number; tool_errors: number; cost_usd: number; own_cost_usd: number; stop: string | null }
 export interface FixPair {

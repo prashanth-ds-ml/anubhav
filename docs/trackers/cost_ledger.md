@@ -53,6 +53,7 @@ tags: [tracker, cost]
 | 2026-11-03 | Demo check | Phase A: fresh mining on the demo world's T01, 3 runs (final demo plan, D4) | | | | 0.19 | ~61.1 | ⬜ |
 | 2026-11-03 | Demo build | Phase B: "Start from nothing" run live end to end 3 times (2 questions + 1 learning each; ≈ $0.06–0.07 a call; estimate from the run logs) | | | | ~0.55 | ~61.7 | ⬜ |
 | 2026-11-03 | Experiment | EXP-018: scaling check, T01 mined from 30/60/90 days, 3 repeats + 1 smoke (cap $1.50; `exp018_scaling.py`) | | | | 0.55 | ~62.3 | ⬜ |
+| 2026-11-04 | Experiment | EXP-019: EXP-016's learned-tools protocol through the team (only Tool Forge writes SQL), 52 runs + 1 smoke (cap $6; `exp019_team_tools.py`) | | | | 4.32 | ~66.6 | ⬜ |
 
 ### Prices (verified 2026-10-27)
 | Model | Input /1M | Output /1M | Cached /1M |
