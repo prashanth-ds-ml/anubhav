@@ -1,0 +1,204 @@
+{
+ "world": "full_seed20261104",
+ "frozen": {
+  "hashes": {
+   "scripts/exp022_demo_story_fixed.py": "a7f17c822410c542",
+   "configs/agents.yaml": "c2e66ba9a4cb36bb",
+   "src/anubhav/api/routes.py": "ef60d7e5d0161ef1",
+   "src/anubhav/service/fresh.py": "f42ea11c34f0041e",
+   "src/anubhav/service/runs.py": "3363550f94d5c346",
+   "src/anubhav/service/stream.py": "72940d0c3ce9e70b",
+   "src/anubhav/service/session.py": "da717ccbfaca36dc",
+   "src/anubhav/learning/miner.py": "0a6e8f5c89910ca9",
+   "src/anubhav/learning/gate.py": "1791a70e0541172b",
+   "src/anubhav/agent/graph.py": "a090ee41775ae0b1",
+   "src/anubhav/agents/team.py": "ea3deab9d75f670a",
+   "src/anubhav/runtime/broker.py": "608489236ff09f04"
+  },
+  "repeats": 3,
+  "budget_usd": 3.0,
+  "request": "Repu Jangaon Lakshmi Agencies load ki bandi pettu. Dispatch confirm cheyyaku.",
+  "frozen_at": "2026-11-05T04:36:32"
+ },
+ "decision": {
+  "repeats": 3,
+  "gate_rule_held": 3,
+  "B1_rule_found_and_held": true,
+  "B2_no_violation_and_drafts": true,
+  "B3_no_model_error": true,
+  "first_plan_lengths": [
+   [
+    32
+   ],
+   [
+    32
+   ],
+   [
+    32
+   ]
+  ],
+  "second_plan_lengths": [
+   [
+    22
+   ],
+   [],
+   [
+    22
+   ]
+  ],
+  "second_names_rule": 3,
+  "cost_usd": 0.676,
+  "met": true
+ },
+ "rows": [
+  {
+   "repeat": 1,
+   "visitor": "cd0ba7229f6e",
+   "first": {
+    "run_id": "21153b23c4",
+    "trucks": [
+     "V11"
+    ],
+    "lengths": [
+     32
+    ],
+    "stop": "answered",
+    "cost_usd": 0.07805,
+    "seconds": 21.9,
+    "reply": "Repu (2026-11-06) Jangaon Lakshmi Agencies load ki draft vesanu, dispatch confirm cheyyaledu.\n\nOrder T01-O00941: 6948.5 kg, 10.71 m3.\nBandi V11 (T32S, 7500 kg / 55 m3): load ki saripoye smallest class. ACE, LCV407, T14 payload saripovu, T22 / T32M peddavi kabatti vaddu annanu.\n\nCheck_load ok ayyindi, fill 93%. Site ki emi limits record lo levu. Lesson emi levu.\n\nHeccharika: value Rs 468,000 kabatt"
+   },
+   "learn": {
+    "counts": {
+     "CANDIDATE": 8,
+     "NEEDS_EVIDENCE": 0,
+     "REJECTED": 1,
+     "EXPIRED": 1
+    },
+    "cost_usd": 0.0583,
+    "gate_rule_proposed": true,
+    "gate_rule_held": true,
+    "rule": {
+     "lesson_id": "L-T01-002",
+     "params": {
+      "site_id": "C0003",
+      "max_length_ft": 22
+     },
+     "display": "Lakshmi Agencies (old town godown, Jangaon · site C0003): no truck longer than 22 ft gets in"
+    }
+   },
+   "second": {
+    "run_id": "356048e57b",
+    "trucks": [
+     "V08"
+    ],
+    "lengths": [
+     22
+    ],
+    "stop": "answered",
+    "cost_usd": 0.08822,
+    "seconds": 33.3,
+    "reply": "Repu 2026-11-06 ki Jangaon Lakshmi Agencies (C0003) load ki draft vesanu, dispatch confirm cheyyaledu.\n\nOrder T01-O00941: 6948.5 kg, 10.71 m3.\nBandi V08 (T22, 22 ft, 9000 kg / 32 m3): smallest suitable. ACE, LCV407, T14 payload saripovu. T32S / T32M payload saripoyina length 32 ft kabatti vaddu.\n\nRule L-T01-002 (max 22 ft) follow ayyanu.\nCheck_load ok, fill 77%.\n\nHeccharika: value Rs 468,000 kabatti e-way bill kavali (W-EWB).\n\nDraft DR-811FC9 matrame - idi dispatch kadu.",
+    "violations": [],
+    "names_rule": true
+   }
+  },
+  {
+   "repeat": 2,
+   "visitor": "400d5c55026a",
+   "first": {
+    "run_id": "f4fdd99987",
+    "trucks": [
+     "V11"
+    ],
+    "lengths": [
+     32
+    ],
+    "stop": "answered",
+    "cost_usd": 0.07777,
+    "seconds": 24.3,
+    "reply": "Repu (2026-11-06) Jangaon Lakshmi Agencies load ki draft vesanu, confirm cheyyaledu.\n\nOrder: T01-O00941 - 6948.5 kg, 10.71 m3, 338 cases\nBandi: V11 (T32S, 7500 kg / 55 m3) - TS 24 ZB 5236\nDraft ID: DR-182777 - idi draft matrame, dispatch kadu.\n\nEnduku V11:\n- ACE (750 kg), LCV407 (2500 kg), T14 (4000 kg) ki ee load capacity saripodu.\n- T32S lo smallest suitable class, fill 93%.\n- T22 / T32M peddavi"
+   },
+   "learn": {
+    "counts": {
+     "CANDIDATE": 8,
+     "NEEDS_EVIDENCE": 0,
+     "REJECTED": 1,
+     "EXPIRED": 1
+    },
+    "cost_usd": 0.0564,
+    "gate_rule_proposed": true,
+    "gate_rule_held": true,
+    "rule": {
+     "lesson_id": "L-T01-002",
+     "params": {
+      "site_id": "C0003",
+      "max_length_ft": 22
+     },
+     "display": "Lakshmi Agencies (old town godown, Jangaon · site C0003): no truck longer than 22 ft gets in"
+    }
+   },
+   "second": {
+    "run_id": "dc1a2d6cf3",
+    "trucks": [],
+    "lengths": [],
+    "stop": "limit",
+    "cost_usd": 0.09912,
+    "seconds": 39.4,
+    "reply": "Repu Jangaon Lakshmi Agencies load gurinchi:\n\nDorikindi:\n- Site: C0003 Lakshmi Agencies, Jangaon\n- Order: T01-O00941, 6948.5 kg, 10.71 m3, Rs 468,000\n- Site rule L-T01-002: max 22 ft, 22 ft kanna pedda bandi enter avvadu\n\nChesindi:\n- ACE (750 kg), LCV407 (2500 kg), T14 (4000 kg) load ki saripovu ani reject chesanu\n- T32S / T32M (32 ft) rule ki violate avutayi ani reject chesanu\n- T22 (22 ft, 9000 kg) smallest suitable class. V08 tho check_load ok ayyindi, fill 77%, warning okkate: e-way bill kavali\n- Mundhu cheppina V11 (32 ft) ee site ki vaddu, adi rule violate avutundi\n- Draft create cheyyal",
+    "violations": [],
+    "names_rule": true
+   }
+  },
+  {
+   "repeat": 3,
+   "visitor": "79c1f1765387",
+   "first": {
+    "run_id": "0bc8dbeed0",
+    "trucks": [
+     "V11"
+    ],
+    "lengths": [
+     32
+    ],
+    "stop": "answered",
+    "cost_usd": 0.07715,
+    "seconds": 21.3,
+    "reply": "Repu Jangaon Lakshmi Agencies load ki draft vesanu, dispatch confirm cheyyaledu.\n\nOrder T01-O00941 (6948.5 kg, 10.71 m3) ki V11 (T32S, 7500 kg) pettanu — chinna bandlu (ACE, LCV407, T14) load ki saripovu, pedda bandlu (T22, T32M) avasaram ledu, anduke smallest suitable V11.\n\nCheck ok, fill 93%. E-way bill kavali (value Rs 468,000). Idi draft matrame DR-2FBE76, dispatch kaledu."
+   },
+   "learn": {
+    "counts": {
+     "CANDIDATE": 9,
+     "NEEDS_EVIDENCE": 0,
+     "REJECTED": 1,
+     "EXPIRED": 1
+    },
+    "cost_usd": 0.0647,
+    "gate_rule_proposed": true,
+    "gate_rule_held": true,
+    "rule": {
+     "lesson_id": "L-T01-002",
+     "params": {
+      "site_id": "C0003",
+      "max_length_ft": 22
+     },
+     "display": "Lakshmi Agencies (old town godown, Jangaon · site C0003): no truck longer than 22 ft gets in"
+    }
+   },
+   "second": {
+    "run_id": "aad2f7743e",
+    "trucks": [
+     "V08"
+    ],
+    "lengths": [
+     22
+    ],
+    "stop": "answered",
+    "cost_usd": 0.07674,
+    "seconds": 30.3,
+    "reply": "Repu Jangaon Lakshmi Agencies (C0003) load ki draft vesanu, dispatch confirm cheyyaledu.\n\nOrder T01-O00941 (6948.5 kg, 10.71 m3) ki V08 (T22, 22 ft, 9000 kg) pettanu.\n\nEnduku V08:\n- ACE / LCV407 / T14 load ki saripovu.\n- T32S / T32M (32 ft) L-T01-002 rule (22 ft max) ki violate avutayi, anduke vadaledu.\n- T22 lo V08 smallest suitable, fill 77%.\n\nCheck ok ayindi, warning okati: value Rs 468,000 kabatti e-way bill kavali.\n\nLesson follow ayyanu: L-T01-002.\n\nIdi draft matrame DR-7F8937, dispatch kaledu.",
+    "violations": [],
+    "names_rule": true
+   }
+  }
+ ]
+}

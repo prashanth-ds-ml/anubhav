@@ -746,3 +746,14 @@ Order: EXP-015, then EXP-014, then EXP-016, one after the other. The batch runs 
 - **Question:** EXP-021 found that an approved rule did not replace a draft it forbids: the old 32 ft draft stayed, and a 22 ft draft was made in only 1 of 3. The fix, in code: when a person approves a site-length rule as enforced, the open drafts it forbids are cancelled (approved plans are left for the person; nothing was dispatched). Does the demo's story now end with a 22 ft draft?
 - **Protocol, bars and cap:** EXP-021's exactly (3 fresh visitors, public mode, today's hosted world, Muse Spark 1.3, the team; B1 rule held in ≥ 2 of 3, B2 0 violations and a draft in ≥ 2 of 3, B3 no model errors; cap $3). Only the product changed: `service/fresh.py` (`drafts_breaking`, `cancel_breaking`) and the lesson-decide route, with unit tests in `tests/service/test_rule_cancels_drafts.py`.
 - **Frozen** (`artifacts/benchmark/exp022_frozen.json`, sha256 `…`): `exp022_demo_story_fixed.py` `` and the same files as EXP-021, now including the fix.
+- **Result (2026-11-05, `artifacts/benchmark/exp022_20261105_043652.json`, 3 repeats, $0.68 Meta; complete, under the cap):**
+
+| Repeat | First plan (no lessons) | Lakshmi 22 ft rule held | Second plan (rule approved; the 32 ft draft cancelled by code) | Names the rule |
+|---|---|---|---|---|
+| 1 | V11, 32 ft | yes | **V08, 22 ft** | yes |
+| 2 | V11, 32 ft | yes | no draft: rejected the 32 ft trucks for the rule, then hit the tool-call limit | yes |
+| 3 | V11, 32 ft | yes | **V08, 22 ft** | yes |
+
+- **Verdict (rules fixed above):** **B1 met** (3 of 3), **B2 met** (0 violations; a 22 ft draft in 2 of 3), **B3 met**. Overall: **met.**
+- **What changed:** with the fix, the approved rule cancels the 32 ft draft it forbids, and the next plan drafts the 22 ft truck and names the rule (2 of 3; 1 of 3 before the fix, EXP-021). The one miss ran out of tool calls after reasoning correctly; it drafted nothing unsafe.
+- **Caveats:** 3 repeats on one day's hosted world; the first plan chose the 32 ft truck every time, so all three second plans started from a cancelled draft.
