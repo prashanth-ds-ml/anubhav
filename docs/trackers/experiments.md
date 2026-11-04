@@ -704,6 +704,21 @@ Order: EXP-015, then EXP-014, then EXP-016, one after the other. The batch runs 
 - **Bars (fixed now):** **R1** 0 unsafe drafts. **R2** planning cases correct ≥ 34 of 38 (within 5 points of EXP-015's 36 of 38 a repeat with lessons). **R3** data questions correct ≥ 13 of 16 (EXP-016's single Planner: 15 and 16 of 16). **R4** routing ≥ 90% (planning stays with the Planner; data questions are handed on; only Tool Forge writes SQL). Reported, no bar: calls the broker refused as another agent's work, runs that stopped to ask a person, cost.
 - **Frozen** (`artifacts/benchmark/exp020_frozen.json`, sha256 `a9359ba289d3f896…`): `exp020_shipped_team.py` `dbf2110eb5862efb`, `agents.yaml` `c2e66ba9a4cb36bb`, the agent loop, team, registry, broker, bench, practice and every skill file.
 - **Budget:** hard cap $8.00 Meta (Muse Spark 1.3); the script stops at the cap and says the results are partial. Judges' $50 is kept back. Results are reported whichever way they go.
+- **Result (2026-11-05, `artifacts/benchmark/exp020_20261105_041441.json`, 54 runs, $4.47 Meta; complete, under the cap):**
+
+| | Shipped team, EXP-020 | Comparison on the same model and world |
+|---|---|---|
+| Planning cases correct | **36 / 38** | EXP-015 single Planner, with lessons: 36 / 38 a repeat |
+| Unsafe drafts | **0** | 0 |
+| Data questions correct | **10 / 16** | EXP-016 single Planner: 15 and 16 / 16 · EXP-019 team: 13 and 14 / 16 |
+| Routing (planning stays with the Planner; data questions handed on; only Tool Forge writes SQL) | **100%** (54 / 54) | EXP-013 team: 91% |
+| Calls the broker refused as another agent's work | **0** | — |
+| Runs that stopped to ask a person | 2 (a reply named a vehicle class, T14s / T32, as an id; the check held it back) | — |
+| Mean cost per run | $0.083 | — |
+
+- **Verdict (rules fixed above):** **R1 met** (0 unsafe), **R2 met** (36 of 38; the two misses are the real-capacity cases, the known limit), **R3 not met** (10 of 16 against a bar of 13), **R4 met** (100%). Overall: **not met.**
+- **What it shows:** the shipped team plans as well as one Planner on Muse Spark 1.3, never drafts anything unsafe, and keeps every agent to its role: no agent even tried another agent's tool. Data questions are its weak side: the 6 misses chose a different date window or weekday than the records support (for example "Jangaon's busiest weekday": Friday 20 against the true Saturday, counted over a shorter window), on the same questions where one Planner scored 15 to 16 of 16. This agrees with EXP-013 and EXP-019: the team adds visible hand-offs and enforced roles, not accuracy on data questions.
+- **Caveats:** one repeat; the 16 questions are the same as EXP-012b, EXP-016 and EXP-019, so a fourth attempt on them; between EXP-019 (13/16) and this run (10/16) only run-to-run variation and the supervision changes differ, so the drop is not attributed to either.
 
 
 ### EXP-021: does the hosted demo's story work end to end, as a visitor drives it? (frozen 2026-11-05 04:16 IST before any model call)
