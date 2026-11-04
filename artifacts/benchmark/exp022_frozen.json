@@ -1,0 +1,20 @@
+{
+ "hashes": {
+  "scripts/exp022_demo_story_fixed.py": "a7f17c822410c542",
+  "configs/agents.yaml": "c2e66ba9a4cb36bb",
+  "src/anubhav/api/routes.py": "ef60d7e5d0161ef1",
+  "src/anubhav/service/fresh.py": "f42ea11c34f0041e",
+  "src/anubhav/service/runs.py": "3363550f94d5c346",
+  "src/anubhav/service/stream.py": "72940d0c3ce9e70b",
+  "src/anubhav/service/session.py": "da717ccbfaca36dc",
+  "src/anubhav/learning/miner.py": "0a6e8f5c89910ca9",
+  "src/anubhav/learning/gate.py": "1791a70e0541172b",
+  "src/anubhav/agent/graph.py": "a090ee41775ae0b1",
+  "src/anubhav/agents/team.py": "ea3deab9d75f670a",
+  "src/anubhav/runtime/broker.py": "608489236ff09f04"
+ },
+ "repeats": 3,
+ "budget_usd": 3.0,
+ "request": "Repu Jangaon Lakshmi Agencies load ki bandi pettu. Dispatch confirm cheyyaku.",
+ "frozen_at": "2026-11-05T04:36:32"
+}

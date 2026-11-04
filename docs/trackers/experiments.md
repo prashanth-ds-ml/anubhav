@@ -713,3 +713,21 @@ Order: EXP-015, then EXP-014, then EXP-016, one after the other. The batch runs 
 - **Frozen** (`artifacts/benchmark/exp021_frozen.json`, sha256 `0ba13b46f5ee7a3b…`): `exp021_demo_story.py` `0b75553ae0c8cd3f`, the routes, fresh, runs, stream and session services, the miner, the gate, the agent loop, team and broker.
 - **Budget:** hard cap $3.00 Meta. Results are reported whichever way they go.
 - **First attempt aborted before any result (04:27 IST):** a bug in the harness, not the product: it sent visitor ids the server does not accept (the server takes only 12 hex characters), so each poll opened a new visitor and never saw the run. One live run was made and finished normally ($0.08, run `e94345d04c`); no result was read or kept. Fix: valid visitor ids; nothing else changed. Re-frozen: `exp021_demo_story.py` `b1beb549a80e0c96`, `exp021_frozen.json` sha256 `bc2baac98e7ad852…`.
+- **Result (2026-11-05, `artifacts/benchmark/exp021_20261105_042755.json`, 3 repeats, $0.71 Meta + $0.08 for the aborted attempt; complete, under the cap):**
+
+| Repeat | First plan (no lessons) | Learning: held / rejected / expired | Lakshmi 22 ft rule held | Second plan (rule approved) | Names the rule |
+|---|---|---|---|---|---|
+| 1 | drafted V11, 32 ft | 8 / 1 / 1 | yes | no new draft: says the existing 32 ft draft breaks rule L-T01-002 and recommends a 22 ft truck | yes |
+| 2 | drafted V11, 32 ft | 9 / 1 / 1 | yes | no new draft: same reasoning, then ran out of tool budget | yes |
+| 3 | no draft (tool budget) | 8 / 1 / 1 | yes | drafted V08, 22 ft | yes |
+
+- **Verdict (rules fixed above):** **B1 met** (the rule was proposed and held in 3 of 3). **B2 not met:** 0 violations (no truck over 22 ft was drafted after approval), but a 22 ft draft was made in only 1 of 3, against a bar of 2. **B3 met** (no model errors). Overall: **not met.**
+- **What it found:** when the first plan has already drafted the 32 ft truck, the second plan sees the approved rule, says the old draft breaks it, and recommends a 22 ft truck, but does not cancel the old draft and make a new one. The old draft stays on the board. Where no earlier draft existed (repeat 3), it drafted the 22 ft truck and named the rule. So learning and the gate work every time; replacing a draft an approved rule now forbids is a product gap.
+- **Next:** when a person approves a rule, re-check the open drafts against it in code and flag (or hold) those that break it, then ask the Planner to replace them; measure it as its own pre-registered experiment.
+- **Caveats:** 3 repeats; the hosted demo's world on one day; the first plan's own variation (one of three made no draft) changes what the second plan starts from.
+
+
+### EXP-022: EXP-021 again after its fix (frozen 2026-11-05 04:36 IST before any model call)
+- **Question:** EXP-021 found that an approved rule did not replace a draft it forbids: the old 32 ft draft stayed, and a 22 ft draft was made in only 1 of 3. The fix, in code: when a person approves a site-length rule as enforced, the open drafts it forbids are cancelled (approved plans are left for the person; nothing was dispatched). Does the demo's story now end with a 22 ft draft?
+- **Protocol, bars and cap:** EXP-021's exactly (3 fresh visitors, public mode, today's hosted world, Muse Spark 1.3, the team; B1 rule held in ≥ 2 of 3, B2 0 violations and a draft in ≥ 2 of 3, B3 no model errors; cap $3). Only the product changed: `service/fresh.py` (`drafts_breaking`, `cancel_breaking`) and the lesson-decide route, with unit tests in `tests/service/test_rule_cancels_drafts.py`.
+- **Frozen** (`artifacts/benchmark/exp022_frozen.json`, sha256 `…`): `exp022_demo_story_fixed.py` `` and the same files as EXP-021, now including the fix.

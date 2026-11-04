@@ -465,7 +465,10 @@ def lesson_decide(lesson_id: str, body: LessonDecision, company: str = Cid, ws: 
     if not any(l["lesson_id"] == lesson_id for l in S.list(company)):
         raise ApiError(404, "NOT_FOUND", f"{company} has no lesson {lesson_id}")
     if body.decision == "approve":
-        return S.approve(lesson_id, "reviewer", body.effect, body.verified)
+        out = S.approve(lesson_id, "reviewer", body.effect, body.verified)
+        if body.effect == "policy":         # an enforced rule: open drafts it now forbids are cancelled (EXP-021)
+            out = {**out, "cancelled_drafts": fresh.cancel_breaking(ws.company(company), S.get(lesson_id))}
+        return out
     if body.decision == "rollback":
         return S.rollback(lesson_id, "reviewer")
     if not body.why.strip():

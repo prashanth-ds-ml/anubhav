@@ -6,6 +6,8 @@ The lessons a visitor mines are theirs; the measured results used the EXP-008/00
 
 from __future__ import annotations
 
+import json
+
 from ..learning import digest, miner, newtools
 from ..learning.store import describe
 from ..agents import registry
@@ -207,3 +209,24 @@ def learn(ws, cid, model="spark") -> tuple[dict | None, str | None]:
     return {"model": meta.get("model"), "cost_usd": round(meta.get("cost_usd", 0), 4), "latency_s": meta.get("latency_s"),
             "lessons": [lesson_view(r, C) for r in rows],
             "counts": {s: sum(r["state"] == s for r in rows) for s in ("CANDIDATE", "NEEDS_EVIDENCE", "REJECTED", "EXPIRED")}}, None
+
+
+def drafts_breaking(C, lesson) -> list[str]:
+    """Open drafts that an enforced site-length rule now forbids: a truck longer than the site allows, for an order at that
+    site. Only drafts still waiting ('draft') count: a plan a person approved is theirs to reject (EXP-021)."""
+    p = lesson.get("params") or {}
+    if lesson.get("kind") != "site_access" or p.get("max_length_ft") is None or not p.get("site_id"):
+        return []
+    out = []
+    for d in C.runtime.drafts():
+        if d["status"] != "draft" or C.vehicles.get(d["vehicle_id"], {}).get("length_ft", 0) <= p["max_length_ft"]:
+            continue
+        if any(C.orders.get(o, {}).get("site_id") == p["site_id"] for o in json.loads(d["order_ids"] or "[]")):
+            out.append(d["draft_id"])
+    return out
+
+
+def cancel_breaking(C, lesson) -> list[str]:
+    """When a person approves a rule as enforced, the open drafts it forbids are cancelled (nothing was dispatched), so the
+    next plan starts clean instead of leaving a truck the site will turn back. Returns the cancelled draft ids."""
+    return [d for d in drafts_breaking(C, lesson) if C.runtime.cancel(d)]
