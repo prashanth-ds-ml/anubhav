@@ -969,3 +969,22 @@ def test_a_stored_tool_always_reads_with_every_check_field():
     assert t["checks"]["same_rows"] == [] and t["checks"]["health"]["ok"] is False and t["checks"]["pass"] is False
     full = dict(row, checks=json.dumps({"pass": True, "same_rows": [{"request": "q", "rows": 2, "same": True}], "held_out": [], "reasons": []}))
     assert nt._row(full)["checks"]["pass"] is True         # a real verdict is never overwritten by the defaults
+
+
+def test_hosted_state_can_live_on_a_persistent_disk(tmp_path, monkeypatch):
+    """Nov 4: free Spaces reset their disk on every redeploy. With ANUBHAV_STATE_DIR (the Space's persistent disk),
+    visitors' workspaces and spend counters are written there; when it can't be written, nothing breaks."""
+    from anubhav.data import config
+    from anubhav.service import session as sess
+    monkeypatch.setenv("ANUBHAV_STATE_DIR", str(tmp_path / "disk"))
+    assert config._state_dir() == tmp_path / "disk"
+    blocked = tmp_path / "file"
+    blocked.write_text("x")
+    monkeypatch.setenv("ANUBHAV_STATE_DIR", str(blocked / "sub"))
+    assert config._state_dir() is None                              # not writable: state stays where it was
+    monkeypatch.setattr(sess, "STATE", tmp_path / "disk")
+    ws = sess.Workspace("abc123def456", True, {}, tmp_path / "worlds" / "w1")
+    assert ws.store_path() == tmp_path / "disk" / "worlds" / "w1" / "learning" / "sessions" / "abc123def456.sqlite"
+    assert ws._spend_file().parent == tmp_path / "disk" / "worlds" / "w1" / "runtime"
+    monkeypatch.setattr(sess, "STATE", None)
+    assert sess.Workspace("abc123def456", True, {}, tmp_path / "worlds" / "w1").store_path().parent == tmp_path / "worlds" / "w1" / "learning" / "sessions"

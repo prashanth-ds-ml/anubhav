@@ -24,7 +24,9 @@ const started = () => (sessionStarted ??= vfetch("/api/session").then(() => vfet
  * as a header; the page keeps it and sends it back on every request.
  */
 const VISITOR = "X-Anubhav-Visitor";
-let visitor: string | null = (() => { try { return sessionStorage.getItem("anubhav-visitor"); } catch { return null; } })();
+// Kept in localStorage, so the same browser stays the same visitor across tabs and return visits (its runs, drafts
+// and lessons come back); another browser is another visitor.
+let visitor: string | null = (() => { try { return localStorage.getItem("anubhav-visitor") ?? sessionStorage.getItem("anubhav-visitor"); } catch { return null; } })();
 async function vfetch(path: string, init: RequestInit = {}): Promise<Response> {
   const headers = new Headers(init.headers);
   if (visitor) headers.set(VISITOR, visitor);
@@ -32,7 +34,7 @@ async function vfetch(path: string, init: RequestInit = {}): Promise<Response> {
   const id = r.headers.get(VISITOR);
   if (id && id !== visitor) {
     visitor = id;
-    try { sessionStorage.setItem("anubhav-visitor", id); } catch { /* the id still lives for this page */ }
+    try { localStorage.setItem("anubhav-visitor", id); } catch { /* the id still lives for this page */ }
   }
   return r;
 }

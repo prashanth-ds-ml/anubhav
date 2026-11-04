@@ -6,10 +6,10 @@ import sqlite3
 from datetime import datetime
 from pathlib import Path
 
-from .data.config import ROOT
+from .data.config import ROOT, STATE
 from .events import EventStore
 
-TRACE_DIR = ROOT / "data" / "traces"
+TRACE_DIR = (STATE / "traces") if STATE else ROOT / "data" / "traces"
 
 
 def walk(run: dict):

@@ -15,7 +15,7 @@ from datetime import date
 from pathlib import Path
 
 from .. import muse
-from ..data.config import ROOT
+from ..data.config import ROOT, STATE
 from ..harness.store import HarnessStore
 from ..learning import newtools, profile
 from ..learning.store import LessonStore
@@ -66,7 +66,7 @@ def prune_visitors(world=WORLD, keep=(), max_idle_s=VISITOR_MAX_IDLE_S, now=None
     import time
     now = time.time() if now is None else now
     gone = set()
-    for root in (Path(world) / "runtime" / "sessions", Path(world) / "learning" / "sessions"):
+    for root in (state_root(world) / "runtime" / "sessions", state_root(world) / "learning" / "sessions"):
         if not root.is_dir():
             continue
         for p in root.iterdir():
@@ -101,7 +101,12 @@ def _harness(path):
     return H
 
 
-def harness_store(path=ROOT / "data" / "harness" / "harness.sqlite") -> HarnessStore:
+def state_root(world):
+    """The folder a hosted visitor's files live in: the persistent disk when there is one, else the world folder."""
+    return (STATE / "worlds" / Path(world).name) if STATE else Path(world)
+
+
+def harness_store(path=((STATE / "harness") if STATE else ROOT / "data" / "harness") / "harness.sqlite") -> HarnessStore:
     """One harness for every client: how the agent works is shared; what it knows stays per company."""
     return _harness(path)
 
@@ -130,11 +135,13 @@ class Workspace:
         mine = self.state.setdefault("companies", {})
         if cid not in mine:
             mine[cid] = copy.copy(base)
-            mine[cid].runtime = Runtime(Path(self.world) / "runtime" / "sessions" / self.sid / f"{cid}.sqlite")
+            mine[cid].runtime = Runtime(state_root(self.world) / "runtime" / "sessions" / self.sid / f"{cid}.sqlite")
         return mine[cid]
 
     def store_path(self) -> Path:
-        return Path(self.world) / "learning" / ("demo.sqlite" if not self.public else f"sessions/{self.sid}.sqlite")
+        if self.public:
+            return state_root(self.world) / "learning" / "sessions" / f"{self.sid}.sqlite"
+        return Path(self.world) / "learning" / "demo.sqlite"
 
     def store(self) -> LessonStore:
         path = self.store_path()
@@ -196,7 +203,7 @@ class Workspace:
 
     # ---------- the spend guard: every live model call in the app comes through here
     def _spend_file(self):
-        return Path(self.world) / "runtime" / f"live_calls_{date.today().isoformat()}.json"
+        return state_root(self.world) / "runtime" / f"live_calls_{date.today().isoformat()}.json"
 
     def calls_today(self, model_key=None):
         try:

@@ -10,6 +10,28 @@ from pathlib import Path
 import yaml
 
 ROOT = Path(os.environ.get("ANUBHAV_HOME") or Path(__file__).resolve().parents[3])    # configs/ and data/ live here, not in the package
+
+
+def _state_dir():
+    """Where state that must outlive a redeploy is written (runs, visitors' workspaces and drafts, spend counters,
+    agent versions): ANUBHAV_STATE_DIR, e.g. a Hugging Face Space's persistent disk at /data. Unset, or not writable
+    (storage not enabled yet), everything stays where it always was."""
+    p = os.environ.get("ANUBHAV_STATE_DIR")
+    if not p:
+        return None
+    try:
+        Path(p).mkdir(parents=True, exist_ok=True)
+        probe = Path(p) / ".write_test"
+        probe.write_text("ok", encoding="utf-8")
+        probe.unlink()
+        return Path(p)
+    except OSError as e:
+        import logging
+        logging.getLogger("anubhav").warning("ANUBHAV_STATE_DIR=%s is not writable (%s); keeping state in the image", p, e)
+        return None
+
+
+STATE = _state_dir()        # None: state lives under data/ and the world folder, as before
 DEFAULT_CONFIG = ROOT / "configs" / "world_v1.yaml"
 SUBSTREAMS = ("geography", "demand", "resources", "disruptions", "people", "notes", "benchmark")
 
