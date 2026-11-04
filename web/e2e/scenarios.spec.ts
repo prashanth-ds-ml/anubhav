@@ -5,7 +5,7 @@ import AxeBuilder from "@axe-core/playwright";
 
 async function home(page: Page) {
   await page.goto("/");
-  await expect(page.getByRole("heading", { name: "Try it: seven scenarios" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Try it", exact: true })).toBeVisible();
 }
 
 /** Make the real session say Muse Spark 1.3 can run, without any key. */
@@ -17,10 +17,10 @@ async function liveOn(page: Page) {
   });
 }
 
-test("seven scenarios, each saying whether it is recorded or live; without keys the live ones say why and stay closed", async ({ page }) => {
+test("ten scenarios, each saying whether it is recorded or live; without keys the live ones say why and stay closed", async ({ page }) => {
   await home(page);
   const cards = page.locator(".sc-card article");
-  await expect(cards).toHaveCount(7);
+  await expect(cards).toHaveCount(10);
   for (const id of ["S1", "S2", "S3"]) {
     const c = page.getByRole("article", { name: new RegExp(`^${id} `) });
     await expect(c).toContainText("Recorded · watch it");
@@ -30,8 +30,8 @@ test("seven scenarios, each saying whether it is recorded or live; without keys 
   const s6 = page.getByRole("article", { name: /^S6 / });
   await expect(s6).toContainText("Recorded data · explore it");
   await expect(s6).toContainText("free");
-  await expect(cards.last()).toHaveAccessibleName(/^S0 Start from nothing/);   // without live mode it goes last
-  for (const id of ["S0", "S4", "S5"]) {
+  await expect(cards.last()).toHaveAccessibleName(/^S9 /);   // without live mode the live group comes after the recorded one
+  for (const id of ["S0", "S4", "S5", "S7", "S8", "S9"]) {
     const c = page.getByRole("article", { name: new RegExp(`^${id} `) });
     await expect(c).toContainText("Live · you run it");
     await expect(c).toContainText(/Live mode is off on this demo/);
@@ -106,7 +106,7 @@ test("with live mode on, a typed request that matches no saved run goes to the m
     await r.fulfill({ json: { run_id: "fae8975894", mode: "live" } });
   });
   await home(page);
-  await expect(page.getByText(/Live: Muse Spark 1.3 answers any request/)).toBeVisible();
+  await expect(page.getByText(/Live · Muse Spark 1.3 · \d+ runs left/)).toBeVisible();
   await page.getByLabel("Ask the agents").fill("Khammam orders ki rendu bandlu pettu.");
   await page.getByRole("button", { name: "Send" }).click();
   await expect.poll(() => sent).toMatchObject({ mode: "live", message: "Khammam orders ki rendu bandlu pettu." });

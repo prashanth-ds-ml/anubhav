@@ -18,7 +18,7 @@ const t0 = Date.now();
 const at = () => `${Math.round((Date.now() - t0) / 1000)}s`;
 
 await p.goto(BASE);
-await p.getByRole("heading", { name: "Try it: seven scenarios" }).waitFor({ timeout: 90_000 });
+await p.getByRole("heading", { name: "Try it", exact: true }).waitFor({ timeout: 90_000 });
 await shot("1-first-screen");
 await p.getByRole("button", { name: "Start S0" }).click();
 const g = p.getByRole("region", { name: /Scenario S0/ });

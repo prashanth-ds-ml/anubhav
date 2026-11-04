@@ -462,7 +462,8 @@ def lesson_decide(lesson_id: str, body: LessonDecision, company: str = Cid, ws: 
 
 def _timeline(ws, company):
     S, H = ws.store(), harness_store()
-    return logs.learning_events(company, S.events(company=company), {l["lesson_id"]: l for l in S.list(company)}, H.versions(), nt.tools(S, company))
+    # the agents' versions are shared: a "Fresh start" workspace shows only the decisions made since it started
+    return runs.since_start(logs.learning_events(company, S.events(company=company), {l["lesson_id"]: l for l in S.list(company)}, H.versions(), nt.tools(S, company)), ws)
 
 
 @api.get("/learning/timeline")
@@ -596,7 +597,7 @@ def _spec(agent):
 
 def _problems(ws, agent):
     recent = runs.recent_runs(60, ws)
-    return {**loop.collect(recent, harness_store().feedback("new"), agent), "routing_evidence": logs.routing_stats(recent) if agent == "planner" else []}
+    return {**loop.collect(recent, _feedback(ws, harness_store().feedback("new"), recent), agent), "routing_evidence": logs.routing_stats(recent) if agent == "planner" else []}
 
 
 @api.get("/harness")
@@ -757,7 +758,8 @@ def packs_revoke(target: str = "TNEW", ws: Workspace = Ws):
 def review_run(company: str = Cid, ws: Workspace = Ws):
     """Free without a model. Hosted it stays free: the paid part (lesson proposals, naming) needs a local run."""
     client = None if ws.public or ws.live_ready("spark") else ws.live_client("spark")[0]
-    return nightly.review(ws.company(company), ws.store(), runs.recent_runs(500, ws), harness_store().feedback(), client, forge_client=client)
+    recent = runs.recent_runs(500, ws)
+    return nightly.review(ws.company(company), ws.store(), recent, _feedback(ws, harness_store().feedback(), recent), client, forge_client=client)
 
 
 @api.get("/review/history")
@@ -783,13 +785,23 @@ def proof_curve():
 
 
 @api.get("/compare")
-def compare(request: str, company: str = Cid, ws: Workspace = Ws):
-    """The same request before and after learning, from real saved runs: cold vs with lessons, and before vs after learned tools."""
+def compare(request: str | None = None, company: str = Cid, ws: Workspace = Ws):
+    """The same request before and after learning, from real saved runs: cold vs with lessons, and before vs after learned
+    tools. In a "Fresh start" workspace only its own runs count (the recorded ones belong to "After learning"). `pairs`:
+    this workspace's own latest before-and-after pairs (a run without lessons, then the same request with approved lessons)."""
     def view(r):
         return r and {"run_id": r["run_id"], "reply": r.get("reply"), "drafts": views.drafts(r), "tool_calls": views.team_parts(r)["tool_calls"], "cost_usd": r.get("cost_usd"),
-                      "agents": views.team_parts(r)["agents"], "lessons_in_prompt": len(r.get("knowledge") or []), "learned_tools": r.get("learned_tools") or []}
+                      "agents": views.team_parts(r)["agents"], "lessons_in_prompt": len(r.get("knowledge") or []), "learned_tools": r.get("learned_tools") or [],
+                      "model": r.get("model"), "saved_at": r.get("saved_at")}
+    pairs = [{"request": a["request"], "before": view(a), "after": view(b)} for a, b in runs.own_pairs(ws, company)]
+    if not request:
+        return {"request": None, "cold": None, "with_lessons": None, "with_learned_tools": None, "pairs": pairs}
+    if runs.fresh_since(ws):
+        own = [r for r in runs.recent_runs(500, ws) if r["company"] == company and (r.get("request") or "").strip() == request.strip()]
+        pick = lambda lessons, tools: next((r for r in own if bool(r.get("knowledge")) == lessons and bool(r.get("learned_tools")) == tools), None)
+        return {"request": request, "cold": view(pick(False, False)), "with_lessons": view(pick(True, False)), "with_learned_tools": view(pick(False, True)), "pairs": pairs}
     return {"request": request, "cold": view(runs.find_replay(ws, company, request, False, learned=False)), "with_lessons": view(runs.find_replay(ws, company, request, True, learned=False)),
-            "with_learned_tools": view(next((r for r in [runs.find_replay(ws, company, request, False, learned=True)] if r and r.get("learned_tools")), None))}
+            "with_learned_tools": view(next((r for r in [runs.find_replay(ws, company, request, False, learned=True)] if r and r.get("learned_tools")), None)), "pairs": pairs}
 
 
 @api.get("/ledger")
@@ -814,9 +826,18 @@ def _entry(e):
 @api.get("/logs/events")
 def log_events(company: str = Cid, stream_name: str | None = None, ws: Workspace = Ws):
     S, H = ws.store(), harness_store()
-    rows = logs.events(company, runs.recent_runs(200, ws), S.events(company=company), {l["lesson_id"]: l for l in S.list(company)}, H.versions(), H.feedback(),
+    recent = runs.recent_runs(200, ws)
+    rows = logs.events(company, recent, S.events(company=company), {l["lesson_id"]: l for l in S.list(company)}, H.versions(), _feedback(ws, H.feedback(), recent),
                        nt.tools(S, company), nightly.reviews(S, company))
-    return [_entry(r) for r in rows if not stream_name or r["stream"] == stream_name]
+    return [_entry(r) for r in runs.since_start(rows, ws) if not stream_name or r["stream"] == stream_name]
+
+
+def _feedback(ws, rows, recent):
+    """Feedback is kept in the shared harness store: a "Fresh start" workspace sees only feedback on its own runs."""
+    if not runs.fresh_since(ws):
+        return rows
+    own = {r["run_id"] for r in recent}
+    return [f for f in rows if f.get("run_id") in own]
 
 
 @api.get("/logs/runs")
@@ -854,7 +875,7 @@ def log_agents(company: str | None = None, ws: Workspace = Ws):
 
 @api.get("/logs/models")
 def log_models(company: str = Cid, ws: Workspace = Ws):
-    return logs.model_roles(runs.recent_runs(500, ws), ws.store().list(company), harness_store().versions())
+    return logs.model_roles(runs.recent_runs(500, ws), ws.store().list(company), runs.since_start(harness_store().versions(), ws, "created"))
 
 
 @api.get("/report/weekly")

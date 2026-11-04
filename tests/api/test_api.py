@@ -762,3 +762,127 @@ def test_agents_show_their_tools_and_skills_and_the_tool_routes_answer(env):
     assert all(rows[a]["skills"] for a in ("planner", "analyst", "tool_forge", "lesson_miner"))
     assert c.post("/api/tools/health?company=T01").json() == []                     # no approved tools yet
     assert c.post("/api/tools/NT-T01-nope/repair?company=T01").status_code == 404
+
+
+def _two_live_drafts(c, monkeypatch):
+    """Two live runs, each drafting a different order on a different free truck. Returns the two run ids, or None."""
+    orders = c.get("/api/dashboard/orders").json()["orders"]
+    free = sorted((v for v in c.get("/api/dashboard/fleet").json()["vehicles"] if v["free"]), key=lambda v: -v["payload_kg"])
+    pairs, used = [], set()
+    for o in sorted(orders, key=lambda o: o["kg"]):
+        v = next((v for v in free if v["vehicle_id"] not in used and o["kg"] <= v["payload_kg"]), None)
+        if v:
+            pairs.append({"order_ids": [o["order_id"]], "vehicle_id": v["vehicle_id"]})
+            used.add(v["vehicle_id"])
+        if len(pairs) == 2:
+            break
+    run_ids = []
+    for args in pairs:
+        live_env(monkeypatch, [mock_tool_call("create_dispatch_draft", args), mock_final("draft")])
+        run = c.post("/api/chat", json={"message": "plan it", "mode": "live", "use_lessons": False}).json()
+        list(stream.follow(run["run_id"]))
+        run_ids.append(run["run_id"])
+    return run_ids if len(c.get("/api/dashboard/drafts").json()["drafts"]) == 2 else None
+
+
+def test_the_workspace_drafts_list_keeps_every_draft_across_requests_newest_first(env, monkeypatch):
+    c = client(env)
+    c.get("/api/session")
+    run_ids = _two_live_drafts(c, monkeypatch)
+    if not run_ids:
+        pytest.skip("validator refused a picked pair")
+    ws = c.get("/api/dashboard/drafts").json()
+    assert ws["source"] == "live"
+    first, second = run_ids
+    assert [d["run_id"] for d in ws["drafts"]] == [second, first]          # the newer ask did not replace the older draft
+    for d in ws["drafts"]:
+        assert d["status"] == "draft" and d["source"] == "live" and d["model"] and d["created_at"]
+        assert d["sites"] and all(", " in s for s in d["sites"])              # "Name, Town", in stop order
+    # A run's own view still returns only that run's draft.
+    assert [d["run_id"] for d in c.get(f"/api/dashboard/drafts?run_id={first}").json()["drafts"]] == [first]
+
+
+def test_decided_drafts_stay_in_the_workspace_list_with_their_status(env, monkeypatch):
+    c = client(env)
+    c.get("/api/session")
+    if not _two_live_drafts(c, monkeypatch):
+        pytest.skip("validator refused a picked pair")
+    newer, older = c.get("/api/dashboard/drafts").json()["drafts"]
+    r = c.post(f"/api/dashboard/drafts/{older['draft_id']}/decide", json={"decision": "reject", "notes": "wrong truck", "revise": False})
+    assert r.status_code == 200 and r.json()["status"] == "rejected"
+    a = c.post(f"/api/dashboard/drafts/{newer['draft_id']}/decide", json={"decision": "approve"})
+    after = {d["draft_id"]: d for d in c.get("/api/dashboard/drafts").json()["drafts"]}
+    assert set(after) == {newer["draft_id"], older["draft_id"]}
+    assert after[older["draft_id"]]["status"] == "rejected" and after[older["draft_id"]]["decisions"][0]["notes"] == "wrong truck"
+    assert after[older["draft_id"]]["stops"] is None and after[older["draft_id"]]["sites"]   # freed, but still says where it was going
+    assert after[newer["draft_id"]]["status"] == ("approved" if a.status_code == 200 else "draft")
+    rows = {o["order_id"]: o for o in c.get("/api/dashboard/orders").json()["orders"]}
+    assert rows[older["orders"][0]]["in_draft"] is False                    # a rejected draft frees its order
+
+
+# ---------- Fresh start shows only this workspace's own data (Nov 4)
+def test_a_visitor_id_the_server_has_never_seen_starts_fresh_and_keeps_its_mode_across_a_restart(env):
+    """After a restart the page still sends its old id. The server has no state for it: it must start fresh, not get
+    the recorded lessons seeded into a new store with no "Fresh start" mark (the bug the owner saw)."""
+    sid = "abcdef012345"
+    h = {"X-Anubhav-Visitor": sid}
+    app1 = TestClient(api_app.create_app(public=True, world=env, replay_pace=0, start_fresh=True), raise_server_exceptions=False)
+    s = app1.get("/api/fresh/status?company=T01", headers=h).json()
+    assert s["fresh"] is True and s["lessons"] == 0
+    assert app1.get("/api/learning/lessons?company=T01", headers=h).json() == []
+    assert app1.get("/api/logs/runs?company=T01", headers=h).json() == []
+    # a restart where the files survive: the same id keeps its Fresh start workspace
+    app2 = TestClient(api_app.create_app(public=True, world=env, replay_pace=0, start_fresh=True), raise_server_exceptions=False)
+    s = app2.get("/api/fresh/status?company=T01", headers=h).json()
+    assert s["fresh"] is True and s["lessons"] == 0
+    assert app2.get("/api/logs/runs?company=T01", headers=h).json() == []
+    assert app2.post("/api/fresh/restore?company=T01", headers=h).json()["lessons"] > 0
+    app3 = TestClient(api_app.create_app(public=True, world=env, replay_pace=0, start_fresh=True), raise_server_exceptions=False)
+    s = app3.get("/api/fresh/status?company=T01", headers=h).json()
+    assert s["fresh"] is False and s["lessons"] > 0                                  # After learning stays After learning
+
+
+def test_compare_in_a_fresh_start_workspace_shows_only_its_own_before_and_after_pairs(env, monkeypatch):
+    c = client(env)
+    c.get("/api/session")
+    req = SUGGESTIONS["English"]
+    recorded = c.get("/api/compare", params={"company": "T01", "request": req}).json()
+    c.post("/api/fresh/start?company=T01")
+    mine = c.get("/api/compare", params={"company": "T01", "request": req}).json()
+    assert mine["cold"] is None and mine["with_lessons"] is None and mine["with_learned_tools"] is None and mine["pairs"] == []
+    assert c.get("/api/compare?company=T01").json()["pairs"] == []
+    assert recorded["cold"] and recorded["with_lessons"] and recorded["pairs"] == []   # After learning: the recorded example, never an own pair
+    orig = session.Workspace.broker_args            # stands in for one approved lesson, so no model or gate is needed
+    monkeypatch.setattr(session.Workspace, "broker_args", lambda self, cid, use: (["Site X takes no long trucks."] if use else [], *orig(self, cid, use)[1:]))
+    ask = "anything to plan for tomorrow?"
+    live_env(monkeypatch, [mock_final("Nothing to plan.")])
+    before = c.post("/api/chat", json={"message": ask, "mode": "live", "use_lessons": False}).json()
+    list(stream.follow(before["run_id"]))
+    assert c.get("/api/compare?company=T01").json()["pairs"] == []                  # no run with lessons yet
+    live_env(monkeypatch, [mock_final("Still nothing to plan.")])
+    after = c.post("/api/chat", json={"message": ask, "mode": "live", "use_lessons": True}).json()
+    list(stream.follow(after["run_id"]))
+    pairs = c.get("/api/compare?company=T01").json()["pairs"]
+    assert len(pairs) == 1 and pairs[0]["request"] == ask
+    p = pairs[0]
+    assert p["before"]["run_id"] == before["run_id"] and p["before"]["lessons_in_prompt"] == 0
+    assert p["after"]["run_id"] == after["run_id"] and p["after"]["lessons_in_prompt"] == 1
+    assert p["after"]["model"] and p["after"]["saved_at"] and "tool_calls" in p["after"] and "cost_usd" in p["after"]
+    other = client(env)                                                              # another visitor sees none of it
+    other.get("/api/session")
+    other.post("/api/fresh/start?company=T01")
+    assert other.get("/api/compare?company=T01").json()["pairs"] == []
+
+
+def test_a_fresh_start_workspace_counts_only_its_own_knowledge_and_timeline(env):
+    c = client(env)
+    c.get("/api/session")
+    assert any(a["knowledge_items"] for a in c.get("/api/agents?company=T01").json())    # recorded lessons in After learning
+    import time
+    time.sleep(1.1)                       # the shared agent versions were just made; Fresh start counts from the next second
+    c.post("/api/fresh/start?company=T01")
+    assert all(a["knowledge_items"] == 0 for a in c.get("/api/agents?company=T01").json())
+    assert c.get("/api/learning/timeline?company=T01").json() == []
+    assert c.get("/api/review/history?company=T01").json() == []
+    assert [e for e in c.get("/api/logs/events?company=T01").json() if e["stream"] in ("run", "lesson", "harness", "feedback")] == []
+    assert c.get("/api/tools?company=T01").json() == [] and c.get("/api/tools/candidates?company=T01").json() == []

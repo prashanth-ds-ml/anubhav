@@ -23,7 +23,7 @@ test("tabs follow the keyboard pattern: arrows, Home and End, one tab stop", asy
 test("one theme: the page stays white even when the system asks for dark, and there is no theme switch", async ({ page }) => {
   await page.emulateMedia({ colorScheme: "dark" });
   await page.goto("/");
-  await expect(page.getByRole("heading", { name: "Try it: seven scenarios" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Try it", exact: true })).toBeVisible();
   expect(await page.evaluate(() => getComputedStyle(document.body).backgroundColor)).toBe("rgb(246, 248, 248)");
   await expect(page.getByRole("button", { name: /theme/i })).toHaveCount(0);
 });
@@ -127,5 +127,5 @@ test("inside a cross-site frame (the Hugging Face Space page) the visitor is kep
   await page.getByRole("tab", { name: "Learning" }).click();
   const knows = page.getByRole("status", { name: "What this workspace knows" });
   await expect(knows).toContainText("0 lessons");          // a new visitor would have the 10 recorded lessons
-  await expect(knows).toContainText("started fresh");
+  await expect(knows).toContainText("Fresh start");
 });

@@ -15,7 +15,7 @@ test("Benchmarks: the per-company chart and the mining bars come from the result
     await expect(fig).toHaveAttribute("aria-label", new RegExp(`${name}: ${a.ok} to ${b.ok}, unsafe ${a.unsafe} to ${b.unsafe}`));
   }
   await expect(chart).toContainText("Not improved: real capacity, 0 of 6 with lessons at T01");
-  const mining = page.getByRole("region", { name: /It learns the right things/ });
+  const mining = page.getByRole("region", { name: /Lessons that pass the gate/ });
   await expect(mining.getByRole("list", { name: "Precision by experiment" }).getByRole("listitem")).toHaveCount(3);
   await expect(mining).toContainText("73% ✕ precision"); // EXP-008 repeat 0, the pre-registered measure, under the 85% bar
   await expect(mining).toContainText("90% ✓ precision");

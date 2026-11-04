@@ -15,6 +15,22 @@ const HOW: Record<string, string> = {
   lesson_miner: "Changes to its own instructions that pass a paired test; the code's evidence gate decides which lessons count.",
 };
 
+/** True in a "Fresh start" workspace, false in "After learning", null until known (so nothing measured flashes by). */
+export function useFreshMode(): boolean | null {
+  const { company, dataVersion } = useSettings();
+  const s = useApi(() => api.freshStatus(company), [company, dataVersion], { keep: true });
+  return s.data ? s.data.fresh : null;
+}
+
+/** Fresh start shows only this workspace's own data; the measured results stay on Proof & audit, the same in both. */
+export function ProofLine() {
+  return (
+    <p className="small muted proof-line">
+      Measured results from the experiments: <button type="button" className="link-btn" onClick={() => go("proof")}>Proof &amp; audit →</button>
+    </p>
+  );
+}
+
 const pct = (x: number) => `${Math.round(x * 100)}%`;
 const mean = (xs: number[]) => xs.reduce((a, b) => a + b, 0) / Math.max(xs.length, 1);
 const VERDICT: Record<string, [string, string]> = { met: ["Bar met", ""], not_met: ["Bar not met", ""], finding: ["a finding, no bar", "muted"], not_run: ["not run yet", "muted"] };
@@ -101,24 +117,25 @@ function measured(agent: string, proof: Record<string, ProofEntry>, reg: Record<
   return more ?? <p className="not-measured small">Not measured yet. EXP-014 will score it before and after; no number until it has run.</p>;
 }
 
-function Totals({ t }: { t?: AgentTotal }) {
-  if (!t || t.runs === 0) return <p className="small muted">No runs for this company yet.</p>;
+function Totals({ t, fresh }: { t?: AgentTotal; fresh?: boolean | null }) {
+  if (!t || t.runs === 0) return <p className="small muted">{fresh ? "No runs in this workspace yet." : "No runs for this company yet."}</p>;
   return (
     <p className="small muted">
-      In this company's runs: {t.runs} run{t.runs === 1 ? "" : "s"} · {t.tool_calls} tool calls · {t.tool_errors} failed · ${t.cost_usd.toFixed(2)}
+      In this {fresh ? "workspace's" : "company's"} runs: {t.runs} run{t.runs === 1 ? "" : "s"} · {t.tool_calls} tool calls · {t.tool_errors} failed · ${t.cost_usd.toFixed(2)}
     </p>
   );
 }
 
 /** Agents: how each one learns, what has been measured, its work in this company's runs, and what is not measured yet. */
 export function AgentCards() {
-  const { company, modelLabel } = useSettings();
-  const agents = useApi(() => api.agents(company), [company]);
-  const totals = useApi(() => api.agentTotals(company), [company]);
+  const { company, modelLabel, dataVersion } = useSettings();
+  const fresh = useFreshMode();
+  const agents = useApi(() => api.agents(company), [company, dataVersion], { keep: true });
+  const totals = useApi(() => api.agentTotals(company), [company, dataVersion], { keep: true });
   const proofApi = useApi(() => api.proof(), []);
   const regApi = useApi(() => api.registry(), []);
   const curve = useApi(() => api.curve(), []);
-  if (agents.loading || proofApi.loading || regApi.loading) return <div className="skeleton" aria-busy="true" />;
+  if (agents.loading || proofApi.loading || regApi.loading || fresh === null) return <div className="skeleton" aria-busy="true" />;
   if ((agents.data ?? []).length === 0) return <p className="empty">No agent data. The server may be unreachable.</p>;
   const proof = Object.fromEntries((proofApi.data ?? []).map((p) => [p.id, p]));
   const reg = Object.fromEntries((regApi.data?.experiments ?? []).map((r) => [r.id, r]));
@@ -130,10 +147,13 @@ export function AgentCards() {
       <section className="panel agents-head" aria-labelledby="ag-title">
         <div>
           <h2 id="ag-title">Each agent has its own way to learn</h2>
-          <p className="small muted">Agents propose changes; code checks them; a person approves. The numbers below are measured. Where nothing is measured yet, it says so.</p>
+          <p className="small muted">Agents propose changes; code checks them; a person approves. {fresh
+            ? "Below: what each agent knows and has done in this workspace since it started fresh."
+            : "The numbers below are measured. Where nothing is measured yet, it says so."}</p>
           <p className="small muted">Changes to an agent's own instructions follow Google Research's Harness² method (Propose–Probe–Compose), in a bounded form.</p>
+          {fresh && <ProofLine />}
         </div>
-        {team?.M0 && team.M1 && (
+        {!fresh && team?.M0 && team.M1 && (
           <div className="team-line" aria-label="The team, EXP-013">
             <p className="small muted">The team (EXP-013, {team.M1.n} cases)</p>
             <p><strong>Right agent chosen: {pct(team.M0.routing)} → {pct(team.M1.routing)}</strong> after one learning round</p>
@@ -169,16 +189,18 @@ export function AgentCards() {
               )}
               <h4 className="eyebrow">How it learns</h4>
               <p className="small">{HOW[a.agent] ?? "Not described."}</p>
-              <p className="small muted">{a.versions_tried === 0 ? "No instruction changes tried yet." : `${a.versions_tried} instruction change${a.versions_tried === 1 ? "" : "s"} tried.`} Knows {a.knowledge_items} thing{a.knowledge_items === 1 ? "" : "s"} about this company. Live runs use the model chosen at the top (now {modelLabel}).</p>
-              <h4 className="eyebrow">Measured</h4>
-              {measured(a.agent, proof, reg, c ?? undefined)}
-              <Totals t={totals.data?.find((t) => t.agent === a.agent)} />
+              <p className="small muted">{a.versions_tried === 0 ? "No instruction changes tried yet." : `${a.versions_tried} instruction change${a.versions_tried === 1 ? "" : "s"} tried in the experiments; none kept, so it is still version 1.`} Knows {a.knowledge_items} thing{a.knowledge_items === 1 ? "" : "s"} about this company{fresh ? " in this workspace" : ""}. Live runs use the model chosen at the top (now {modelLabel}).</p>
+              {!fresh && <>
+                <h4 className="eyebrow">Measured</h4>
+                {measured(a.agent, proof, reg, c ?? undefined)}
+              </>}
+              <Totals t={totals.data?.find((t) => t.agent === a.agent)} fresh={fresh} />
             </article>
           );
         })}
       </div>
 
-      <section className="panel" aria-labelledby="curve-title">
+      {!fresh && <section className="panel" aria-labelledby="curve-title">
         <h3 id="curve-title">Does the whole team improve as it learns, and does each agent?</h3>
         {c?.measured ? (
           <>
@@ -200,7 +222,7 @@ export function AgentCards() {
             </div>
           </>
         )}
-      </section>
+      </section>}
     </div>
   );
 }

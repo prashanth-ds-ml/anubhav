@@ -7,6 +7,7 @@ import { plainReason, Reply } from "../lib/text";
 import { focusOn } from "../lib/focus";
 import { PlanCard } from "./PlanCard";
 import { AskPerson, type Ask } from "./AskPerson";
+import { useWorkspace } from "../lib/useWorkspace";
 import { Mic } from "./Mic";
 import { closest } from "../lib/match";
 import type { RunEvent } from "../types";
@@ -57,7 +58,7 @@ function Starters({ compact, onPick }: { compact: boolean; onPick: (label: strin
             ))}
             {more.length > 0 && (
               <div className="more-requests">
-                <span className="small muted">More requests, in other languages and styles:</span>
+                <span className="small muted">The same kinds of request, recorded in other languages and cases:</span>
                 {more.map((r) => <button key={r.label} className="chip" title={r.request} aria-label={`${r.label}: ${r.request}`} onClick={() => onPick(r.label)}>{r.label}</button>)}
               </div>
             )}
@@ -101,6 +102,8 @@ export function Chat({ onEvents, prefill, ask, scenario, onStartScenario, action
   scenario: string | null; onStartScenario: (id: string) => void; actionsRef: MutableRefObject<ScenarioActions | null>;
 }) {
   const { company, setCompany, useLessons, setUseLessons, requests, session, ready, live, refreshSession, bumpData, model, modelLabel } = useSettings();
+  const ws = useWorkspace();
+  const noLessons = !ws.unreachable && (!ws.loaded || ws.activeLessons === 0);   // disabled until the workspace is known
   const pending = useRef<{ label: string; lessons?: boolean; done: () => void } | null>(null); // a saved request a scenario asked for before the list loaded
   const waiting = useRef<string | null>(null); // text sent before the saved requests loaded
   const [msgs, setMsgs] = useState<Msg[]>([]);
@@ -296,9 +299,9 @@ export function Chat({ onEvents, prefill, ask, scenario, onStartScenario, action
               <Impact className="impact" />
               <ul className="muse plain small" aria-label="Built on Meta Muse">
                 <li className="muse-head">Built on Meta Muse:</li>
-                <li><strong>Spark Open</strong> (open weights) · the agents plan and call tools</li>
-                <li><strong>Spark 1.3</strong> · finds lessons, live runs</li>
-                <li><strong>Voice Transcribe</strong> · hears Telugu</li>
+                <li><strong>Spark Open</strong> (open weights) · agents, benchmarks</li>
+                <li><strong>Spark 1.3</strong> · learning, live runs</li>
+                <li><strong>Voice Transcribe</strong> · Telugu</li>
               </ul>
               <details>
                 <summary className="small">Read more</summary>
@@ -312,10 +315,17 @@ export function Chat({ onEvents, prefill, ask, scenario, onStartScenario, action
               </details>
             </section>
             <ScenarioCards onStart={onStartScenario} />
-            <h2>Or play a single saved request</h2>
-            <p>You will see who acts, what they try, what fails, and what is learned. Or type your own below.</p>
-            <Starters compact={false} onPick={pick} />
+            {ws.loaded && !ws.fresh && (
+              <section className="single-requests" aria-labelledby="single-title">
+                <h3 id="single-title" className="sc-group">Or replay one recorded request</h3>
+                <p className="small muted">Each plays a real run recorded on Muse Spark Open, step by step: who acted, what they tried, what failed and what was learned. Or type your own request below.</p>
+                <Starters compact={false} onPick={pick} />
+              </section>
+            )}
           </div>
+        )}
+        {msgs.length === 0 && scenario && (
+          <p className="scenario-hint">Press the green button in the guide above to play step 1. Recorded steps replay real runs and are free.</p>
         )}
         {msgs.map((m, i) => {
           if (m.kind === "user") return <div key={i} className="bubble user">{m.text}</div>;
@@ -385,12 +395,12 @@ export function Chat({ onEvents, prefill, ask, scenario, onStartScenario, action
       {banner && <p className="banner" role="status">{banner}</p>}
 
       <div className="composer">
-        {msgs.length > 0 && !scenario && <Starters compact onPick={pick} />}
+        {msgs.length > 0 && !scenario && ws.loaded && !ws.fresh && <Starters compact onPick={pick} />}
         <form
           onSubmit={(e) => { e.preventDefault(); submit(draft); field.current?.focus(); }}
           className="composer-form"
         >
-          <label htmlFor="ask" className="label">Ask the agents</label>
+          <label htmlFor="ask" className="sr-only">Ask the agents</label>
           <div className="composer-row">
             <Mic
               available={voice.data?.available ?? false}
@@ -407,7 +417,7 @@ export function Chat({ onEvents, prefill, ask, scenario, onStartScenario, action
               ref={field}
               rows={2}
               value={draft}
-              placeholder="Plan a truck for tomorrow's order, or ask about your data…"
+              placeholder="Ask the agents: plan a truck, or ask about your data…"
               onChange={(e) => { setDraft(e.target.value); setHeard(null); }}
               onKeyDown={(e) => {
                 if (e.key === "Enter" && !e.shiftKey && !e.nativeEvent.isComposing) {
@@ -419,12 +429,17 @@ export function Chat({ onEvents, prefill, ask, scenario, onStartScenario, action
             <button type="submit" className="send" disabled={!draft.trim()}>Send</button>
           </div>
           {heard && <p className="small" role="status">{heard}</p>}
-          <label className="lessons-toggle">
-            <input type="checkbox" checked={useLessons} onChange={(e) => setUseLessons(e.target.checked)} />
-            <span>Use approved lessons <span className="muted small">(turn off to see what the agent does without them)</span></span>
-          </label>
-          {live.ok && <p className="small live-hint">Live: {modelLabel} answers any request · {session?.live_runs_left ?? 0} live runs left in this visit</p>}
-          <p className="small muted">{live.ok ? "" : "Replay answers saved requests only · "}Enter sends · Shift+Enter adds a line</p>
+          <div className="composer-meta small">
+            <label className={`lessons-toggle ${noLessons ? "is-off" : ""}`}
+              title={noLessons ? "No approved lessons yet: approve one in Learning first" : "Turn off to see what the agent does without them"}>
+              <input type="checkbox" checked={useLessons && !noLessons} disabled={noLessons} onChange={(e) => setUseLessons(e.target.checked)} />
+              <span>Use approved lessons{noLessons ? <span className="muted"> (none yet)</span> : null}</span>
+            </label>
+            <span className={live.ok ? "live-hint" : "muted"}>
+              {live.ok ? `Live · ${modelLabel} · ${session?.live_runs_left ?? 0} runs left` : "Replay: saved requests only"}
+            </span>
+            <span className="muted composer-keys">Enter sends · Shift+Enter new line</span>
+          </div>
         </form>
       </div>
     </section>

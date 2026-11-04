@@ -52,6 +52,7 @@ test("a real recorded run: the plan uses the learned 22 ft rule, and the label s
 
 test("with lessons off the same request plans the 32 ft truck", async ({ page }) => {
   await page.goto("/");
+  await expect(page.getByLabel(/Use approved lessons/)).toBeEnabled();   // known once the workspace's lessons are read
   await page.getByLabel(/Use approved lessons/).uncheck();
   await page.getByRole("button", { name: PLAN }).click();
   await expect(page.locator(".bubble.answer")).toContainText("V11");

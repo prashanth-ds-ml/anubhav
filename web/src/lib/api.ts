@@ -64,6 +64,8 @@ const q = (company: string, extra: Record<string, string | boolean | undefined> 
   return p.toString();
 };
 
+/** A draft as the dashboard lists it: when it was made, and its sites by name in stop order. */
+export type WorkspaceDraft = Draft & { created_at?: string | null; sites?: string[] };
 export interface RunRow { run_id: string; saved_at: string; label: string; company: string; model: string; request: string; mode: string; recorded?: boolean; agents: string[]; tool_calls: number; drafts: string[]; stop: string; cost_usd: number; issues: string; mistakes?: number; fixed?: number }
 
 export interface TripRow { date: string; hour: number; weekday: number; vehicle_id: string; vehicle_class: string; length_ft: number | null; status: string; status_seen: string | null; wait_min: number }
@@ -82,6 +84,8 @@ export const api = {
   orders: (c: string) => read<{ delivery_date: string; orders: Order[] }>(`/api/dashboard/orders?${q(c)}`, { delivery_date: "", orders: [] }),
   fleet: (c: string) => read<{ delivery_date: string; vehicles: Vehicle[] }>(`/api/dashboard/fleet?${q(c)}`, { delivery_date: "", vehicles: [] }),
   drafts: (c: string, runId?: string) => read<{ drafts: Draft[]; source: string }>(`/api/dashboard/drafts?${q(c, { run_id: runId })}`, { drafts: [], source: "live" }),
+  /** Every draft in this visitor's workspace, any status, newest delivery date and newest made first. */
+  workspaceDrafts: (c: string) => read<{ drafts: WorkspaceDraft[]; source: string }>(`/api/dashboard/drafts?${q(c)}`, { drafts: [], source: "live" }),
   company: (c: string) => read<Company | null>(`/api/dashboard/company?${q(c)}`, null),
   ledger: (c: string, agent = "", type = "") => read<RunEvent[]>(`/api/ledger?${q(c, { agent, type })}`, []),
   agents: (c: string) => read<AgentRow[]>(`/api/agents?${q(c)}`, []),
@@ -118,7 +122,12 @@ export const api = {
   /** Calls, errors and cost per agent over this company's runs. */
   agentTotals: (c: string) => read<AgentTotal[]>(`/api/logs/agents?${q(c)}`, []),
   compare: (c: string, request: string) => read<Compare | null>(`/api/compare?${q(c, { request })}`, null),
+  /** This workspace's own before-and-after pairs: a request without lessons, then again with approved lessons. */
+  ownPairs: (c: string) => read<OwnPair[]>(`/api/compare?${q(c)}`, []).then((x) => (Array.isArray(x) ? x : (x as unknown as { pairs?: OwnPair[] }).pairs ?? [])),
 };
+
+export interface OwnSide extends CompareSide { model?: string | null; saved_at?: string | null }
+export interface OwnPair { request: string; before: OwnSide; after: OwnSide }
 
 export interface AgentRow { agent: string; name: string; purpose: string; status: string; model: string; version: string; versions_tried: number; knowledge_items: number;
   tools?: { categories?: string[]; names?: string[]; actions?: string[] } | null; skills?: { name: string; description: string }[] }

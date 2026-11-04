@@ -4,6 +4,7 @@ import { withVisitor } from "../lib/api";
 import { useSettings } from "../lib/ctx";
 import { plainReason } from "../lib/text";
 import { liveBudget } from "./LiveMeter";
+import { useWorkspace } from "../lib/useWorkspace";
 import { ComparePair } from "./PlanCard";
 
 // The demo script for judges. These are the demo world's saved requests and steps, written for people to follow; the
@@ -60,11 +61,13 @@ export interface Scenario {
   finaleLine?: string;
   /** The same request recorded in other languages (saved-request label, and how its chip reads). */
   variants?: { label: string; text: string }[];
+  /** Shown in a Fresh start workspace too (it needs nothing learned beforehand). */
+  fresh?: boolean;
 }
 
 export const SCENARIOS: Scenario[] = [
   {
-    id: "S0", title: "Start from nothing", kind: "live", minutes: 3, company: "T01",
+    id: "S0", title: "Start from nothing", kind: "live", minutes: 3, company: "T01", fresh: true,
     blurb: "Ask, watch it learn from the records, approve a rule, ask again: 32 ft, then 22 ft.",
     proves: "It learns a company's unwritten rules from its own records, live: code checks the evidence, you approve, and the next plan changes.",
     honest: "Live on Muse Spark 1.3; uses 3 live runs (two questions and one learning). In our check the gate rule was found in 3 of 3 fresh runs; a model can answer differently.",
@@ -102,7 +105,7 @@ export const SCENARIOS: Scenario[] = [
     variants: [{ label: "Telugu", text: "తెలుగు" }, { label: "English", text: "English" }, { label: "Mixed", text: "Mixed" }, { label: JANGAON, text: "Roman Telugu" }],
   },
   {
-    id: "S2", title: "It builds its own tool", kind: "recorded", minutes: 2, company: "T01", blurb: "5 tool calls, then 1 once you approve the tool it wrote.",
+    id: "S2", title: "It proposes a tool; you approve it", kind: "recorded", minutes: 2, company: "T01", blurb: "5 tool calls, then 1 once you approve the tool it wrote.",
     proves: "Work it keeps repeating becomes a checked tool, but only after a person approves it.",
     steps: [
       { label: "Ask the Telugu data question", caption: "A recorded run. No tool fits, so the Planner hands the question to Tool Forge, which writes its own read-only queries to answer it. It takes many steps.", act: (a) => a.runSaved("New tool") },
@@ -158,9 +161,9 @@ export const SCENARIOS: Scenario[] = [
     evidence: [{ label: "Our test runs of this scenario (run log)", href: `${REPO}docs/trackers/run_logs.md` }],
   },
   {
-    id: "S5", title: "Try to break it", kind: "live", minutes: 3, company: "T01", blurb: "Dispatch now, overload, wrong time, nicknames, or your own.",
+    id: "S5", title: "Try to break it", kind: "live", minutes: 3, company: "T01", fresh: true, blurb: "Dispatch now, overload, wrong time, nicknames, or your own.",
     proves: "The model proposes; plain code enforces the limits; a person decides. Try any of these, or write your own.",
-    honest: "Live on Muse Spark 1.3. Each challenge behaved as described once in our test; a model can answer differently.",
+    honest: "Live. Each challenge behaved as described once in our test; a model can answer differently. The wrong-time and nickname challenges need learned lessons: in a Fresh start workspace, run S0 first.",
     steps: [
       { label: "\"Confirm the dispatch now\"", caption: "It should only make a draft: dispatching is a person's job, and code holds that line.", live: true, act: (a) => a.runLive("Lakshmi Agencies Jangaon order ki bandi pettu, dispatch ippude confirm cheyyi.") },
       { label: "Overload one truck", caption: "Three orders, about 27 t, on one 9 t truck. The load check refuses it and says why.", live: true, act: (a) => a.runLive("Put all three Jangaon orders (Sri Rama Warehousing, Lakshmi Agencies, Sri Venkateswara Traders) on vehicle V08 tomorrow.") },
@@ -170,18 +173,53 @@ export const SCENARIOS: Scenario[] = [
     ],
     evidence: [{ label: "Our test runs of these challenges (run log)", href: `${REPO}docs/trackers/run_logs.md` }],
   },
+  {
+    id: "S7", title: "Plan tomorrow's whole day", kind: "live", minutes: 2, company: "T01", fresh: true,
+    blurb: "Every open order gets a draft truck; you approve one and reject one.",
+    proves: "Day planning for a small fleet: drafts for every open order in one request, each checked by code, each waiting for a person.",
+    honest: "Live; uses 1 live run. A model can plan differently each time; every draft still passes the same code checks.",
+    steps: [
+      { label: "Ask for tomorrow's plan", caption: "\"Repu open orders anni ki trucks plan cheyyi. Draft matrame, dispatch cheyyaku.\" It reads the day's board (orders, sites, free trucks) and drafts trucks.", live: true,
+        act: (a) => a.runLive("Repu open orders anni ki trucks plan cheyyi. Draft matrame, dispatch cheyyaku.") },
+      { label: "Review the drafts", caption: "On the right, Route plans and drafts lists every draft with its truck, load and stops. Nothing is dispatched.", act: (a) => a.openTab("plans") },
+      { label: "Approve one, reject one with a note", caption: "Approving re-checks the plan in code and still does not dispatch. A rejection keeps your note with the draft.", act: (a) => a.openTab("plans"), loop: "Approve" },
+    ],
+    evidence: [{ label: "The day board tool and the draft checks (runtime/broker.py)", href: `${REPO}src/anubhav/runtime/broker.py` }],
+  },
+  {
+    id: "S8", title: "Ask about your business", kind: "live", minutes: 2, company: "T01", fresh: true,
+    blurb: "A data question no tool answers: the Planner hands it to Tool Forge.",
+    proves: "Agents divide the work: the Planner routes a data question to Tool Forge, which answers with one read-only query over the company's own records.",
+    honest: "Live; uses up to 2 live runs. A model can write the query differently each time; it can only read, never change, the records.",
+    steps: [
+      { label: "Ask in Roman Telugu", caption: "\"Hanamkonda lo ae weekday lo manam ekkuva deliveries chestham?\" Watch the hand-off: the Planner can't write SQL, so Tool Forge does.", live: true,
+        act: (a) => a.runLive("Hanamkonda lo ae weekday lo manam ekkuva deliveries chestham?") },
+      { label: "See who did what", caption: "In Runs: one lane per agent, every query it wrote and the answer it got.", act: (a) => a.openTab("runs") },
+      { label: "Ask the same in English", caption: "When a query has served 3 different requests, Tools offers it as a candidate tool, which a person approves after code checks it.", live: true,
+        act: (a) => a.runLive("Which weekday do we make the most deliveries in Hanamkonda?") },
+    ],
+    evidence: [{ label: "How a repeated query becomes a tool (learning/newtools.py)", href: `${REPO}src/anubhav/learning/newtools.py` }],
+  },
+  {
+    id: "S9", title: "Ask by voice, in Telugu", kind: "live", minutes: 1, company: "T01", fresh: true,
+    blurb: "Speak the request; Muse Voice Transcribe turns it into text.",
+    proves: "Dispatchers talk; the agents work from what they say, in Telugu, Roman Telugu or English.",
+    honest: "Live; the recording is sent to Meta's transcription service and not stored. Uses 1 live run for the transcript and 1 for the plan.",
+    steps: [
+      { label: "Press the mic and speak", caption: "For example: \"Repu Hanamkonda order ki bandi pettu.\" The words appear in the box for you to check.", act: (a) => a.focusBox() },
+      { label: "Send it", caption: "Press Send. The plan is a draft, checked by code, like any typed request.", act: (a) => a.focusBox() },
+    ],
+    evidence: [{ label: "The voice path (scripts/voice_request.py)", href: `${REPO}scripts/voice_request.py` }],
+  },
 ];
 
 export function ScenarioCards({ onStart }: { onStart: (id: string) => void }) {
-  const { live, session } = useSettings();
+  const { live, session, modelLabel } = useSettings();
+  const ws = useWorkspace();
   const budget = liveBudget(session);
-  return (
-    <section className="scenarios" aria-labelledby="sc-title">
-      <h2 id="sc-title">Try it: seven scenarios</h2>
-      <p className="small muted sc-sub">Four replay real recordings and cost nothing. Three run the model live, so you can test what we claim.</p>
-      <ul className="sc-grid">
-        {/* With live mode on, "Start from nothing" leads; without it, the free recorded ones come first. */}
-        {[...SCENARIOS].sort((a, b) => (live.ok ? 0 : Number(a.id === "S0") - Number(b.id === "S0"))).map((s) => {
+  const liveOnes = SCENARIOS.filter((s) => s.kind === "live" && (!ws.fresh || s.fresh));
+  const recorded = ws.fresh ? [] : SCENARIOS.filter((s) => s.kind === "recorded");
+  const card = (s: Scenario) => {
           const off = s.kind === "live" && !live.ok;
           return (
             <li key={s.id} className={`sc-card is-${s.kind}`}>
@@ -192,18 +230,33 @@ export function ScenarioCards({ onStart }: { onStart: (id: string) => void }) {
                 <h3><span className="sc-id">{s.id}</span> {s.title}</h3>
                 <p className="small">{s.blurb}</p>
                 <p className="small muted">
-                  About {s.minutes} min · {s.kind === "recorded" ? "free" : `uses up to ${s.steps.filter((x) => x.live).length} live runs`}
+                  About {s.minutes} min · {s.kind === "recorded" ? "free" : (s.steps.some((x) => x.live) ? `uses up to ${s.steps.filter((x) => x.live).length} live run${s.steps.filter((x) => x.live).length === 1 ? "" : "s"}` : "uses live voice transcription")}
                   {s.kind === "live" && budget && <strong className="runs-left"> · {budget.left} of {budget.perVisit} left</strong>}
                 </p>
                 {off ? (
-                  <p className="small sc-off">{plainReason(live.reason)} Try S1 to S3, which replay the same kinds of runs.</p>
+                  <p className="small sc-off">{plainReason(live.reason)} {ws.fresh ? "Switch the workspace to After learning to watch recorded runs." : "The recorded scenarios below replay the same kinds of runs."}</p>
                 ) : null}
                 <button type="button" className="sc-start" disabled={off} onClick={() => onStart(s.id)}>Start {s.id}</button>
               </article>
             </li>
           );
-        })}
-      </ul>
+  };
+  if (!ws.loaded) return <section className="scenarios" aria-busy="true"><h2 id="sc-title">Try it</h2><div className="skeleton" /></section>;
+  const recordedGroup = recorded.length > 0 && (
+    <>
+      <h3 className="sc-group">Recorded: watch real runs, free <span className="small muted">· recorded earlier on Muse Spark Open, replayed in seconds</span></h3>
+      <ul className="sc-grid">{recorded.map(card)}</ul>
+    </>
+  );
+  return (
+    <section className="scenarios" aria-labelledby="sc-title">
+      <h2 id="sc-title">Try it</h2>
+      {/* After learning: the free recorded ones first (no live runs spent); Fresh start has only live ones. */}
+      {recordedGroup}
+      <h3 className="sc-group">Live: you run it{live.ok ? ` on ${modelLabel}` : ""} <span className="small muted">· {ws.fresh
+        ? "starting from nothing: no lessons, no tools yet"
+        : "on this company's records, with what it has learned so far"}</span></h3>
+      <ul className="sc-grid">{liveOnes.map(card)}</ul>
     </section>
   );
 }

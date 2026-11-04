@@ -7,7 +7,7 @@
 agents:
   planner:
     name: Planner
-    purpose: Talks to the planner, plans dispatch drafts with the tools, and hands sub-tasks to teammates.
+    purpose: Talks to the dispatcher, plans dispatch drafts with the tools, and hands sub-tasks to teammates.
     model: spark
     status: active
     voice: true                 # the only agent whose reply reaches the person

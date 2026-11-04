@@ -30,6 +30,7 @@ class Visitors:
 
     def __init__(self):
         self.lock, self.states = threading.Lock(), OrderedDict()
+        self.setup_lock = threading.Lock()
         self.pruned_at = 0.0
 
     def prune(self, world, force=False):
@@ -48,6 +49,28 @@ class Visitors:
                 self.states.popitem(last=False)
             return s
 
+    def open(self, sid, world, start_fresh=False):
+        """This visitor's workspace. An id this server holds nothing for (no state in memory and no lesson store on disk,
+        e.g. the page kept its id across a restart) is a new visitor: on the hosted demo it starts fresh, like a new id.
+        One that has files on disk but no state here gets its saved "Fresh start" mark back."""
+        with self.lock:
+            known = sid in self.states
+        if known:
+            return Workspace(sid, True, self.state(sid), world)
+        with self.setup_lock:       # a visitor's first requests arrive together: only one sets the workspace up
+            with self.lock:
+                known = sid in self.states
+            if known:
+                return Workspace(sid, True, self.state(sid), world)
+            ws = Workspace(sid, True, {}, world)
+            if ws.store_path().exists():
+                fresh.recall(ws)
+            elif start_fresh:
+                fresh.start_all(ws)
+            with self.lock:
+                self.states[sid] = ws.state
+            return Workspace(sid, True, self.state(sid), world)
+
 
 def workspace(request: Request, response: Response) -> Workspace:
     cfg = request.app.state
@@ -61,13 +84,8 @@ def workspace(request: Request, response: Response) -> Workspace:
         https = request.headers.get("x-forwarded-proto", request.url.scheme) == "https"
         response.set_cookie(COOKIE, sid, httponly=True, samesite="none" if https else "lax", secure=https, max_age=7 * 24 * 3600)
         cfg.visitors.prune(cfg.world)
-        ws = Workspace(sid, True, cfg.visitors.state(sid), cfg.world)
-        if getattr(cfg, "start_fresh", False):
-            fresh.start_all(ws)
-        response.headers[HEADER] = sid
-        return ws
     response.headers[HEADER] = sid
-    return Workspace(sid, True, cfg.visitors.state(sid), cfg.world)
+    return cfg.visitors.open(sid, cfg.world, getattr(cfg, "start_fresh", False))
 
 
 Ws = Depends(workspace)

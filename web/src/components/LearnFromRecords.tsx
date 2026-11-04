@@ -27,7 +27,7 @@ export function KnowsNow() {
     <p className="knows-now" role="status" aria-label="What this workspace knows">
       <strong>{s.data.lessons}</strong> lesson{s.data.lessons === 1 ? "" : "s"}
       {s.data.waiting_lessons ? <> ({s.data.waiting_lessons} waiting for a person)</> : null} · <strong>{s.data.tools}</strong> tool{s.data.tools === 1 ? "" : "s"} ·
-      agents at {same ? `version ${v[0]}` : "their own versions"}{s.data.fresh ? <span className="pill warn">started fresh</span> : null}
+      agents at {same ? `version ${v[0]}` : "their own versions"}{s.data.fresh ? <span className="pill warn">Fresh start</span> : null}
     </p>
   );
 }

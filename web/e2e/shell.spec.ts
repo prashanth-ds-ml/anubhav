@@ -79,7 +79,7 @@ test("the live meter always shows how many live runs are left, block by block", 
   await expect(meter.locator(".live-blocks .left")).toHaveCount(6);
   await expect(meter.locator(".live-blocks .used")).toHaveCount(2);
   await expect(page.getByRole("article", { name: /^S4 / })).toContainText("6 of 8 left");
-  await expect(page.getByText(/6 live runs left in this visit/)).toBeVisible(); // the chat box repeats it
+  await expect(page.getByText(/Live · Muse Spark 1\.3 · 6 runs left/)).toBeVisible(); // the chat box repeats it
   const axe = await new AxeBuilder({ page }).include(".top").analyze();
   expect(axe.violations.map((v) => v.id)).toEqual([]);
 });

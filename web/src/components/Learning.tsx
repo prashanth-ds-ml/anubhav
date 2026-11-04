@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { api, modelName, type CompareSide, type Lesson, withVisitor } from "../lib/api";
+import { api, modelName, type Lesson, type OwnPair, type OwnSide, withVisitor } from "../lib/api";
+import { ProofLine, useFreshMode } from "./AgentCards";
 import { LessonActions } from "./LessonActions";
 import { useApi } from "../lib/useApi";
 import { useSettings } from "../lib/ctx";
@@ -27,16 +28,37 @@ const KIND: Record<string, string> = {
   real_capacity: "real capacity", vendor_reliability: "vendor", closure: "road", time_window: "time window", moved_site: "moved site",
 };
 
-function Side({ title, s, vehicle }: { title: string; s: CompareSide | null; vehicle: (id: string) => string }) {
+function Side({ title, s, vehicle }: { title: string; s: OwnSide | null; vehicle: (id: string) => string }) {
   if (!s) return <article className="panel"><h4>{title}</h4><p className="empty">No saved run.</p></article>;
   const v = s.drafts[0]?.vehicle_id;
+  const n = s.lessons_in_prompt;
   return (
     <article className="panel">
       <h4>{title}</h4>
       <p><strong>{v ? `Vehicle ${v}${vehicle(v) ? `: ${vehicle(v)}` : ""}` : "No draft"}</strong></p>
-      <p className="small muted">{s.lessons_in_prompt} lessons in its instructions · {s.tool_calls} tool calls · ${s.cost_usd.toFixed(3)}</p>
-      <details><summary>Its reply</summary><Reply text={s.reply} /></details>
+      <p className="small muted">{n} lesson{n === 1 ? "" : "s"} in its instructions · {s.tool_calls} tool call{s.tool_calls === 1 ? "" : "s"} · ${(s.cost_usd ?? 0).toFixed(3)}</p>
+      {(s.model || s.saved_at) && <p className="small muted">{s.model ? modelName(s.model) : ""}{s.model && s.saved_at ? " · " : ""}{s.saved_at ? shortTime(s.saved_at) : ""}</p>}
+      <details><summary>{v ? "Its reply" : "Its answer"}</summary><Reply text={s.reply} /></details>
     </article>
+  );
+}
+
+/** Fresh start: this workspace's own pairs, once it has asked a request without lessons and again with approved ones. */
+function OwnPairs({ pairs, vehicle }: { pairs: OwnPair[]; vehicle: (id: string) => string }) {
+  return (
+    <section className="panel" aria-labelledby="ba-title">
+      <h3 id="ba-title">Same request, with and without what it learned</h3>
+      <p className="small muted">From this workspace's own runs: each request asked first without lessons, then again with the lessons you approved.</p>
+      {pairs.map((p) => (
+        <div key={p.after.run_id} className="own-pair">
+          <p className="small">“{p.request}”</p>
+          <div className="agent-grid">
+            <Side title="Without lessons" s={p.before} vehicle={vehicle} />
+            <Side title="With approved lessons" s={p.after} vehicle={vehicle} />
+          </div>
+        </div>
+      ))}
+    </section>
   );
 }
 
@@ -84,9 +106,12 @@ export function Learning({ item }: { item?: string | null }) {
   const t = useApi(() => api.timeline(company), [company, version, dataVersion], { keep: true });
   const l = useApi(() => api.lessons(company), [company, version, dataVersion], { keep: true });
   const fleet = useApi(() => api.fleet(company), [company]);
-  const cmpRef = useFocusTarget<HTMLElement>("compare", true);
+  const cmpRef = useFocusTarget<HTMLDivElement>("compare", true);
   const request = requests.find((r) => r.label === "English")?.request;
-  const cmp = useApi(() => (request ? api.compare(company, request) : Promise.resolve(null)), [company, request]);
+  // Fresh start shows only this workspace's own pairs; After learning shows the recorded example.
+  const fresh = useFreshMode();
+  const cmp = useApi(() => (request && fresh === false ? api.compare(company, request) : Promise.resolve(null)), [company, request, fresh]);
+  const own = useApi(() => (fresh ? api.ownPairs(company) : Promise.resolve([])), [company, fresh, dataVersion, version], { keep: true });
   const [asked, setAsked] = useState<string | null>(kindAsked);
   useEffect(() => {
     const on = () => { const k = kindAsked(); if (k) setAsked(k); };
@@ -147,24 +172,33 @@ export function Learning({ item }: { item?: string | null }) {
         </div>
       )}
 
-      <section ref={cmpRef} className="panel" aria-labelledby="ba-title">
-        <h3 id="ba-title">Same request, with and without what it learned</h3>
-        {cmp.loading ? <div className="skeleton" aria-busy="true" /> : !cmp.data?.cold || !cmp.data.with_lessons ? (
-          <p className="empty">No saved before-and-after pair for this company.</p>
-        ) : (
+      <div ref={cmpRef}>
+        {fresh === null ? null : fresh ? (
           <>
-            <p className="small muted">“{cmp.data.request}” Both are recorded runs of Muse Spark Open. This is one example; the benchmark is under Proof.</p>
-            <div className="agent-grid">
-              <Side title="Without lessons" s={cmp.data.cold} vehicle={vehicle} />
-              <Side title="With approved lessons" s={cmp.data.with_lessons} vehicle={vehicle} />
-            </div>
+            {(own.data ?? []).length > 0 && <OwnPairs pairs={own.data!} vehicle={vehicle} />}
+            <ProofLine />
           </>
+        ) : (
+          <section className="panel" aria-labelledby="ba-title">
+            <h3 id="ba-title">Same request, with and without what it learned: a recorded example</h3>
+            {cmp.loading ? <div className="skeleton" aria-busy="true" /> : !cmp.data?.cold || !cmp.data.with_lessons ? (
+              <p className="empty">No saved before-and-after pair for this company.</p>
+            ) : (
+              <>
+                <p className="small muted">“{cmp.data.request}” Both are recorded runs of Muse Spark Open. This is one example; the benchmark is under Proof.</p>
+                <div className="agent-grid">
+                  <Side title="Without lessons (recorded)" s={cmp.data.cold} vehicle={vehicle} />
+                  <Side title="With approved lessons (recorded)" s={cmp.data.with_lessons} vehicle={vehicle} />
+                </div>
+              </>
+            )}
+          </section>
         )}
-      </section>
+      </div>
 
       <details className="timeline-box">
         <summary><h3>Learning timeline ({t.data?.length ?? "…"})</h3></summary>
-        <p className="small muted">Every lesson and tool decision: proposed, checked, approved or refused, and by whom.</p>
+        <p className="small muted">Every lesson and tool decision{fresh ? " in this workspace since it started fresh" : ""}: proposed, checked, approved or refused, and by whom.</p>
         {t.loading ? <div className="skeleton" aria-busy="true" /> : (t.data ?? []).length === 0 ? (
           <p className="empty">No learning decisions yet.</p>
         ) : (

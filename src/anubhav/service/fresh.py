@@ -83,11 +83,41 @@ def start_all(ws) -> None:
     ws.clear_lessons()
     ws.state["fresh"] = {c: True for c in COMPANIES}
     ws.state["fresh_since"] = _now()
+    _remember(ws)
 
 
 def _now():
     from datetime import datetime
     return datetime.now().isoformat(timespec="seconds")
+
+
+def _mark(ws):
+    p = ws.store_path()
+    return p.with_name(p.name + ".fresh")
+
+
+def _remember(ws) -> None:
+    """Keep the workspace's mode beside its lesson store, so a server restart doesn't turn a "Fresh start" workspace
+    into "After learning" with its lessons emptied (the in-memory state is lost on a restart; the files are not)."""
+    import json
+    if not ws.public:
+        return
+    try:
+        _mark(ws).write_text(json.dumps({"fresh": ws.state.get("fresh", {}), "fresh_since": ws.state.get("fresh_since")}), encoding="utf-8")
+    except OSError:
+        pass
+
+
+def recall(ws) -> None:
+    """A visitor whose files are on disk but whose state this server lost: bring back the saved mode."""
+    import json
+    try:
+        saved = json.loads(_mark(ws).read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return
+    ws.state["fresh"] = dict(saved.get("fresh") or {})
+    if saved.get("fresh_since"):
+        ws.state["fresh_since"] = saved["fresh_since"]
 
 
 def start_fresh(ws, cid) -> dict:
@@ -99,6 +129,7 @@ def start_fresh(ws, cid) -> dict:
     from .session import COMPANIES
     ws.state["fresh"] = {c: True for c in COMPANIES}      # the store is shared by all companies, so all are empty now
     ws.state["fresh_since"] = _now()                       # runs before this leave the lists (Reset starts the count again)
+    _remember(ws)
     return status(ws, cid)
 
 
@@ -107,6 +138,7 @@ def restore(ws, cid) -> dict:
     ws.load_exp008_lessons()
     for c in list(ws.state.get("fresh", {})):
         ws.state["fresh"][c] = False
+    _remember(ws)
     return status(ws, cid)
 
 

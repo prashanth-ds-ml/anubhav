@@ -91,7 +91,7 @@ function Mining({ proof, reg }: { proof: Record<string, ProofEntry>; reg: Record
   const bar = rows.find((r) => r.bar)?.bar;
   return (
     <section className="panel" aria-labelledby="mine-title">
-      <h3 id="mine-title">It learns the right things: {Math.round(last.precision * 10)} in 10 lessons that pass are real</h3>
+      <h3 id="mine-title">Lessons that pass the gate: precision reached {Math.round(last.precision * 100)}% on the third world (bar 85%, set in advance); the first two missed</h3>
       <p className="small muted">Scored against rules the data generator hid, which the system never sees. Lessons mined by Muse Spark 1.3.</p>
       <ul className="plain mine-rows" aria-label="Precision by experiment">
         {rows.map((r) => {
@@ -130,7 +130,7 @@ function OpenWeights({ e }: { e?: ProofEntry }) {
           <tr key={a.tools}><td>{a.tools} tools</td><td>{(a.spark_open.mean_success * 100).toFixed(1)}% · {a.spark_open.mean_latency_s.toFixed(0)} s</td><td>{(a.spark_1_3.mean_success * 100).toFixed(1)}% · {a.spark_1_3.mean_latency_s.toFixed(0)} s</td></tr>
         ))}</tbody>
       </table>
-      <p className="small muted">That is why the agents and every benchmark run on the open-weights model. Success is the share of tasks done right; seconds are the average per task.</p>
+      <p className="small muted">That is why the recorded runs and the benchmarks up to EXP-013, including the main one (EXP-011R), use the open-weights model; EXP-014 to EXP-019 and all live runs use Muse Spark 1.3 (each claim carries its model). Success is the share of tasks done right; seconds are the average per task.</p>
     </section>
   );
 }
@@ -359,12 +359,14 @@ function Claims({ proof, reg }: { proof: Record<string, ProofEntry>; reg: Regist
       </section>
       <div className="proof-notes">
         <div className="note-box small"><strong>Reproduce without keys</strong><br /><code>uv run pytest -q</code>: every test runs without a model call.</div>
-        <div className="note-box small"><strong>Frozen files can't drift</strong><br />The EXP-013 to EXP-016 scripts refuse to run if a frozen file's hash has changed.</div>
+        <div className="note-box small"><strong>Frozen files can't drift</strong><br />The EXP-013 to EXP-019 scripts refuse to run if a frozen file's hash has changed. EXP-017 is reserved for a hand-written benchmark that has not been run.</div>
         <div className="note-box small"><strong>Not improved, and said so</strong><br />
           {cap ? `Real truck capacity: ${cap.replace("/", " of ")} with lessons. ` : ""}
           {team?.S && team.M1 ? `Team accuracy: ${team.M1.ok} of ${team.M1.n}, not better than one Planner (${team.S.ok}). ` : ""}
           {byId["EXP-014"]?.verdict === "not_met" ? `EXP-014: ${byId["EXP-014"].summary}. ` : ""}
-          {byId["EXP-016"]?.verdict === "not_met" ? `EXP-016: ${byId["EXP-016"].summary}.` : ""}
+          {byId["EXP-016"]?.verdict === "not_met" ? `EXP-016: ${byId["EXP-016"].summary}. ` : ""}
+          {byId["EXP-019"]?.verdict === "not_met" ? `EXP-019: ${byId["EXP-019"].summary}. ` : ""}
+          {byId["EXP-012b"]?.verdict === "not_met" ? `EXP-012b: ${byId["EXP-012b"].summary}.` : ""}
         </div>
       </div>
     </>

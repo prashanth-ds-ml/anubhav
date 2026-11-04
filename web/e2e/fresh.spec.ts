@@ -31,17 +31,19 @@ const LEARNED = {
 test("with live mode on, Start from nothing leads; starting fresh empties the workspace, and a recorded scenario restores it", async ({ page }) => {
   await liveOn(page);
   await page.goto("/");
-  await expect(page.locator(".sc-card article").first()).toHaveAccessibleName(/^S0 Start from nothing/);
+  await expect(page.locator(".sc-card.is-live article").first()).toHaveAccessibleName(/^S0 Start from nothing/);   // S0 leads the live ones
   await page.getByRole("button", { name: "Start S0" }).click();
   const guide = page.getByRole("region", { name: /Scenario S0/ });
   await guide.getByRole("button", { name: "Start fresh" }).click();
   await expect(guide.getByRole("status")).toContainText("Started fresh: 0 lessons · 0 tools · agents at version 1");
   await page.goto("/#learning");
   await expect(page.getByRole("status", { name: "What this workspace knows" })).toContainText("0 lessons");
-  await expect(page.getByRole("status", { name: "What this workspace knows" })).toContainText("started fresh");
-  // A recorded scenario needs the recorded lessons: they come back when it starts.
+  await expect(page.getByRole("status", { name: "What this workspace knows" })).toContainText("Fresh start");
+  // Fresh start offers only live scenarios; the recorded ones and their lessons come back with After learning.
   await page.goto("/");
-  await page.getByRole("button", { name: "Start S1" }).click();
+  await expect(page.getByRole("button", { name: "Start S1" })).toHaveCount(0);
+  await page.getByRole("group", { name: "Workspace" }).getByRole("button", { name: "After learning" }).click();
+  await expect(page.getByRole("button", { name: "Start S1" })).toBeVisible();
   await page.goto("/#learning/L-T01-002");
   await expect(page.getByRole("article", { name: "Lesson L-T01-002" })).toBeVisible();
 });
@@ -85,7 +87,7 @@ test("the workspace switch: Fresh start (with Reset), then After learning", asyn
   await sw.getByRole("button", { name: "Fresh start" }).click();
   await expect(sw.getByRole("button", { name: "Fresh start" })).toHaveAttribute("aria-pressed", "true");
   await expect(sw).toContainText("0 lessons · 0 tools");
-  await expect(page.getByRole("status", { name: "What this workspace knows" })).toContainText("started fresh");
+  await expect(page.getByRole("status", { name: "What this workspace knows" })).toContainText("Fresh start");
   await expect(sw.getByRole("button", { name: "Reset" })).toBeVisible();
   await sw.getByRole("button", { name: "Reset" }).click();
   await expect(sw).toContainText("0 lessons · 0 tools");

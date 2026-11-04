@@ -5,6 +5,7 @@ import { useApi } from "../lib/useApi";
 import { useSettings } from "../lib/ctx";
 import { humanName, Reply } from "../lib/text";
 import { useFocusTarget } from "../lib/focus";
+import { ProofLine, useFreshMode } from "./AgentCards";
 
 // A candidate's tool id ends with the first eight characters of its key, which is how the two lists are matched.
 const isFor = (t: NewTool, c: ToolCandidate) => t.tool_id.endsWith(c.key.slice(0, 8));
@@ -131,7 +132,8 @@ function Benchmark() {
 
 /** Repeated questions, how one becomes a tool, and what changed once a person approved it. */
 export function NewTools({ onAsk }: { onAsk: (label: string) => void }) {
-  const { company, requests, bumpData, live, model, modelLabel } = useSettings();
+  const { company, requests, bumpData, live, model, modelLabel, dataVersion } = useSettings();
+  const fresh = useFreshMode();       // Fresh start: only this workspace's tools; the measured results stay under Proof
   const repair = (t: NewTool) => (
     <div className="actions">
       <button type="button" className="chip" disabled={busy !== null || !live.ok} title={live.ok ? undefined : live.reason ?? undefined}
@@ -144,10 +146,10 @@ export function NewTools({ onAsk }: { onAsk: (label: string) => void }) {
   const [version, setVersion] = useState(0);
   const [busy, setBusy] = useState<string | null>(null);
   const [problem, setProblem] = useState<string | null>(null);
-  const cands = useApi(() => api.toolCandidates(company), [company, version], { keep: true });
-  const tools = useApi(() => api.tools(company), [company, version], { keep: true });
+  const cands = useApi(() => api.toolCandidates(company), [company, version, dataVersion], { keep: true });
+  const tools = useApi(() => api.tools(company), [company, version, dataVersion], { keep: true });
   const story = requests.find((r) => r.label === "New tool");
-  const cmp = useApi(() => (story ? api.compare(company, story.request) : Promise.resolve(null)), [company, story?.request]);
+  const cmp = useApi(() => (story && fresh === false ? api.compare(company, story.request) : Promise.resolve(null)), [company, story?.request, fresh]);
   const isStory = (t: NewTool) => !!story && t.checks.same_rows.some((r) => r.request === story.request);
 
   async function act(key: string, f: () => Promise<unknown>) {
@@ -209,7 +211,7 @@ export function NewTools({ onAsk }: { onAsk: (label: string) => void }) {
                 <button type="button" className="chip" disabled={busy !== null} onClick={() => act(t.tool_id, () => api.decideTool(company, t.tool_id, false, "Not approved in the web app."))}>Don't approve</button>
               </div>
               </div>
-              {isStory(t) && cmp.data && <WhatChanges cmp={cmp.data} />}
+              {isStory(t) && fresh === false && cmp.data && <WhatChanges cmp={cmp.data} />}
             </article>
           ))}
 
@@ -238,9 +240,9 @@ export function NewTools({ onAsk }: { onAsk: (label: string) => void }) {
                   </div>
                 </article>
               ))}
-              {cmp.data && active.some(isStory) && (cmp.data.cold || cmp.data.with_learned_tools) && (
+              {fresh === false && cmp.data && active.some(isStory) && (cmp.data.cold || cmp.data.with_learned_tools) && (
                 <section className="panel" aria-label="Before and after the tool">
-                  <h4>The same question, before and after the tool</h4>
+                  <h4>The same question, before and after the tool: recorded runs</h4>
                   <p className="small muted">Both are recorded runs of Muse Spark Open. One example; the benchmark is under Proof.</p>
                   <div className="agent-grid">
                     <Result title="Before: no tool" s={cmp.data.cold} />
@@ -260,7 +262,7 @@ export function NewTools({ onAsk }: { onAsk: (label: string) => void }) {
         </div>
       )}
     </section>
-    <Benchmark />
+    {fresh === false ? <Benchmark /> : fresh ? <ProofLine /> : null}
     </div>
   );
 }

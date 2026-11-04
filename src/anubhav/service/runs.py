@@ -25,11 +25,42 @@ def visible(r, ws=None, path=None):
     return not (ws and ws.public) or path == DEMO_RUNS or (r.get("visitor") is not None and r.get("visitor") == ws.sid)
 
 
+def fresh_since(ws):
+    """When this "Fresh start" workspace was started or reset, or None when it is the "After learning" one."""
+    return ws.state.get("fresh_since") if ws is not None and ws.public and any(ws.state.get("fresh", {}).values()) else None
+
+
 def in_workspace(r, ws, path):
     """In a "Fresh start" workspace the lists and counts hold only this visitor's runs since it was started or reset;
     the recorded runs belong to the "After learning" workspace. A recorded run can still be replayed by id."""
-    since = ws.state.get("fresh_since") if ws is not None and ws.public and any(ws.state.get("fresh", {}).values()) else None
+    since = fresh_since(ws)
     return since is None or (path != DEMO_RUNS and (r.get("saved_at") or "") >= since)
+
+
+def since_start(rows, ws, key="ts"):
+    """Shared records (agent versions, feedback) in a "Fresh start" workspace: only those made since it started."""
+    since = fresh_since(ws)
+    return list(rows) if since is None else [x for x in rows if (x.get(key) or "") >= since]
+
+
+def own_pairs(ws, cid, limit=3):
+    """This workspace's own before-and-after pairs, newest first: a run of a request without lessons, and a later run of
+    the same request with at least one approved lesson in its prompt. Recorded runs and continued runs don't count."""
+    rows = [r for r in recent_runs(500, ws) if r["company"] == cid and not r.get("recorded") and not r.get("resumed_from")
+            and not str(r.get("label", "")).endswith(":mine") and (r.get("request") or "").strip()]
+    rows = sorted(reversed(rows), key=lambda r: r.get("saved_at") or "")      # oldest first; same second keeps saving order
+    pairs, used = [], set()
+    for i in range(len(rows) - 1, -1, -1):
+        after, req = rows[i], rows[i]["request"].strip()
+        if not after.get("knowledge") or req in used:
+            continue
+        before = next((r for r in reversed(rows[:i]) if r["request"].strip() == req and not r.get("knowledge")), None)
+        if before:
+            used.add(req)
+            pairs.append((before, after))
+            if len(pairs) >= limit:
+                break
+    return pairs
 
 
 def recent_runs(limit=60, ws=None):

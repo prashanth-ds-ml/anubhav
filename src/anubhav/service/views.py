@@ -152,17 +152,30 @@ def _stops(b, draft_id=None, site_ids=None):
         return None
 
 
+def _site_names(b, site_ids):
+    """The sites a draft serves, by name and town, in the order the draft lists them."""
+    return [f"{b.C.sites[s]['name']}, {b.C.sites[s]['town']}" for s in site_ids or [] if s in b.C.sites]
+
+
 def drafts_for(ws, cid, runs_seen=()):
-    """This visitor's current drafts, each with its ordered stops and why it was made."""
+    """Every draft in this visitor's workspace, whatever its status (draft, approved, rejected, cancelled), each with its
+    ordered stops and why it was made. Newest delivery date first, then newest made first, so the list keeps every plan
+    a person still has to act on, across requests."""
     b, _ = ws.broker(cid, False)
+    made = {d["draft_id"]: r for r in runs_seen for d in drafts(r)}
     out = []
     for row in b.C.runtime.drafts():
         verdict = json.loads(row["verdict"]) if row.get("verdict") else {}
-        made_by = next((r for r in runs_seen if any(d["draft_id"] == row["draft_id"] for d in drafts(r))), None)
+        made_by = made.get(row["draft_id"])
+        load = verdict.get("load") or {}
+        stops = _stops(b, draft_id=row["draft_id"]) if row["status"] in ("draft", "approved") else None
         out.append({"draft_id": row["draft_id"], "run_id": made_by and made_by["run_id"], "model": made_by and made_by.get("model"), "status": row["status"], "vehicle_id": row["vehicle_id"], "delivery_date": row["delivery_date"],
-                    "orders": json.loads(row["order_ids"]), "load": verdict.get("load"), "warnings": verdict.get("warnings", []),
-                    "stops": _stops(b, draft_id=row["draft_id"]) if row["status"] in ("draft", "approved") else None, "decisions": b.C.runtime.decisions(row["draft_id"]),
-                    "why": next((w for r in runs_seen if (w := why_plan(r, row["draft_id"]))), None), "source": "live"})
+                    "created_at": row.get("created_at"), "orders": json.loads(row["order_ids"]), "load": verdict.get("load"), "warnings": verdict.get("warnings", []),
+                    "sites": [f"{s['name']}, {s['town']}" for s in stops["stops"]] if stops else _site_names(b, load.get("sites")),
+                    "stops": stops, "decisions": b.C.runtime.decisions(row["draft_id"]),
+                    "why": why_plan(made_by, row["draft_id"]) if made_by else None, "source": "live"})
+    out.sort(key=lambda d: (d["created_at"] or "", d["draft_id"]), reverse=True)
+    out.sort(key=lambda d: d["delivery_date"] or "", reverse=True)       # stable: newest made first within a date
     return out
 
 
@@ -175,7 +188,8 @@ def drafts_of_run(ws, cid, run):
         sites = list(dict.fromkeys(b.C.orders[o]["site_id"] for o in d.get("orders", []) if o in b.C.orders))
         row = b.C.runtime.draft(d["draft_id"])
         out.append({"draft_id": d["draft_id"], "run_id": run["run_id"], "model": run.get("model"), "status": row["status"] if row else "draft (not dispatched)", "vehicle_id": d.get("vehicle_id"),
-                    "delivery_date": d.get("delivery_date"), "orders": d.get("orders"), "load": d.get("load"), "warnings": d.get("warnings", []),
+                    "delivery_date": d.get("delivery_date"), "created_at": row["created_at"] if row else None, "orders": d.get("orders"), "load": d.get("load"),
+                    "warnings": d.get("warnings", []), "sites": _site_names(b, sites),
                     "stops": _stops(b, site_ids=sites) if sites else None, "why": why_plan(run, d["draft_id"]),
                     **({"decisions": b.C.runtime.decisions(d["draft_id"])} if row else {}), "source": "live" if row else "run"})
     return out

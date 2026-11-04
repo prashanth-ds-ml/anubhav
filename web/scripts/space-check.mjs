@@ -14,7 +14,7 @@ await p.waitForSelector("iframe", { timeout: 90_000 });
 let f;
 for (let i = 0; i < 60 && !f; i++) { f = p.frames().find((x) => x.url().includes("hf.space")); if (!f) await p.waitForTimeout(1000); }
 if (!f) throw new Error("no app frame");
-await f.getByRole("heading", { name: /Try it: seven scenarios/ }).waitFor({ timeout: 120_000 });
+await f.getByRole("heading", { name: "Try it", exact: true }).waitFor({ timeout: 120_000 });
 const sw = f.getByRole("group", { name: "Workspace" });
 await sw.waitFor();
 const say = async (k) => console.log(k, "|", (await sw.innerText()).replace(/\s+/g, " "),

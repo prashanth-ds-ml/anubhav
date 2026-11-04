@@ -5,8 +5,8 @@ import AxeBuilder from "@axe-core/playwright";
 // a phone (a wide chart scrolls inside its own box instead).
 
 const TABS: [string, string][] = [
-  ["/", "Try it: seven scenarios"],
-  ["/#plans", "Try it: seven scenarios"],
+  ["/", "Try it"],
+  ["/#plans", "Try it"],
   ["/#learning/L-T01-002", "What it has learned"],
   ["/#learning/L-T01-011", "What it has learned"],
   ["/#tools", "Repeated questions that could become tools"],
