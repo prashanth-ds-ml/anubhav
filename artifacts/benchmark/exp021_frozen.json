@@ -1,6 +1,6 @@
 {
  "hashes": {
-  "scripts/exp021_demo_story.py": "0b75553ae0c8cd3f",
+  "scripts/exp021_demo_story.py": "b1beb549a80e0c96",
   "configs/agents.yaml": "c2e66ba9a4cb36bb",
   "src/anubhav/api/routes.py": "44d1c8aa7b556346",
   "src/anubhav/service/fresh.py": "50f9a2a8d7ce25c3",
@@ -16,5 +16,5 @@
  "repeats": 3,
  "budget_usd": 3.0,
  "request": "Repu Jangaon Lakshmi Agencies load ki bandi pettu. Dispatch confirm cheyyaku.",
- "frozen_at": "2026-11-05T04:16:53"
+ "frozen_at": "2026-11-05T04:27:44"
 }

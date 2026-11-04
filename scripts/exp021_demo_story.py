@@ -107,7 +107,7 @@ def main():
     rows, spent = [], 0.0
     with TestClient(app) as c:
         for rep in range(REPEATS):
-            h = {"X-Anubhav-Visitor": f"exp021-{uuid.uuid4().hex[:8]}"}
+            h = {"X-Anubhav-Visitor": uuid.uuid4().hex[:12]}      # the server accepts only 12 hex characters
             c.post("/api/fresh/mode?company=T01&mode=fresh", headers=h).raise_for_status()
             c.post("/api/fresh/reset?company=T01", headers=h).raise_for_status()
             first, t1 = ask(c, h)
