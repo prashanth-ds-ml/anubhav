@@ -1,5 +1,6 @@
 """Deploy the app to a Hugging Face Docker Space: only git-tracked files the Dockerfile needs, a Space README header,
-and the Meta key as a Space secret (never in the image). No Baseten key: live mode on the Space is Muse Spark 1.3 only.
+and the model keys as Space secrets (never in the image): the Meta key for Muse Spark 1.3, and the Baseten key for Muse
+Spark Open, kept for judges (D-048). Both run under the same live caps.
 
     set -a; . ./.env; set +a
     uvx --from huggingface_hub python scripts/deploy_space.py [--space KPrashanth/anubhav] [--no-secret]
@@ -55,8 +56,10 @@ def main():
         readme = Path(tmp, "README.md")
         readme.write_text(HEADER + readme.read_text(encoding="utf-8"), encoding="utf-8")
         api.create_repo(a.space, repo_type="space", space_sdk="docker", private=False, exist_ok=True)
-        if not a.no_secret and os.environ.get("meta_api"):
-            api.add_space_secret(a.space, "meta_api", os.environ["meta_api"])
+        if not a.no_secret:
+            for k in ("meta_api", "baseten_api_key"):
+                if os.environ.get(k):
+                    api.add_space_secret(a.space, k, os.environ[k])
         api.upload_folder(repo_id=a.space, repo_type="space", folder_path=tmp, delete_patterns=["*"],
                           commit_message="Deploy from github.com/prashanth-ds-ml/anubhav")
     print("https://huggingface.co/spaces/" + a.space)

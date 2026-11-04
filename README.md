@@ -24,7 +24,7 @@ Every step below was an experiment with its plan and pass bar written down befor
 2. **We looked for where it actually fails.** On rules nobody wrote down (a gate a long truck can't enter, a site's nickname, a truck's real capacity) the agent scored 0% (EXP-005, Muse Spark Open). That became the project.
 3. **Our first learning result was a failure.** On a small, clean history, handing the agent the raw history did as well as lessons (EXP-007). We changed the pitch: the value is in scale, noisy records, safety and sharing.
 4. **We made the checking strict and scored it against hidden truth.** Lessons that pass the evidence gate went from 73% to 83% to 90% correct across three generated worlds, and no trap rule got through where we tested for them (EXP-008, EXP-009, EXP-009b; lessons mined by Muse Spark 1.3).
-5. **The main result held.** With approved lessons, unwritten-rule cases went from 48% to 90% correct, and a new company went from 33% to 100% on day 1, in 3 of 3 repeats on Muse Spark Open (EXP-011R), and again on Muse Spark 1.3 (EXP-015).
+5. **The main result held.** With approved lessons, unwritten-rule cases went from 48% to 90% correct, and a new company went from 33% to 100% on day 1, in 3 of 3 repeats on Muse Spark Open (EXP-011R), and again on Muse Spark 1.3 (EXP-015) after we moved our own runs to the Meta API to keep the open-weights credit for judges ([why](#two-models-and-why-we-moved-between-them)).
 6. **We built a team, and found it is not more accurate.** One Planner did as well as the team (EXP-013), and we say so. As learning is added, the team goes from 58.6% to 91.4% correct with unsafe drafts from 4 to 0 (EXP-014, Muse Spark 1.3).
 7. **Learned tools work on one model, not yet on the other.** Muse Spark Open made reusable tools and used them on 14 of 16 questions (EXP-012b). Muse Spark 1.3 made none, even with every query routed through Tool Forge (EXP-016, EXP-019); a diagnostic showed why, and the next steps are below.
 
@@ -148,15 +148,21 @@ Nothing in the runtime is hand-coded world knowledge: no word lists, no site rul
 ## Meta AI used
 | Role | Model | Access |
 |---|---|---|
-| Agent: planning and tool calls, multilingual replies (benchmarks EXP-011 to EXP-013 and the recorded runs) | Muse Spark Open (`muse-spark-open-1026`), open weights | Baseten Model API |
-| Agent in live mode, and the Nov 3 experiments EXP-014 to EXP-016 | Muse Spark 1.3 | Meta Model API |
+| Agent: planning and tool calls, multilingual replies (benchmarks EXP-005 to EXP-013 and the recorded runs) | Muse Spark Open (`muse-spark-open-1026`), open weights | Baseten Model API |
+| Agent in live mode, and the Nov 3–4 experiments EXP-014 to EXP-019 | Muse Spark 1.3 | Meta Model API |
 | Lesson miner and harness proposer | Muse Spark 1.3 | Meta Model API |
 | Voice requests in Telugu / Roman Telugu | Muse Voice Transcribe | Meta Model API |
 
-**Measured on both models:** the recorded runs and the benchmarks EXP-011 to EXP-013 ran on **Muse Spark Open**, the open-weights model, served by Baseten. Live mode runs **Muse Spark 1.3** on the Meta API (D-050), and EXP-015 repeated the main benchmark on it with the same result. Muse Spark 1.3 also proposes lessons and patches, and code checks everything it proposes; Muse Voice Transcribe turns speech into text.
+### Two models, and why we moved between them
+- **Oct 27 to Oct 30: Muse Spark Open for the agents.** An early check (EXP-004) found the open-weights model within a point of Muse Spark 1.3 on tool calling, and faster, so every experiment from EXP-005 to EXP-013 that ran an agent used **Muse Spark Open**, served by Baseten, including the final benchmark EXP-011R, and so does every recorded run in the demo. Muse Spark 1.3 mined the lessons and proposed changes throughout.
+- **Nov 1: the credit decision.** About $65 of the $100 Baseten credit had gone on those benchmarks. We kept the rest for the hosted demo and for judges ([D-048](docs/trackers/decisions.md)), and moved our own runs to the Meta Model API: live mode runs **Muse Spark 1.3** ([D-050](docs/trackers/decisions.md)).
+- **Nov 3 to Nov 4: the same questions on Muse Spark 1.3.** So that no conclusion rests on one model, we repeated the main benchmark on Muse Spark 1.3 (EXP-015): it held, 45% → 90% on unwritten rules and 33% → 100% for a new company, 3 of 3 repeats. The team curve (EXP-014), the learned-tool runs (EXP-016, EXP-019) and the scaling check (EXP-018) also ran on Muse Spark 1.3 ([D-054](docs/trackers/decisions.md)).
+- **What differs between them:** lessons and sharing work on both. Learned tools were made and reused only on Muse Spark Open; Muse Spark 1.3 answered the same questions well without them but wrote each one as a different query, so no tool formed.
+
+Every result in the app carries a label saying which model produced it. Muse Voice Transcribe turns spoken requests into text, and code checks everything any model proposes.
 
 ## Try it
-**Hosted demo:** **[huggingface.co/spaces/KPrashanth/anubhav](https://huggingface.co/spaces/KPrashanth/anubhav)** (app: [kprashanth-anubhav.hf.space](https://kprashanth-anubhav.hf.space/)). It opens on a **Fresh start** workspace (no lessons, no tools); **After learning** loads the lessons the recorded runs used, and **Reset** empties your workspace again. Recorded scenarios are free; live mode runs Muse Spark 1.3, 8 live runs and one learning run per visit. Each visitor gets their own drafts and lessons. The first open after a quiet spell can take about a minute while the Space wakes up.
+**Hosted demo:** **[huggingface.co/spaces/KPrashanth/anubhav](https://huggingface.co/spaces/KPrashanth/anubhav)** (app: [kprashanth-anubhav.hf.space](https://kprashanth-anubhav.hf.space/)). It opens on a **Fresh start** workspace (no lessons, no tools); **After learning** loads the lessons the recorded runs used, and **Reset** empties your workspace again. Recorded scenarios are free. In live mode, pick the model in the header: **Muse Spark 1.3** (Meta Model API) or **Muse Spark Open**, the open-weights model (Baseten); 8 live runs and one learning run per visit. Each visitor gets their own drafts and lessons. The first open after a quiet spell can take about a minute while the Space wakes up.
 
 An earlier replay-only version: [anubhav-metahackathon.streamlit.app](https://anubhav-metahackathon.streamlit.app/).
 
