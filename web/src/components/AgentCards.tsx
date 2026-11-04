@@ -17,7 +17,7 @@ const HOW: Record<string, string> = {
 
 const pct = (x: number) => `${Math.round(x * 100)}%`;
 const mean = (xs: number[]) => xs.reduce((a, b) => a + b, 0) / Math.max(xs.length, 1);
-const VERDICT: Record<string, [string, string]> = { met: ["✓ bar met", "ok-text"], not_met: ["✕ bar not met", "err-text"], finding: ["a finding, no bar", "muted"], not_run: ["not run yet", "muted"] };
+const VERDICT: Record<string, [string, string]> = { met: ["Bar met", ""], not_met: ["Bar not met", ""], finding: ["a finding, no bar", "muted"], not_run: ["not run yet", "muted"] };
 
 function Verdict({ r }: { r?: RegistryRow }) {
   if (!r) return null;
@@ -40,12 +40,11 @@ function fromCurve(agent: string, c?: Curve): ReactNode {
   const a = c?.measured ? c.agents?.[agent] : undefined;
   if (!a) return null;
   const g = a.gain_pts;
-  const mark = g == null ? "" : g > 0 ? "▲" : g < 0 ? "▼" : "=";
+
   const text = agent === "lesson_miner" ? `precision ${pct(a.v0?.precision ?? 0)} → ${pct(a.final?.precision ?? 0)}, recall ${pct(a.v0?.recall ?? 0)} → ${pct(a.final?.recall ?? 0)}`
     : agent === "planner" ? `unwritten rules ${pct(a.v0?.unwritten ?? 0)} → ${pct(a.final?.unwritten ?? 0)} as learning was added`
     : `${pct(a.v0?.rate ?? 0)} → ${pct(a.final?.rate ?? 0)} on its own ${a.v0?.n} questions`;
-  const cls = g == null || g === 0 ? "" : g > 0 ? "ok-text" : "err-text";
-  return <p className={`small ${cls}`}><span aria-hidden>{mark} </span><ModelTags m={{ agent: "spark" }} /> EXP-014: {text}{agent === "tool_forge" && g != null && g < 0 ? ", after its approved change" : ""}</p>;
+  return <p className="small"><ModelTags m={{ agent: "spark" }} /> EXP-014: {text}{agent === "tool_forge" && g != null && g < 0 ? ", after its approved change" : ""}</p>;
 }
 
 function measured(agent: string, proof: Record<string, ProofEntry>, reg: Record<string, RegistryRow>, c?: Curve): ReactNode {
@@ -75,13 +74,13 @@ function measured(agent: string, proof: Record<string, ProofEntry>, reg: Record<
         <p className="small">Tool calls: {Q.mean_tool_calls} → {T.mean_tool_calls} a question ({Math.round(100 * (1 - T.mean_tool_calls / Q.mean_tool_calls))}% fewer)</p>
         <p className="small muted">EXP-012b · {Q.n} held-out questions <ModelTags m={reg["EXP-012b"]?.models} /></p>
         <Verdict r={reg["EXP-012b"]} />
-        <p className="small muted">Since then (Nov 4): its own skills (one general query, debugging SQL, repairing a tool that failed its checks), the Planner no longer writes SQL itself, and approved tools are re-checked by code.{reg["EXP-019"] ? "" : " Not yet measured."}</p>
+        <p className="small muted">Since then (Nov 4): the Planner no longer writes SQL itself, so every query goes through Tool Forge{reg["EXP-019"] ? " (measured below in EXP-019)" : " (not yet measured)"}. Tool Forge also has its own skills (one general query, debugging SQL, repairing a tool that failed its checks) and approved tools are re-checked by code; those are not measured separately.</p>
         {reg["EXP-019"] && (
-          <p className={`small ${reg["EXP-019"].verdict === "met" ? "ok-text" : "err-text"}`}>
-            <span aria-hidden>{reg["EXP-019"].verdict === "met" ? "✓ " : "✕ "}</span><ModelTags m={reg["EXP-019"].models} /> EXP-019, measured after those changes: {reg["EXP-019"].summary}
+          <p className="small">
+            <ModelTags m={reg["EXP-019"].models} /> EXP-019, after the routing change: {reg["EXP-019"].summary}
           </p>
         )}
-        {proof["EXP-016"] && <p className="small err-text"><span aria-hidden>✕ </span><ModelTags m={reg["EXP-016"]?.models} /> EXP-016: no tool was made, so learned tools were used on {String(proof["EXP-016"].decision?.learned_tool_used_in ?? "0").replace("/", " of ")} questions</p>}
+        {proof["EXP-016"] && <p className="small"><ModelTags m={reg["EXP-016"]?.models} /> EXP-016: no tool was made, so learned tools were used on {String(proof["EXP-016"].decision?.learned_tool_used_in ?? "0").replace("/", " of ")} questions</p>}
         {more}
       </>
     );

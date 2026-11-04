@@ -63,7 +63,7 @@ test("the Agents page reads its numbers from the result files, and says what is 
   const forge = page.getByRole("article", { name: "Tool Forge" });
   await expect(forge).toContainText(`Learned tool used: ${by["EXP-012b"].decision.learned_tool_used_in.replace("/", " of ")} questions`);
   await expect(forge).toContainText(`Tool calls: ${by["EXP-012b"].arms.Q.mean_tool_calls} → ${by["EXP-012b"].arms.T.mean_tool_calls}`);
-  await expect(forge).toContainText("✕ bar not met");
+  await expect(forge).toContainText("Bar not met");
   await expect(page.getByRole("article", { name: "Lesson Miner" })).toContainText(`Precision ${pct(by["EXP-009b"].pooled.precision)}`);
   // EXP-014 (Muse Spark 1.3), read from /api/proof/curve: the team stage by stage, and each agent before and after.
   const curve = await (await page.request.get("/api/proof/curve")).json();
@@ -74,7 +74,7 @@ test("the Agents page reads its numbers from the result files, and says what is 
   const curveBox = page.getByRole("region", { name: /Does the whole team improve/ });
   await expect(curveBox).toContainText(`The whole team got better as each kind of learning was added: ${r(first.rate)} → ${r(last.rate)}`);
   await expect(curveBox.getByRole("list", { name: "The rules fixed in advance" })).toContainText("Tools: made, used on half the gap questions, cheaper: not met");
-  await expect(curveBox.getByRole("list", { name: "Each agent, first version against its final one" })).toContainText("▼ -50 points");
+  await expect(curveBox.getByRole("list", { name: "Each agent, first version against its final one" })).toContainText("-50 points");
   await expect(page.getByRole("article", { name: "Planner" })).toContainText("Muse Spark 1.3 the live model (EXP-015): 45% → 90%");
 });
 

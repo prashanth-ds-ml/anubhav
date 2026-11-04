@@ -60,7 +60,7 @@ export function AgentScores({ c, names }: { c: Curve; names: Record<string, stri
     <li key={id} className={`agent-score ${gain == null ? "" : gain > 0 ? "up" : gain < 0 ? "down" : "flat"}`}>
       <strong>{label}</strong>
       <span>{before} → {after}</span>
-      <span className="small">{gain == null ? "" : gain > 0 ? `▲ +${gain} points` : gain < 0 ? `▼ ${gain} points` : "no change"}</span>
+      <span className="small">{gain == null ? "" : gain > 0 ? `+${gain} points` : gain < 0 ? `${gain} points` : "no change"}</span>
       {note && <span className="small muted">{note}</span>}
     </li>
   );
