@@ -92,11 +92,20 @@ def start_all(ws) -> None:
 
 
 def set_mode(ws, cid, mode) -> dict:
-    """Switch the active workspace. Nothing is emptied or reloaded: each keeps its lessons, tools, drafts and runs."""
+    """Switch the active workspace. Nothing is emptied: each keeps its lessons, tools, drafts and runs. After learning
+    always holds the recorded lessons: a store left completely empty (an older Reset emptied the one store visitors
+    had before Nov 4) gets them back; one with any content is never touched."""
     _set(ws, "fresh" if mode == "fresh" else "learned")
-    ws.store()
+    S = ws.store()
+    if ws.public and ws.mode == "learned" and not any(S.list(c) for c in _companies()):
+        ws.load_exp008_lessons()
     _remember(ws)
     return status(ws, cid)
+
+
+def _companies():
+    from .session import COMPANIES
+    return list(COMPANIES)
 
 
 def reset(ws, cid) -> dict:

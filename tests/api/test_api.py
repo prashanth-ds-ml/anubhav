@@ -1080,3 +1080,19 @@ def test_the_two_workspaces_keep_their_own_lessons_drafts_and_runs_and_only_rese
     assert c.get("/api/logs/runs?company=T01").json() == []                      # Reset empties Fresh start
     again = c.post("/api/fresh/mode?company=T01&mode=learned").json()
     assert again["lessons"] == learned["lessons"]                                # and leaves After learning alone
+
+
+def test_after_learning_gets_the_recorded_lessons_back_if_an_older_reset_emptied_it(env):
+    """Nov 4: before the two workspaces, Reset emptied the visitor's only store, which is now After learning's."""
+    from anubhav.service.session import _empty
+    c = TestClient(api_app.create_app(public=True, world=env, replay_pace=0, start_fresh=True), raise_server_exceptions=False)
+    sid = c.get("/api/session").headers["X-Anubhav-Visitor"]
+    full = c.post("/api/fresh/mode?company=T01&mode=learned").json()["lessons"]
+    assert full > 0
+    store = env / "learning" / "sessions" / f"{sid}.sqlite"
+    if not store.exists():
+        from anubhav.service import session as sess
+        store = sess.state_root(env) / "learning" / "sessions" / f"{sid}.sqlite"
+    _empty(store)                                                                 # what an older Reset left behind
+    c.post("/api/fresh/mode?company=T01&mode=fresh")
+    assert c.post("/api/fresh/mode?company=T01&mode=learned").json()["lessons"] == full
