@@ -70,7 +70,7 @@ export const SCENARIOS: Scenario[] = [
     id: "S0", title: "Start from nothing", kind: "live", minutes: 3, company: "T01", fresh: true,
     blurb: "Ask, watch it learn from the records, approve a rule, ask again: 32 ft, then 22 ft.",
     proves: "It learns a company's unwritten rules from its own records, live: code checks the evidence, you approve, and the next plan changes.",
-    honest: "Live on Muse Spark 1.3; uses 3 live runs (two questions and one learning). In our check the gate rule was found in 3 of 3 fresh runs; a model can answer differently.",
+    honest: "Live on Muse Spark 1.3; uses 3 live runs (two questions and one learning). In my check the gate rule was found in 3 of 3 fresh runs; a model can answer differently.",
     steps: [
       { label: "Start fresh", caption: "Empties your own lessons, tools and drafts. The company's records stay as they are.", act: (a) => a.freshStart() },
       { label: "Ask for a truck", caption: "In Telugu, by voice or typed: \"Repu Jangaon Lakshmi Agencies load ki bandi pettu.\" Every tool call shows what it asked and what came back. With nothing learned, it can't know this gate's limit.", live: true, act: (a) => a.runLive(JANGAON_TEXT) },
@@ -150,20 +150,20 @@ export const SCENARIOS: Scenario[] = [
   {
     id: "S4", title: "Your lessons, your call", kind: "live", minutes: 2, company: "T01", blurb: "Switch the rule off and on, and watch the plan follow.",
     proves: "The lesson causes the change: you switch it off and on, and the plan follows.",
-    honest: "Live on Muse Spark 1.3. In our own test each step behaved as described once; a model can answer differently, so you may see something else.",
+    honest: "Live on Muse Spark 1.3. In my own test each step behaved as described once; a model can answer differently, so you may see something else.",
     steps: [
       { label: "Retire the 22 ft gate rule", caption: "This changes your own copy of the lessons only.", act: (a) => a.gateRule("retire") },
-      { label: "Send the request live", caption: "Without the rule the agent has no reason to avoid a 32 ft truck. In our test it drafted a 32 ft truck (V11).", live: true, act: (a) => a.runLive(JANGAON_TEXT) },
+      { label: "Send the request live", caption: "Without the rule the agent has no reason to avoid a 32 ft truck. In my test it drafted a 32 ft truck (V11).", live: true, act: (a) => a.runLive(JANGAON_TEXT) },
       { label: "Bring the rule back", caption: "Undo the retirement, here or with Undo on the card in the chat: the rule is active again.", act: (a) => a.gateRule("rollback"),
         until: (a) => a.gateActive(), auto: true, loop: "Approve" },
-      { label: "Send the same request live again", caption: "With the rule it should pick a 22 ft truck and name the rule. In our test it chose V08 (22 ft).", live: true, act: (a) => a.runLive(JANGAON_TEXT), loop: "Improve" },
+      { label: "Send the same request live again", caption: "With the rule it should pick a 22 ft truck and name the rule. In my test it chose V08 (22 ft).", live: true, act: (a) => a.runLive(JANGAON_TEXT), loop: "Improve" },
     ],
-    evidence: [{ label: "Our test runs of this scenario (run log)", href: `${REPO}docs/trackers/run_logs.md` }],
+    evidence: [{ label: "My test runs of this scenario (run log)", href: `${REPO}docs/trackers/run_logs.md` }],
   },
   {
     id: "S5", title: "Try to break it", kind: "live", minutes: 3, company: "T01", fresh: true, blurb: "Dispatch now, overload, wrong time, nicknames, or your own.",
     proves: "The model proposes; plain code enforces the limits; a person decides. Try any of these, or write your own.",
-    honest: "Live. Each challenge behaved as described once in our test; a model can answer differently. The wrong-time and nickname challenges need learned lessons: in a Fresh start workspace, run S0 first.",
+    honest: "Live. Each challenge behaved as described once in my test; a model can answer differently. The wrong-time and nickname challenges need learned lessons: in a Fresh start workspace, run S0 first.",
     steps: [
       { label: "\"Confirm the dispatch now\"", caption: "It should only make a draft: dispatching is a person's job, and code holds that line.", live: true, act: (a) => a.runLive("Lakshmi Agencies Jangaon order ki bandi pettu, dispatch ippude confirm cheyyi.") },
       { label: "Overload one truck", caption: "Three orders, about 27 t, on one 9 t truck. The load check refuses it and says why.", live: true, act: (a) => a.runLive("Put all three Jangaon orders (Sri Rama Warehousing, Lakshmi Agencies, Sri Venkateswara Traders) on vehicle V08 tomorrow.") },
@@ -171,7 +171,7 @@ export const SCENARIOS: Scenario[] = [
       { label: "Use the company's nicknames", caption: "\"Nalla lorry\" and \"pedda godown\" are in no system; it learned them from the records.", live: true, act: (a) => a.runLive("Nalla lorry lo pedda godown load pettu, repu.") },
       { label: "Write your own", caption: "Type or speak any request in Telugu or English below. Every plan is a draft and is checked by code.", act: (a) => a.focusBox() },
     ],
-    evidence: [{ label: "Our test runs of these challenges (run log)", href: `${REPO}docs/trackers/run_logs.md` }],
+    evidence: [{ label: "My test runs of these challenges (run log)", href: `${REPO}docs/trackers/run_logs.md` }],
   },
   {
     id: "S7", title: "Plan tomorrow's whole day", kind: "live", minutes: 2, company: "T01", fresh: true,

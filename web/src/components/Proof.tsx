@@ -146,7 +146,7 @@ function Scoreboard({ rows }: { rows: RegistryRow[] }) {
   return (
     <section className="panel" aria-labelledby="score-title">
       <div className="score-head">
-        <h3 id="score-title">Every experiment we pre-registered, including the ones that failed</h3>
+        <h3 id="score-title">Every experiment I pre-registered, including the ones that failed</h3>
         <ul className="plain legend small" aria-label="Verdicts">
           {Object.entries(MARK).map(([k, [m, t, cls]]) => <li key={k} className={`v-${cls}`}><span aria-hidden>{m}</span> {t}</li>)}
         </ul>
@@ -224,7 +224,7 @@ function Slope({ title, sub, pairs, left, right, side, focus }: {
 function Custody({ rows }: { rows: RegistryRow[] }) {
   return (
     <section className="panel" aria-labelledby="cust-title">
-      <h3 id="cust-title">Check our claims: each one was fixed in advance, then run, then committed</h3>
+      <h3 id="cust-title">Check the claims: each one was fixed in advance, then run, then committed</h3>
       <p className="small muted">The commit times show each plan came before its result, except where the table says they landed together.</p>
       <div className="tablewrap">
         <table className="custody small">
@@ -387,7 +387,7 @@ export function Proof({ item }: { item?: string | null }) {
   const proof = Object.fromEntries((proofApi.data ?? []).map((x) => [x.id, x]));
   const reg = regApi.data?.experiments ?? [];
   if (Object.keys(proof).length === 0 && reg.length === 0) return <p className="empty">No results to show. The server may be unreachable.</p>;
-  const tabs: [string, string][] = [["bench", "Benchmarks"], ["claims", "Check our claims"]];
+  const tabs: [string, string][] = [["bench", "Benchmarks"], ["claims", "Check the claims"]];
   return (
     <div className="proof-page">
       <div className="subtabs" role="tablist" aria-label="Proof and audit">

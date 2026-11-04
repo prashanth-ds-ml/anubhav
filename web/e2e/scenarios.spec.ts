@@ -82,7 +82,7 @@ test("S4 retires the rule in this visitor's own store, sends the request live, a
   await home(page);
   await page.getByRole("button", { name: "Start S4", exact: true }).click();
   const guide = page.getByRole("region", { name: /Scenario S4/ });
-  await expect(guide).toContainText("In our own test each step behaved as described once");
+  await expect(guide).toContainText("In my own test each step behaved as described once");
 
   await guide.getByRole("button", { name: "Retire the 22 ft gate rule" }).click();
   await expect(guide.getByRole("status")).toContainText(/Retired L-T01-\d+/);

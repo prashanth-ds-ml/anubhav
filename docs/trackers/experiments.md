@@ -65,14 +65,14 @@ Task file: `datasets/tasks/benchmark_v1.jsonl` (held-out = `split: heldout`). Se
 - **Hypothesis:** dev success 65–85%. Failures cluster on hidden shop slang, plus some policy slips (schemes, credit, defaults) and reply-language drift.
 - **Decision rule (owner's thresholds, adopted 2026-10-27 while the run was in progress and before any results were seen):**
   - **Below 85% mean success:** keep the self-improving agent idea; there is meaningful room for improvement.
-  - **85–95%:** investigate whether we can improve efficiency, reliability over repeats, or adaptation to changing tools.
+  - **85–95%:** investigate whether I can improve efficiency, reliability over repeats, or adaptation to changing tools.
   - **Above 95%:** strongly consider pivoting to a different problem where Muse enables something genuinely new.
-  - **Qualifier:** the failures must be *harness-fixable* (missing shop knowledge, policy following, tool-use habits, reply language), not our own tool, grader or task-wording bugs. Bugs get fixed and re-run before applying the thresholds.
+  - **Qualifier:** the failures must be *harness-fixable* (missing shop knowledge, policy following, tool-use habits, reply language), not my own tool, grader or task-wording bugs. Bugs get fixed and re-run before applying the thresholds.
 - **Caveat:** this is arm B0 (8 tools, no retrieval problem). Tool discovery at 40 tools is tested separately on Day 4.
 - **Result (run 1, 2026-10-27, `artifacts/baseline/arm-core_v1_20261027_104331.json`):** mean success **80%** (dev 86%, held-out 69%); 38 tasks pass both repeats, 9 fail both, 1 flaky. Unsafe outcomes **0**. Reply language OK 99%. Cost $2.35 (96 runs), 6.9 tool calls and 19 s per run. English 100%, Telugu 83%, Roman 72%, mixed 75%.
 - **Failure analysis (all 10 failing tasks read by hand):**
   - **Harness-fixable, missing shop knowledge (6):** D09, D15, D23, D29, H05, H10. Every one is hidden slang. Muse asked a clarifying question each time; it never guessed.
-  - **Our bugs (4), to fix before applying the rule:** D25, H09 (`find_customer` matched "Vijaya Mart" on the word "mart"); H12 (policy said "ask" even when only one SKU fits); H13 (task "noodles 10 cases" is genuinely ambiguous: 70 g vs 280 g).
+  - **My bugs (4), to fix before applying the rule:** D25, H09 (`find_customer` matched "Vijaya Mart" on the word "mart"); H12 (policy said "ask" even when only one SKU fits); H13 (task "noodles 10 cases" is genuinely ambiguous: 70 g vs 280 g).
   - Everything else (units, discounts, bulk, schemes, credit, history defaults, negation, corrections, ambiguity) passed: Muse is strong at reasoning over tools and policies.
 - **Run 2 (after the fixes, `artifacts/baseline/arm-core_20261027_105712.json`):** mean success **88%** (dev 89%, held-out 88%); 42 pass both repeats, 5 fail both, 1 flaky. Unsafe **0**. Reply language OK 95%. $2.04, 6.9 tool calls, 11.4k input tokens, 12 s per run. **The only failing tasks are the 6 slang tasks** (D09, D15, D23, D29, H05, H10).
 - **Verdict (owner's thresholds):** **85–95% band → investigate efficiency, reliability or adaptation to changing tools.** Real headroom exists but is narrow: missing shop knowledge only. See EXP-002 for the efficiency side.
@@ -89,7 +89,7 @@ Task file: `datasets/tasks/benchmark_v1.jsonl` (held-out = `split: heldout`). Se
 |---|---|---|---|---|---|---|---|
 | core (8 tools) | 88% | 5 | 0 | 6.9 | 11.4k | 12 s | $2.04 |
 | A (40 direct) | 86% | 6 | 0 | 11.1 | 24.5k | 15 s | $3.81 |
-| B (40, Muse tool search) | 89% (85/96, after re-running 4 runs that crashed on our side) | 6 | 0 | 12.2 | 30.2k | 57 s | $4.56 + $0.18 re-runs |
+| B (40, Muse tool search) | 89% (85/96, after re-running 4 runs that crashed on my side) | 6 | 0 | 12.2 | 30.2k | 57 s | $4.56 + $0.18 re-runs |
 
   - All three arms fail only slang tasks (A also failed D18 "Balaji vallu ki GG oil").
   - **Muse tool search is not selective here:** 93 of 101 searches loaded 7 or 8 of the 8 namespaces. B used *more* input tokens than A and was ~4× slower, with no accuracy gain.
@@ -153,11 +153,11 @@ Task file: `datasets/tasks/benchmark_v1.jsonl` (held-out = `split: heldout`). Se
 - **Why:** the cross-domain proposal assumes *transferable* failures (e.g., trusting stale data). Domain A showed only domain-specific ones (shop slang). Before choosing between "transfer lessons" and "transfer the learning mechanism", check which failure kinds a second domain produces. Domain B is inspired by the FMCG logistics interview (vehicle types, area access limits, distributor receiving limits, transport-mediator messages); all data is fictional.
 - **Frozen files:** `datasets/dispatch/exp005_world.json` (sha256 `3f840cfa78b54c1e…`), `scripts/eval/exp005_dispatch.py` (sha256 `755d6fc551c4548e…`). Checker self-test: 16/16 gold answers match the ground-truth checker.
 - **Setup:** 10 tools; `assign_vehicle` does not validate. Same instruction shape as domain A; temperature 0; 16 tasks × 2 repeats. **Primary model: Muse Spark Open (Baseten)**; Spark 1.3 (Meta API) as a comparison.
-- **Tasks:** control 4 (plain; failures = our bugs) · strategy 8, domain-neutral traps: area rule ×2, receiving limit, double booking + driver absent (Telugu message), stale status vs. a newer breakdown message, capacity arithmetic ("small load" 800 kg vs. a 750 kg Ace), ambiguity · tacit 4: knowledge no tool exposes (an alias for a distributor, a vehicle nickname, a vendor nickname, an unwritten access rule).
+- **Tasks:** control 4 (plain; failures = my bugs) · strategy 8, domain-neutral traps: area rule ×2, receiving limit, double booking + driver absent (Telugu message), stale status vs. a newer breakdown message, capacity arithmetic ("small load" 800 kg vs. a 750 kg Ace), ambiguity · tacit 4: knowledge no tool exposes (an alias for a distributor, a vehicle nickname, a vendor nickname, an unwritten access rule).
 - **Grading:** every assignment is checked against the hidden truth and labelled with the rules it breaks. Unsafe = a hard-rule break, a wrong shipment, or a guess on an ambiguous request; *tacit-unsafe* (breaking the unwritten Jangaon rule) is reported separately.
 - **Hypothesis:** control ~100%; strategy ≥ 85% (domain A showed strong policy following); tacit tasks fail by asking (safe), except T4, where the data gives no warning and the model will assign a 32 ft truck (tacit-unsafe).
 - **Decision rule (fixed now):**
-  - Control mean < 75% → our bug; fix and re-run before applying the rule.
+  - Control mean < 75% → my bug; fix and re-run before applying the rule.
   - **Mechanism framing supported** ("one harness learns each domain's unwritten knowledge"): tacit mean ≤ 50%, strategy mean ≥ 85%, and at most 1 strategy task failing every repeat.
   - **Lesson transfer worth testing:** ≥ 2 strategy tasks fail every repeat with a domain-neutral cause (stale_status, driver_absent, double_booked, receive_limit, area_rule, capacity). Even then, domain A had *zero* such failures, so transfer must be tested on newly written domain-A tasks in a separate, pre-registered EXP-006.
   - Anything in between → mixed; decide by reading the failures.
@@ -242,7 +242,7 @@ Task file: `datasets/tasks/benchmark_v1.jsonl` (held-out = `split: heldout`). Se
   - **Cost and size:** raw-full used a 14× bigger prompt and cost 2.2× more per run than lessons, with 123 trips. A 90-day, multi-company history would be thousands of rows.
   - **Naive sharing failed where the pack worked.** Given A's raw history, B used the aliases (Pedda godown 2/2) but **sent a 32/36 ft truck to Jangaon in all 4 runs**, so the single failure in another company's records didn't transfer. B-pack: 8/8 regional, 0 unsafe. B-rawA also put all of A's private vehicles, vendors and nicknames into B's prompt in every run (26/26). B never repeated them in output (0 emitted leaks) and never assigned an A vehicle.
   - **No regressions** in control or strategy in any arm. B-pack BX1#1 again double-booked B04 (same task as EXP-006). That makes 2/4 BX1 runs with the pack and 0 elsewhere, so it is a real pattern for the pre-assign check (Layer 2.4).
-- **Verdict (rule fixed above):** **raw memory suffices on this data** (A-raw-full tacit 8/8 ≥ 6/8). On clean, small data, lessons do **not** beat full raw history on accuracy, so we will not claim that. What the data does support:
+- **Verdict (rule fixed above):** **raw memory suffices on this data** (A-raw-full tacit 8/8 ≥ 6/8). On clean, small data, lessons do **not** beat full raw history on accuracy, so I will not claim that. What the data does support:
   1. Lessons reach near-identical accuracy (7/8) with a 14× smaller prompt and 2.2× lower cost. That is a scaling argument, not yet an accuracy one.
   2. Lessons beat realistic retrieval (top-8: 5/8, one unsafe).
   3. **Sharing is where gating clearly wins:** the pack gave 8/8 and 0 unsafe; raw sharing gave 3/8, 4 unsafe Jangaon trucks, and exposed all private data in the prompt.
@@ -274,7 +274,7 @@ Task file: `datasets/tasks/benchmark_v1.jsonl` (held-out = `split: heldout`). Se
   - **Mining works at scale** if, over T01–T03 repeat 0, pooled precision ≥ 0.85, pooled recall ≥ 0.6, and traps admitted = 0. Repeat 1 is reported for stability.
   - **Learning changes behaviour** if T01 with lessons is safe in ≥ 3/4 runs and T01 cold in ≤ 1/4.
   - **Cold-start transfer** if TNEW with the pack is safe in ≥ 3/4 and TNEW cold in ≤ 1/4, with pack leaks = 0. Any leak fails the transfer claim.
-  - We also report how many safe runs needed the validator to block a first unsafe attempt. If most did, the honest claim is "enforced policy works", not "the agent learned".
+  - I also report how many safe runs needed the validator to block a first unsafe attempt. If most did, the honest claim is "enforced policy works", not "the agent learned".
 - **Prediction, stated now:**
   - Part A: high precision (the gate is strict); recall below 100% because Muse won't propose everything in one pass.
   - Part B: cold runs choose the 32 ft SXL; with lessons, the agent chooses a 22 ft truck in most runs, sometimes only after the validator blocks a 32 ft attempt.
@@ -337,7 +337,7 @@ Packs: T01→TNEW 4 lessons (1 skipped: no matching site), T02→TNEW 4 lessons 
   - One round only; any further round is reported separately.
   - Activation stays a person's decision in the app.
 - **Caveats stated now:**
-  - The question types are written by us (a curriculum). Answers come from data, and the agent never sees the expected tools.
+  - The question types are written by me (a curriculum). Answers come from data, and the agent never sees the expected tools.
   - Number checks can still match by chance; both arms share that noise.
 - **Budget:** about 55 agent runs + 1 proposer call, about $1.2.
 - **Result (2026-10-29, `artifacts/harness/exp010_20261029_194043.json`, about $0.85 Baseten + $0.02 Meta):**
@@ -353,11 +353,11 @@ Packs: T01→TNEW 4 lessons (1 skipped: no matching site), T02→TNEW 4 lessons 
   - **Muse's patch (h-001):** response guideline "use only the exact names and numbers from the latest tool output; never estimate, round, or use memory". It was refused nothing by the patch rules.
   - **Side effect:** on held-out it added some unnecessary calls (e.g. `order_history`, `list_sites` on trip questions).
 - **Verdict (rule fixed above):** **ceiling.** Baseline held-out was already 100% (≥ 90%), so there was nothing to learn. The gate rejected h-001 ("held-out answers did not improve"), and it was not activated.
-- **What this tells us:**
+- **What this tells me:**
   1. Given fitting generic tools, Muse Spark Open picks and uses them correctly on all six question types in RT/TE/EN.
   2. The failures the owner saw while testing (0-tool answers to history questions; "only tomorrow" answers) were a **missing-tool** problem, not a tool-skill problem. Tester feedback found the gap; adding generic tools closed it.
   3. These question types are too easy to demonstrate tool learning. A real test needs harder practice: multi-step and comparative questions, subtle tool semantics, and efficiency (calls and cost per correct answer). The candidate's extra calls show efficiency is the more realistic thing to improve.
-- **Not claimed:** "the agent learned to pick tools". We do not have that evidence yet.
+- **Not claimed:** "the agent learned to pick tools". I do not have that evidence yet.
 
 
 ### EXP-009: Does a sharper evidence gate raise precision without losing recall? (frozen 2026-10-29 before any Muse call)
@@ -385,12 +385,12 @@ Packs: T01→TNEW 4 lessons (1 skipped: no matching site), T02→TNEW 4 lessons 
 
   - **The gate now rejected** wrong-hour closing claims, non-significant vendor claims, and type-name aliases on unseen data: no false lessons of the EXP-008 kinds.
   - **T03's 4 false lessons were all "registration number = vehicle id" aliases** (e.g. "TS 10 TB 2074" → DFS-T017). They are true but already in the vehicle master, so they are not unwritten knowledge, and the evaluator rightly counts them as false.
-- **Verdict (rule fixed above):** **NOT met.** Pooled precision 0.833 < 0.85 (recall 0.74 ✓, traps admitted 0 ✓). We fix only what we can justify generically, and confirm it on yet another unseen world (EXP-009b).
+- **Verdict (rule fixed above):** **NOT met.** Pooled precision 0.833 < 0.85 (recall 0.74 ✓, traps admitted 0 ✓). I fix only what I can justify generically, and confirm it on yet another unseen world (EXP-009b).
 
 ### EXP-009b: Confirmation on a second unseen world (frozen 2026-10-29 before any Muse call)
 - **Change since EXP-009 (one rule, generic):** an alias is rejected if its phrase is already recorded in the master data for its target (vehicle id, registration number, vendor name). It is "already known", not learned.
 - **Frozen:** `gate.py` `db36b3a4357e0e02` · `scripts/exp009b_gate.py` `fae3d1d844386f01` (identical to EXP-009's script except the world and file names). Fresh world `full_seed5279`, generated now, never inspected: config `d2fdf946d717`, snapshots T01:1a32676c1b16 T02:6d90896d7c0e T03:adb48ad92e9f TNEW:a912f2e75c09. 232 tests pass.
-- **Decision rule (same as EXP-009):** pooled precision ≥ 0.85, recall ≥ 0.60 and traps admitted = 0 on the new world. If not met, we stop tuning the gate and report both results; the reviewer remains the safeguard.
+- **Decision rule (same as EXP-009):** pooled precision ≥ 0.85, recall ≥ 0.60 and traps admitted = 0 on the new world. If not met, I stop tuning the gate and report both results; the reviewer remains the safeguard.
 
 - **Result (2026-10-29, `artifacts/learning/exp009b_20261029_204451.json`, $0.20 Meta):**
 
@@ -420,7 +420,7 @@ Packs: T01→TNEW 4 lessons (1 skipped: no matching site), T02→TNEW 4 lessons 
   - **Lessons help beyond raw notes** if, pooled over T01+T02 on the unwritten-knowledge families (site_access, alias, real_capacity), C − B ≥ 25 points, C has 0 unsafe drafts, and C is not worse than B on control + look-alike by more than 1 case.
   - **Transfer** if TNEW E − B ≥ 25 points on site_access + alias, with 0 pack leaks.
   - Also report A vs B: does raw-note search alone help?
-- **Caveats stated now:** one run per case (no repeats); cases come from our generator; the evaluator truth is the generator's hidden rules.
+- **Caveats stated now:** one run per case (no repeats); cases come from my generator; the evaluator truth is the generator's hidden rules.
 - **Budget:** about 102 runs, ~$5 Baseten.
 - **Pre-run amendment (2026-10-29, the first run stopped at pack publish, before any Muse call):** the leak check flagged TNEW's own site ids (C0001…), because TNEW numbers its sites in the same format as T01. A recipient's own ids can never be a leak, so `pack.leaks` now ignores them and matches whole tokens only; every T01/T02 vehicle, registration, vendor, driver and site id the recipient does not have is still blocked (new test). Nothing else changed: cases, arms, metrics and the decision rule are as frozen. New hashes: `pack.py` `27a5e92ee9965a9c` · `exp011_benchmark.py` `d5bef49e89fa4fa9` (passes the recipient to the leak check). 238 tests pass.
 - **Interrupted run (2026-10-29):** the run stopped after 65 of 102 (case, arm) runs when the coding session ended (not a choice; no results had been looked at for a decision). It is resumed, not restarted: the 65 finished runs are kept from their printed log lines (`exp011_run1_interrupted.log`: outcome, unsafe, cost; the full traces of those runs are not in the result file) and only the 37 missing runs are made. Cases, order, arms, model and the decision rule are unchanged. The script now also saves each row as it finishes. `exp011_benchmark.py` `893340f5b06a54f2`.
@@ -439,7 +439,7 @@ Packs: T01→TNEW 4 lessons (1 skipped: no matching site), T02→TNEW 4 lessons 
 - **Honest limits:**
   - **Real capacity (T01, 2 cases) did not improve: C 0/2 vs B 1/2.** No arm ever overloaded the truck. With the lesson (V13 really carries 12 t), the agent declined to put 13–14 t on V13 but did not offer another truck, and the scoring counts no draft as a miss. Next: the tool hint or harness should suggest an alternative vehicle or a split.
   - One run per case and arm, no repeats.
-  - Cases come from our generator, and the truth is its hidden rules.
+  - Cases come from my generator, and the truth is its hidden rules.
   - The first 65 runs are kept from log lines only (outcome, unsafe, cost); the other 37 have full rows.
 
 ### EXP-011R: EXP-011 repeated 3 times on the shipped version (frozen 2026-10-30 before any Muse call; plan day "Nov 2", done early)
@@ -452,7 +452,7 @@ Packs: T01→TNEW 4 lessons (1 skipped: no matching site), T02→TNEW 4 lessons 
   - **Lessons:** pooled over T01 + T02 on site_access, alias, real_capacity: C − B ≥ 25 points, C has 0 unsafe drafts, C not worse than B on control + look-alike by more than 1 case.
   - **Transfer:** TNEW E − B ≥ 25 points on site_access + alias, 0 pack leaks.
   - **Replicated** if a bar is met pooled AND in at least 2 of the 3 repeats. Report each repeat's numbers (the spread), A vs B, and cost.
-- **What would count against us:** either bar not replicated; any unsafe draft in C or E; the query tools pulling the agent away from planning (watch: run_query use in planning cases).
+- **What would count against me:** either bar not replicated; any unsafe draft in C or E; the query tools pulling the agent away from planning (watch: run_query use in planning cases).
 - **Budget:** ~306 runs, ~$15 Baseten.
 
 ### EXP-012: Query tools and learned tools on gap questions (frozen 2026-10-30 before any Muse call; plan day "Nov 2", done early)
@@ -465,7 +465,7 @@ Packs: T01→TNEW 4 lessons (1 skipped: no matching site), T02→TNEW 4 lessons 
   - **R1, the query tool fills the gap:** Q − N ≥ 25 points on answers right.
   - **R2, learned tools are cheaper and not worse:** T right ≥ Q right − 1, and T's mean tool calls ≤ 0.7 × Q's.
   - Also report: how many tools were learned and approved, how often T used them, cost per arm.
-- **Caveats stated now:** 16 questions per arm, one run each; questions and answers come from our generator; approval is a fixed rule, not a person; a learned tool can only help question types seen while learning.
+- **Caveats stated now:** 16 questions per arm, one run each; questions and answers come from my generator; approval is a fixed rule, not a person; a learned tool can only help question types seen while learning.
 - **Budget:** 68 runs, ~$3 Baseten.
 
 > **Date note (2026-10-30):** the registration commit `e44a49c` says "pre-registered 2026-11-02" in the scripts' docstrings; the real date was 2026-10-30 (work ran ahead of the plan's day labels). The frozen hashes are of those files as committed; the docstrings are left unchanged so the hashes still match.
@@ -498,7 +498,7 @@ Packs: T01→TNEW 4 lessons (1 skipped: no matching site), T02→TNEW 4 lessons 
 - **R2b (the agent uses learned tools): met, 14/16** (EXP-012: 0/16). General names were the missing piece.
 - **R2 (T calls ≤ 0.7 × Q, not worse): not met.** Not worse (15 vs 14 right), but calls fell 20% (ratio 0.80), short of the 30% bar. Cost per question fell 24%.
 - **By type:** damaged cases per month 6 → 2 calls (−67%); busiest weekday per town 23 → 14 (−39%); returned cases per town and month 35 → 29 (−17%: T01's tool takes a site, so the agent calls it once per site in the town); worst on-time weekday: no tool was learned, 8 → 13 calls. By company: T02 4.25 → 2.62 calls (−38%), T01 4.75 → 4.62.
-- **What we can say:** the agent fills gaps with read-only queries, turns reused ones into tools that pass code checks, and, once they have general names, uses them (14/16) and answers at least as well for less cost. **What we cannot say:** that learned tools cut tool calls by 30%. Tool granularity (site vs town) limits the gain; a person choosing the right parameter would help.
+- **What I can say:** the agent fills gaps with read-only queries, turns reused ones into tools that pass code checks, and, once they have general names, uses them (14/16) and answers at least as well for less cost. **What I cannot say:** that learned tools cut tool calls by 30%. Tool granularity (site vs town) limits the gain; a person choosing the right parameter would help.
 - Caveat: a second attempt on the same questions after EXP-012 failed; one run per question; a fixed rule approved the tools.
 
 #### EXP-011R result (2026-10-31, `artifacts/benchmark/exp011r_20261030_230811.json`; 306 runs, $18.59 Baseten): **both results replicated, 3 of 3 repeats**
@@ -535,8 +535,8 @@ Packs: T01→TNEW 4 lessons (1 skipped: no matching site), T02→TNEW 4 lessons 
 - **Caveats stated now:**
   - World 5279 is not a new seed: EXP-011, EXP-011R and EXP-012 used it. The team's prompts were adjusted on smoke runs on the demo world (seed 20261104), never on this world.
   - Those smoke runs (3 rounds, $0.84 in all) showed the Planner not delegating until told not to write queries, and one wrong weekday answer. Both are why this needs measuring.
-  - One repeat, a small set from our own generator. Team knowledge per agent is off in every arm; only the learning round's patches differ in M1.
-  - The routing label is our definition. Number checks can match by chance; arms share that noise.
+  - One repeat, a small set from my own generator. Team knowledge per agent is off in every arm; only the learning round's patches differ in M1.
+  - The routing label is my definition. Number checks can match by chance; arms share that noise.
 - **Budget:** about $20–25; the script stops at $30 and reports partial results as partial.
 
 #### EXP-013 result (2026-10-31, `artifacts/benchmark/exp013_20261031_183713.json`; $14.21): **R1, R2, R3 met; R4 not met. The team becomes the app's default by the fixed rule**
@@ -567,7 +567,7 @@ Packs: T01→TNEW 4 lessons (1 skipped: no matching site), T02→TNEW 4 lessons 
   - **S4 tools:** at least one tool made; used on at least half of the gap questions; gap answers no worse than s2; mean gap cost at most 0.8× s2.
   - **S5 changes:** overall rate at s4 no lower than s3, and at least one agent's direct score up.
   - Every agent's score is reported whichever way it goes. An agent with no gain is said to have no gain.
-- **Caveats stated now:** one repeat, so small differences mean little. s4 changes two things at once (changes and knowledge). Fixed rules stand in for a person's approval. Cases and hidden rules come from our own generator. A stage's carried results are from an earlier stage.
+- **Caveats stated now:** one repeat, so small differences mean little. s4 changes two things at once (changes and knowledge). Fixed rules stand in for a person's approval. Cases and hidden rules come from my own generator. A stage's carried results are from an earlier stage.
 - **Budget:** about 294 runs, about $18-25; the script stops at $25 and can resume without paying twice.
 - **Status (D-046):** not run. After the freeze, `agents.yaml` changed (model, Lesson Miner wording), so the script now refuses to run until it is frozen again and the protocol re-checked.
 - **Re-registered 2026-11-03 before any model call (D-054):** the protocol, test sets, stages and decision rules above are unchanged. Three things change: (1) the agents run on **Muse Spark 1.3 on the Meta API** (was Muse Spark Open on Baseten; the owner allows Meta only, no Baseten); (2) the cap is **$35** (was $25); (3) the files are frozen again, because they changed since Oct 31 (`artifacts/benchmark/exp014_frozen.json`): `exp014_curve.py` `b880ab5606540d59` · `agents.yaml` `b9bc4b6cea5a1958` · `graph.py` `346ee6cdd92e7b46` · `team.py` `c47611d91da53d8a` · `forge.py` `e6139270178adaee` · `registry.py` `9332944832057d33` · `broker.py` `e58968a4ce39cfab` · `loop.py` `aab83765f58085ed` · `store.py` `f74d63f2ae1d543d` · `practice.py` `a9795619de8cdcaa` · `bench.py` `9833d76159b55021` · `newtools.py` `5ef4760ef20a5417` · `knowledge.py` `0d91ae71124874bf`. Run: `uv run python scripts/exp014_curve.py` (defaults: `--model spark --budget 35`), in the overnight batch after EXP-015.
@@ -589,7 +589,7 @@ Packs: T01→TNEW 4 lessons (1 skipped: no matching site), T02→TNEW 4 lessons 
   - **S4 tools: NOT met.** 0 tools made from the 24 dev questions (learning cost $2.64). The gap rate rose 75% → 90% at s3, but no tool existed: with 20 questions run once, that is run-to-run variation, not a tool effect, and it is not claimed.
   - **S5 changes: NOT met.** s4 91.4% is below s3 93.1%. Planner: no problems found, no change. Analyst: its change failed the paired test and was rejected. Tool Forge: its change passed the paired test and was approved by the fixed rule, then scored **100% → 50%** on its own 20 gap questions. Lesson Miner (T01's hidden rules): precision 100% → 100%, recall 20% → 30% (2 → 3 lessons proposed, all passed the gate).
   - **Per agent, as registered:** Planner +55 points (unwritten rules, via lessons); Analyst 0 (78% → 78%); Tool Forge −50 points; Lesson Miner precision +0 (recall +10 points).
-- **What we can say:** on an unseen world with the live model, the whole team got better as learning was added (58.6% → 91.4%, unsafe 4 → 0), and the gains came from approved lessons and the shared pack. **What we cannot say:** that each agent improves, that the team made or used tools, or that agent changes helped: the one approved change made Tool Forge worse, which the paired test did not catch.
+- **What I can say:** on an unseen world with the live model, the whole team got better as learning was added (58.6% → 91.4%, unsafe 4 → 0), and the gains came from approved lessons and the shared pack. **What I cannot say:** that each agent improves, that the team made or used tools, or that agent changes helped: the one approved change made Tool Forge worse, which the paired test did not catch.
 
 
 ### EXP-015: does EXP-011R hold on Muse Spark 1.3, the model judges use live? (frozen 2026-11-03 before any model call; D-054)
@@ -600,7 +600,7 @@ Packs: T01→TNEW 4 lessons (1 skipped: no matching site), T02→TNEW 4 lessons 
   - **Transfer holds** if TNEW E − B ≥ 25 points on site_access and alias, with 0 pack leaks.
   - **Replicated on Spark 1.3** if a rule is met pooled and in at least 2 of the 3 repeats. If the cap stops the run early, only complete repeats are judged and the result is reported as partial.
 - **Reported, not judged:** the difference from EXP-011R on Muse Spark Open, case family by family.
-- **Caveats stated now:** it differs from EXP-011R in the model and in the code changes since Oct 30 (the shipped version; the frozen hashes below). Cases and hidden rules come from our own generator. Fixed rules stand in for a person's approval.
+- **Caveats stated now:** it differs from EXP-011R in the model and in the code changes since Oct 30 (the shipped version; the frozen hashes below). Cases and hidden rules come from my own generator. Fixed rules stand in for a person's approval.
 - **Frozen files** (`artifacts/benchmark/exp015_frozen.json`; the script refuses to run if one changes): `exp011r_benchmark.py` `0fd5117b786c26d6` · `agents.yaml` `b9bc4b6cea5a1958` · `graph.py` `346ee6cdd92e7b46` · `team.py` `c47611d91da53d8a` · `forge.py` `e6139270178adaee` · `registry.py` `9332944832057d33` · `broker.py` `e58968a4ce39cfab` · `safety.py` `517b74ec941309b3` · `muse.py` `61510b04154c3e70` · `bench.py` `9833d76159b55021` · `practice.py` `a9795619de8cdcaa` · `newtools.py` `5ef4760ef20a5417` · `gate.py` `1791a70e0541172b` · `pack.py` `b590a5765ace6d14` · `knowledge.py` `0d91ae71124874bf`.
 - **Budget:** about 306 runs, about $15-20 at list price; the script stops at **$22** and resumes without paying twice. Run: `uv run python scripts/exp011r_benchmark.py --model spark --tag exp015 --budget 22`.
 - **Result (2026-11-03 00:15 → 01:40 IST, `artifacts/benchmark/exp015_20261103_001537.json`, 306 runs, $20.15 Meta; under the $22 cap):**
@@ -636,7 +636,7 @@ Order: EXP-015, then EXP-014, then EXP-016, one after the other. The batch runs 
 - **Done 03:17 IST:** all three ran to the end, 905 rows in total ($20.15 + $20.62 + $2.28 = **$43.05** Meta, no Baseten call). Log: `artifacts/benchmark/overnight_d054_20261103_001537.log`.
 
 ### Diagnostic, 2026-11-03: why Muse Spark 1.3 made no learned tools (not a benchmark; owner's go)
-- **Free part (no model call):** tool detection only recognised an input written as an exact equality with the stored spelling. `lower(town) = 'hanamkonda'`, `town LIKE '%Hanamkonda%'` and `lower(town) LIKE '%hanamkonda%'` (how Spark Open wrote it in our own recorded demo run) were dropped; a month written `'2026-09'` stayed baked into the template, so a tool would always answer for that month; a list of site ids became a tool with one input per id. **Fixed in code:** case-insensitive and LIKE inputs (the template keeps the comparison, the stored value is the input), month inputs (moved by whole months in the held-out check; the broker accepts only YYYY-MM), id lists never counted and refused by the checks, and a template that keeps a fixed date or month fails its checks. Tests in `tests/learning/test_newtools.py`. This changes `newtools.py`, `broker.py` and `exp012b_new_tools.py` (which now saves full traces), so EXP-014 to EXP-016 must be frozen again before any re-run.
+- **Free part (no model call):** tool detection only recognised an input written as an exact equality with the stored spelling. `lower(town) = 'hanamkonda'`, `town LIKE '%Hanamkonda%'` and `lower(town) LIKE '%hanamkonda%'` (how Spark Open wrote it in my own recorded demo run) were dropped; a month written `'2026-09'` stayed baked into the template, so a tool would always answer for that month; a list of site ids became a tool with one input per id. **Fixed in code:** case-insensitive and LIKE inputs (the template keeps the comparison, the stored value is the input), month inputs (moved by whole months in the held-out check; the broker accepts only YYYY-MM), id lists never counted and refused by the checks, and a template that keeps a fixed date or month fails its checks. Tests in `tests/learning/test_newtools.py`. This changes `newtools.py`, `broker.py` and `exp012b_new_tools.py` (which now saves full traces), so EXP-014 to EXP-016 must be frozen again before any re-run.
 - **$0.98 confirmation (Meta, Muse Spark 1.3):** `scripts/diag_tool_detection.py` re-asked EXP-016's 20 learning questions with traces saved, then ran the old and the new detection on the same runs (`artifacts/benchmark/diag_tools_spark_20261103_110258.json`).
 
 | | T01 | T02 |
@@ -673,7 +673,7 @@ Order: EXP-015, then EXP-014, then EXP-016, one after the other. The batch runs 
 
 - **Verdict (rules fixed above):** **met.** B1 81.8% ≥ 72.7% · B2 100% · B3 0 traps in 9 of 9 runs.
 - **What more history added:** the Parkal Tuesday closure (H-16), which has no evidence in the first 30 days, found in every 60- and 90-day run. The other 8 rules (Lakshmi Agencies 22 ft, three nicknames, the Kazipet closure, V13's real capacity, Sri Durga at month end, the night-only site) were found in every run at every length. **Missed at every length:** the nickname "Chowrasta load" (H-04) and the moved godown (H-17); the miner never proposed them. Recall stops rising after 60 days.
-- **Caveats:** the repeats gave identical rule sets (temperature 0): stability, not spread. The miner proposed no trap rule in any run, so B3 shows none got through, not that the gate was tested against traps here; the gate rejected two non-matching habits (a receiving-hours cutoff, a vendor at month end). Against the rules with evidence, recall is slightly *higher* at 30 days (8/9) than at 90 (9/11). One company, one generated world, rules from our own generator.
+- **Caveats:** the repeats gave identical rule sets (temperature 0): stability, not spread. The miner proposed no trap rule in any run, so B3 shows none got through, not that the gate was tested against traps here; the gate rejected two non-matching habits (a receiving-hours cutoff, a vendor at month end). Against the rules with evidence, recall is slightly *higher* at 30 days (8/9) than at 90 (9/11). One company, one generated world, rules from my own generator.
 
 
 ### EXP-019: does the team (only Tool Forge writes SQL) make learned tools on Muse Spark 1.3? (frozen 2026-11-04 07:25 before any model call)
@@ -694,5 +694,5 @@ Order: EXP-015, then EXP-014, then EXP-016, one after the other. The batch runs 
 - **Verdict (rules fixed above):** **R2 not met**, **R2b not met** (0 of 16), **S1 not met** (no tool made). T had no tools to offer, so Q and T are the same team twice; their difference is run-to-run noise.
 - **Query consistency (reported, not judged):** routing did change who writes SQL: all 47 `run_query` calls were Tool Forge's, none the Planner's or Analyst's. Queries kept with inputs per 10 learning requests fell from 18/17 (diagnostic, single Planner) to **8/9**, and groups from 14/14 to **7/8**, but the largest group still spans only **2 requests** in each company (T01: damaged cases, rt + en; T02: busiest weekday per town, rt + te), so no candidate (3+). The 4 question types appear 2-3 times each in the 10 dev requests, so a candidate needs nearly every version of one type to give the same query. T01's busiest-weekday query came in 3 shapes (4 town inputs; town + dates twice, but with answers that are not equivalent); T01's returned-cases questions left no usable query at all (0 of 3).
 - **Cost of the team:** about 2.4× the calls (7.9 against 3.3; the lead makes about 3: load_skill, find_capability, delegate) and 2× the cost per question; answers slightly worse than the single Planner (learning 14/20 against 17/20; held-out 27/32 against 31/32), within one-run noise for the held-out arms.
-- **What we can say:** with Spark 1.3, the team makes Tool Forge the only query writer and halves the number of distinct query shapes, but not enough for any query to serve 3 different requests in 10 learning questions; so on this protocol learned tools are still not made. **What we cannot say:** that the team never makes tools (one run; a longer learning phase, or 2 requests plus a person's approval, was not tested).
+- **What I can say:** with Spark 1.3, the team makes Tool Forge the only query writer and halves the number of distinct query shapes, but not enough for any query to serve 3 different requests in 10 learning questions; so on this protocol learned tools are still not made. **What I cannot say:** that the team never makes tools (one run; a longer learning phase, or 2 requests plus a person's approval, was not tested).
 - **Caveats:** one run per question; the same questions as EXP-012b/EXP-016, so not unseen and a third attempt on them; the team differs from EXP-016 in more than routing (delegation, skills, retry cap) and the code changed since EXP-016 (the diagnostic's detection fix).

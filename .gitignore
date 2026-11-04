@@ -85,3 +85,21 @@ docs/trackers/progress.md
 docs/trackers/questions.md
 docs/benchmark_data_guide.md
 docs/Demo_Script_Simple.md
+
+# Lesson and tool stores behind the reported experiments are kept (E-033): judges can open the exact lessons
+!artifacts/learning/*.sqlite
+!artifacts/benchmark/*.sqlite
+# ...except smoke runs and the interrupted first EXP-011 attempts
+artifacts/benchmark/exp011_20261029_204754_lessons.sqlite
+artifacts/benchmark/exp011_20261029_205114_lessons.sqlite
+artifacts/benchmark/exp012b_20261103_001144_T01_tools.sqlite
+artifacts/benchmark/exp012b_20261103_001206_T01_tools.sqlite
+
+# Local scratch and demo-recording aids
+/Untitled.md
+docs/Demo_Script_3min.md
+
+# Local screenshot probes and demo-recording scripts (dev only)
+web/tools/
+web/scripts/demo-*.mjs
+web/scripts/judge-shots.mjs

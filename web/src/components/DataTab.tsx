@@ -86,7 +86,7 @@ export function DataTab() {
       <h3>The records the agents work on</h3>
       <p className="small muted">All companies and records are synthetic, generated for this project. These are the same tables the agents query.</p>
 
-      {tables === null && !error && <div className="skeleton" aria-label="Loading the tables" />}
+      {tables === null && !error && <div className="skeleton" role="status" aria-busy="true" aria-label="Loading the tables" />}
       {tables && tables.length === 0 && <p className="empty">This company has no records yet.</p>}
 
       {tables && tables.length > 0 && (
@@ -152,7 +152,7 @@ export function DataTab() {
                     ))}
                   </tbody>
                 </table>
-                {busy && shown.length === 0 && <div className="skeleton" aria-label="Loading rows" />}
+                {busy && shown.length === 0 && <div className="skeleton" role="status" aria-busy="true" aria-label="Loading rows" />}
               </div>
             )
           )}

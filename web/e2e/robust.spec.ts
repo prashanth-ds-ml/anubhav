@@ -109,11 +109,11 @@ const PAGES: [string, (page: Page) => Promise<void>][] = [
     await expect(page.getByText("This run ended without an answer.")).toBeVisible();
   }],
   ["#proof/bench", async (page) => {
-    await expect(page.getByRole("heading", { name: /Every experiment we pre-registered/ })).toBeVisible();
+    await expect(page.getByRole("heading", { name: /Every experiment I pre-registered/ })).toBeVisible();
     await expect(page.getByRole("list", { name: /experiments/ })).toContainText("EXP-001");
   }],
   ["#proof/claims", async (page) => {
-    await expect(page.getByRole("heading", { name: /Check our claims/ })).toBeVisible();
+    await expect(page.getByRole("heading", { name: /Check the claims/ })).toBeVisible();
     await expect(page.getByRole("table").first()).toContainText("EXP-014");
   }],
 ];

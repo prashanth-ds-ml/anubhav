@@ -6,7 +6,7 @@ date: 2026-10-29
 
 What the generator builds, and why. It implements [[Data_Benchmark_Blueprint_v1.0]] at the D-027 scale (3 history companies + 1 new company). Status of each run: [[data_and_benchmark]]. Plan: [[demo_plan]] Layer 1.
 
-**Who we are modelling:** a **medium-sized regional 3PL** (third-party logistics company) in Telangana. It moves FMCG goods from brands' CFA depots (Carrying & Forwarding Agent warehouses) to distributors and stores. Its staff work in **Roman Telugu first, then Telugu script, then English**. It is not a national giant: no fancy TMS, plans live in a basic system plus people's heads and WhatsApp.
+**Who I am modelling:** a **medium-sized regional 3PL** (third-party logistics company) in Telangana. It moves FMCG goods from brands' CFA depots (Carrying & Forwarding Agent warehouses) to distributors and stores. Its staff work in **Roman Telugu first, then Telugu script, then English**. It is not a national giant: no fancy TMS, plans live in a basic system plus people's heads and WhatsApp.
 
 **Principles**
 1. **World first.** Write the hidden truth (rules, nicknames, habits, events) *before* generating anything. Every trip, failure and note follows from it. Nothing is hand-placed.
@@ -23,7 +23,7 @@ What the generator builds, and why. It implements [[Data_Benchmark_Blueprint_v1.
 ---
 
 ## 1. Public references (structure and patterns only, no rows copied)
-| Source | Verified (2026-10-29) | Licence | What we take |
+| Source | Verified (2026-10-29) | Licence | What I take |
 |---|---|---|---|
 | Amazon Last Mile Routing Research Challenge (AWS Open Data) | ✅ 9,184 routes; route-, stop- and package-level features | CC BY-NC 4.0 | Multi-stop trip shape, package size spread, stop counts |
 | LaDe last-mile delivery dataset (Cainiao) | ✅ pickup + delivery CSVs, May–Oct 2022 | Apache-2.0 per its Hugging Face card (research use; checked Nov 5) | Event sequence and timing gaps: loaded → departed → arrived → unloaded → delivered |
@@ -33,7 +33,7 @@ What the generator builds, and why. It implements [[Data_Benchmark_Blueprint_v1.
 | Open Food Facts | known | ODbL | Realistic FMCG pack sizes and weights |
 | GST e-way bill rule | public rule | — | E-way bill needed for consignments over ₹50,000 (a real document field and failure reason) |
 
-Attribution for PIN codes, OSM and Open Food Facts goes in `LICENSES_AND_ATTRIBUTION.md`. Indian truck capacities, rates, site rules and outcomes are **our assumptions**, labelled as such.
+Attribution for PIN codes, OSM and Open Food Facts goes in `LICENSES_AND_ATTRIBUTION.md`. Indian truck capacities, rates, site rules and outcomes are **my assumptions**, labelled as such.
 
 **Practitioner input (most important reference).** An interview on 2026-10-27 with a former logistics manager at a large FMCG company (anonymised; no names or quotes are published without permission):
 - Orders reach the system from a sales app; allocation is already digital.

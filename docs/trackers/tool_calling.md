@@ -47,7 +47,7 @@ One row per notable call: good, bad or surprising.
 | MIX | | | | |
 
 ## 4. Known Muse facts (from Day 1, see [[smoke_tests]])
-- `tool_choice` is `auto` only; we can't force a tool, so the graph and validator enforce order.
+- `tool_choice` is `auto` only; I can't force a tool, so the graph and validator enforce order.
 - `strict` validates the schema, not the arguments; validate arguments in code.
 - Temperature/seed are not deterministic; repeat runs and report spread.
 - Parallel tool calls are on by default.

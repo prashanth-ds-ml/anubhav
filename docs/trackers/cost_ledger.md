@@ -7,9 +7,9 @@ tags: [tracker, cost]
 |---|---|---|---|---|
 | Meta Model API | 150.00 | ~61.7 | ~88.3 | Muse Spark + Voice Transcribe runtime, evals |
 | Baseten | 100.00 (+2M TPM) | ~64.7 | ~35.3 | The agent (Muse Spark Open): all benchmarks and live checks |
-| **Total** | **250.00** | **~126.1** | **~123.9** | Totals are summed from our per-run costs at list prices; the billing pages have not been checked yet |
+| **Total** | **250.00** | **~126.1** | **~123.9** | Totals are summed from my per-run costs at list prices; the billing pages have not been checked yet |
 
-**Rules (D-048, Nov 1):** Baseten is kept for the demo and judges; our own runs use Meta. Keep at least $50 of Meta for the demo and judges (~$39 free above that after the Nov 3 overnight batch, the tool diagnostic and phase A, D-054). Log every real run here, because `scripts/preflight.py` checks these figures. Check the billing pages too.
+**Rules (D-048, Nov 1):** Baseten is kept for the demo and judges; my own runs use Meta. Keep at least $50 of Meta for the demo and judges (~$39 free above that after the Nov 3 overnight batch, the tool diagnostic and phase A, D-054). Log every real run here, because `scripts/preflight.py` checks these figures. Check the billing pages too.
 
 **Forecast to submission (Oct 31):** EXP-011R 3 repeats ~$15 · EXP-012 ~$3 · recorded demo runs ~$2 · nightly review (Spark 1.3) ~$1 · remaining live checks ~$3 · video takes ~$2 → **~$26 more, ~$65 total**, about $185 left. **Actual by Oct 31: ~$65.3 used** (EXP-011R $18.59, EXP-012 + 012b $7.27, live checks ~$0.6); left to spend: recordings and video takes, ~$2–4. Hosted demo: $0 (no keys).
 
@@ -35,7 +35,7 @@ tags: [tracker, cost]
 | 2026-10-27 | Dev | 2 live voice tests (1 silent mic, 1 good) | | | 0.67 | 0.002 | ~0.07 | ⬜ |
 | 2026-10-27 | Benchmark | Sample baseline: 5 tasks, 36 tool calls (`sample_run.py`) | | | | 0.131 | ~0.20 | ⬜ |
 | 2026-10-27 | Benchmark | EXP-001 run 1 (core, 96 runs) + runner tests | | | | 2.41 | ~2.61 | ⬜ |
-| 2026-10-27 | Benchmark | Arm B smoke tests (incl. one 36-call loop from our namespace bug) | | | | 0.37 | ~2.98 | ⬜ |
+| 2026-10-27 | Benchmark | Arm B smoke tests (incl. one 36-call loop from my namespace bug) | | | | 0.37 | ~2.98 | ⬜ |
 | 2026-10-27 | Benchmark | EXP-001 run 2 (core) + EXP-002 arms A and B (288 runs) + 4 re-runs | | | | 10.59 | ~13.57 | ⬜ |
 | 2026-10-27 | Benchmark | EXP-003 Lab head-to-head (5 scenarios × 3 repeats, ~60 calls) | | | | 0.85 | ~14.42 | ⬜ |
 | 2026-10-27 | Research | Interview audio transcription (13 min, 7 chunks; transcript kept off-repo) | | | 13.3 | ~0.04 (est.) | ~14.46 | ⬜ |

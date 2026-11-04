@@ -112,9 +112,9 @@ All experiments were pre-registered: tasks, data and code were frozen and hashed
 
 ## 5. How it fits the hackathon rules
 
-| Rule | How we meet it |
+| Rule | How I meet it |
 |---|---|
-| Theme: **Push the Frontier** | A measured new capability: Muse alone scores 0% on unwritten rules, and 100% with our loop. |
+| Theme: **Push the Frontier** | A measured new capability: Muse alone scores 0% on unwritten rules, and 100% with my loop. |
 | Track: **Indie Developer** | Solo. |
 | Clear use of **Meta models** | Muse is used at every step: agent, miner, voice input, tool search. |
 | Built during the hackathon | All code and data from Oct 27 onward, with daily commits. |
@@ -132,11 +132,11 @@ All experiments were pre-registered: tasks, data and code were frozen and hashed
 
 ## 6. Scoring
 
-**Stage 1 (pass/fail):** fits the theme and clearly uses Meta models. We expect to pass.
+**Stage 1 (pass/fail):** fits the theme and clearly uses Meta models. I expect to pass.
 
 **Stage 2 (100 points):**
 
-| Criterion | Weight | Judges ask | Our answer |
+| Criterion | Weight | Judges ask | My answer |
 |---|---|---|---|
 | **Impact** | 30 | Real problem? Who benefits? | Planning takes 1–1.5 h with up to 10 re-plans, and the knowledge sits in people's heads (interview). Small distributors and transporters benefit in their own language. A new customer gets value on day 1. |
 | **Meta AI tooling** | 25 | Beyond basic use? Surprising? | **Spark** mines lessons from messy code-mixed records · **Spark Open** is the agent (open weights) · **Voice Transcribe** handles Telugu voice · **tool search** picks MCP tools. |
@@ -147,7 +147,7 @@ All experiments were pre-registered: tasks, data and code were frozen and hashed
 | Prize | Fit | Note |
 |---|---|---|
 | Best Agentic Use-Case ($5K) | **Strong** | The core of the build |
-| Best Open Weights ($10K) | **Good** | The agent runs on Spark Open; we export fine-tuning data |
+| Best Open Weights ($10K) | **Good** | The agent runs on Spark Open; I export fine-tuning data |
 | Most Viral ($20K) | Possible | Short Telugu demo clip on X |
 | Community Vote ($10K) | Possible | Telugu community push |
 | Best Creative Build ($5K) | No | Needs Muse Image/Wonder |
@@ -178,5 +178,5 @@ All experiments were pre-registered: tasks, data and code were frozen and hashed
 ### Out of scope
 - New domains (retail, inventory and so on)
 - A generic RAG chatbot
-- Running fine-tuning (we export the data only)
+- Running fine-tuning (I export the data only)
 - UI beyond what the demo needs

@@ -69,7 +69,7 @@ Judges score Impact (30%), Meta AI tooling (25%), Technical depth (20%) and Demo
 | 9 Runs | Timeline per run, run JSON | Run list; **swimlane by agent**; work per agent; "mistake → fixed" detection | L |
 | 10 Agents | Agent cards | How each agent learns; measured numbers per agent; team line; EXP-014 frames | M |
 | 11 Benchmarks | Some figures | Before/after dots by company; mining over 3 experiments; open-weights table; **17-experiment scoreboard** (new data) | M |
-| 12 Check our claims | Tiles | Slope charts; **chain of custody** (new data: plan commit → result commit) | M |
+| 12 Check the claims | Tiles | Slope charts; **chain of custody** (new data: plan commit → result commit) | M |
 
 ### 2.4 Risks found
 1. **All of today's work is uncommitted:** the merge, the scenarios, the polish and the server fixes. One disk problem would lose a day. Commit before the build starts.
@@ -92,7 +92,7 @@ Six main tabs, each with its own address, so a link can open any of them.
 | Tools | `#tools` | Candidates, checks, approve, before/after; benchmark panel |
 | Agents | `#agents` | Team line; one card per agent; EXP-014 frames |
 | Runs | `#runs`, `#runs/{run_id}` | Run list; swimlane; work per agent; selected step; mistake → fix; final answer |
-| Proof & audit | `#proof/bench`, `#proof/claims` | Benchmarks; Check our claims |
+| Proof & audit | `#proof/bench`, `#proof/claims` | Benchmarks; Check the claims |
 
 - **The scenario guide** is app-level state. It stays visible across main tabs as a slim bar, and a step can open any tab and highlight an item there (`focusOn`, already built).
 - **Deep links:** `/?tour=S1…S6` opens a scenario; `#runs/{id}` and `#learning/{lesson}` open an item.
@@ -155,7 +155,7 @@ Six main tabs, each with its own address, so a link can open any of them.
 1. Don't claim the team is more accurate than one Planner.
 2. Don't claim that each agent, or the whole team, improves until EXP-014 has run and met its rules.
 3. Say "approved by a fixed review rule" where no person approved.
-4. Label a live run as "behaved as described once in our test", not as a measured rate.
+4. Label a live run as "behaved as described once in my test", not as a measured rate.
 5. Keep every failed bar visible: EXP-007, 009, 012, 012b, and EXP-013's learning round.
 
 ### 3.7 Accessibility and screens

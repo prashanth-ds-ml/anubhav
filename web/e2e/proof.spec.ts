@@ -41,9 +41,9 @@ test("the scoreboard lists all 21 pre-registered experiments, and every missed b
   await expect(board).toContainText("--seed 4242");
 });
 
-test("Check our claims: one line per repeat, and a plan → result chain for every experiment", async ({ page }) => {
+test("Check the claims: one line per repeat, and a plan → result chain for every experiment", async ({ page }) => {
   await page.goto("/#proof");
-  await page.getByRole("tab", { name: "Check our claims" }).click();
+  await page.getByRole("tab", { name: "Check the claims" }).click();
   expect(new URL(page.url()).hash).toBe("#proof/claims");
   const lessons = page.getByRole("region", { name: /Approved lessons lifted/ });
   await expect(lessons.getByRole("img")).toHaveAttribute("aria-label", /repeat 1: .*repeat 2: .*repeat 3: /);
@@ -51,7 +51,7 @@ test("Check our claims: one line per repeat, and a plan → result chain for eve
   await expect(lessons.locator("tbody tr")).toHaveCount(3);
   await expect(lessons).toContainText("bar set in advance: +25");
   await expect(page.getByRole("region", { name: /A new company went from/ })).toContainText("100% · all 3 repeats");
-  const custody = page.getByRole("region", { name: /Check our claims: each one was fixed in advance/ });
+  const custody = page.getByRole("region", { name: /Check the claims: each one was fixed in advance/ });
   await expect(custody.locator("tbody tr")).toHaveCount(21);
   // Every row links its plan commit; every run experiment links its result commit and file.
   await expect(custody.locator('a[href*="/commit/"]')).toHaveCount(21 + 21); // every experiment has now run

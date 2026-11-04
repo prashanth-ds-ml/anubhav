@@ -109,7 +109,7 @@ export function Mic({ available, reason, onTranscript }: {
             )}
           </span>
         )}
-        {can && state.kind === "idle" && <span className="muted">Audio goes to Meta's transcription service to become text. We don't store it.</span>}
+        {can && state.kind === "idle" && <span className="muted">Audio goes to Meta's transcription service to become text. Anubhav doesn't store it.</span>}
       </div>
     </div>
   );

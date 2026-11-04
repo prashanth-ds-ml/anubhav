@@ -21,7 +21,7 @@ let p = await page(1440, 900);
 await p.goto(BASE);
 await p.getByRole("heading", { name: "Try it: seven scenarios" }).waitFor({ timeout: 90_000 });
 await save(p, "start");
-await p.getByRole("button", { name: "Start S1" }).click();
+await p.getByRole("button", { name: "Start S1", exact: true }).click();
 const g = p.getByRole("region", { name: /Scenario S1/ });
 await g.getByRole("button", { name: "Play the request without lessons" }).click();
 await p.locator(".plan-card").last().waitFor({ timeout: 90_000 });
