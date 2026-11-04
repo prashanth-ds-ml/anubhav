@@ -26,7 +26,7 @@ Map data © OpenStreetMap contributors. PIN code data © Department of Posts, Go
 | Model | Provider / access | Use |
 |---|---|---|
 | Muse Spark Open (`meta-models/muse-spark-open-1026`) | Meta, via Baseten Model API | the agents in benchmarks EXP-005 to EXP-013 and the recorded runs; selectable live |
-| Muse Spark 1.3 | Meta Model API | the agents in live mode and EXP-014 to EXP-019; lesson miner, harness proposer |
+| Muse Spark 1.3 | Meta Model API | the agents in live mode and EXP-014 to EXP-022; lesson miner, harness proposer |
 | Muse Voice Transcribe | Meta Model API | voice requests |
 
 Used under the hackathon's terms and the providers' API terms.

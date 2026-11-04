@@ -136,7 +136,7 @@ function OpenWeights({ e }: { e?: ProofEntry }) {
           <tr key={a.tools}><td>{a.tools} tools</td><td>{fixed(a.spark_open.mean_success * 100, 1)}% · {fixed(a.spark_open.mean_latency_s, 0)} s</td><td>{fixed(a.spark_1_3.mean_success * 100, 1)}% · {fixed(a.spark_1_3.mean_latency_s, 0)} s</td></tr>
         ))}</tbody>
       </table>
-      <p className="small muted">That is why the recorded runs and the benchmarks up to EXP-013, including the main one (EXP-011R), use the open-weights model; EXP-014 to EXP-019 and all live runs use Muse Spark 1.3 (each claim carries its model). Success is the share of tasks done right; seconds are the average per task.</p>
+      <p className="small muted">That is why the recorded runs and the benchmarks up to EXP-013, including the main one (EXP-011R), use the open-weights model; EXP-014 to EXP-022 and all live runs use Muse Spark 1.3 (each claim carries its model). Success is the share of tasks done right; seconds are the average per task.</p>
     </section>
   );
 }
@@ -365,7 +365,7 @@ function Claims({ proof, reg }: { proof: Record<string, ProofEntry>; reg: Regist
       </section>
       <div className="proof-notes">
         <div className="note-box small"><strong>Reproduce without keys</strong><br /><code>uv run pytest -q</code>: every test runs without a model call.</div>
-        <div className="note-box small"><strong>Frozen files can't drift</strong><br />The EXP-013 to EXP-019 scripts refuse to run if a frozen file's hash has changed. EXP-017 is reserved for a hand-written benchmark that has not been run.</div>
+        <div className="note-box small"><strong>Frozen files can't drift</strong><br />The EXP-013 to EXP-022 scripts refuse to run if a frozen file's hash has changed. EXP-017 is reserved for a hand-written benchmark that has not been run.</div>
         <div className="note-box small"><strong>Not improved, and said so</strong><br />
           {cap ? `Real truck capacity: ${String(cap).replace("/", " of ")} with lessons. ` : ""}
           {team?.S && typeof team.M1?.ok === "number" ? `Team accuracy: ${team.M1.ok} of ${team.M1.n}, not better than one Planner (${team.S.ok}). ` : ""}

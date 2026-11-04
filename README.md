@@ -30,7 +30,9 @@ Every step below was an experiment with its plan and pass bar written down befor
 6. **I built a team, and found it is not more accurate.** One Planner did as well as the team (EXP-013), and I say so. As learning is added, the team goes from 58.6% to 91.4% correct with unsafe drafts from 4 to 0 (EXP-014, Muse Spark 1.3).
 7. **Learned tools work on one model, not yet on the other.** Muse Spark Open made reusable tools and used them on 14 of 16 questions (EXP-012b). Muse Spark 1.3 made none, even with every query routed through Tool Forge (EXP-016, EXP-019); a diagnostic showed why, and the next steps are below.
 
-All 21 experiments, the failures included, are in the app's **Proof & audit** tab and the [experiments log](docs/trackers/experiments.md).
+8. **I checked the product as it ships, and fixed what that found.** On the day of submission, three small pre-registered runs on Muse Spark 1.3: the shipped team planned 36 of 38 with no unsafe drafts and kept every agent to its role, but answered 10 of 16 data questions (EXP-020, not met). The demo's own story, driven through the app's API, held the 22 ft gate rule 3 of 3, but left the earlier 32 ft draft in place (EXP-021, not met); approving an enforced rule now cancels the drafts it forbids, and the next plan drafted the 22 ft truck in 2 of 3 (EXP-022, met).
+
+All 24 experiments, the failures included, are in the app's **Proof & audit** tab and the [experiments log](docs/trackers/experiments.md).
 
 ## Results (pre-registered; files frozen by hash before any model call; read the [limitations](#limitations))
 
@@ -54,6 +56,8 @@ All 21 experiments, the failures included, are in the app's **Proof & audit** ta
 - In EXP-012 it never called the tools it had learned (0/16), because each was named after the one request it came from. With general names (EXP-012b) it used them in **14/16** questions, answered 15/16 (vs 14/16 without them), with 20% fewer tool calls and 24% lower cost. The pre-registered bar was 30% fewer calls: **not met**.
 - **On Muse Spark 1.3 (EXP-016): no learned tools.** It wrote a query in all 20 learning runs, but none became a tool, so none was used (0/16); both rules missed. It answered these questions well without them (15/16 and 16/16, about 3 calls each). A diagnostic found why: Spark 1.3 writes the same question as a different query each time, so no query reached 3 requests.
 - **On Muse Spark 1.3 with the team (EXP-019, Nov 4):** with Tool Forge writing every query, the number of different query shapes halved, but still no query served 3 requests, so no tool was made (0/16); the team needed 7.9 tool calls a question against 3.3 for the Planner alone. All bars missed. Learned tools have so far been made and used only on Muse Spark Open.
+
+- **The shipped version, Nov 5 (EXP-020 to EXP-022, Muse Spark 1.3, $5.9 Meta):** the team as deployed planned 36/38 with 0 unsafe drafts, 100% routing and 0 calls refused as another agent's work, but answered 10/16 data questions against a bar of 13 (one Planner: 15–16/16). On the hosted demo's own world, 3 fresh visitors each asked, learned, approved and asked again: the 22 ft rule was held 3/3; after the fix (an approved enforced rule cancels the open drafts it forbids) the second plan drafted 22 ft in 2/3, with 0 trucks over the limit.
 
 **Does it learn the right things?** Mining is scored against the generator's hidden rules, which the system never sees.
 
@@ -101,7 +105,7 @@ All 21 experiments, the failures included, are in the app's **Proof & audit** ta
 - **Lessons were mined before the gate changed.** EXP-011R re-ran the shipped agent, broker and validator, but used the lessons mined and gated in EXP-009b; the gate's generic-vehicle-word change ([D-038](docs/trackers/decisions.md)) was not re-measured.
 - **Mining misses about 3 in 10 hidden rules** (recall 69–74%), and every lesson still needs a person.
 - **The tool-use loop has not yet improved anything.** In EXP-010 its one patch was correctly rejected (no held-out gain). In EXP-014 a change that passed its paired test made Tool Forge worse, so the paired test is not yet a reliable guard.
-- **The Nov 3–4 experiments (EXP-014 to EXP-019) ran the version that ships at that point,** which changed after EXP-011R; the code, not only the model, differs from Oct 30. Each plan was frozen by hash before its first call ([D-054](docs/trackers/decisions.md)); EXP-018 and EXP-019 were committed with their results, so for those two the frozen file's timestamp is the evidence.
+- **The Nov 3–5 experiments (EXP-014 to EXP-022) ran the version that ships at that point,** which changed after EXP-011R; the code, not only the model, differs from Oct 30. Each plan was frozen by hash before its first call ([D-054](docs/trackers/decisions.md)); EXP-018 and EXP-019 were committed with their results, so for those two the frozen file's timestamp is the evidence.
 - **The leak check is my own token check** against the source company's ids, names and vendors, not a formal privacy guarantee.
 
 Details: [experiments log](docs/trackers/experiments.md) · [decisions](docs/trackers/decisions.md) · [errors and fixes](docs/trackers/errors_and_fixes.md).
@@ -151,7 +155,7 @@ Nothing in the runtime is hand-coded world knowledge: no word lists, no site rul
 | Role | Model | Access |
 |---|---|---|
 | Agent: planning and tool calls, multilingual replies (benchmarks EXP-005 to EXP-013 and the recorded runs) | Muse Spark Open (`muse-spark-open-1026`), open weights | Baseten Model API |
-| Agent in live mode, and the Nov 3–4 experiments EXP-014 to EXP-019 | Muse Spark 1.3 | Meta Model API |
+| Agent in live mode, and the Nov 3–5 experiments EXP-014 to EXP-022 | Muse Spark 1.3 | Meta Model API |
 | Lesson miner and harness proposer | Muse Spark 1.3 | Meta Model API |
 | Voice requests in Telugu / Roman Telugu | Muse Voice Transcribe | Meta Model API |
 

@@ -49,7 +49,7 @@ Stage one is pass or fail on fit to the theme and real use of Meta's models. Sta
 | --- | --- | --- |
 | Impact (30%) | Real-world potential; could people use it? | Small fleets plan on phone calls and memory; a gate rule missed turns trucks back. The same loop fits any business with unwritten rules |
 | Use of Meta AI tooling (25%) | Beyond a basic integration? | Four Muse agents with enforced tool permissions, a model that proposes its own rules, voice input in Roman Telugu, and the result measured on both Muse Spark Open and Muse Spark 1.3 |
-| Technical depth and execution (20%) | Sound, well thought-through engineering? | Evidence gate in code, 21 pre-registered experiments, per-visitor workspaces, spend caps, tests in pytest and Playwright |
+| Technical depth and execution (20%) | Sound, well thought-through engineering? | Evidence gate in code, 24 pre-registered experiments, per-visitor workspaces, spend caps, tests in pytest and Playwright |
 | Demo (25%) | Working, impressive, holds up live? | A live Space anyone can use, with recorded scenarios that cost nothing |
 
 Bonus prizes it can enter: Best Build on Meta Open Weight Models (Muse Spark Open ran every agent benchmark from EXP-005 to EXP-013), Best Agentic Use-Case, Community Vote, and Most Viral (posts on X after the event).
@@ -184,7 +184,7 @@ Three Meta models do the work, and every result in the app is labelled with the 
 | Role | Model | Access |
 | --- | --- | --- |
 | Agents in benchmarks EXP-005 to EXP-013, and every recorded run in the demo | Muse Spark Open (`muse-spark-open-1026`), open weights | Baseten |
-| Agents in live mode, and experiments EXP-014 to EXP-019 | Muse Spark 1.3 | Meta Model API |
+| Agents in live mode, and experiments EXP-014 to EXP-022 | Muse Spark 1.3 | Meta Model API |
 | Lesson Miner and harness proposer | Muse Spark 1.3 | Meta Model API |
 | Spoken requests in Telugu and Roman Telugu | Muse Voice Transcribe | Meta Model API |
 
@@ -200,7 +200,7 @@ Three Meta models do the work, and every result in the app is labelled with the 
 
 ## Experiments and results
 
-Twenty-one experiments ran, each with its plan and pass bar written down (and frozen by hash) before the first model call. The main result held on both models: with approved lessons, unwritten-rule cases went from 48% to 90% on Muse Spark Open (EXP-011R) and from 45% to 90% on Muse Spark 1.3 (EXP-015), in 3 of 3 repeats, with no unsafe drafts. A new company went from 33% to 100% on day 1 using a shared regional pack.
+Twenty-four experiments ran, each with its plan and pass bar written down (and frozen by hash) before the first model call. The main result held on both models: with approved lessons, unwritten-rule cases went from 48% to 90% on Muse Spark Open (EXP-011R) and from 45% to 90% on Muse Spark 1.3 (EXP-015), in 3 of 3 repeats, with no unsafe drafts. A new company went from 33% to 100% on day 1 using a shared regional pack.
 
 **The team as it learns (EXP-014, Muse Spark 1.3 agents, 58 unseen test cases).** Each stage adds one kind of learning:
 
@@ -238,8 +238,13 @@ Met = the pre-registered bar was met; not met = it was missed and is reported as
 | EXP-016 | Are learned tools used on Muse Spark 1.3? | Spark 1.3 | not met | No tools made; answered well without |
 | EXP-018 | Does learning improve with more history? | (mining only) | met | 30 to 60 days: recall 72.7% to 81.8%, precision 100% |
 | EXP-019 | With Tool Forge writing all SQL, are tools made on 1.3? | Spark 1.3 | not met | Still no tools; 7.9 calls a question against 3.3 |
+| EXP-020 | Does the shipped team hold up on Muse Spark 1.3? | Spark 1.3 | not met | Planning 36/38, 0 unsafe, 100% routing; data questions 10/16 (bar 13) |
+| EXP-021 | Does the demo's story work end to end through the app's API? | Spark 1.3 | not met | Rule held 3/3, but the old 32 ft draft stayed: 22 ft drafted 1/3 |
+| EXP-022 | The same after the fix (an approved rule cancels drafts it forbids) | Spark 1.3 | met | 22 ft drafted 2/3, 0 trucks over the limit |
 
 EXP-017 is a reserved number that never ran. Lesson mining used Muse Spark 1.3 throughout.
+
+**The shipped version, checked on submission day (Nov 5).** The team as deployed planned 36 of 38 with no unsafe drafts and no agent trying another's tool, but missed its bar on data questions (EXP-020). The demo's story found a real gap: an approved rule left the old 32 ft draft in place (EXP-021). Approving an enforced rule now cancels the drafts it forbids, and the story ends with a 22 ft draft in 2 of 3 (EXP-022).
 
 **Honest limits.** All data is synthetic and the benchmark cases come from the same generator as the hidden rules. Samples are small (20 cases behind the lessons result). Mining misses about 3 in 10 hidden rules. The team is not more accurate than one Planner.
 
@@ -286,7 +291,7 @@ The demo runs at [huggingface.co/spaces/KPrashanth/anubhav](https://huggingface.
 | Agents | The four agents, their tools, skills and versions |
 | Runs | Every run, with each tool call, cost and model |
 | Data | The records the agents work on, with a date filter |
-| Proof & audit | Claims checked against results, the scoreboard, all 21 experiments |
+| Proof & audit | Claims checked against results, the scoreboard, all 24 experiments |
 
 **Workspaces.** Each visitor gets two: **Fresh start** and **After learning** (seeded with the recorded lessons). Each keeps its own lessons, tools, drafts, runs and chat; switching never empties either, and **Reset** empties Fresh start only. Visitors never see each other's work, and state survives redeploys on the Space's persistent disk.
 
