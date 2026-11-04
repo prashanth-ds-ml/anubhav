@@ -40,6 +40,8 @@ Summary table first, details below. Newest at the bottom.
 | E-030 | 2026-11-02 | web | "Why this plan" listed empty lesson rows: the server sends lessons as text, the card expected objects | low | fixed (both shapes) | uncommitted |
 | E-031 | 2026-11-02 | web | The Fleet tab blanked the page: a vehicle's reason is a list, the new formatter expected a string | high | fixed before release (lists joined) | uncommitted |
 | E-032 | 2026-11-02 | web | Acting on a tool candidate collapsed the panel and lost the scroll (data blanked while reloading) | low | fixed (keep data while reloading) | uncommitted |
+| E-033 | 2026-11-03 | infra | Audit: the lesson stores behind EXP-009/009b/011/011R/013 (`artifacts/learning/*.sqlite`, ≈270 kB) are git-ignored by `*.sqlite`, so those scripts fail at import (`IndexError`) on a fresh clone and judges can't see the exact lessons behind 48% → 90% | high | open: commit the six stores with a `.gitignore` exception; CI test that every globbed input exists ([[Hackathon_Audit_2026-11-03]] §3b) | — |
+| E-034 | 2026-11-03 | docs | Audit: `scripts/exp011r_benchmark.py` docstring says "pre-registered 2026-11-02"; the plan commit `e44a49c` is 2026-10-30 | low | open: correct the date | — |
 
 **Areas:** model API · MCP · tools · agent · retrieval · verifier · voice · UI · infra · data · cost
 

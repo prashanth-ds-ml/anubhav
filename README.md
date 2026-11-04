@@ -8,6 +8,8 @@
 
 **Try it:** **[huggingface.co/spaces/KPrashanth/anubhav](https://huggingface.co/spaces/KPrashanth/anubhav)** (start with S0, *Start from nothing*).
 
+**Read the whole project in one place:** [docs/Project_Guide.md](docs/Project_Guide.md): the hackathon rules and how each is met, the architecture, the agent team, the learning loop, every experiment, the data and what's next, with diagrams.
+
 ## The problem
 A dispatcher near Warangal knows that a 32 ft truck can't get into one Jangaon godown. That rule isn't in any system. It lives in a driver's note from a failed trip and in the dispatcher's head. An AI agent connected to the company's data passes every check and still sends the 32 ft truck.
 
@@ -15,17 +17,17 @@ This is the normal case, not an edge case. India has about 12.5 million trucks r
 
 Muse already handles Telugu, Roman Telugu and tool calls well. What it can't know is the local, unwritten part. Anubhav lets the agent earn that knowledge from the business's own records, with proof, and only after a person agrees.
 
-**Built for small fleets first.** Anubhav is built first for small and mid-size fleets and distributors, where rules live in notes and people's heads. We expect the same loop to get stronger as a company grows: more trips give the evidence gate more to prove, repeated questions become tools sooner, and every company in a region adds to what the next one learns on day one. This is a hypothesis. A first check (EXP-018, Muse Spark 1.3) mined one company from 30, 60 and 90 days of records: recall rose from 72.7% to 81.8% at 60 days and stayed there, with 100% precision; one company and one generated world, so it is a start, not proof.
+**Built for small fleets first.** Anubhav is built first for small and mid-size fleets and distributors, where rules live in notes and people's heads. I expect the same loop to get stronger as a company grows: more trips give the evidence gate more to prove, repeated questions become tools sooner, and every company in a region adds to what the next one learns on day one. This is a hypothesis. A first check (EXP-018, Muse Spark 1.3) mined one company from 30, 60 and 90 days of records: recall rose from 72.7% to 81.8% at 60 days and stayed there, with 100% precision; one company and one generated world, so it is a start, not proof.
 
-## How we got here
-Every step below was an experiment with its plan and pass bar written down before the first model call. Where a result said no, we changed course.
+## How I got here
+Every step below was an experiment with its plan and pass bar written down before the first model call. Where a result said no, I changed course.
 
-1. **We tested the obvious idea first.** Muse already handled tool calls well: 88.5% with 8 tools, little left to fix (EXP-001 to EXP-004, Muse Spark 1.3 and Muse Spark Open compared).
-2. **We looked for where it actually fails.** On rules nobody wrote down (a gate a long truck can't enter, a site's nickname, a truck's real capacity) the agent scored 0% (EXP-005, Muse Spark Open). That became the project.
-3. **Our first learning result was a failure.** On a small, clean history, handing the agent the raw history did as well as lessons (EXP-007). We changed the pitch: the value is in scale, noisy records, safety and sharing.
-4. **We made the checking strict and scored it against hidden truth.** Lessons that pass the evidence gate went from 73% to 83% to 90% correct across three generated worlds, and no trap rule got through where we tested for them (EXP-008, EXP-009, EXP-009b; lessons mined by Muse Spark 1.3).
-5. **The main result held.** With approved lessons, unwritten-rule cases went from 48% to 90% correct, and a new company went from 33% to 100% on day 1, in 3 of 3 repeats on Muse Spark Open (EXP-011R), and again on Muse Spark 1.3 (EXP-015) after we moved our own runs to the Meta API to keep the open-weights credit for judges ([why](#two-models-and-why-we-moved-between-them)).
-6. **We built a team, and found it is not more accurate.** One Planner did as well as the team (EXP-013), and we say so. As learning is added, the team goes from 58.6% to 91.4% correct with unsafe drafts from 4 to 0 (EXP-014, Muse Spark 1.3).
+1. **I tested the obvious idea first.** Muse already handled tool calls well: 88.5% with 8 tools, little left to fix (EXP-001 to EXP-004, Muse Spark 1.3 and Muse Spark Open compared).
+2. **I looked for where it actually fails.** On rules nobody wrote down (a gate a long truck can't enter, a site's nickname, a truck's real capacity) the agent scored 0% (EXP-005, Muse Spark Open). That became the project.
+3. **My first learning result was a failure.** On a small, clean history, handing the agent the raw history did as well as lessons (EXP-007). I changed the pitch: the value is in scale, noisy records, safety and sharing.
+4. **I made the checking strict and scored it against hidden truth.** Lessons that pass the evidence gate went from 73% to 83% to 90% correct across three generated worlds, and no trap rule got through where I tested for them (EXP-008, EXP-009, EXP-009b; lessons mined by Muse Spark 1.3).
+5. **The main result held.** With approved lessons, unwritten-rule cases went from 48% to 90% correct, and a new company went from 33% to 100% on day 1, in 3 of 3 repeats on Muse Spark Open (EXP-011R), and again on Muse Spark 1.3 (EXP-015) after I moved my own runs to the Meta API to keep the open-weights credit for judges ([why](#two-models-and-why-i-moved-between-them)).
+6. **I built a team, and found it is not more accurate.** One Planner did as well as the team (EXP-013), and I say so. As learning is added, the team goes from 58.6% to 91.4% correct with unsafe drafts from 4 to 0 (EXP-014, Muse Spark 1.3).
 7. **Learned tools work on one model, not yet on the other.** Muse Spark Open made reusable tools and used them on 14 of 16 questions (EXP-012b). Muse Spark 1.3 made none, even with every query routed through Tool Forge (EXP-016, EXP-019); a diagnostic showed why, and the next steps are below.
 
 All 21 experiments, the failures included, are in the app's **Proof & audit** tab and the [experiments log](docs/trackers/experiments.md).
@@ -41,7 +43,7 @@ All 21 experiments, the failures included, are in the app's **Proof & audit** ta
 | New company, day 1 | 18/36 · 6 unsafe | **36/36 · 0 unsafe** (domain pack from T01 + T02) |
 
 - **Lessons beat raw-note search:** on unwritten knowledge (limited gates, site nicknames, real truck capacity), 48% → 90% correct pooled (+40, +45, +40 points in the three repeats; 20 cases each), against a pre-registered bar of +25. **Replicated in 3 of 3 repeats.**
-- **Sharing works:** a new company gets 33% → 100% on its regional cases on day 1 in every repeat (9 cases each), and our leak check found 0 private details in the packs. **Replicated in 3 of 3 repeats.**
+- **Sharing works:** a new company gets 33% → 100% on its regional cases on day 1 in every repeat (9 cases each), and the leak check found 0 private details in the packs. **Replicated in 3 of 3 repeats.**
 - **The first measurement (EXP-011, commit `61cc927`, one run each) agreed:** 35% → 90% and 33% → 100%.
 - **The same on Muse Spark 1.3, the model you try live (EXP-015, Nov 3, 306 runs, $20.15 Meta):** 45% → 90% on unwritten rules, 33% → 100% for the new company, 0 unsafe drafts with lessons and 0 leaks. **Both bars met in 3 of 3 repeats.** Per company: T01 19/42 → 36/42, T02 26/36 → 36/36, new company 18/36 → 36/36; unsafe drafts 2 → 0, 0 → 0, 4 → 0.
 - **Searching raw notes is not enough:** in EXP-011 cold with and without note search scored about the same (30% vs 35%). The notes are there, but the agent rarely looks, and a note is not a rule.
@@ -61,8 +63,8 @@ All 21 experiments, the failures included, are in the app's **Proof & audit** ta
 | EXP-009 (unseen world 4111) | 83% (bar 85%, missed) | 74% | 0 |
 | EXP-009b (unseen world 5279, one generic fix) | **90%** | 69% | **0** |
 
-**What didn't work, and what we learned**
-- **EXP-007:** on a small, clean history, simply giving the agent the raw history did as well as lessons (8/8 vs 7/8). We changed the pitch: the gain comes from scale, noise, safety and sharing. Sharing raw history with another company scored 3/8, while a pack scored 8/8.
+**What didn't work, and what I learned**
+- **EXP-007:** on a small, clean history, simply giving the agent the raw history did as well as lessons (8/8 vs 7/8). I changed the pitch: the gain comes from scale, noise, safety and sharing. Sharing raw history with another company scored 3/8, while a pack scored 8/8.
 - **EXP-010:** tool practice in a feedback loop started at 100% on held-out questions, so the proposed patch was correctly **rejected**: no gain, no change.
 
 **The team, EXP-013 (one repeat, 54 cases: 38 planning cases and 16 data questions).** An orchestrator (Planner) with sub-agents (Analyst, Tool Forge, Lesson Miner), against one planner:
@@ -88,19 +90,19 @@ All 21 experiments, the failures included, are in the app's **Proof & audit** ta
 - **Met (3 of 5 rules):** no unsafe drafts once lessons and the pack are in; unwritten rules 35% → 90% (+55, bar +25); the new company 33% → 100% (+66.7, bar +25), 0 leaks.
 - **Not met: tools.** No tool was made, so the rise at "+ approved tools" (gap questions 75% → 90%) is run-to-run variation on 20 questions, not a tool effect.
 - **Not met: agent changes.** The last stage dipped below the one before. The Analyst's change failed its paired test (78% → 78%); **Tool Forge's change passed its paired test, was approved by a fixed rule, and then scored 100% → 50%** on its own questions. The Lesson Miner's recall rose 20% → 30% at 100% precision.
-- **So:** the whole team gets better as lessons and shared packs are added. We do not claim that each agent improves, or that agent changes help.
+- **So:** the whole team gets better as lessons and shared packs are added. I do not claim that each agent improves, or that agent changes help.
 
 ### Limitations
-- **Synthetic data.** Every company, record and rule is generated by our own code. That is within the rules (the only data rule bans data we have no rights to), and it is how we can score lessons against hidden truth. An interview with a logistics professional shaped the world, but no real company's data has been used, and no real dispatcher has checked the lessons yet.
-- **Our own cases.** The benchmark cases and the hidden rules they test come from the same generator. The system never sees the hidden rules, but we wrote the generator.
-- **EXP-013 is one repeat on world 5279, already used by earlier experiments.** Team prompts were adjusted on smoke runs on another world first, and the routing label is our own definition. A one-case gap between arms means little.
+- **Synthetic data.** Every company, record and rule is generated by my own code. That is within the rules (the only data rule bans data I have no rights to), and it is how I can score lessons against hidden truth. An interview with a logistics professional shaped the world, but no real company's data has been used, and no real dispatcher has checked the lessons yet.
+- **My own cases.** The benchmark cases and the hidden rules they test come from the same generator. The system never sees the hidden rules, but I wrote the generator.
+- **EXP-013 is one repeat on world 5279, already used by earlier experiments.** Team prompts were adjusted on smoke runs on another world first, and the routing label is my own definition. A one-case gap between arms means little.
 - **Small samples.** 20 cases behind the lessons result and 9 behind the pack result, run 3 times each in EXP-011R; the repeats agree closely, but the case set is small and from one world.
 - **The first EXP-011 run was interrupted and resumed.** 65 of its 102 runs are kept from their log lines (outcome, unsafe, cost), not full traces. There was also one pre-run fix to the leak check, logged before any model call. Both are in the [experiments log](docs/trackers/experiments.md).
 - **Lessons were mined before the gate changed.** EXP-011R re-ran the shipped agent, broker and validator, but used the lessons mined and gated in EXP-009b; the gate's generic-vehicle-word change ([D-038](docs/trackers/decisions.md)) was not re-measured.
 - **Mining misses about 3 in 10 hidden rules** (recall 69–74%), and every lesson still needs a person.
 - **The tool-use loop has not yet improved anything.** In EXP-010 its one patch was correctly rejected (no held-out gain). In EXP-014 a change that passed its paired test made Tool Forge worse, so the paired test is not yet a reliable guard.
 - **The Nov 3–4 experiments (EXP-014 to EXP-019) ran the version that ships at that point,** which changed after EXP-011R; the code, not only the model, differs from Oct 30. Each plan was frozen by hash before its first call ([D-054](docs/trackers/decisions.md)); EXP-018 and EXP-019 were committed with their results, so for those two the frozen file's timestamp is the evidence.
-- **The leak check is our own token check** against the source company's ids, names and vendors, not a formal privacy guarantee.
+- **The leak check is my own token check** against the source company's ids, names and vendors, not a formal privacy guarantee.
 
 Details: [experiments log](docs/trackers/experiments.md) · [decisions](docs/trackers/decisions.md) · [errors and fixes](docs/trackers/errors_and_fixes.md).
 
@@ -153,10 +155,10 @@ Nothing in the runtime is hand-coded world knowledge: no word lists, no site rul
 | Lesson miner and harness proposer | Muse Spark 1.3 | Meta Model API |
 | Voice requests in Telugu / Roman Telugu | Muse Voice Transcribe | Meta Model API |
 
-### Two models, and why we moved between them
+### Two models, and why I moved between them
 - **Oct 27 to Oct 30: Muse Spark Open for the agents.** An early check (EXP-004) found the open-weights model within a point of Muse Spark 1.3 on tool calling, and faster, so every experiment from EXP-005 to EXP-013 that ran an agent used **Muse Spark Open**, served by Baseten, including the final benchmark EXP-011R, and so does every recorded run in the demo. Muse Spark 1.3 mined the lessons and proposed changes throughout.
-- **Nov 1: the credit decision.** About $65 of the $100 Baseten credit had gone on those benchmarks. We kept the rest for the hosted demo and for judges ([D-048](docs/trackers/decisions.md)), and moved our own runs to the Meta Model API: live mode runs **Muse Spark 1.3** ([D-050](docs/trackers/decisions.md)).
-- **Nov 3 to Nov 4: the same questions on Muse Spark 1.3.** So that no conclusion rests on one model, we repeated the main benchmark on Muse Spark 1.3 (EXP-015): it held, 45% → 90% on unwritten rules and 33% → 100% for a new company, 3 of 3 repeats. The team curve (EXP-014), the learned-tool runs (EXP-016, EXP-019) and the scaling check (EXP-018) also ran on Muse Spark 1.3 ([D-054](docs/trackers/decisions.md)).
+- **Nov 1: the credit decision.** About $65 of the $100 Baseten credit had gone on those benchmarks. I kept the rest for the hosted demo and for judges ([D-048](docs/trackers/decisions.md)), and moved my own runs to the Meta Model API: live mode runs **Muse Spark 1.3** ([D-050](docs/trackers/decisions.md)).
+- **Nov 3 to Nov 4: the same questions on Muse Spark 1.3.** So that no conclusion rests on one model, I repeated the main benchmark on Muse Spark 1.3 (EXP-015): it held, 45% → 90% on unwritten rules and 33% → 100% for a new company, 3 of 3 repeats. The team curve (EXP-014), the learned-tool runs (EXP-016, EXP-019) and the scaling check (EXP-018) also ran on Muse Spark 1.3 ([D-054](docs/trackers/decisions.md)).
 - **What differs between them:** lessons and sharing work on both. Learned tools were made and reused only on Muse Spark Open; Muse Spark 1.3 answered the same questions well without them but wrote each one as a different query, so no tool formed.
 
 Every result in the app carries a label saying which model produced it. Muse Voice Transcribe turns spoken requests into text, and code checks everything any model proposes.
@@ -233,14 +235,17 @@ src/anubhav/
   learning/    digest → miner → evidence gate → lesson store → domain packs; truth scoring (evaluation only)
   harness/     how-to-work loop: feedback, trace signals, tool practice, patch gate, versions
   eval/        benchmark case builder and judge
-  ui/          Streamlit helpers and graphs
-app_pages/, streamlit_app.py   the Streamlit demo app
-web/           React app, built into web/dist and served by the API
+  api/         FastAPI app and routes (sessions, runs, lessons, tools, data, workspaces)
+  service/     per-visitor workspaces, live-run caps, runs, proof and evidence views
+  agents/      the team: registry, delegation, Tool Forge
+  ui/          helpers for the early Streamlit prototype
+web/           the front end: React + TypeScript, built into web/dist and served by the API; Playwright tests
+app_pages/, streamlit_app.py   the early Streamlit prototype (kept for reference)
 scripts/       pre-registered experiments (EXP-008 … EXP-019), demo export
 artifacts/     experiment results (JSON, logs)
 demo/          small bundle for the hosted replay
 configs/       world and client-schema configs, agents and their skills
-docs/          PRD, data spec, design notes, experiment and decision logs
+docs/          project guide, PRD, data spec, design notes, experiment and decision logs
 archive/       first prototypes and experiments EXP-001–006 (Oct 27–28)
 tests/         data, runtime, learning, harness, safety (adversarial), eval
 ```
@@ -248,16 +253,16 @@ tests/         data, runtime, learning, harness, safety (adversarial), eval
 ## What's next
 - **Everyday changes, approved by a person.** Today the agents only make drafts. Next, they propose changes to the business's own records, such as a new delivery site, a new order or a corrected address. Code checks each proposal (required fields, likely duplicates, the site and products exist, sensible quantities), a person approves, rejects or edits it, and only then is it written, with an audit entry of who approved it and from which run.
 - **Permissions per agent for those changes.** The tool lists that already keep each agent to its role extend to writes: for example, only the Planner may propose an order and only after a person approves; the Analyst stays read-only. Larger organisations can map these to their own roles.
-- **The team as the organisation grows.** Today one Planner is as accurate as the team (EXP-013). We expect the team's separate duties, per-agent learning and permissions to matter more with more data, more people and write access. That is a hypothesis to measure, not a result.
+- **The team as the organisation grows.** Today one Planner is as accurate as the team (EXP-013). I expect the team's separate duties, per-agent learning and permissions to matter more with more data, more people and write access. That is a hypothesis to measure, not a result.
 - **Learned tools on Muse Spark 1.3.** Routing every query through Tool Forge was not enough (EXP-019). Next: show Tool Forge an earlier query for the same kind of question, or let a person approve a query after 2 requests, each as its own pre-registered experiment.
 - **Real fleets.** A real dispatcher's review of the mined lessons, data from a working fleet, and domain packs shared across more companies and regions.
 
 ## Built during the hackathon
 Everything in this repository was written during the event, starting Oct 27, 2026. The commit history shows it day by day. Third-party open-source libraries are used as dependencies only; see [LICENSES_AND_ATTRIBUTION.md](LICENSES_AND_ATTRIBUTION.md).
 
-**Ideas we built on (reimplemented; no code copied):**
+**Ideas I built on (reimplemented; no code copied):**
 - The tool-use loop follows the Propose–Probe–Compose idea of **Harness²** (Google Research, [arXiv 2610.14224](https://arxiv.org/abs/2610.14224)), in a bounded form: small text patches, a paired old-vs-new test and human approval, with no executable code in patches.
-- Meta's **legal-agent-workshop** (`meta-models/legal-agent-workshop`) suggested the client timeout and retries, a clean stop when a model call fails, and checking the reply's claims in code. All companies, people, sites, trucks and rules are **fictional**, generated by our own code.
+- Meta's **legal-agent-workshop** (`meta-models/legal-agent-workshop`) suggested the client timeout and retries, a clean stop when a model call fails, and checking the reply's claims in code. All companies, people, sites, trucks and rules are **fictional**, generated by my own code.
 
 ## License
 [MIT](LICENSE)

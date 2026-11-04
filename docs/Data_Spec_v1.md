@@ -26,7 +26,7 @@ What the generator builds, and why. It implements [[Data_Benchmark_Blueprint_v1.
 | Source | Verified (2026-10-29) | Licence | What we take |
 |---|---|---|---|
 | Amazon Last Mile Routing Research Challenge (AWS Open Data) | ✅ 9,184 routes; route-, stop- and package-level features | CC BY-NC 4.0 | Multi-stop trip shape, package size spread, stop counts |
-| LaDe last-mile delivery dataset (Cainiao) | ✅ pickup + delivery CSVs, May–Oct 2022 | Research use (exact licence unconfirmed) | Event sequence and timing gaps: loaded → departed → arrived → unloaded → delivered |
+| LaDe last-mile delivery dataset (Cainiao) | ✅ pickup + delivery CSVs, May–Oct 2022 | Apache-2.0 per its Hugging Face card (research use; checked Nov 5) | Event sequence and timing gaps: loaded → departed → arrived → unloaded → delivered |
 | Olist Brazilian e-commerce (Kaggle) | ✅ page exists; tables and licence not confirmed | to confirm | Order → order item → product shape; late-delivery spread |
 | India Post All India Pincode Directory | ✅ Department of Posts | GODL-India (reuse with attribution) | Real town names, districts, PIN codes |
 | OpenStreetMap | known | ODbL (attribution) | Road distances between towns (or haversine × road factor as fallback) |
