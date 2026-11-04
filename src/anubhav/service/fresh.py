@@ -10,7 +10,7 @@ from ..learning import digest, miner, newtools
 from ..learning.store import describe
 from ..agents import registry
 
-MINES_PER_VISIT = 1          # live mining on a public host, per company; each also counts as one live run
+MINES_PER_VISIT = 5          # live mining on a public host, per company; each also counts as one live run (owner, Nov 5: room for retakes)
 
 
 def display(les, C) -> str:

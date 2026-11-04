@@ -25,8 +25,8 @@ from ..runtime.company import CompanyData, Runtime
 WORLD = ROOT / "data" / "worlds" / "full_seed20261104"
 EXP008 = sorted((ROOT / "artifacts" / "learning").glob("exp008_*_rep0.sqlite"))
 DEMO = ROOT / "demo"            # git-tracked bundle for a fresh (hosted) checkout: saved real runs, EXP-008 lessons, practice
-LIVE_RUNS_PER_SESSION = 8       # spend cap for live model calls on a public deployment
-LIVE_CALLS_PER_DAY = 60         # and for the whole app, across every visitor and page (reloading doesn't reset it)
+LIVE_CALLS_PER_DAY = 60         # spend cap for live model calls on a public deployment: the whole app, across every visitor and page (reloading doesn't reset it)
+LIVE_RUNS_PER_SESSION = LIVE_CALLS_PER_DAY   # no separate per-visit limit (owner, Nov 5): nobody runs out mid-visit; the daily caps guard the credit
 LIVE_CALLS_PER_DAY_BY_MODEL = {"open": 30}    # Baseten has the smaller credit, kept for judges (D-048): at most $12 a day
 PUBLIC = os.environ.get("ANUBHAV_PUBLIC") == "1"   # hosted for judges: each visitor gets their own drafts and lessons
 COMPANIES = {"T01": "Sri Kakatiya Logistics", "T02": "Ramappa Carriers", "T03": "Deccan Freight Services",

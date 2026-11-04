@@ -610,6 +610,7 @@ def test_the_records_stage_counts_what_the_miner_reads_without_a_model(env):
 
 def test_learning_needs_live_mode_and_runs_once_per_visit_when_hosted(env, monkeypatch):
     from anubhav.service import fresh
+    monkeypatch.setattr(fresh, "MINES_PER_VISIT", 1)                             # the cap itself, whatever it is set to
     c = client(env)
     c.post("/api/fresh/start?company=T01")
     assert c.post("/api/fresh/learn?company=T01").json()["error"]["code"] == "NO_KEY"   # no key: nothing spent

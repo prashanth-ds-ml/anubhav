@@ -244,7 +244,7 @@ export function ScenarioCards({ onStart }: { onStart: (id: string) => void }) {
                 <p className="small">{s.blurb}</p>
                 <p className="small muted">
                   About {s.minutes} min · {s.kind === "recorded" ? "free" : (s.steps.some((x) => x.live) ? `uses up to ${s.steps.filter((x) => x.live).length} live run${s.steps.filter((x) => x.live).length === 1 ? "" : "s"}` : "uses live voice transcription")}
-                  {s.kind === "live" && budget && <strong className="runs-left"> · {budget.left} of {budget.perVisit} left</strong>}
+                  {s.kind === "live" && budget && <strong className="runs-left"> · {budget.perVisit >= budget.perDay ? `${budget.left} left today` : `${budget.left} of ${budget.perVisit} left`}</strong>}
                 </p>
                 {off ? (
                   <p className="small sc-off">{plainReason(live.reason)} {ws.fresh ? "Switch the workspace to After learning to watch recorded runs." : "The recorded scenarios below replay the same kinds of runs."}</p>
@@ -371,7 +371,7 @@ export function ScenarioGuide({ id, actions, runId, onClose, onLoop, onStart }: 
           </div>
         )
       )}
-      {s.honest && <p className="small sc-honest">{s.honest}{session ? ` ${session.live_runs_left} live runs left in this visit.` : ""}</p>}
+      {s.honest && <p className="small sc-honest">{s.honest}{session ? ` ${session.live_runs_left} live runs left${session.caps && session.caps.per_session >= session.caps.per_day ? " today" : " in this visit"}.` : ""}</p>}
       {note && <p className="small" role="status">{note}</p>}
 
       {open && (

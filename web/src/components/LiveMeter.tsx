@@ -23,15 +23,20 @@ export function LiveMeter({ compact = false }: { compact?: boolean }) {
       </p>
     );
   }
+  // No separate per-visit limit when it is as large as the day's: show what the day has left, without one block per run.
+  const dayOnly = b.perVisit >= b.perDay;
   const label = b.dayLeft === 0
     ? `Today's ${b.perDay} live runs for this demo are used up. Recorded scenarios still work.`
-    : b.visitLeft === 0
-      ? "No live runs left in this visit. Recorded scenarios still work."
-      : `${b.visitLeft} of ${b.perVisit} live runs left in this visit`;
+    : dayOnly
+      ? `${b.dayLeft} of ${b.perDay} live runs left today`
+      : b.visitLeft === 0
+        ? "No live runs left in this visit. Recorded scenarios still work."
+        : `${b.visitLeft} of ${b.perVisit} live runs left in this visit`;
+  const short = dayOnly ? `${b.dayLeft} left today` : `${b.visitLeft} of ${b.perVisit} left`;
   return (
     <div className={`live-meter ${b.left === 0 ? "empty" : ""}`} role="status" aria-live="polite" aria-label={`Live mode, ${modelLabel}. ${label}`}>
       <span className="live-badge"><span className="live-dot" aria-hidden /> LIVE · {modelLabel}</span>
-      {b.left > 0 && (
+      {b.left > 0 && !dayOnly && (
         <span className="live-blocks" aria-hidden>
           {Array.from({ length: b.perVisit }, (_, i) => <span key={i} className={i < b.perVisit - b.visitLeft ? "used" : "left"} />)}
         </span>
@@ -39,7 +44,7 @@ export function LiveMeter({ compact = false }: { compact?: boolean }) {
       {b.left === 0 ? <span className="live-text">{label}</span> : (
         <>
           {!compact && <span className="live-text long">{label}</span>}
-          <span className={`live-text short ${compact ? "always" : ""}`}>{b.visitLeft} of {b.perVisit} left</span>
+          <span className={`live-text short ${compact ? "always" : ""}`}>{short}</span>
         </>
       )}
     </div>

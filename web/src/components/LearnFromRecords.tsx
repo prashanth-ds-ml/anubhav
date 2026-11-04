@@ -43,7 +43,7 @@ export function LearnFromRecords() {
   const [out, setOut] = useState<FreshLearned | null>(null);
   const [problem, setProblem] = useState<string | null>(null);
   const left = st.data?.mines_left;
-  const blocked = !live.ok ? plainReason(live.reason) : left === 0 ? "This visit has already learned from the records once." : null;
+  const blocked = !live.ok ? plainReason(live.reason) : left === 0 ? "This visit has used all its learning runs." : null;
 
   async function go() {
     setProblem(null);
@@ -76,7 +76,7 @@ export function LearnFromRecords() {
         <button type="button" className="send" disabled={stage === "reading" || stage === "mining" || !!blocked} onClick={go}>
           {stage === "reading" ? "Reading the records…" : stage === "mining" ? `${modelLabel} is proposing rules…` : "Learn from the records (live)"}
         </button>
-        {left != null && <span className="small muted">{left} of 1 left in this visit · counts as one live run</span>}
+        {left != null && <span className="small muted">{left} learning {left === 1 ? "run" : "runs"} left in this visit · each counts as one live run</span>}
       </div>
       {blocked && stage === "idle" && <p className="small muted">{blocked}</p>}
       {problem && <p role="alert" className="err-text">{problem}</p>}

@@ -3,15 +3,15 @@ import AxeBuilder from "@axe-core/playwright";
 
 // Sprint 1: six main tabs with addresses, the scenario guide across tabs, and the live runs meter.
 
-/** Make the real session report a live budget, without any key. */
-async function liveSession(page: Page, used: number, leftToday = 50) {
+/** Make the real session report a live budget, without any key. `visitCap` stands in for a per-visit limit (the hosted demo has none now). */
+async function liveSession(page: Page, used: number, leftToday = 50, visitCap?: number) {
   await page.route("**/api/session", async (r) => {
     const res = await r.fetch();
     const s = await res.json();
-    const perVisit = s.caps.per_session;
+    const perVisit = visitCap ?? s.caps.per_session;
     await r.fulfill({
       response: res,
-      json: { ...s, models: { ...s.models, "Muse Spark 1.3": { available: used < perVisit && leftToday > 0, reason: used >= perVisit ? "This session used its 8 live runs. Use Replay, or run it locally." : leftToday === 0 ? "The demo's daily budget of 60 live runs is used up. Use Replay, or run it locally." : null } },
+      json: { ...s, caps: { ...s.caps, per_session: perVisit }, models: { ...s.models, "Muse Spark 1.3": { available: used < perVisit && leftToday > 0, reason: used >= perVisit ? "This session used its 8 live runs. Use Replay, or run it locally." : leftToday === 0 ? "The demo's daily budget of 60 live runs is used up. Use Replay, or run it locally." : null } },
         live_runs_used: used, live_runs_left_today: leftToday, live_runs_left: Math.max(0, Math.min(perVisit - used, leftToday)) },
     });
   });
@@ -71,7 +71,7 @@ test("without a key there is no live meter, just replay", async ({ page }) => {
 });
 
 test("the live meter always shows how many live runs are left, block by block", async ({ page }) => {
-  await liveSession(page, 2);
+  await liveSession(page, 2, 50, 8);
   await page.goto("/");
   const meter = page.getByRole("status", { name: /Live mode, Muse Spark 1.3/ });
   await expect(meter).toContainText("LIVE · Muse Spark 1.3");
@@ -85,7 +85,7 @@ test("the live meter always shows how many live runs are left, block by block", 
 });
 
 test("at zero the meter says so plainly, for the visit and for the day", async ({ page }) => {
-  await liveSession(page, 8);
+  await liveSession(page, 8, 50, 8);
   await page.goto("/");
   await expect(page.locator(".live-meter")).toContainText("No live runs left in this visit. Recorded scenarios still work.");
   await expect(page.getByRole("button", { name: "Start S4", exact: true })).toBeDisabled();
@@ -93,6 +93,16 @@ test("at zero the meter says so plainly, for the visit and for the day", async (
   await liveSession(page, 1, 0);
   await page.reload();
   await expect(page.locator(".live-meter")).toContainText("Today's 60 live runs for this demo are used up. Recorded scenarios still work.");
+});
+
+test("with no per-visit limit the meter counts what the day has left, without blocks", async ({ page }) => {
+  await liveSession(page, 9, 51);
+  await page.goto("/");
+  const meter = page.getByRole("status", { name: /Live mode, Muse Spark 1.3/ });
+  await expect(meter).toContainText("51 of 60 live runs left today");
+  await expect(meter.locator(".live-blocks")).toHaveCount(0);
+  await expect(page.getByRole("article", { name: /^S4 / })).toContainText("51 left today");
+  await expect(page.getByText("No live runs left in this visit")).toHaveCount(0);
 });
 
 test("on a phone the main tabs become a section menu", async ({ page }) => {
