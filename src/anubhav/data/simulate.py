@@ -131,7 +131,7 @@ class Sim:
         return round(km_ / self.cfg["speed_kmh"]["highway"] * 60 + (20 if a != b else 10)), km_
 
     # ---------- run
-    def run(self, with_today=True):
+    def run(self, with_today=True, ahead_days=0):
         for cid, c in self.W.companies.items():
             if c.get("history", True) is False:
                 continue
@@ -139,7 +139,21 @@ class Sim:
                 self.day(cid, c, d)
         if with_today:
             self.today(self.end + timedelta(days=1))
+            if ahead_days:
+                self.ahead(self.end + timedelta(days=1), ahead_days)
         return self.t
+
+    def ahead(self, today, days):
+        """Open orders already booked for the days after today, so a dispatcher has a week to plan. They come last and
+        from their own random streams, so the history, today's orders and every id before them stay exactly the same.
+        Booked on the last day of the history; none is urgent or late (those create planner messages)."""
+        for cid, c in self.W.companies.items():
+            if c.get("history", True) is False:
+                continue
+            for k in range(1, days + 1):
+                d = today + timedelta(days=k)
+                rd = rng(self.cfg, "demand", cid, d, "ahead")
+                self.make_orders(cid, c, d, rd, booked=self.end)     # left open: no holds or changes dated after today
 
     def today(self, d):
         """Open orders waiting to be planned for day d, and each vehicle's current status. Nothing is dispatched."""
@@ -175,7 +189,7 @@ class Sim:
                 self.dispatch(cid, c, d, load, planner, rs, rx)
 
     # ---------- step 2: demand
-    def make_orders(self, cid, c, d, r, today=False):
+    def make_orders(self, cid, c, d, r, today=False, booked=None):
         W, cfg = self.W, self.cfg
         sites = [s for s in W.sites if s["company"] == cid]
         n = max(0, round(r.gauss(c["orders_per_day"] * self.demand_factor(d), 1.5)))
@@ -212,9 +226,9 @@ class Sim:
             for sku, q in items:                       # one line per product, as on a real order
                 merged[sku] = merged.get(sku, 0) + q
             items = sorted(merged.items())
-            urgent = r.random() < cfg["rates"]["urgent"] and not s.get("_min_kg")
-            created = at(d, 9, 0) if urgent else at(d - timedelta(days=1), r.randint(8, 11), r.choice([0, 15, 30, 45]))
-            late = (not urgent) and r.random() < cfg["rates"]["late_order"]
+            urgent = booked is None and r.random() < cfg["rates"]["urgent"] and not s.get("_min_kg")
+            created = at(d, 9, 0) if urgent else at(booked or d - timedelta(days=1), r.randint(8, 11), r.choice([0, 15, 30, 45]))
+            late = booked is None and (not urgent) and r.random() < cfg["rates"]["late_order"]
             if late:
                 created = at(d - timedelta(days=1), r.randint(13, 17), r.choice([0, 20, 40]))
             if s["type"] == "modern_trade":

@@ -32,7 +32,7 @@ test("with live mode on, Start from nothing leads; starting fresh empties the wo
   await liveOn(page);
   await page.goto("/");
   await expect(page.locator(".sc-card.is-live article").first()).toHaveAccessibleName(/^S0 Start from nothing/);   // S0 leads the live ones
-  await page.getByRole("button", { name: "Start S0" }).click();
+  await page.getByRole("button", { name: "Start S0", exact: true }).click();
   const guide = page.getByRole("region", { name: /Scenario S0/ });
   await guide.getByRole("button", { name: "Start fresh" }).click();
   await expect(guide.getByRole("status")).toContainText("Started fresh: 0 lessons · 0 tools · agents at version 1");
@@ -41,9 +41,9 @@ test("with live mode on, Start from nothing leads; starting fresh empties the wo
   await expect(page.getByRole("status", { name: "What this workspace knows" })).toContainText("Fresh start");
   // Fresh start offers only live scenarios; the recorded ones and their lessons come back with After learning.
   await page.goto("/");
-  await expect(page.getByRole("button", { name: "Start S1" })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Start S1", exact: true })).toHaveCount(0);
   await page.getByRole("group", { name: "Workspace" }).getByRole("button", { name: "After learning" }).click();
-  await expect(page.getByRole("button", { name: "Start S1" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Start S1", exact: true })).toBeVisible();
   await page.goto("/#learning/L-T01-002");
   await expect(page.getByRole("article", { name: "Lesson L-T01-002" })).toBeVisible();
 });

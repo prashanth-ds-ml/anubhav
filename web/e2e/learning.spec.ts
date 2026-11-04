@@ -51,7 +51,7 @@ test("a lesson from a shared pack keeps its evidence with the company it came fr
 
 test("S1's learning step lands on the gate lesson", async ({ page }) => {
   await page.goto("/");
-  await page.getByRole("button", { name: "Start S1" }).click();
+  await page.getByRole("button", { name: "Start S1", exact: true }).click();
   const guide = page.getByRole("region", { name: /Scenario S1/ });
   await guide.getByRole("button", { name: "Play the request without lessons" }).click();
   await expect(page.locator(".plan-card").last()).toBeVisible({ timeout: 60_000 });

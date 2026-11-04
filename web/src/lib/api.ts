@@ -132,8 +132,10 @@ export const api = {
   session: () => read<Session | null>("/api/session", null).then(oneSession),
   companies: () => list<CompanyRow>("/api/companies"),
   suggestions: (company: string, useLessons: boolean) => list<Suggestion>(`/api/suggestions?${q(company, { use_lessons: useLessons })}`),
-  orders: (c: string) => read<{ delivery_date: string; orders: Order[] }>(`/api/dashboard/orders?${q(c)}`, { delivery_date: "", orders: [] })
-    .then((r) => ({ delivery_date: obj<{ delivery_date?: string }>(r, {}).delivery_date ?? "", orders: arr<Order>(r?.orders) })),
+  orders: (c: string, day?: string | null) => read<{ delivery_date: string; today?: string; days?: { date: string; open: number }[]; orders: Order[] }>(
+      `/api/dashboard/orders?${q(c)}${day ? `&day=${day}` : ""}`, { delivery_date: "", orders: [] })
+    .then((r) => ({ delivery_date: obj<{ delivery_date?: string }>(r, {}).delivery_date ?? "", today: r?.today ?? "",
+      days: arr<{ date: string; open: number }>(r?.days), orders: arr<Order>(r?.orders) })),
   fleet: (c: string) => read<{ delivery_date: string; vehicles: Vehicle[] }>(`/api/dashboard/fleet?${q(c)}`, { delivery_date: "", vehicles: [] })
     .then((r) => ({ delivery_date: obj<{ delivery_date?: string }>(r, {}).delivery_date ?? "", vehicles: arr<Vehicle>(r?.vehicles) })),
   drafts: (c: string, runId?: string) => read<unknown>(`/api/dashboard/drafts?${q(c, { run_id: runId })}`, {}).then((r) => draftsOf<Draft>(r)),
@@ -183,6 +185,18 @@ export const api = {
   /** This workspace's own before-and-after pairs: a request without lessons, then again with approved lessons. */
   ownPairs: (c: string) => read<OwnPair[]>(`/api/compare?${q(c)}`, []).then((x) => arr<OwnPair>(Array.isArray(x) ? x : (x as unknown as { pairs?: OwnPair[] })?.pairs)
     .map((p) => ({ ...p, before: oneSide<OwnSide>(p?.before)!, after: oneSide<OwnSide>(p?.after)! })).filter((p) => p.before && p.after)),
+};
+
+/** The Data tab: the company's records, as the agents query them. */
+export interface DataTable { table: string; title: string; rows: number; columns: number; date_column: string | null; date_min: string | null; date_max: string | null }
+export interface DataColumn { name: string; type: "INTEGER" | "REAL" | "TEXT"; free_text: boolean }
+export type Cell = string | number | null;
+export interface DataPage { table: string; title: string; date_column: string | null; columns: DataColumn[]; rows: Cell[][]; total: number; offset: number; limit: number; next_offset: number | null }
+export const dataApi = {
+  tables: (c: string) => call<{ tables?: unknown }>(`/api/data/tables?${q(c)}`).then((r) => arr<DataTable>(r?.tables).filter((t) => t && typeof t.table === "string")),
+  rows: (c: string, table: string, from: string, to: string, offset: number) =>
+    call<DataPage>(`/api/data/rows?${q(c, { table, date_from: from, date_to: to, offset: String(offset), limit: "50" })}`)
+      .then((r) => ({ ...r, columns: arr<DataColumn>(r?.columns), rows: arr<Cell[]>(r?.rows).filter(Array.isArray), total: Number(r?.total) || 0, next_offset: r?.next_offset ?? null })),
 };
 
 export interface OwnSide extends CompareSide { model?: string | null; saved_at?: string | null }

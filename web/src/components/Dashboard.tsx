@@ -35,7 +35,8 @@ export function Dashboard({ panel, refreshKey, runId, onPlan }: { panel: Desk; r
   const { company, companies, dataVersion, bumpData } = useSettings();
   const tab = TABS[SLUGS.indexOf(panel)] ?? "Orders";
   const setTab = (t: (typeof TABS)[number]) => go(SLUGS[TABS.indexOf(t)]);
-  const o = useApi(() => api.orders(company), [company, dataVersion], { keep: true });
+  const [orderDay, setOrderDay] = useState<string | null>(null);
+  const o = useApi(() => api.orders(company, orderDay), [company, dataVersion, orderDay], { keep: true });
   const f = useApi(() => api.fleet(company), [company, dataVersion], { keep: true });
   // Every draft in this workspace, kept across asks; and the drafts of the run being viewed, to mark them New.
   const d = useApi(() => api.workspaceDrafts(company), [company, refreshKey, dataVersion], { keep: true });
@@ -146,6 +147,16 @@ export function Dashboard({ panel, refreshKey, runId, onPlan }: { panel: Desk; r
                 Showing the {need.length} {need.length === 1 ? "order" : "orders"} with no draft yet.{" "}
                 <button type="button" className="chip-sm" onClick={() => setOrderFilter("all")}>Show all {orders.length} orders</button>
               </p>
+            )}
+            {(o.data?.days.length ?? 0) > 1 && (
+              <div className="day-chips" role="group" aria-label="Delivery day">
+                {o.data!.days.map((d) => (
+                  <button key={d.date} type="button" className="chip-sm" aria-pressed={d.date === o.data!.delivery_date}
+                    onClick={() => setOrderDay(d.date === o.data!.today ? null : d.date)}>
+                    {d.date === o.data!.today ? "Today" : day(d.date)} ({d.open})
+                  </button>
+                ))}
+              </div>
             )}
             <div className="tablewrap"><table className="orders">
               <caption className="small muted">Open orders for delivery on {day(o.data!.delivery_date)}</caption>

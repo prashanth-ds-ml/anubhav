@@ -20,7 +20,7 @@ test.afterEach(async ({ page }) => { await page.unrouteAll({ behavior: "ignoreEr
 
 async function playS1WithoutLessons(page: Page) {
   await page.goto("/");
-  await page.getByRole("button", { name: "Start S1" }).click();
+  await page.getByRole("button", { name: "Start S1", exact: true }).click();
   const guide = page.getByRole("region", { name: /Scenario S1/ });
   await guide.getByRole("button", { name: "Play the request without lessons" }).click();
   await expect(plan(page)).toBeVisible({ timeout: 60_000 });
@@ -116,7 +116,7 @@ test("S4: retiring the rule leaves a card in the chat, and its Undo brings the r
     await r.fulfill({ json: body });
   });
   await page.goto("/");
-  await page.getByRole("button", { name: "Start S4" }).click();
+  await page.getByRole("button", { name: "Start S4", exact: true }).click();
   const guide = page.getByRole("region", { name: /Scenario S4/ });
   await guide.getByRole("button", { name: "Retire the 22 ft gate rule" }).click();
   const card = page.getByRole("region", { name: "You retired a lesson" });
@@ -137,7 +137,7 @@ test("the first screen fits a 1280×720 laptop: the problem, what it is built on
   await expect(page.getByRole("list", { name: "Built on Meta Muse" })).toContainText("Spark Open");
   await expect(page.getByRole("heading", { name: "Try it", exact: true })).toBeVisible();
   for (const id of ["S1", "S2", "S3"]) {
-    const b = await page.getByRole("button", { name: `Start ${id}` }).boundingBox();
+    const b = await page.getByRole("button", { name: `Start ${id}`, exact: true }).boundingBox();
     const log = await page.locator(".chat-log").boundingBox();
     expect(b!.y + b!.height).toBeLessThanOrEqual(log!.y + log!.height);
   }

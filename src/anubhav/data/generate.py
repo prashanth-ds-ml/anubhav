@@ -14,9 +14,9 @@ from pathlib import Path
 from . import config, people, simulate, store, text, validate, world
 
 
-def generate(cfg, companies, start, end):
+def generate(cfg, companies, start, end, ahead_days=0):
     W = world.build(cfg, companies)
-    t = simulate.Sim(W, start, end).run()
+    t = simulate.Sim(W, start, end).run(ahead_days=ahead_days)
     people.run(W, t, start, end)
     text.run(W, t)
     return W, t
@@ -121,13 +121,14 @@ def main(argv=None):
     ap.add_argument("--config", default=str(config.DEFAULT_CONFIG))
     ap.add_argument("--seed", type=int)
     ap.add_argument("--out", default=str(config.ROOT / "data" / "worlds"))
+    ap.add_argument("--ahead-days", type=int, default=0, help="also book open orders for this many days after today (the hosted demo uses 6)")
     a = ap.parse_args(argv)
     cfg = config.load(a.config, **({"master_seed": a.seed} if a.seed else {}))
     if a.pilot:
         companies, start, end, label = cfg["pilot"]["companies"], str(cfg["pilot"]["start"]), str(cfg["pilot"]["end"]), "pilot"
     else:
         companies, start, end, label = list(cfg["companies"]), str(cfg["period"]["start"]), str(cfg["period"]["end"]), "full"
-    W, t = generate(cfg, companies, start, end)
+    W, t = generate(cfg, companies, start, end, a.ahead_days)
     problems, ev = check(W, t, companies, start, end)
     st = validate.stats(t)
     run_id = f"{label}_seed{cfg['master_seed']}"

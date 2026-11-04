@@ -17,25 +17,25 @@ async function liveOn(page: Page) {
   });
 }
 
-test("ten scenarios, each saying whether it is recorded or live; without keys the live ones say why and stay closed", async ({ page }) => {
+test("eleven scenarios, each saying whether it is recorded or live; without keys the live ones say why and stay closed", async ({ page }) => {
   await home(page);
   const cards = page.locator(".sc-card article");
-  await expect(cards).toHaveCount(10);
+  await expect(cards).toHaveCount(11);
   for (const id of ["S1", "S2", "S3"]) {
     const c = page.getByRole("article", { name: new RegExp(`^${id} `) });
     await expect(c).toContainText("Recorded · watch it");
     await expect(c).toContainText("free");
-    await expect(c.getByRole("button", { name: `Start ${id}` })).toBeEnabled();
+    await expect(c.getByRole("button", { name: `Start ${id}`, exact: true })).toBeEnabled();
   }
   const s6 = page.getByRole("article", { name: /^S6 / });
   await expect(s6).toContainText("Recorded data · explore it");
   await expect(s6).toContainText("free");
   await expect(cards.last()).toHaveAccessibleName(/^S9 /);   // without live mode the live group comes after the recorded one
-  for (const id of ["S0", "S4", "S5", "S7", "S8", "S9"]) {
+  for (const id of ["S0", "S4", "S5", "S7", "S8", "S9", "S10"]) {
     const c = page.getByRole("article", { name: new RegExp(`^${id} `) });
     await expect(c).toContainText("Live · you run it");
     await expect(c).toContainText(/Live mode is off on this demo/);
-    await expect(c.getByRole("button", { name: `Start ${id}` })).toBeDisabled();
+    await expect(c.getByRole("button", { name: `Start ${id}`, exact: true })).toBeDisabled();
   }
   const axe = await new AxeBuilder({ page }).include(".scenarios").analyze();
   expect(axe.violations.map((v) => v.id)).toEqual([]);
@@ -43,7 +43,7 @@ test("ten scenarios, each saying whether it is recorded or live; without keys th
 
 test("S1 plays the recorded request without lessons, then with them, and ticks each step", async ({ page }) => {
   await home(page);
-  await page.getByRole("button", { name: "Start S1" }).click();
+  await page.getByRole("button", { name: "Start S1", exact: true }).click();
   const guide = page.getByRole("region", { name: /Scenario S1/ });
   await expect(guide).toBeVisible();
   await guide.getByRole("button", { name: "Play the request without lessons" }).click();
@@ -63,7 +63,7 @@ test("S1 plays the recorded request without lessons, then with them, and ticks e
 
 test("S3 switches to the new company first", async ({ page }) => {
   await home(page);
-  await page.getByRole("button", { name: "Start S3" }).click();
+  await page.getByRole("button", { name: "Start S3", exact: true }).click();
   await page.getByRole("button", { name: "Switch to the new company" }).click();
   await expect(page.getByRole("combobox", { name: "Company" })).toHaveValue("TNEW");
   await page.getByRole("button", { name: "Play the request without shared lessons" }).click();
@@ -80,7 +80,7 @@ test("S4 retires the rule in this visitor's own store, sends the request live, a
     await r.fulfill({ json: { run_id: "fae8975894", mode: "live" } });
   });
   await home(page);
-  await page.getByRole("button", { name: "Start S4" }).click();
+  await page.getByRole("button", { name: "Start S4", exact: true }).click();
   const guide = page.getByRole("region", { name: /Scenario S4/ });
   await expect(guide).toContainText("In our own test each step behaved as described once");
 
@@ -115,7 +115,7 @@ test("with live mode on, a typed request that matches no saved run goes to the m
 // ---- polish (Nov 2): the payoff is on screen, not buried in text
 test("a plan card shows the truck and whether it fits the learned gate rule: 32 ft fails, 22 ft fits", async ({ page }) => {
   await home(page);
-  await page.getByRole("button", { name: "Start S1" }).click();
+  await page.getByRole("button", { name: "Start S1", exact: true }).click();
   await page.getByRole("button", { name: "Play the request without lessons" }).click();
   const bad = page.locator(".plan-card").last();
   await expect(bad).toContainText("32 ft", { timeout: 60_000 });
@@ -144,7 +144,7 @@ test("a link opens a scenario directly, the stepper shows one step at a time, an
 
 test("S2's approve step ticks only once a tool is approved, and New tools leads with the right candidate", async ({ page }) => {
   await home(page);
-  await page.getByRole("button", { name: "Start S2" }).click();
+  await page.getByRole("button", { name: "Start S2", exact: true }).click();
   const guide = page.getByRole("region", { name: /Scenario S2/ });
   await guide.getByRole("button", { name: "Ask the Telugu data question" }).click();
   await guide.getByRole("button", { name: "Check and approve the query as a tool" }).click();

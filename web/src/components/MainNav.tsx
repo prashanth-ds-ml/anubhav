@@ -1,10 +1,10 @@
 import { go, MAIN, type Main } from "../lib/route";
 
 export const MAIN_LABEL: Record<Main, string> = {
-  desk: "Dispatch Desk", learning: "Learning", tools: "Tools", agents: "Agents", runs: "Runs", proof: "Proof & audit",
+  desk: "Dispatch Desk", learning: "Learning", tools: "Tools", agents: "Agents", runs: "Runs", data: "Data", proof: "Proof & audit",
 };
 
-/** The six main tabs. On a phone they become a section menu. */
+/** The main tabs. On a phone they become a section menu. */
 export function MainNav({ current, narrow }: { current: Main; narrow: boolean }) {
   if (narrow) {
     return (

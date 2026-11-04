@@ -8,6 +8,7 @@ import { NewTools } from "./components/NewTools";
 import { AgentCards } from "./components/AgentCards";
 import { Proof } from "./components/Proof";
 import { Runs } from "./components/Runs";
+import { DataTab } from "./components/DataTab";
 import { LiveMeter } from "./components/LiveMeter";
 import { WorkspaceSwitch } from "./components/WorkspaceSwitch";
 import { ModelPicker } from "./components/ModelPicker";
@@ -171,6 +172,7 @@ export default function App() {
             {route.main === "tools" && <NewTools onAsk={(label) => { go("desk"); setAsk((a) => ({ label, n: a.n + 1 })); }} />}
             {route.main === "agents" && <AgentCards />}
             {route.main === "runs" && <Runs item={route.item} />}
+            {route.main === "data" && <DataTab />}
             {route.main === "proof" && <Proof item={route.item} />}
             </ErrorBoundary>
             </section>

@@ -12,6 +12,7 @@ const TABS: [string, string][] = [
   ["/#tools", "Repeated questions that could become tools"],
   ["/#agents", "Each agent has its own way to learn"],
   ["/#runs", "Runs you can inspect"],
+  ["/#data", "The records the agents work on"],
   ["/#proof/bench", "Every experiment we pre-registered, including the ones that failed"],
   ["/#proof/claims", "Not measured yet"],
 ];

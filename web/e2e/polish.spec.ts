@@ -120,7 +120,7 @@ test("inside a cross-site frame (the Hugging Face Space page) the visitor is kep
     } catch { /* the test ended while this was in flight */ }
   });
   await page.goto("/");
-  await page.getByRole("button", { name: "Start S0" }).click();
+  await page.getByRole("button", { name: "Start S0", exact: true }).click();
   const guide = page.getByRole("region", { name: /Scenario S0/ });
   await guide.getByRole("button", { name: "Start fresh" }).click();
   await expect(guide.getByRole("status")).toContainText("Started fresh: 0 lessons");

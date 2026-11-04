@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 // Every main tab, and every panel of the Dispatch Desk, has an address, so a link can open it directly.
 // #learning, #runs … open a main tab; #plans, #ledger … open the Desk on that panel (the older single-level addresses).
 // Anything after a "/" is the item inside the tab (#learning/L-T01-002), kept for the page to read.
-export const MAIN = ["desk", "learning", "tools", "agents", "runs", "proof"] as const;
+export const MAIN = ["desk", "learning", "tools", "agents", "runs", "data", "proof"] as const;
 export const DESK = ["orders", "plans", "fleet", "company", "ledger"] as const;
 export type Main = (typeof MAIN)[number];
 export type Desk = (typeof DESK)[number];

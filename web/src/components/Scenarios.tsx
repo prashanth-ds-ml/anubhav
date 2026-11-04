@@ -179,12 +179,25 @@ export const SCENARIOS: Scenario[] = [
     proves: "Day planning for a small fleet: drafts for every open order in one request, each checked by code, each waiting for a person.",
     honest: "Live; uses 1 live run. A model can plan differently each time; every draft still passes the same code checks.",
     steps: [
-      { label: "Ask for tomorrow's plan", caption: "\"Repu open orders anni ki trucks plan cheyyi. Draft matrame, dispatch cheyyaku.\" It reads the day's board (orders, sites, free trucks) and drafts trucks.", live: true,
+      { label: "Ask for tomorrow's plan", caption: "\"Repu open orders anni ki trucks plan cheyyi. Draft matrame, dispatch cheyyaku.\" It reads the day's board (orders, sites, free trucks) and drafts trucks. Orders for the following days are there too: try one of them next.", live: true,
         act: (a) => a.runLive("Repu open orders anni ki trucks plan cheyyi. Draft matrame, dispatch cheyyaku.") },
       { label: "Review the drafts", caption: "On the right, Route plans and drafts lists every draft with its truck, load and stops. Nothing is dispatched.", act: (a) => a.openTab("plans") },
       { label: "Approve one, reject one with a note", caption: "Approving re-checks the plan in code and still does not dispatch. A rejection keeps your note with the draft.", act: (a) => a.openTab("plans"), loop: "Approve" },
     ],
     evidence: [{ label: "The day board tool and the draft checks (runtime/broker.py)", href: `${REPO}src/anubhav/runtime/broker.py` }],
+  },
+  {
+    id: "S10", title: "Look at the week ahead", kind: "live", minutes: 2, company: "T01", fresh: true,
+    blurb: "Which day has the most to deliver? Then plan that day.",
+    proves: "The team works across days: Tool Forge totals the week's open orders in one query, and the Planner plans the busiest day as drafts.",
+    honest: "Live; uses up to 2 live runs. Open orders are booked for the next six days; a model can total or plan them differently each time.",
+    steps: [
+      { label: "Ask for the week's load", caption: "\"Raboye 6 rojullo prathi roju entha load undi? Tonnes lo cheppu, ekkuva unna roju edi?\" (How much load each day for the next 6 days, in tonnes, and which day is busiest?)", live: true,
+        act: (a) => a.runLive("Raboye 6 rojullo prathi roju entha load undi? Tonnes lo cheppu, ekkuva unna roju edi?") },
+      { label: "See the days on the right", caption: "In Orders, the day buttons show each day's open orders; pick the busiest one.", act: (a) => a.openTab("orders") },
+      { label: "Plan the busiest day", caption: "Ask it to plan that day as drafts. Each draft is checked by code and waits for a person.", act: (a) => a.focusBox() },
+    ],
+    evidence: [{ label: "How a data question becomes one read-only query (runtime/query.py)", href: `${REPO}src/anubhav/runtime/query.py` }],
   },
   {
     id: "S8", title: "Ask about your business", kind: "live", minutes: 2, company: "T01", fresh: true,

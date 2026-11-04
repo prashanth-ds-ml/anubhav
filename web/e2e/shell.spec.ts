@@ -17,10 +17,10 @@ async function liveSession(page: Page, used: number, leftToday = 50) {
   });
 }
 
-test("six main tabs, each with an address; the Desk keeps only the company's data", async ({ page }) => {
+test("seven main tabs, each with an address; the Desk keeps only the company's data", async ({ page }) => {
   await page.goto("/");
   const main = page.getByRole("tablist", { name: "Main" });
-  await expect(main.getByRole("tab")).toHaveText(["Dispatch Desk", "Learning", "Tools", "Agents", "Runs", "Proof & audit"]);
+  await expect(main.getByRole("tab")).toHaveText(["Dispatch Desk", "Learning", "Tools", "Agents", "Runs", "Data", "Proof & audit"]);
   await expect(main.getByRole("tab", { name: "Dispatch Desk" })).toHaveAttribute("aria-selected", "true");
   await expect(page.getByRole("tablist", { name: "Company data" }).getByRole("tab")).toHaveText(["Orders", "Route plans and drafts", "Fleet", "Company", "Ledger"]);
 
@@ -49,7 +49,7 @@ test("the runs list opens each run's full record", async ({ page }) => {
 
 test("the scenario guide stays on screen across main tabs, and a run step brings you back to the Desk", async ({ page }) => {
   await page.goto("/");
-  await page.getByRole("button", { name: "Start S1" }).click();
+  await page.getByRole("button", { name: "Start S1", exact: true }).click();
   const guide = page.getByRole("region", { name: /Scenario S1/ });
   await guide.getByRole("button", { name: "Play the request without lessons" }).click();
   await expect(page.locator(".plan-card").last()).toBeVisible({ timeout: 60_000 });
@@ -88,7 +88,7 @@ test("at zero the meter says so plainly, for the visit and for the day", async (
   await liveSession(page, 8);
   await page.goto("/");
   await expect(page.locator(".live-meter")).toContainText("No live runs left in this visit. Recorded scenarios still work.");
-  await expect(page.getByRole("button", { name: "Start S4" })).toBeDisabled();
+  await expect(page.getByRole("button", { name: "Start S4", exact: true })).toBeDisabled();
   await page.unrouteAll();
   await liveSession(page, 1, 0);
   await page.reload();

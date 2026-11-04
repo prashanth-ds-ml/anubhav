@@ -6,7 +6,7 @@ import time
 from pathlib import Path
 from typing import Literal
 
-from fastapi import APIRouter, Header, Request
+from fastapi import APIRouter, Header, Query, Request
 from fastapi.concurrency import run_in_threadpool
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, ConfigDict, Field
@@ -20,8 +20,8 @@ from ..learning.store import describe
 from ..runtime.broker import Broker, Session
 from ..runtime.company import CompanyData
 from ..runtime.query import sandbox
-from ..service import checkpoints, evidence, fresh, knowledge, proof as proof_files, run_view, runs, stream, views
-from ..service.session import AGENT_MODEL, COMPANIES, LIVE_CALLS_PER_DAY, LIVE_RUNS_PER_SESSION, MODELS, SUGGESTIONS, Workspace, harness_store
+from ..service import checkpoints, data_view, evidence, fresh, knowledge, proof as proof_files, run_view, runs, stream, views
+from ..service.session import AGENT_MODEL, COMPANIES, LIVE_CALLS_PER_DAY, LIVE_RUNS_PER_SESSION, MODELS, SUGGESTIONS, Workspace, harness_store, shared_company
 from ..ui import logs
 from .deps import ApiError, Cid, LocalOnly, Ws, live
 
@@ -135,8 +135,8 @@ def reset_drafts(company: str = Cid, ws: Workspace = Ws):
 
 # ---------- dashboard
 @api.get("/dashboard/orders")
-def dash_orders(company: str = Cid, ws: Workspace = Ws):
-    return views.orders(ws, company)
+def dash_orders(company: str = Cid, day: str | None = Query(None, pattern=r"^\d{4}-\d{2}-\d{2}$"), ws: Workspace = Ws):
+    return views.orders(ws, company, day)
 
 
 @api.get("/dashboard/fleet")
@@ -881,3 +881,25 @@ def log_models(company: str = Cid, ws: Workspace = Ws):
 @api.get("/report/weekly")
 def weekly(company: str = Cid, ws: Workspace = Ws):
     return {"company": company, "markdown": report.weekly(ws.store(), company, ws.company(company))}
+
+
+# ---------- data: the company's records, as the agents query them (read-only, the same for every visitor)
+def _records(ws, cid):
+    C = shared_company(cid, ws.world)
+    return sandbox(C), C.today
+
+
+@api.get("/data/tables")
+def data_tables(company: str = Cid, ws: Workspace = Ws):
+    sb, today = _records(ws, company)
+    return {"company": company, "today": today, "tables": data_view.tables(sb, today)}
+
+
+@api.get("/data/rows")
+def data_rows(table: str, company: str = Cid, date_from: str | None = None, date_to: str | None = None, offset: int = Query(0, ge=0),
+              limit: int = Query(data_view.PAGE, ge=1), ws: Workspace = Ws):
+    sb, today = _records(ws, company)
+    try:
+        return {"company": company, **data_view.rows(sb, today, table, date_from, date_to, offset, limit)}
+    except data_view.DataError as e:
+        raise ApiError(e.status, e.code, e.message)

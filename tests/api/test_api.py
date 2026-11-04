@@ -80,7 +80,8 @@ def test_the_route_list_above_is_complete(env):
              "/api/runs/{run_id}", "/api/runs/{run_id}/feedback", "/api/learning/lessons/{lesson_id}/decide", "/api/tools/candidates/{key}/check",
              "/api/tools/{tool_id}/decide", "/api/tools/{tool_id}/retire", "/api/packs/publish", "/api/packs/revoke", "/api/review/run",
              "/api/dashboard/drafts/{draft_id}/decide", "/api/handoffs", "/api/runs/{run_id}/resume", "/api/compare", "/api/agents/{agent_id}", "/api/harness/{version_id}/probe", "/api/harness/{version_id}/decide", "/api/logs/runs/{run_id}", "/api/voice", "/api/learning/lessons/{lesson_id}/evidence",
-             "/api/runs/{run_id}/steps", "/api/fresh/status", "/api/fresh/start", "/api/fresh/restore", "/api/fresh/set-aside", "/api/tools/health", "/api/tools/{tool_id}/repair", "/api/fresh/records", "/api/fresh/learn"}
+             "/api/runs/{run_id}/steps", "/api/fresh/status", "/api/fresh/start", "/api/fresh/restore", "/api/fresh/set-aside", "/api/tools/health", "/api/tools/{tool_id}/repair", "/api/fresh/records", "/api/fresh/learn",
+             "/api/data/tables", "/api/data/rows"}
     normal = {p.replace("/analyst", "/{agent_id}").replace("/h-001/", "/{version_id}/") for p in tested}
     assert paths <= normal | other, paths - normal - other
 
@@ -988,3 +989,68 @@ def test_hosted_state_can_live_on_a_persistent_disk(tmp_path, monkeypatch):
     assert ws._spend_file().parent == tmp_path / "disk" / "worlds" / "w1" / "runtime"
     monkeypatch.setattr(sess, "STATE", None)
     assert sess.Workspace("abc123def456", True, {}, tmp_path / "worlds" / "w1").store_path().parent == tmp_path / "worlds" / "w1" / "learning" / "sessions"
+
+
+# ---------- the Data tab: the company's records, as the agents query them
+def test_data_tables_lists_the_canonical_tables_first_the_ones_judges_want(env):
+    c = client(env)
+    r = c.get("/api/data/tables?company=T01")
+    assert r.status_code == 200, r.text
+    ts = r.json()["tables"]
+    names = [t["table"] for t in ts]
+    assert names[:3] == ["orders", "order_items", "shipments"]
+    assert {"trip_outcomes", "vehicles", "sites", "driver_notes", "planner_messages", "products"} <= set(names)
+    orders = ts[0]
+    assert orders["title"] == "Orders" and orders["rows"] > 100 and orders["date_column"] == "delivery_date"
+    assert orders["date_min"] <= orders["date_max"]
+    assert next(t for t in ts if t["table"] == "vehicles")["date_column"] is None     # expiry dates are not a record's date
+    assert c.get("/api/data/tables?company=NOPE").status_code == 404
+
+
+def test_data_rows_page_by_page(env):
+    c = client(env)
+    total = next(t["rows"] for t in c.get("/api/data/tables").json()["tables"] if t["table"] == "orders")
+    a = c.get("/api/data/rows?company=T01&table=orders&limit=50").json()
+    assert a["total"] == total and len(a["rows"]) == 50 and a["offset"] == 0 and a["next_offset"] == 50
+    assert [col["name"] for col in a["columns"]][:2] == ["order_id", "site_id"]
+    b = c.get("/api/data/rows?company=T01&table=orders&offset=50&limit=50").json()
+    assert b["offset"] == 50 and not {r[0] for r in a["rows"]} & {r[0] for r in b["rows"]}
+    last = c.get(f"/api/data/rows?company=T01&table=orders&offset={total - 3}").json()
+    assert len(last["rows"]) == 3 and last["next_offset"] is None
+    notes = c.get("/api/data/rows?table=driver_notes&limit=5").json()
+    assert next(col for col in notes["columns"] if col["name"] == "text")["free_text"] is True
+
+
+def test_data_rows_date_filter(env):
+    c = client(env)
+    meta = next(t for t in c.get("/api/data/tables").json()["tables"] if t["table"] == "orders")
+    day = meta["date_max"]
+    r = c.get(f"/api/data/rows?table=orders&date_from={day}&date_to={day}").json()
+    assert 0 < r["total"] < meta["rows"] and all(row[3] == day for row in r["rows"])     # delivery_date is the 4th column
+    none = c.get("/api/data/rows?table=orders&date_from=1999-01-01&date_to=1999-01-02").json()
+    assert none["total"] == 0 and none["rows"] == [] and none["next_offset"] is None
+    assert c.get("/api/data/rows?table=orders&date_from=yesterday").status_code == 422
+    assert c.get("/api/data/rows?table=vehicles&date_from=2026-01-01").status_code == 422   # no date to filter on
+
+
+def test_data_rows_refuses_unknown_tables_and_caps_the_page(env):
+    c = client(env)
+    for bad in ("nope", "sqlite_master", "orders; drop table orders", 'orders" --'):
+        r = c.get("/api/data/rows", params={"table": bad})
+        assert r.status_code == 404 and r.json()["error"]["code"] == "NOT_FOUND"
+    r = c.get("/api/data/rows?table=orders&limit=5000").json()
+    assert r["limit"] == 100 and len(r["rows"]) == 100
+    assert c.get("/api/data/rows?table=orders&limit=0").status_code == 422
+    assert c.get("/api/data/rows?table=orders&offset=-1").status_code == 422
+    assert c.get("/api/data/rows?table=orders&company=T02").json()["rows"][0][0].startswith("T02-")
+
+
+def test_the_orders_panel_lists_the_days_with_open_orders_and_one_day_at_a_time(env):
+    c = client(env)
+    c.get("/api/session")
+    r = c.get("/api/dashboard/orders?company=T01").json()
+    assert r["delivery_date"] == r["today"] and r["days"] and r["days"][0]["date"] == r["today"]
+    assert r["days"][0]["open"] == len(r["orders"])
+    past = c.get("/api/dashboard/orders?company=T01&day=2026-08-01").json()
+    assert past["delivery_date"] == r["today"]                                  # a past day falls back to today
+    assert c.get("/api/dashboard/orders?company=T01&day=tomorrow").status_code == 422

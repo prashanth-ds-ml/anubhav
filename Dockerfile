@@ -30,7 +30,7 @@ COPY archive/prototype_experiments/artifacts/baseline archive/prototype_experime
 RUN uv sync --frozen --no-dev
 
 # The demo world is built into the image, so the first visitor doesn't wait about a minute for it
-RUN .venv/bin/python -m anubhav.data.generate --full && chown -R anubhav:anubhav /app
+RUN .venv/bin/python -m anubhav.data.generate --full --ahead-days 6 && chown -R anubhav:anubhav /app
 
 USER anubhav
 EXPOSE 7860

@@ -82,11 +82,18 @@ def lessons_used(r):
 
 
 # ---------- dashboard
-def orders(ws, cid):
+def orders(ws, cid, day=None):
+    """Open orders for one delivery day (today by default), and every day from today on that has open orders."""
     b, _ = ws.broker(cid, False)
-    drafted = b.C.runtime.orders_in_drafts(b.C.today)
-    rows = list_open_orders(b, ListOpenOrders())["orders"]
-    return {"delivery_date": b.C.today, "orders": [dict(o, in_draft=o["order_id"] in drafted) for o in rows]}
+    d = day if day and day >= b.C.today else b.C.today
+    drafted = b.C.runtime.orders_in_drafts(d)
+    rows = list_open_orders(b, ListOpenOrders(delivery_date=d))["orders"]
+    days = {}
+    for o in b.C.orders.values():
+        if o.get("status") == "open" and (o.get("delivery_date") or "") >= b.C.today:
+            days[o["delivery_date"]] = days.get(o["delivery_date"], 0) + 1
+    return {"delivery_date": d, "today": b.C.today, "days": [{"date": k, "open": n} for k, n in sorted(days.items())],
+            "orders": [dict(o, in_draft=o["order_id"] in drafted) for o in rows]}
 
 
 def fleet(ws, cid):
