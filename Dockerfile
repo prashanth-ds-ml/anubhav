@@ -12,7 +12,7 @@ RUN npm run build
 # Stage 2: the API, serving web/dist at /
 FROM python:3.12-slim
 
-ENV UV_LINK_MODE=copy PYTHONUNBUFFERED=1 ANUBHAV_PUBLIC=1 ANUBHAV_START_FRESH=1 ANUBHAV_STATE_DIR=/data/anubhav PORT=7860
+ENV UV_LINK_MODE=copy PYTHONUNBUFFERED=1 ANUBHAV_PUBLIC=1 ANUBHAV_START_FRESH=1 ANUBHAV_STATE_DIR=/data/anubhav ANUBHAV_WORLD_END=today PORT=7860
 RUN apt-get update && apt-get install -y --no-install-recommends libportaudio2 && rm -rf /var/lib/apt/lists/* \
     && pip install --no-cache-dir uv==0.9.5 \
     && useradd -m -u 1000 anubhav
@@ -30,7 +30,7 @@ COPY archive/prototype_experiments/artifacts/baseline archive/prototype_experime
 RUN uv sync --frozen --no-dev
 
 # The demo world is built into the image, so the first visitor doesn't wait about a minute for it
-RUN .venv/bin/python -m anubhav.data.generate --full --ahead-days 6 && chown -R anubhav:anubhav /app
+RUN .venv/bin/python -m anubhav.data.generate --full --end today --ahead-days 5 && chown -R anubhav:anubhav /app
 
 USER anubhav
 EXPOSE 7860

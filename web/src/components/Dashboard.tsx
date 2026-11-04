@@ -153,7 +153,7 @@ export function Dashboard({ panel, refreshKey, runId, onPlan }: { panel: Desk; r
                 {o.data!.days.map((d) => (
                   <button key={d.date} type="button" className="chip-sm" aria-pressed={d.date === o.data!.delivery_date}
                     onClick={() => setOrderDay(d.date === o.data!.today ? null : d.date)}>
-                    {d.date === o.data!.today ? "Today" : day(d.date)} ({d.open})
+                    {d.date === o.data!.today ? "Tomorrow" : day(d.date)} ({d.open})
                   </button>
                 ))}
               </div>

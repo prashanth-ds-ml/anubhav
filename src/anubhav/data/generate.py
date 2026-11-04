@@ -122,12 +122,17 @@ def main(argv=None):
     ap.add_argument("--seed", type=int)
     ap.add_argument("--out", default=str(config.ROOT / "data" / "worlds"))
     ap.add_argument("--ahead-days", type=int, default=0, help="also book open orders for this many days after today (the hosted demo uses 6)")
+    ap.add_argument("--end", help="last day of the history: YYYY-MM-DD, or 'today' (the hosted demo: the planner's today is the real date, open orders start tomorrow)")
     a = ap.parse_args(argv)
     cfg = config.load(a.config, **({"master_seed": a.seed} if a.seed else {}))
     if a.pilot:
         companies, start, end, label = cfg["pilot"]["companies"], str(cfg["pilot"]["start"]), str(cfg["pilot"]["end"]), "pilot"
     else:
         companies, start, end, label = list(cfg["companies"]), str(cfg["period"]["start"]), str(cfg["period"]["end"]), "full"
+        if a.end:       # the history runs from the configured start to this day; the planted rules' dates all fall inside it
+            from datetime import date, timedelta
+            end = {"today": date.today(), "yesterday": date.today() - timedelta(days=1)}.get(a.end) or date.fromisoformat(a.end)
+            end = end.isoformat()
     W, t = generate(cfg, companies, start, end, a.ahead_days)
     problems, ev = check(W, t, companies, start, end)
     st = validate.stats(t)

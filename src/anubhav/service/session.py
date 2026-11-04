@@ -49,11 +49,18 @@ _SEED_LOCK = threading.Lock()      # one new visitor's first requests arrive tog
 
 
 def ensure_world(world=WORLD):
-    """A fresh checkout has no data/ (git-ignored): generate the demo world from its seed. Deterministic, ~1 minute."""
+    """A fresh checkout has no data/ (git-ignored): generate the demo world from its seed. Deterministic, ~1 minute.
+    With ANUBHAV_WORLD_END=today (the hosted demo), the history runs through today: the planner's today is the real
+    date and the open orders start tomorrow. A world from an earlier day is generated again at start-up. The planted
+    rules' dates all fall inside the history."""
+    from datetime import date
     with _WORLD_LOCK:
-        if not (Path(world) / "manifest.json").exists():
+        m = Path(world) / "manifest.json"
+        live = os.environ.get("ANUBHAV_WORLD_END") == "today"
+        stale = live and m.exists() and json.loads(m.read_text(encoding="utf-8"))["window"][1] != date.today().isoformat()
+        if not m.exists() or stale:
             from ..data import generate
-            generate.main(["--full"])
+            generate.main(["--full", *(["--end", "today", "--ahead-days", os.environ.get("ANUBHAV_AHEAD_DAYS", "5")] if live else [])])
     return world
 
 
