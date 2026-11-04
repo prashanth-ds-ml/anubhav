@@ -31,10 +31,15 @@ def fresh_since(ws):
 
 
 def in_workspace(r, ws, path):
-    """In a "Fresh start" workspace the lists and counts hold only this visitor's runs since it was started or reset;
-    the recorded runs belong to the "After learning" workspace. A recorded run can still be replayed by id."""
-    since = fresh_since(ws)
-    return since is None or (path != DEMO_RUNS and (r.get("saved_at") or "") >= since)
+    """Hosted, each workspace lists its own runs: Fresh start only the runs made there since it was started or reset;
+    After learning the recorded runs and the runs made there (runs from before workspaces were tagged count as After
+    learning). A recorded run can still be replayed by id."""
+    if ws is None or not ws.public:
+        return True
+    if ws.mode == "fresh":
+        since = ws.state.get("fresh_since") or ""
+        return path != DEMO_RUNS and r.get("workspace") == "fresh" and (r.get("saved_at") or "") >= since
+    return path == DEMO_RUNS or r.get("workspace", "learned") != "fresh"
 
 
 def since_start(rows, ws, key="ts"):
@@ -138,7 +143,7 @@ def run_with(ws: Workspace, client, cid, request, use_lessons, history=(), team=
         r = graph.run(b, client, request, knowledge=knowledge, harness=harness, history=turns, about=ws.about(cid), hooks=hooks, run_id=run_id, supervised=True, resume=state)
         r["learned_tools"] = [t.name for t in b.list_tools() if t.category == "learned_tools"]
     if ws.public:
-        r["visitor"] = ws.sid
+        r["visitor"], r["workspace"] = ws.sid, ws.mode
     if resume:
         r["resumed_from"] = resume["run_id"]
     state = r.pop("checkpoint")
@@ -169,7 +174,7 @@ def mine_with_agent(ws: Workspace, client, cid):
     r = team_mode.run(ws.company(cid), Session(cid, "dispatcher", "demo"), client, team_mode.MINE_BRIEF, lead_agent="lesson_miner", analysis=True,
                       lesson_store=ws.store(), knowledge_by_agent=knowledge, harnesses=harness_store().active_all())
     if ws.public:
-        r["visitor"] = ws.sid
+        r["visitor"], r["workspace"] = ws.sid, ws.mode
     trace.save(r, label=f"ui:{cid}:mine")
     return r
 

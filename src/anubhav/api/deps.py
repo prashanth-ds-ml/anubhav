@@ -63,7 +63,9 @@ class Visitors:
             if known:
                 return Workspace(sid, True, self.state(sid), world)
             ws = Workspace(sid, True, {}, world)
-            if ws.store_path().exists():
+            from ..service.session import state_root
+            seen = state_root(world) / "learning" / "sessions"
+            if any((seen / n).exists() for n in (f"{sid}.mode.json", f"{sid}.sqlite", f"{sid}-fresh.sqlite")):
                 fresh.recall(ws)
             elif start_fresh:
                 fresh.start_all(ws)

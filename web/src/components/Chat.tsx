@@ -101,12 +101,17 @@ export function Chat({ onEvents, prefill, ask, scenario, onStartScenario, action
   onEvents: (e: RunEvent[], runId: string | null) => void; prefill: { text: string; n: number }; ask: { label: string; n: number };
   scenario: string | null; onStartScenario: (id: string) => void; actionsRef: MutableRefObject<ScenarioActions | null>;
 }) {
-  const { company, setCompany, useLessons, setUseLessons, requests, session, ready, live, refreshSession, bumpData, model, modelLabel } = useSettings();
+  const { company, setCompany, useLessons, setUseLessons, requests, session, ready, live, refreshSession, bumpData, model, modelLabel, setWsMode } = useSettings();
   const ws = useWorkspace();
   const noLessons = !ws.unreachable && (!ws.loaded || ws.activeLessons === 0);   // disabled until the workspace is known
   const pending = useRef<{ label: string; lessons?: boolean; done: () => void } | null>(null); // a saved request a scenario asked for before the list loaded
   const waiting = useRef<string | null>(null); // text sent before the saved requests loaded
   const [msgs, setMsgs] = useState<Msg[]>([]);
+  // Each workspace keeps its own conversation on screen: switching shows that workspace's chat, nothing is lost.
+  const stash = useRef<Record<string, Msg[]>>({});
+  const shownMode = useRef<string | null>(null);
+  const msgsNow = useRef<Msg[]>([]);
+  msgsNow.current = msgs;
   const [draft, setDraft] = useState("");
   const [banner, setBanner] = useState<string | null>(null);
   const [heard, setHeard] = useState<string | null>(null);
@@ -140,7 +145,18 @@ export function Chat({ onEvents, prefill, ask, scenario, onStartScenario, action
   }, [ready]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // A different company starts a fresh conversation.
-  useEffect(() => { stop.current(); setMsgs([]); setBanner(null); }, [company]);
+  useEffect(() => { stop.current(); setMsgs([]); setBanner(null); stash.current = {}; }, [company]);
+  useEffect(() => {
+    if (!ws.loaded || ws.unreachable) return;
+    const mode = ws.fresh ? "fresh" : "learned";
+    if (shownMode.current && shownMode.current !== mode) {
+      stop.current();
+      stash.current[shownMode.current] = msgsNow.current;
+      setMsgs(stash.current[mode] ?? []);
+      setBanner(null);
+    }
+    shownMode.current = mode;
+  }, [ws.loaded, ws.fresh]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // "Plan a truck" on an order row drops its request into the box, ready to send.
   useEffect(() => {
@@ -264,7 +280,11 @@ export function Chat({ onEvents, prefill, ask, scenario, onStartScenario, action
     gateActive: async () => !!(await gateLesson())?.state.startsWith("ACTIVE"),
     freshStart: async () => {
       stop.current();
+      if (shownMode.current && shownMode.current !== "fresh") stash.current[shownMode.current] = msgsNow.current;   // After learning keeps its chat
+      shownMode.current = "fresh";
+      stash.current.fresh = [];
       const s = await api.freshStart(company);
+      setWsMode("fresh");
       setMsgs([]);
       bumpData();
       const v = Object.values(s.agent_versions);
@@ -395,6 +415,12 @@ export function Chat({ onEvents, prefill, ask, scenario, onStartScenario, action
       {banner && <p className="banner" role="status">{banner}</p>}
 
       <div className="composer">
+        {msgs.length > 0 && (
+          <button type="button" className="link-btn small back-start" title="Back to the scenarios and examples. Your runs stay in the Runs tab."
+            onClick={() => { stop.current(); if (shownMode.current) stash.current[shownMode.current] = []; setMsgs([]); setBanner(null); log.current?.scrollTo(0, 0); }}>
+            ← Back to start: scenarios and examples
+          </button>
+        )}
         {msgs.length > 0 && !scenario && ws.loaded && !ws.fresh && <Starters compact onPick={pick} />}
         <form
           onSubmit={(e) => { e.preventDefault(); submit(draft); field.current?.focus(); }}

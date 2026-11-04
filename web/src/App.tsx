@@ -42,7 +42,7 @@ const STEP: Record<string, string> = {
 export default function App() {
   const [events, setEvents] = useState<RunEvent[]>([]);
   const [runId, setRunId] = useState<string | null>(null);
-  const { company, setCompany, companies, bumpData } = useSettings();
+  const { company, setCompany, companies, bumpData, setWsMode } = useSettings();
   const route = useRoute();
   const [prefill, setPrefill] = useState({ text: "", n: 0 });
   const [ask, setAsk] = useState({ label: "", n: 0 }); // a tab asks the chat to run a saved request
@@ -73,7 +73,8 @@ export default function App() {
     setScenario(id);
     setReached([]);
     // The recorded scenarios assume the recorded lessons: if this visitor started fresh, bring those back first.
-    if (id !== "S0") void api.freshStatus(s.company).then((st) => (st?.fresh ? api.freshRestore(s.company).then(() => bumpData()) : undefined));
+    // A recorded scenario uses the recorded lessons: switch to After learning (Fresh start keeps everything it has).
+    if (id !== "S0" && s.kind === "recorded") void api.freshStatus(s.company).then((st) => (st?.fresh ? api.freshMode(s.company, "learned").then(() => { setWsMode("learned"); bumpData(); }) : undefined));
     toDesk();
     if (s.id !== "S3" && s.company !== company) setCompany(s.company); // S3 switches company as its first step
   }

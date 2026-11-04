@@ -77,7 +77,7 @@ def prune_visitors(world=WORLD, keep=(), max_idle_s=VISITOR_MAX_IDLE_S, now=None
         if not root.is_dir():
             continue
         for p in root.iterdir():
-            sid = p.name.split(".")[0]
+            sid = p.name.split(".")[0].split("-")[0]      # <sid>.sqlite, <sid>-fresh.sqlite, <sid>.mode.json, <sid>/
             if sid in keep:
                 continue
             files = [p] + (list(p.rglob("*")) if p.is_dir() else [])
@@ -133,6 +133,11 @@ class Workspace:
     state: object = field(default_factory=dict)     # per-visitor mapping: "companies", "live_runs"
     world: Path = WORLD
 
+    @property
+    def mode(self) -> str:
+        """Which of this visitor's two workspaces is active: "fresh" (Fresh start) or "learned" (After learning)."""
+        return self.state.get("mode") or ("fresh" if any((self.state.get("fresh") or {}).values()) else "learned")
+
     # ---------- data
     def company(self, cid: str) -> CompanyData:
         """The company's records are read once and shared; what the agent writes (drafts, holds) is per visitor when hosted."""
@@ -140,20 +145,25 @@ class Workspace:
         if not self.public:
             return base
         mine = self.state.setdefault("companies", {})
-        if cid not in mine:
-            mine[cid] = copy.copy(base)
-            mine[cid].runtime = Runtime(state_root(self.world) / "runtime" / "sessions" / self.sid / f"{cid}.sqlite")
-        return mine[cid]
+        key = f"{self.mode}:{cid}"                 # each workspace has its own drafts and holds
+        if key not in mine:
+            mine[key] = copy.copy(base)
+            folder = state_root(self.world) / "runtime" / "sessions" / self.sid
+            mine[key].runtime = Runtime((folder / "fresh" if self.mode == "fresh" else folder) / f"{cid}.sqlite")
+        return mine[key]
 
     def store_path(self) -> Path:
         if self.public:
-            return state_root(self.world) / "learning" / "sessions" / f"{self.sid}.sqlite"
+            name = f"{self.sid}-fresh.sqlite" if self.mode == "fresh" else f"{self.sid}.sqlite"
+            return state_root(self.world) / "learning" / "sessions" / name
         return Path(self.world) / "learning" / "demo.sqlite"
 
     def store(self) -> LessonStore:
         path = self.store_path()
         seeded = path.with_name(path.name + ".seeded")
-        if self.public and not seeded.exists():  # a new visitor starts with the EXP-008 lessons, as in the video
+        if self.public and self.mode == "fresh":  # Fresh start begins with nothing: no seeding
+            return LessonStore(path)
+        if self.public and not seeded.exists():  # After learning starts with the EXP-008 lessons, as in the video
             with _SEED_LOCK:                     # everyone without the marker waits here, so nobody reads a half-filled store
                 if not seeded.exists():
                     if not path.exists():        # a store from before the marker existed is kept as it is

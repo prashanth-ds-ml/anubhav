@@ -173,6 +173,8 @@ export const api = {
   freshStart: (c: string) => post<FreshStatus>(`/api/fresh/start?${q(c)}`, {}).then((s) => ({ ...s, agent_versions: obj(s?.agent_versions, {}) })),
   freshSetAside: (c: string) => post<{ cancelled: string[] }>(`/api/fresh/set-aside?${q(c)}`, {}),
   freshRestore: (c: string) => post<FreshStatus>(`/api/fresh/restore?${q(c)}`, {}),
+  /** Switch the active workspace; nothing is emptied. */
+  freshMode: (c: string, mode: "fresh" | "learned") => post<FreshStatus>(`/api/fresh/mode?${q(c)}&mode=${mode}`, {}),
   /** Stage 1 of learning, no model: what the miner will read. */
   freshRecords: (c: string) => read<FreshRecords | null>(`/api/fresh/records?${q(c)}`, null).then((r) => (r && typeof r === "object" ? { ...r, notes_by_language: obj(r.notes_by_language, {}) } : null)),
   /** Stage 2: Muse Spark 1.3 proposes rules and the evidence gate checks each one (a live run). */

@@ -76,14 +76,42 @@ def status(ws, cid) -> dict:
             "mined_here": bool(ws.state.get("mined", {}).get(cid)), "mines_left": mines_left(ws, cid)}
 
 
-def start_all(ws) -> None:
-    """A new visitor on the hosted demo: no lessons and no tools, for every company (one store holds them all)."""
+def _set(ws, mode) -> None:
     from .session import COMPANIES
-    ws.store()                    # created (and seeded) first, so it can't be re-seeded after emptying
-    ws.clear_lessons()
-    ws.state["fresh"] = {c: True for c in COMPANIES}
-    ws.state["fresh_since"] = _now()
+    ws.state["mode"] = mode
+    ws.state["fresh"] = {c: mode == "fresh" for c in COMPANIES}
+    if mode == "fresh" and not ws.state.get("fresh_since"):
+        ws.state["fresh_since"] = _now()
+
+
+def start_all(ws) -> None:
+    """A new visitor on the hosted demo opens on Fresh start: its own empty lesson store, no tools, no drafts."""
+    _set(ws, "fresh")
+    ws.store()
     _remember(ws)
+
+
+def set_mode(ws, cid, mode) -> dict:
+    """Switch the active workspace. Nothing is emptied or reloaded: each keeps its lessons, tools, drafts and runs."""
+    _set(ws, "fresh" if mode == "fresh" else "learned")
+    ws.store()
+    _remember(ws)
+    return status(ws, cid)
+
+
+def reset(ws, cid) -> dict:
+    """Empty Fresh start (its lessons, tools, drafts, conversation and runs list) and make it the active workspace.
+    After learning is not touched."""
+    from .session import COMPANIES
+    _set(ws, "fresh")
+    ws.store()
+    ws.clear_lessons()
+    for c in COMPANIES:
+        ws.company(c).runtime.reset()
+    (ws.state.get("conversation") or {}).pop("fresh", None)
+    ws.state["fresh_since"] = _now()                       # runs before this leave the Fresh start lists
+    _remember(ws)
+    return status(ws, cid)
 
 
 def _now():
@@ -92,8 +120,8 @@ def _now():
 
 
 def _mark(ws):
-    p = ws.store_path()
-    return p.with_name(p.name + ".fresh")
+    from .session import state_root
+    return state_root(ws.world) / "learning" / "sessions" / f"{ws.sid}.mode.json"
 
 
 def _remember(ws) -> None:
@@ -103,7 +131,8 @@ def _remember(ws) -> None:
     if not ws.public:
         return
     try:
-        _mark(ws).write_text(json.dumps({"fresh": ws.state.get("fresh", {}), "fresh_since": ws.state.get("fresh_since")}), encoding="utf-8")
+        _mark(ws).parent.mkdir(parents=True, exist_ok=True)
+        _mark(ws).write_text(json.dumps({"mode": ws.mode, "fresh_since": ws.state.get("fresh_since")}), encoding="utf-8")
     except OSError:
         pass
 
@@ -115,31 +144,20 @@ def recall(ws) -> None:
         saved = json.loads(_mark(ws).read_text(encoding="utf-8"))
     except (OSError, ValueError):
         return
-    ws.state["fresh"] = dict(saved.get("fresh") or {})
     if saved.get("fresh_since"):
         ws.state["fresh_since"] = saved["fresh_since"]
+    mode = saved.get("mode") or ("fresh" if any((saved.get("fresh") or {}).values()) else "learned")
+    _set(ws, mode)
 
 
 def start_fresh(ws, cid) -> dict:
-    """Empty this visitor's lessons and tools (one store) and the company's drafts. The records are untouched."""
-    ws.store()                    # a new visitor's store is created (and seeded) first, so it can't be re-seeded after emptying
-    ws.clear_lessons()
-    ws.company(cid).runtime.reset()
-    ws.state.pop("conversation", None)
-    from .session import COMPANIES
-    ws.state["fresh"] = {c: True for c in COMPANIES}      # the store is shared by all companies, so all are empty now
-    ws.state["fresh_since"] = _now()                       # runs before this leave the lists (Reset starts the count again)
-    _remember(ws)
-    return status(ws, cid)
+    """Start from nothing (scenario S0): Fresh start, emptied. The records and After learning are untouched."""
+    return reset(ws, cid)
 
 
 def restore(ws, cid) -> dict:
-    """Back to the lessons the recorded runs and the measured results used."""
-    ws.load_exp008_lessons()
-    for c in list(ws.state.get("fresh", {})):
-        ws.state["fresh"][c] = False
-    _remember(ws)
-    return status(ws, cid)
+    """Switch to After learning: the lessons the recorded runs and the measured results used, plus anything done there."""
+    return set_mode(ws, cid, "learned")
 
 
 def records(ws, cid) -> dict:

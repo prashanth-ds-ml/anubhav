@@ -18,6 +18,9 @@ export interface Settings {
   refreshSession: () => void;
   /** Bumped when something outside a tab changes this visitor's data (a scenario step retiring a lesson, say). */
   dataVersion: number; bumpData: () => void;
+  /** The active workspace as the switch last confirmed it ("fresh" | "learned"), so every part of the page changes at
+   * once; null until the first switch (the page then reads it from the server). */
+  wsMode: "fresh" | "learned" | null; setWsMode: (m: "fresh" | "learned") => void;
 }
 
 const Ctx = createContext<Settings | null>(null);
@@ -74,9 +77,10 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
   }, [session, model]);
   const refreshSession = () => { api.session().then(setSession); };
   const bumpData = () => setDataVersion((v) => v + 1);
+  const [wsMode, setWsMode] = useState<"fresh" | "learned" | null>(null);
 
   const value = useMemo(() => ({ company, setCompany, useLessons, setUseLessons, companies, session, requests, ready: loaded, live, refreshSession, dataVersion, bumpData,
-    model, setModel, modelLabel: MODEL_LABEL[model] }),
-    [company, useLessons, companies, session, requests, loaded, live, dataVersion, model]);
+    model, setModel, modelLabel: MODEL_LABEL[model], wsMode, setWsMode }),
+    [company, useLessons, companies, session, requests, loaded, live, dataVersion, model, wsMode]);
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
 }

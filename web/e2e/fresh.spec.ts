@@ -121,3 +121,21 @@ test("without live mode there is nothing to choose, and lessons and runs still s
   await page.goto("/#runs");
   await expect(page.locator(".run-row").first()).toContainText(/Muse Spark (Open|1\.3)/);
 });
+
+test("each workspace keeps its own chat: switching away and back shows it again, and Back to start returns to the scenarios", async ({ page }) => {
+  await page.goto("/");
+  const sw = page.getByRole("group", { name: "Workspace" });
+  await sw.getByRole("button", { name: "Fresh start" }).click();
+  await expect(sw.getByRole("button", { name: "Fresh start" })).toHaveAttribute("aria-pressed", "true");
+  await page.getByLabel("Ask the agents").fill("Warangal load ki bandi pettu.");      // a saved request: replays, no model
+  await page.getByRole("button", { name: "Send" }).click();
+  await expect(page.locator(".bubble.user").first()).toContainText("Warangal load ki bandi pettu.");
+  await sw.getByRole("button", { name: "After learning" }).click();
+  await expect(sw.getByRole("button", { name: "After learning" })).toHaveAttribute("aria-pressed", "true");
+  await expect(page.locator(".bubble.user")).toHaveCount(0);                       // After learning has its own chat
+  await sw.getByRole("button", { name: "Fresh start" }).click();
+  await expect(page.locator(".bubble.user").first()).toContainText("Warangal load ki bandi pettu.");   // still here
+  await page.getByRole("button", { name: /Back to start/ }).click();
+  await expect(page.getByRole("heading", { name: "Try it", exact: true })).toBeVisible();
+  await expect(page.locator(".bubble.user")).toHaveCount(0);
+});

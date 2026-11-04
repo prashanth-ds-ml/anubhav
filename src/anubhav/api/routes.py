@@ -129,7 +129,7 @@ def suggestions(company: str = Cid, use_lessons: bool = True, ws: Workspace = Ws
 @api.post("/session/reset-drafts")
 def reset_drafts(company: str = Cid, ws: Workspace = Ws):
     ws.company(company).runtime.reset()
-    ws.state.pop("conversation", None)
+    (ws.state.get("conversation") or {}).pop(ws.mode, None)
     return {"ok": True}
 
 
@@ -231,7 +231,7 @@ class Chat(Body):
 def _history(ws, key):
     """This visitor's earlier turns, from saved runs on the server: a client can't put words in the agent's mouth."""
     out = []
-    for run_id in ws.state.get("conversation", {}).get(key, [])[-6:]:
+    for run_id in ws.state.get("conversation", {}).get(ws.mode, {}).get(key, [])[-6:]:
         r = runs.find_run(run_id, ws)
         if r:
             out.append({"request": r["request"], "run": r})
@@ -239,7 +239,7 @@ def _history(ws, key):
 
 
 def _remember(ws, key, run_id):
-    ws.state.setdefault("conversation", {}).setdefault(key, []).append(run_id)
+    ws.state.setdefault("conversation", {}).setdefault(ws.mode, {}).setdefault(key, []).append(run_id)
 
 
 @api.post("/chat")
@@ -394,6 +394,19 @@ def fresh_status(company: str = Cid, ws: Workspace = Ws):
 def fresh_start(company: str = Cid, ws: Workspace = Ws):
     """Empty this visitor's lessons, learned tools and drafts. The company's records are untouched."""
     return fresh.start_fresh(ws, company)
+
+
+@api.post("/fresh/mode")
+def fresh_mode(company: str = Cid, mode: Literal["fresh", "learned"] = "fresh", ws: Workspace = Ws):
+    """Switch the active workspace (Fresh start or After learning). Nothing is emptied: each keeps its own lessons,
+    tools, drafts, runs and conversation."""
+    return fresh.set_mode(ws, company, mode)
+
+
+@api.post("/fresh/reset")
+def fresh_reset(company: str = Cid, ws: Workspace = Ws):
+    """Empty Fresh start (lessons, tools, drafts, conversation, runs list) and make it active. After learning is untouched."""
+    return fresh.reset(ws, company)
 
 
 @api.post("/fresh/restore")

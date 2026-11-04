@@ -80,7 +80,7 @@ def test_the_route_list_above_is_complete(env):
              "/api/runs/{run_id}", "/api/runs/{run_id}/feedback", "/api/learning/lessons/{lesson_id}/decide", "/api/tools/candidates/{key}/check",
              "/api/tools/{tool_id}/decide", "/api/tools/{tool_id}/retire", "/api/packs/publish", "/api/packs/revoke", "/api/review/run",
              "/api/dashboard/drafts/{draft_id}/decide", "/api/handoffs", "/api/runs/{run_id}/resume", "/api/compare", "/api/agents/{agent_id}", "/api/harness/{version_id}/probe", "/api/harness/{version_id}/decide", "/api/logs/runs/{run_id}", "/api/voice", "/api/learning/lessons/{lesson_id}/evidence",
-             "/api/runs/{run_id}/steps", "/api/fresh/status", "/api/fresh/start", "/api/fresh/restore", "/api/fresh/set-aside", "/api/tools/health", "/api/tools/{tool_id}/repair", "/api/fresh/records", "/api/fresh/learn",
+             "/api/runs/{run_id}/steps", "/api/fresh/status", "/api/fresh/start", "/api/fresh/restore", "/api/fresh/mode", "/api/fresh/reset", "/api/fresh/set-aside", "/api/tools/health", "/api/tools/{tool_id}/repair", "/api/fresh/records", "/api/fresh/learn",
              "/api/data/tables", "/api/data/rows"}
     normal = {p.replace("/analyst", "/{agent_id}").replace("/h-001/", "/{version_id}/") for p in tested}
     assert paths <= normal | other, paths - normal - other
@@ -751,7 +751,7 @@ def test_a_fresh_start_workspace_lists_only_its_own_runs_and_reset_empties_the_l
     assert c.get("/api/logs/runs?company=T01").json() == []
     c.post("/api/fresh/restore?company=T01")
     after = {r["run_id"] for r in c.get("/api/logs/runs?company=T01").json()}
-    assert run["run_id"] in after and recorded[0]["run_id"] in after
+    assert recorded[0]["run_id"] in after and run["run_id"] not in after       # Fresh start's runs stay in Fresh start
 
 
 def test_agents_show_their_tools_and_skills_and_the_tool_routes_answer(env):
@@ -1054,3 +1054,29 @@ def test_the_orders_panel_lists_the_days_with_open_orders_and_one_day_at_a_time(
     past = c.get("/api/dashboard/orders?company=T01&day=2026-08-01").json()
     assert past["delivery_date"] == r["today"]                                  # a past day falls back to today
     assert c.get("/api/dashboard/orders?company=T01&day=tomorrow").status_code == 422
+
+
+
+def test_the_two_workspaces_keep_their_own_lessons_drafts_and_runs_and_only_reset_empties_fresh_start(env, monkeypatch):
+    """Nov 4: Fresh start and After learning are two workspaces. Switching never empties either; Reset empties Fresh
+    start only; a run belongs to the workspace it ran in."""
+    c = TestClient(api_app.create_app(public=True, world=env, replay_pace=0, start_fresh=True), raise_server_exceptions=False)
+    c.get("/api/session")
+    assert c.get("/api/fresh/status?company=T01").json()["fresh"] is True
+    live_env(monkeypatch, [mock_final("Nothing to plan yet.")])
+    mine = c.post("/api/chat", json={"message": "anything for tomorrow?", "mode": "live", "use_lessons": False}).json()
+    list(stream.follow(mine["run_id"]))
+    lid = c.get("/api/learning/lessons?company=T01").json()
+    assert lid == []                                                             # Fresh start: nothing learned
+    learned = c.post("/api/fresh/mode?company=T01&mode=learned").json()
+    assert learned["fresh"] is False and learned["lessons"] > 0                  # After learning: the recorded lessons
+    assert mine["run_id"] not in {r["run_id"] for r in c.get("/api/logs/runs?company=T01").json()}
+    back = c.post("/api/fresh/mode?company=T01&mode=fresh").json()
+    assert back["fresh"] is True and back["lessons"] == 0
+    assert [r["run_id"] for r in c.get("/api/logs/runs?company=T01").json()] == [mine["run_id"]]   # still there after the round trip
+    import time
+    time.sleep(1.1)
+    c.post("/api/fresh/reset?company=T01")
+    assert c.get("/api/logs/runs?company=T01").json() == []                      # Reset empties Fresh start
+    again = c.post("/api/fresh/mode?company=T01&mode=learned").json()
+    assert again["lessons"] == learned["lessons"]                                # and leaves After learning alone
