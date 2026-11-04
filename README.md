@@ -17,6 +17,19 @@ Muse already handles Telugu, Roman Telugu and tool calls well. What it can't kno
 
 **Built for small fleets first.** Anubhav is built first for small and mid-size fleets and distributors, where rules live in notes and people's heads. We expect the same loop to get stronger as a company grows: more trips give the evidence gate more to prove, repeated questions become tools sooner, and every company in a region adds to what the next one learns on day one. This is a hypothesis. A first check (EXP-018, Muse Spark 1.3) mined one company from 30, 60 and 90 days of records: recall rose from 72.7% to 81.8% at 60 days and stayed there, with 100% precision; one company and one generated world, so it is a start, not proof.
 
+## How we got here
+Every step below was an experiment with its plan and pass bar written down before the first model call. Where a result said no, we changed course.
+
+1. **We tested the obvious idea first.** Muse already handled tool calls well: 88.5% with 8 tools, little left to fix (EXP-001 to EXP-004, Muse Spark 1.3 and Muse Spark Open compared).
+2. **We looked for where it actually fails.** On rules nobody wrote down (a gate a long truck can't enter, a site's nickname, a truck's real capacity) the agent scored 0% (EXP-005, Muse Spark Open). That became the project.
+3. **Our first learning result was a failure.** On a small, clean history, handing the agent the raw history did as well as lessons (EXP-007). We changed the pitch: the value is in scale, noisy records, safety and sharing.
+4. **We made the checking strict and scored it against hidden truth.** Lessons that pass the evidence gate went from 73% to 83% to 90% correct across three generated worlds, and no trap rule got through where we tested for them (EXP-008, EXP-009, EXP-009b; lessons mined by Muse Spark 1.3).
+5. **The main result held.** With approved lessons, unwritten-rule cases went from 48% to 90% correct, and a new company went from 33% to 100% on day 1, in 3 of 3 repeats on Muse Spark Open (EXP-011R), and again on Muse Spark 1.3 (EXP-015).
+6. **We built a team, and found it is not more accurate.** One Planner did as well as the team (EXP-013), and we say so. As learning is added, the team goes from 58.6% to 91.4% correct with unsafe drafts from 4 to 0 (EXP-014, Muse Spark 1.3).
+7. **Learned tools work on one model, not yet on the other.** Muse Spark Open made reusable tools and used them on 14 of 16 questions (EXP-012b). Muse Spark 1.3 made none, even with every query routed through Tool Forge (EXP-016, EXP-019); a diagnostic showed why, and the next steps are below.
+
+All 21 experiments, the failures included, are in the app's **Proof & audit** tab and the [experiments log](docs/trackers/experiments.md).
+
 ## Results (pre-registered; files frozen by hash before any model call; read the [limitations](#limitations))
 
 **Final benchmark, EXP-011R: the shipped version, 3 repeats.** A world the system had never seen (fresh seed 5279), the same model (Muse Spark Open), 38 cases in RT/TE/EN, each run 3 times (306 runs), on the version you can try. Totals over the 3 repeats:
@@ -227,9 +240,11 @@ tests/         data, runtime, learning, harness, safety (adversarial), eval
 ```
 
 ## What's next
-- **Proposed changes, approved by a person.** Today agents only make drafts. Next, they propose everyday changes to the business's records, such as a new delivery site or a new order: code checks each proposal (required fields, likely duplicates, the site and products exist, sensible quantities), a person approves, rejects or edits it, and only then is it written, with an audit entry of who approved it and from which run.
+- **Everyday changes, approved by a person.** Today the agents only make drafts. Next, they propose changes to the business's own records, such as a new delivery site, a new order or a corrected address. Code checks each proposal (required fields, likely duplicates, the site and products exist, sensible quantities), a person approves, rejects or edits it, and only then is it written, with an audit entry of who approved it and from which run.
+- **Permissions per agent for those changes.** The tool lists that already keep each agent to its role extend to writes: for example, only the Planner may propose an order and only after a person approves; the Analyst stays read-only. Larger organisations can map these to their own roles.
+- **The team as the organisation grows.** Today one Planner is as accurate as the team (EXP-013). We expect the team's separate duties, per-agent learning and permissions to matter more with more data, more people and write access. That is a hypothesis to measure, not a result.
 - **Learned tools on Muse Spark 1.3.** Routing every query through Tool Forge was not enough (EXP-019). Next: show Tool Forge an earlier query for the same kind of question, or let a person approve a query after 2 requests, each as its own pre-registered experiment.
-- **A real dispatcher's review** of the mined lessons, and data from a real fleet.
+- **Real fleets.** A real dispatcher's review of the mined lessons, data from a working fleet, and domain packs shared across more companies and regions.
 
 ## Built during the hackathon
 Everything in this repository was written during the event, starting Oct 27, 2026. The commit history shows it day by day. Third-party open-source libraries are used as dependencies only; see [LICENSES_AND_ATTRIBUTION.md](LICENSES_AND_ATTRIBUTION.md).
