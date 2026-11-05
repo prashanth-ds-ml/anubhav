@@ -14,24 +14,24 @@ async function page(width, height, scheme = "light") {
   p.on("pageerror", (e) => errors.push(e.message));
   return p;
 }
-const save = async (p, name) => { await p.mouse.move(2, 2); await p.waitForTimeout(1500); await p.screenshot({ path: fileURLToPath(new URL(`${name}.png`, OUT)) }); console.log("saved", name); };
+const save = async (p, name) => { await p.mouse.move(2, 2); await p.locator(".skeleton").first().waitFor({ state: "detached", timeout: 30_000 }).catch(() => {}); await p.waitForTimeout(3000); await p.screenshot({ path: fileURLToPath(new URL(`${name}.png`, OUT)) }); console.log("saved", name); };
 
 // The first screen, and S1 from start to finish.
 let p = await page(1440, 900);
 await p.goto(BASE);
-await p.getByRole("heading", { name: "Try it: seven scenarios" }).waitFor({ timeout: 90_000 });
-await save(p, "start");
+await p.getByRole("button", { name: "Start S1", exact: true }).waitFor({ timeout: 90_000 });
 await p.getByRole("button", { name: "Start S1", exact: true }).click();
 const g = p.getByRole("region", { name: /Scenario S1/ });
 await g.getByRole("button", { name: "Play the request without lessons" }).click();
 await p.locator(".plan-card").last().waitFor({ timeout: 90_000 });
 await p.locator(".plan-card").last().scrollIntoViewIfNeeded();
-await save(p, "s1-without-lessons");
 await g.getByRole("button", { name: "See what it learned" }).click();
 await g.getByRole("button", { name: "Undo and redo the approval yourself" }).click();
 await g.getByRole("button", { name: "Play the same request with lessons" }).click();
 await g.getByText(/All 4 steps done/).waitFor({ timeout: 90_000 });
+await g.getByText("22 ft", { exact: true }).first().waitFor({ timeout: 30_000 });
 await save(p, "s1-done");
+await p.getByRole("button", { name: "Close the scenario" }).click();     // the tab screenshots without the S1 panel
 
 // One screen per main tab.
 for (const [name, hash] of [["learning", "#learning/L-T01-002"], ["kazipet", "#learning/L-T01-011"], ["runs", "#runs"], ["agents", "#agents"], ["tools", "#tools"], ["proof", "#proof/bench"], ["claims", "#proof/claims"]]) {
@@ -40,13 +40,6 @@ for (const [name, hash] of [["learning", "#learning/L-T01-002"], ["kazipet", "#l
   await save(p, name);
 }
 
-// Dark mode and a phone.
-p = await page(1440, 900, "dark");
-await p.goto(BASE + "#runs");
-await save(p, "runs-dark");
-p = await page(390, 844);
-await p.goto(BASE);
-await save(p, "phone");
 
 console.log("page errors:", errors.length ? errors : "none");
 await b.close();

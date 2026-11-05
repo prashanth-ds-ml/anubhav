@@ -1,14 +1,36 @@
+<div align="center">
+
 # Anubhav
 
-> Built during the **Meta Global AI Developer Hackathon** (Oct 26 – Nov 4, 2026) · Indie track · *Push the Frontier*
+**AI agents that learn the rules a business never wrote down, from its own records, and plan safer because of it.**
 
-**An agent that learns a business's unwritten rules from its own records, and gets safer because of it.** A regional logistics dispatcher asks in Telugu, Roman Telugu or English, by text or voice. The agent plans a draft trip with generic tools over the company's data. Behind it, Meta Muse mines the company's trip history for rules nobody wrote down. Code checks the evidence, a person approves, and the next plan uses the lesson. Approved regional knowledge can be shared with a new company without leaking anything private. *Anubhav* means "experience".
+*Same model. Verified experience. Safer plans.* · *Anubhav* means "experience"
 
-*Same model. Verified experience. Safer plans.*
+[![Live demo](https://img.shields.io/badge/Live_demo-Hugging_Face_Space-FFD21E?logo=huggingface&logoColor=black)](https://huggingface.co/spaces/KPrashanth/anubhav)
+[![Meta Muse](https://img.shields.io/badge/Built_on-Meta_Muse-0866FF?logo=meta&logoColor=white)](#meta-ai-used)
+[![Hackathon](https://img.shields.io/badge/Meta_Global_AI_Hackathon-Indie_·_Push_the_Frontier-6E40C9)](docs/Project_Guide.md#hackathon-rules-audit)
+[![Experiments](https://img.shields.io/badge/Experiments-24_pre--registered-2EA44F)](docs/trackers/experiments.md)
+[![License: MIT](https://img.shields.io/badge/License-MIT-lightgrey)](LICENSE)
 
-**Try it:** **[huggingface.co/spaces/KPrashanth/anubhav](https://huggingface.co/spaces/KPrashanth/anubhav)** (start with S0, *Start from nothing*).
+**[Try it live](https://huggingface.co/spaces/KPrashanth/anubhav)** · **[Project guide](docs/Project_Guide.md)** · **[Experiments](docs/trackers/experiments.md)** · **[How it works](#how-it-works)** · **[What's next](#whats-next)**
 
-**Read the whole project in one place:** [docs/Project_Guide.md](docs/Project_Guide.md): the hackathon rules and how each is met, the architecture, the agent team, the learning loop, every experiment, the data and what's next, with diagrams.
+<img src="web/readme-assets/s1-done.png" alt="The same request without and with the approved lesson: a 32 ft truck drawn past the gate's 22 ft limit, then a 22 ft truck" width="860">
+
+</div>
+
+> Built solo by **Katakam Prashanth** during the **Meta Global AI Developer Hackathon** (Oct 26 – Nov 4, 2026), Indie track, problem statement *Push the Frontier*. Every commit is in this repository's history from Oct 27.
+
+A regional logistics dispatcher asks in Telugu, Roman Telugu or English, by text or voice. A team of Muse agents plans a draft trip with generic tools over the company's data. Behind it, Meta Muse mines the company's trip history for rules nobody wrote down; **code checks the evidence, a person approves, and the next plan uses the lesson.** Approved regional knowledge can be shared with a new company without leaking anything private.
+
+| With approved lessons | Muse Spark Open | Muse Spark 1.3 |
+|---|---|---|
+| Unwritten-rule cases correct | **48% → 90%** (EXP-011R) | **45% → 90%** (EXP-015) |
+| A new company on day 1 | **33% → 100%** | **33% → 100%** |
+| Unsafe drafts | **0** | **0** |
+
+<sub>3 of 3 repeats on an unseen generated world each; every plan and pass bar was frozen by hash before the first model call. Failures are reported too: see the [limitations](#limitations).</sub>
+
+**Contents:** [The problem](#the-problem) · [How I got here](#how-i-got-here) · [Results](#results-pre-registered-files-frozen-by-hash-before-any-model-call-read-the-limitations) · [How it works](#how-it-works) · [Meta AI used](#meta-ai-used) · [Try it](#try-it) · [Repository layout](#repository-layout) · [What's next](#whats-next) · [Built during the hackathon](#built-during-the-hackathon)
 
 ## The problem
 A dispatcher near Warangal knows that a 32 ft truck can't get into one Jangaon godown. That rule isn't in any system. It lives in a driver's note from a failed trip and in the dispatcher's head. An AI agent connected to the company's data passes every check and still sends the 32 ft truck.
@@ -172,7 +194,7 @@ Every result in the app carries a label saying which model produced it. Muse Voi
 
 An earlier replay-only version: [anubhav-metahackathon.streamlit.app](https://anubhav-metahackathon.streamlit.app/).
 
-**Seven scenarios to try.** The web app opens on them; add `/?tour=S0` … `/?tour=S6` to its address to open one directly.
+**Eleven scenarios to try.** The web app opens on them; add `/?tour=S0` … `/?tour=S10` to its address to open one directly.
 
 | | Scenario | Kind | What you see |
 |---|---|---|---|
@@ -183,10 +205,14 @@ An earlier replay-only version: [anubhav-metahackathon.streamlit.app](https://an
 | S6 | Roads change: the Kazipet bridge | recorded data, free | Drivers' notes in Telugu and English, 45 closure delays all inside the closure and none after it, and a lesson that expired on arrival |
 | S4 | Your lessons, your call | live, Muse Spark 1.3 | Retire the gate rule and the live plan goes back to 32 ft; Undo, and it picks 22 ft. Approve or reject the live draft |
 | S5 | Try to break it | live, Muse Spark 1.3 | Ask it to dispatch now, overload a truck, deliver at the wrong time, or use the company's nicknames |
+| S7 | Plan tomorrow's whole day | live, Muse Spark 1.3 | Every open order gets a draft truck in one request, each checked by code; you approve one and reject one |
+| S10 | Look at the week ahead | live, Muse Spark 1.3 | Tool Forge totals the week's open orders in one query; the Planner plans the busiest day as drafts |
+| S8 | Ask about your business | live, Muse Spark 1.3 | A data question no tool answers: the Planner hands it to Tool Forge, which answers with one read-only query |
+| S9 | Ask by voice, in Telugu | live, Muse Spark 1.3 | Speak the request; Muse Voice Transcribe turns it into text |
 
 Recorded scenarios replay real runs. Live ones need the `meta_api` key on the host; the header shows how many live runs are left.
 
-![S1 finished: the same request without and with the approved lesson, both trucks drawn against the gate's 22 ft limit](web/readme-assets/s1-done.png)
+![Learning: the Lakshmi Agencies gate lesson with every trip to the site by truck length, the three turned-back 32 ft trucks and the 22 ft limit it learned](web/readme-assets/learning.png)
 
 **The main tabs:**
 - **Dispatch Desk:** the chat and the scenarios, with the company's orders, route plans, fleet, profile and ledger beside them.
@@ -196,7 +222,17 @@ Recorded scenarios replay real runs. Live ones need the `meta_api` key on the ho
 - **Runs:** every run step by step, one lane per agent, with a real mistake the agent fixed itself and the raw record.
 - **Proof & audit:** the benchmarks, and every pre-registered experiment from plan to result commit, the failed ones included.
 
-![Runs: the team run as one lane per agent, with the work each agent did](web/readme-assets/runs.png)
+**More of the app** (screenshots from the hosted demo in replay mode):
+
+| | |
+|---|---|
+| ![Runs: a run as one lane per agent, each tool call with what it sent and got back](web/readme-assets/runs.png) | ![Agents: the four agents, their tools, skills and versions](web/readme-assets/agents.png) |
+| **Runs:** every run step by step, one lane per agent | **Agents:** each agent's own tools, skills and what has been measured |
+| ![Tools: a repeated question checked by code and offered as a tool](web/readme-assets/tools.png) | ![Kazipet: the bridge closure's delays week by week, with drivers' notes](web/readme-assets/kazipet.png) |
+| **Tools:** a repeated question becomes a tool after code checks and a person approves | **Learning over time:** the Kazipet closure, and a lesson that expired on arrival |
+| ![Proof: the benchmark scoreboard with every pre-registered experiment](web/readme-assets/proof.png) | ![Check the claims: each experiment from plan commit to result commit](web/readme-assets/claims.png) |
+| **Proof & audit:** all 24 experiments, the failed ones marked | **Check the claims:** plan commit, then result commit, for each |
+
 
 **Locally:**
 ```bash
