@@ -5,7 +5,7 @@ date: 2026-11-01
 ---
 # Anubhav backend report, for building the UI and UX
 
-Related: `contracts/api.md`, `contracts/events.schema.json`, [[demo_plan]], [[benchmark_data_guide]], [[decisions]].
+Related: `contracts/api.md`, `contracts/events.schema.json`, the demo plan (kept locally), the benchmark data guide (kept locally), [[decisions]].
 
 **How this was checked:**
 - Written from the source code, plus real responses captured from the running API in public replay mode with no keys. No model was called and no credits were spent.

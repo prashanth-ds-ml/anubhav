@@ -5,7 +5,7 @@
 
 ## 1. Purpose and owner's design rationale
 
-We are building a credible, inspectable testbed for a multilingual logistics agent that handles order-to-delivery work and improves planning, operations and tool use through independently verified experience. The owner specifically prefers **odd numbers**, hence **five** development-company databases. The number five is a deliberate product/design preference, not a statistical or industry requirement. Five also offers useful variety and geographic overlap without making the hackathon unmanageable. We do **not** rely on a single fixed sixth company: judges can seed and generate fresh cold-start tenants and unfamiliar orders. Preserve **two sealed benchmark packs**, a separate **development sandbox**, and a **live random-seed judge challenge**. Random demos demonstrate adaptability; sealed benchmarks demonstrate repeatable evidence.
+I am building a credible, inspectable testbed for a multilingual logistics agent that handles order-to-delivery work and improves planning, operations and tool use through independently verified experience. The owner specifically prefers **odd numbers**, hence **five** development-company databases. The number five is a deliberate product/design preference, not a statistical or industry requirement. Five also offers useful variety and geographic overlap without making the hackathon unmanageable. We do **not** rely on a single fixed sixth company: judges can seed and generate fresh cold-start tenants and unfamiliar orders. Preserve **two sealed benchmark packs**, a separate **development sandbox**, and a **live random-seed judge challenge**. Random demos demonstrate adaptability; sealed benchmarks demonstrate repeatable evidence.
 
 ## 2. Tenant portfolio and isolation
 

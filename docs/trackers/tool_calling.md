@@ -46,7 +46,7 @@ One row per notable call: good, bad or surprising.
 | RT | | | | |
 | MIX | | | | |
 
-## 4. Known Muse facts (from Day 1, see [[smoke_tests]])
+## 4. Known Muse facts (from Day 1, see the smoke-test notes (kept locally))
 - `tool_choice` is `auto` only; I can't force a tool, so the graph and validator enforce order.
 - `strict` validates the schema, not the arguments; validate arguments in code.
 - Temperature/seed are not deterministic; repeat runs and report spread.

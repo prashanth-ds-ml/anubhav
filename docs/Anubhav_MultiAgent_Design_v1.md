@@ -6,7 +6,7 @@ supersedes: React_UI_Brainstorm (removed Nov 2, in git history)
 ---
 # Anubhav multi-agent system and React platform: design v1
 
-History and discussion trail: `React_UI_Brainstorm.md` (git history). Related: [[Home]], [[submission_checklist]], [[decisions]], [[risks]].
+History and discussion trail: `React_UI_Brainstorm.md` (git history). Related: the notes index (kept locally), the submission checklist (kept locally), [[decisions]], the risk list (kept locally).
 Deadline: Thu Nov 5, 7:30 AM IST (Nov 4, 9 PM ET). Target submit: Nov 4.
 
 ## 1. Understanding summary
@@ -78,7 +78,7 @@ Pre-register, freeze files by hash before any model call, fresh unseen world see
 - **Metrics:** correct, unsafe drafts, tool calls, cost, latency, delegations, retries, routing accuracy. **Learning curve:** each agent at v0, v1, v2 on the same held-out set.
 - **Proposed bars (freeze before running):** unsafe drafts 0 in every arm; M0 not worse than S by more than 5 points on correctness; routing accuracy +15 points from v0 to best version; cost per question <= 1.5x S.
 - **Budget:** about $30 (assumes multi-agent runs cost 1.5-2x the earlier ~$0.06/run): about 114 planner runs, 48 data-question runs, about 60 learning/paired-test runs, about 10 recordings. One repeat, not three; state this limit in the README.
-- **Caveats:** cases and hidden rules come from our own generator; small samples; multi-agent may not beat S and will be reported anyway. Development uses a fake model client (no cost).
+- **Caveats:** cases and hidden rules come from my own generator; small samples; multi-agent may not beat S and will be reported anyway. Development uses a fake model client (no cost).
 
 ### 4.5 Showcase (live and history)
 - **One event store** feeds everything. Event: `run_id`, `agent_id`, `caller`, `ts`, payload. Types: `agent_start`, `tool_call`, `tool_result`, `retry`, `tool_missing`, `handoff`, `lesson_used`, `validator_check`, `draft_created`, `agent_done`, `learning_event`. Live stream and history read the same store; saved replay runs are converted offline.

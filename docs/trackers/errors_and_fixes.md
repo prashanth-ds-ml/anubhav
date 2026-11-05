@@ -3,7 +3,7 @@ tags: [tracker, errors]
 ---
 # Errors and fixes
 
-Every bug, failed call or surprise goes here, so we never debug the same thing twice. Template: `templates/error`.
+Every bug, failed call or surprise goes here, so I never debug the same thing twice. Template: `templates/error`.
 Summary table first, details below. Newest at the bottom.
 
 | ID | Date | Area | Symptom | Severity | Status | Fix commit |

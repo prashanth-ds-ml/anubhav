@@ -7,7 +7,7 @@ date: 2026-10-28
 > **One line:** an agent that learns a business's unwritten rules from the business's own records. The reviewer approves the risky lessons, and the next customer of the same type starts already knowing the regional ones.
 
 Diagram: `docs/diagrams/anubhav_flow.excalidraw` (open at excalidraw.com → Menu → Open)
-Experiments: [[experiments]] (files in `archive/prototype_experiments/`) · Costs: [[cost_ledger]] · Rubric: [[rubric_scorecard]] · Submission: [[submission_checklist]]
+Experiments: [[experiments]] (files in `archive/prototype_experiments/`) · Costs: [[cost_ledger]] · Rubric: the rubric scorecard (kept locally) · Submission: the submission checklist (kept locally)
 
 ---
 

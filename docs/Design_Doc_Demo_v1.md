@@ -1,11 +1,11 @@
 ---
 tags: [design, ux, react, api, audit]
-status: APPROVED by the owner (Nov 2, evening; D-052) and BUILT the same day (sprints 1–7, [[Build_Plan_Demo_v1]]). Departures from the mocks are noted in [[todo]] (B-S rows).
+status: APPROVED by the owner (Nov 2, evening; D-052) and BUILT the same day (sprints 1–7, the build plan (kept locally)). Departures from the mocks are noted in the to-do list (kept locally) (B-S rows).
 date: 2026-11-02
 ---
 # Design doc: the judge-ready demo (React app and API)
 
-Related: [[UX_Revision_Plan_v1]] (§9 polish pass), [[demo_plan]] (scenarios S1–S5), [[Backend_Report]], [[Handoff_Web_to_AI_Engineer]], [[experiments]], [[decisions]] (D-049 to D-051), `contracts/api.md`.
+Related: the UX revision plan (kept locally) (§9 polish pass), the demo plan (kept locally) (scenarios S1–S5), [[Backend_Report]], the my web-app working notes (kept locally), [[experiments]], [[decisions]] (D-049 to D-051), `contracts/api.md`.
 
 ## 1. Purpose
 Judges score Impact (30%), Meta AI tooling (25%), Technical depth (20%) and Demo (25%), and the final round tries the hosted app themselves. This doc audits what the backend and the React app do today and designs the version the mocks show: six main tabs, six scenarios, visual evidence, benchmarks, and a claim trail a judge can check.

@@ -654,7 +654,7 @@ Order: EXP-015, then EXP-014, then EXP-016, one after the other. The batch runs 
 - The EXP-008 miner (digest → Muse Spark 1.3 → evidence gate) on the demo world's T01, 3 times, each into an empty lesson store. **The Lakshmi Agencies 22 ft rule passed the gate in 3 of 3** ("3 refusals of vehicles over 22 ft, none delivered"). 10–11 lessons a run: night-only, a Tuesday closure, V13's real capacity, three nicknames; 2 habits rejected (closing at 18:00, market trucks at month-end); the Kazipet closure stored expired. $0.19, 45–60 s a run. Decision: go for the fresh-start demo.
 
 ### EXP-017 (planned, not pre-registered): hand-written questions before and after learning
-- 40 owner-written questions (tool traps, false premises, ambiguous requests), Muse Spark 1.3. Protocol, rules and status: [[benchmark_data_guide]]. Pre-registration and freeze only after the questions pass the checker and the scorers are tested.
+- 40 owner-written questions (tool traps, false premises, ambiguous requests), Muse Spark 1.3. Protocol, rules and status: the benchmark data guide (kept locally). Pre-registration and freeze only after the questions pass the checker and the scorers are tested.
 
 ### EXP-018: does learning get better as the company has more history? (scaling check; frozen 2026-11-03 20:58 before any model call)
 - **Question:** mine the demo world's T01 from its first 30, 60 and 90 days of records. Are more hidden rules found, without losing precision or admitting traps? (EXP-017 is taken by the hand-written questions above.)

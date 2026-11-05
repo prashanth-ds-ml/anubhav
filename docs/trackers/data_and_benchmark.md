@@ -3,7 +3,7 @@ tags: [tracker, data, benchmark]
 ---
 # Data and benchmark tracker
 
-Generator runs, integrity results, human review and the sealed casebook. Spec: [[Data_Benchmark_Blueprint_v1.0]]. Plan: [[demo_plan]] Layers 1 and 5.
+Generator runs, integrity results, human review and the sealed casebook. Spec: [[Data_Benchmark_Blueprint_v1.0]]. Plan: the demo plan (kept locally) Layers 1 and 5.
 
 ## 1. Generator runs
 Every generated world gets a row. Never edit generated data by hand; fix the generator and regenerate.

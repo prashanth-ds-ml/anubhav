@@ -43,7 +43,7 @@ def main():
         "---", "tags: [impact, review]", "---",
         "# Dispatcher review kit (for the interviewed logistics professional)", "",
         "**Purpose.** A real dispatcher checks what the agent learned. The companies and sites are fictional (generated), "
-        "so we do **not** ask whether a named site is right. We ask two things you can judge from experience:",
+        "so I do **not** ask whether a named site is right. I ask two things you can judge from experience:",
         "1. **Is this kind of rule real in your region?** (yes, common · yes, rare · no · not sure)",
         "2. **Given only the evidence shown, what would you do as the reviewer?** (approve as advice · approve as an "
         "enforced rule · reject · need more evidence)", "",
@@ -54,7 +54,7 @@ def main():
         "**Rules for recording (honesty).** Write the answers exactly as given, including \"no\" and \"not sure\". "
         "Do not explain or argue before they answer. Record the reviewer as \"a logistics professional (Telangana)\", "
         "never by name, and quote them only with their permission. Results go into [[experiments]] as they are, "
-        "even if they are bad for us.", "",
+        "even if they are bad for me.", "",
         "## Part 1: the lessons", "",
         "| # | What the agent learned | Kind of rule | Evidence it was shown | Real in your region? | Your decision | Comment |",
         "|---|---|---|---|---|---|---|",

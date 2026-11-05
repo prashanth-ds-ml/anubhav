@@ -12,7 +12,7 @@ from .service import session
 URLS = {"spark": muse.BASE_URL, "open": muse.BASETEN_URL}
 WANT = {"spark": muse.DEFAULT_MODEL, "open": muse.OPEN_MODEL}
 LEDGER = ROOT / "docs" / "trackers" / "cost_ledger.md"
-RESERVE = {"Meta Model API": 50.0, "Baseten": 30.0}     # kept for the demo and the judges (D-048); our own use is on Meta only
+RESERVE = {"Meta Model API": 50.0, "Baseten": 30.0}     # kept for the demo and the judges (D-048); my own use is on Meta only
 OURS = {"Meta Model API"}
 
 
@@ -50,7 +50,7 @@ def check_local(world=None, bundle=None):
 
 
 def check_credits(ledger=LEDGER, reserve=RESERVE):
-    """Credit left against what's kept for the demo, from our own ledger (the billing pages are the real figure)."""
+    """Credit left against what's kept for the demo, from my own ledger (the billing pages are the real figure)."""
     text = ledger.read_text(encoding="utf-8") if ledger.exists() else ""
     out = []
     for name, floor in reserve.items():
@@ -59,7 +59,7 @@ def check_credits(ledger=LEDGER, reserve=RESERVE):
             out.append((f"credit: {name}", False, "not found in the ledger"))
             continue
         left = float(m.group(1))
-        free = f", ~${max(left - floor, 0):.2f} free for our own runs" if name in OURS else ", none for our own runs"
+        free = f", ~${max(left - floor, 0):.2f} free for my own runs" if name in OURS else ", none for my own runs"
         out.append((f"credit: {name}", left >= floor, f"~${left:.2f} left, keep ${floor:.2f} for the demo and judges{free}"))
     return out
 
